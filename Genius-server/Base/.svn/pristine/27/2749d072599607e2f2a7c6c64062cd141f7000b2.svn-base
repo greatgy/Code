@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.genius.xo.baseadmin.dao.AdminDao">
+	
+	<sql id="basecolumns">`uid`,`createtime`</sql>
+	<sql id="othercolumns">`adminid`, `name`, `email`, `pwd`, `dopwd`, `mobile`, `status`</sql>
+	<sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+	<sql id="table">admin</sql>
+	<sql id="count">count(*)</sql>
+	<sql id="whereid">where uid = #{uid}</sql>
+	<sql id="allfields"><include refid="basecolumns"/>, <include refid="othercolumns"/></sql>
+	<sql id="allparams">#{uid},#{createtime},#{adminid},#{name},#{email},#{pwd},#{dopwd},#{mobile},#{status}</sql>
+	<sql id="setadminid">adminid = #{adminid}</sql>
+	<sql id="setname">name = #{name}</sql>
+	<sql id="setemail">email = #{email}</sql>
+	<sql id="setpwd">pwd = #{pwd}</sql>
+	<sql id="setdopwd">dopwd = #{dopwd}</sql>
+	<sql id="setmobile">mobile = #{mobile}</sql>
+	<sql id="setstatus">status = #{status}</sql>
+	<sql id="setadminid_lk">adminid like CONCAT('%',#{adminid_lk},'%')</sql>
+	<sql id="setname_lk">name like CONCAT('%',#{name_lk},'%')</sql>
+	<sql id="setemail_lk">email like CONCAT('%',#{email_lk},'%')</sql>
+	<sql id="setmobile_lk">mobile like CONCAT('%',#{mobile_lk},'%')</sql>
+	<sql id="setauthority_lk">authority like CONCAT('%',#{authority_lk},'%')</sql>
+	<sql id="allsets">set <include refid="setadminid"/>,<include refid="setname"/>,<include refid="setemail"/>,
+	<include refid="setpwd"/>,
+	<include refid="setdopwd"/>,
+	<include refid="setmobile"/>, 
+	<include refid="setstatus"/> </sql>
+	<sql id="orderby">order by createtime</sql>
+	
+	<select id="get" parameterType="string" resultType="admin">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<include refid="whereid"/>
+	</select>
+	
+	<select id="getOne" parameterType="hashMap" resultType="admin">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="adminid != null">
+				and <include refid="setadminid"/>
+			</if>
+			<if test="name != null">
+				and <include refid="setname"/>
+			</if>
+			<if test="email != null">
+				and <include refid="setemail"/>
+			</if>
+			<if test="mobile != null">
+				and <include refid="setmobile"/>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+		</where>
+		LIMIT 0,1
+	</select>
+	
+	<select id="getCount" parameterType="hashMap" resultType="int">
+		select
+		<include refid="count" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="adminid != null">
+				and <include refid="setadminid"/>
+			</if>
+			<if test="name != null">
+				and <include refid="setname"/>
+			</if>
+			<if test="email != null">
+				and <include refid="setemail"/>
+			</if>
+			<if test="mobile != null">
+				and <include refid="setmobile"/>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+			<if test="adminid_lk != null">
+				and <include refid="setadminid_lk"/>
+			</if>
+			<if test="name_lk != null">
+				and <include refid="setname_lk"/>
+			</if>
+			<if test="email_lk != null">
+				and <include refid="setemail_lk"/>
+			</if>
+			<if test="mobile_lk != null">
+				and <include refid="setmobile_lk"/>
+			</if>
+		</where>
+	</select>
+	
+	<select id="getList" parameterType="hashMap" resultType="admin">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="adminid != null">
+				and <include refid="setadminid"/>
+			</if>
+			<if test="name != null">
+				and <include refid="setname"/>
+			</if>
+			<if test="email != null">
+				and <include refid="setemail"/>
+			</if>
+			<if test="mobile != null">
+				and <include refid="setmobile"/>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+			<if test="adminid_lk != null">
+				and <include refid="setadminid_lk"/>
+			</if>
+			<if test="name_lk != null">
+				and <include refid="setname_lk"/>
+			</if>
+			<if test="email_lk != null">
+				and <include refid="setemail_lk"/>
+			</if>
+			<if test="mobile_lk != null">
+				and <include refid="setmobile_lk"/>
+			</if>
+		</where>
+		<!-- 处理orderby语句 -->
+		<choose>
+			<when test="orderBy != null">
+				${orderBy}
+			</when>
+			<otherwise>
+				<include refid="orderby"/>
+				<if test="ascDesc != null">
+					${ascDesc}
+				</if>
+			</otherwise>
+		</choose>
+		<!-- 处理limit语句 -->
+		<trim prefix="LIMIT" prefixOverrides=",">
+			<if test="startIndex != null and pageSize != null">
+				${startIndex}
+			</if>
+			<if test="pageSize != null">
+			 , ${pageSize}
+			 </if>
+		</trim>
+	</select>
+	
+	<insert id="insert" parameterType="admin">
+		insert into
+		<include refid="table"/>
+		(<include refid="allfields"/>)
+		values (
+			<include refid="allparams"/>
+		)
+	</insert>
+	
+	<update id="update" parameterType="admin">
+		update
+		<include refid="table"/>
+		<include refid="allsets"/>
+		<include refid="whereid"/>
+	</update>
+
+	<update id="updateFields" parameterType="hashMap">
+		update
+		<include refid="table"/>
+		<set>
+			<if test="adminid != null">
+				<include refid="setadminid"/>,
+			</if>
+			<if test="name != null">
+				<include refid="setname"/>,
+			</if>
+			<if test="pwd != null">
+				<include refid="setpwd"/>,
+			</if>
+			<if test="dopwd != null">
+				<include refid="setdopwd"/>,
+			</if>
+			<if test="email != null">
+				<include refid="setemail"/>,
+			</if>
+			<if test="mobile != null">
+				<include refid="setmobile"/>,
+			</if>
+			<if test="status != null">
+				<include refid="setstatus"/>,
+			</if>
+		</set>
+		<include refid="whereid"/>
+	</update>
+	
+	<delete id="delete" parameterType="string">
+		delete from
+		<include refid="table"/>
+		<include refid="whereid"/>
+	</delete>
+	
+	<delete id="deleteByMap" parameterType="hashMap">
+		delete from
+		<include refid="table"/>
+		<where>
+			<if test="ids != null">
+				and uid in 
+				<foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+                 	 #{item}
+            	</foreach>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+		</where>
+	</delete>
+	
+</mapper>

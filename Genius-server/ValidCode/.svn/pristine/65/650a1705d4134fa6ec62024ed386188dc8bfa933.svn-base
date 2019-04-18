@@ -1,0 +1,12 @@
+#
+# JCaptcha, the open source java framework for captcha definition and integration
+# Copyright (c)  2007 jcaptcha.net. All Rights Reserved.
+# See the LICENSE.txt file distributed with this package.
+#
+
+com.genius.captcha.image.gimpy.Gimpy = Veuillez entrer le mot qui apparait dans l'image
+com.genius.captcha.image.fisheye.FishEye = Veuillez cliquer au centre de la deformation
+com.genius.captcha.sound.gimpy.GimpySound = Veuillez entrer les lettres que vous allez entendre
+com.genius.captcha.sound.speller.SpellerSound = Veuillez entrer les lettes que vous allez entendre
+com.genius.captcha.text.math.MathCaptcha= Veuillez resoudre ce probleme de mathematiques
+com.genius.captcha.sound.spellfind.SpellFindCaptchaFactory= Ecoutez et resolvez le probleme suivant

@@ -1,0 +1,18 @@
+{
+  "tables": ["complaint"],
+  "tmpl": "xo-mybatis-mapper-1.0.0",
+  "tmplDefaultExt": ".xml",
+  "namespace": "com.supergenius.xo.life.dao",
+  "ClassNameDefaultFormatter": "{0}Dao",
+  "targetFileDefaultExt": ".xml",
+  "mysql": {
+    "conn": {
+      "connectionLimit": 10,
+      "host": "localhost",
+      "user": "root",
+      "password": "123456",
+      "database": "glifedb",
+      "port": 3306
+    }
+  }
+}

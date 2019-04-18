@@ -1,0 +1,14 @@
+package com.genius.xo.baseadmin.dao;
+
+import com.genius.model.baseadmin.entity.Role;
+import com.genius.xo.base.dao.BaseDao;
+import org.springframework.stereotype.Component;
+
+/**
+ * @author Architect.bian
+ * 
+ */
+@Component("xoRoleDao")
+public interface RoleDao extends BaseDao<Role> {
+
+}

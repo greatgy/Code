@@ -1,0 +1,5 @@
+# \u4e3b\u673a\u5217\u8868,\u4ee5\u9017\u53f7\u5206\u5272
+mongodb.url=mongodb://localhost:27017/test
+mongodb.username=
+mongodb.password=
+mongodb.safe=true

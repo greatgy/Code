@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.genius.core.cache.engine.MemcacheEngineTest
+-------------------------------------------------------------------------------
+Tests run: 10, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 5.526 sec

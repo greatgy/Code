@@ -1,0 +1,1 @@
+所有项目依赖于genius-deps，所有基础的依赖关系都在genius-deps

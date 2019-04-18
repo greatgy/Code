@@ -1,0 +1,18 @@
+{
+  "tables": ["admin", "adminlog", "content"],
+  "tmpl": "xo-mybatis-mapper-1.0.0",
+  "tmplDefaultExt": ".xml",
+  "namespace": "com.genius.xo.baseadmin.dao",
+  "ClassNameDefaultFormatter": "{0}Dao",
+  "targetFileDefaultExt": ".xml",
+  "mysql": {
+    "conn": {
+      "connectionLimit": 10,
+      "host": "localhost",
+      "user": "root",
+      "password": "123456",
+      "database": "TestDB",
+      "port": 3306
+    }
+  }
+}
