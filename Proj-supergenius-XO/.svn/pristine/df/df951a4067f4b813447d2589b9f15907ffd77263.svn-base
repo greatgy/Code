@@ -1,0 +1,550 @@
+package com.supergenius.xo.finance.entity;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.genius.core.base.annotation.Json;
+import com.genius.core.base.annotation.JsonIgnore;
+import com.genius.core.base.annotation.Maps;
+import com.genius.core.base.annotation.MapsIgnore;
+import com.genius.core.base.utils.DateUtil;
+import com.genius.core.base.utils.JsonUtil;
+import com.genius.core.base.utils.StrUtil;
+import com.genius.core.base.utils.WebUtil;
+import com.genius.core.cache.rule.Rule;
+import com.genius.core.cache.utils.RedisUtil;
+import com.genius.model.base.enums.EStatus;
+import com.supergenius.core.rule.ClickCountArticleRule;
+import com.supergenius.core.rule.CommentCountArticleRule;
+import com.supergenius.core.rule.PrizeCountArticleRule;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.common.entity.BaseEntity;
+import com.supergenius.xo.finance.enums.EFinance;
+import com.supergenius.xo.finance.enums.EGrade;
+import com.supergenius.xo.user.enums.EScore;
+
+/**
+ * 天财评论实体
+ * @author liushaomin
+ * @modifier LiJiacheng
+ */
+@Json(value = { "uid", "oid", "status", "createtime", "updatetime", "commentcount" }, ignoreTypeStrategy = { Json.webStrategy, Json.cacheStrategy, Json.appStrategy, "appdetail"}, strategy = { Json.webStrategy, Json.cacheStrategy, Json.appStrategy})
+@JsonIgnore(value = { "status", "contributor" }, strategy = { Json.cacheStrategy })
+@JsonIgnoreProperties(value = { "uid" })
+@Maps(strategy={Maps.searchStrategy})
+@MapsIgnore(strategy=Maps.searchStrategy, value={"adminuid", "authoruid", "data", "contributor", "statusName", "tid", "prizecount", "isprize", "isInit", "isDisable", "isWait", "isEnable", "isEnd", "isStart", "commentcount",
+		"iscollect", "beforetimeStr", "isOfficecafe", "clickcount", "types"})
+public class Finance extends BaseEntity {
+
+	private static final long serialVersionUID = -285588988627975161L;
+	private static final String APPDEATIL = "appdetail";//自定义策略用于文章详情页json
+	private String adminuid;
+	@Json(strategy = { Json.webStrategy, Json.cacheStrategy })
+	private int type; // 文章类型(天才焦点、产业、企业、并购、职场新观点、职场夜话、论战)
+	private List<EFinance> listtype = new ArrayList<>();
+	private String contributeuid; // 投稿表对应uid
+	@Json(strategy = { Json.webStrategy, Json.cacheStrategy })
+	private String authoruid;
+	@Json(strategy = { Json.webStrategy, Json.cacheStrategy, Json.appStrategy, APPDEATIL})
+	private String author;
+	@Json(strategy = { Json.webStrategy, Json.cacheStrategy, Json.appStrategy, APPDEATIL})
+	private String content;
+	@Json(strategy = { Json.webStrategy, Json.cacheStrategy, Json.appStrategy, APPDEATIL})
+	private String title;
+	@Json(strategy = { Json.webStrategy, Json.cacheStrategy, Json.appStrategy})
+	private String shorttitle;
+	@Json(strategy = { Json.webStrategy, Json.cacheStrategy })
+	private EGrade grade;// 文章等级
+	@Json(strategy = { Json.webStrategy, Json.cacheStrategy, Json.appStrategy})
+	private String imglittle;
+	private String imgmedium;
+	private String imgbig;
+	private String imgoriginal;
+	@Json(strategy = { Json.webStrategy, Json.cacheStrategy, Json.appStrategy, APPDEATIL})
+	private String origin;
+	private String originurl;
+	@Json(strategy = { Json.webStrategy, Json.appStrategy})
+	private String summary;
+	@Json(strategy = { Json.webStrategy, Json.cacheStrategy})
+	private String keywords;// 关键字
+	private int sortorder = 0;// 排序
+	@Json(strategy = Json.webStrategy)
+	private boolean istop;// 是否置顶
+	@Json(strategy = Json.webStrategy)
+	private boolean isrecommend;
+	@Json(strategy = { Json.webStrategy, Json.cacheStrategy})
+	private boolean ispublic;
+	private int config; // 采用二进制
+	@Json(strategy = { Json.webStrategy, Json.cacheStrategy})
+	private DateTime publishtime;
+	private String data;
+	@Json(strategy = Json.webStrategy)
+	private Contributor contributor;
+	
+	public String getAdminuid() {
+		return adminuid;
+	}
+
+	public void setAdminuid(String adminuid) {
+		this.adminuid = adminuid;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
+	public void minusType(EFinance e) {
+		this.type = this.type ^ Integer.valueOf(e.toString());
+		this.listtype.remove(e);
+	}
+
+	public void plusType(EFinance e) {
+		if (e != null) {
+			this.type = this.type | Integer.valueOf(e.toString());
+			this.listtype.add(e);
+		}
+	}
+
+	public List<EFinance> getTypes() {
+		if (listtype.size() == 0) {
+			listtype = EFinance.getMatch(this.type);
+		}
+		return listtype;
+	}
+
+	/**
+	 * 显示所属的所有版块
+	 * 
+	 * @return
+	 */
+	@Json(strategy = {Json.webStrategy, Json.appStrategy})
+	public String getTypeName() {
+		StringBuffer typename = new StringBuffer();
+		for (EFinance item : getTypes()) {
+			typename.append(EFinance.getName(EFinance.get(item.toString()), Locale.CHINA).toString()).append(" ");
+		}
+		return typename.toString();
+	}
+
+	@Json(strategy = Json.webStrategy)
+	public boolean getIsGeniusfocus() {
+		return EFinance.ismatch(type, EFinance.geniusfocus);
+	}
+	
+	@Json(strategy = Json.webStrategy)
+	public boolean getIsGoldlanguage() {
+		return EFinance.ismatch(type, EFinance.goldlanguage);
+	}
+	
+	@Json(strategy = Json.webStrategy)
+	public boolean getIsEconomicobservation() {
+		return EFinance.ismatch(type, EFinance.economicobservation);
+	}
+
+	@Json(strategy = Json.webStrategy)
+	public boolean getIsIndustries() {
+		return EFinance.ismatch(type, EFinance.industries);
+	}
+
+	@Json(strategy = Json.webStrategy)
+	public boolean getIsCorporations() {
+		return EFinance.ismatch(type, EFinance.corporations);
+	}
+
+	@Json(strategy = Json.webStrategy)
+	public boolean getIsMergerandacquisition() {
+		return EFinance.ismatch(type, EFinance.mergerandacquisition);
+	}
+
+	@Json(strategy = Json.webStrategy)
+	public boolean getIsCareerexecutives() {
+		return EFinance.ismatch(type, EFinance.careerexecutives);
+	}
+
+	@Json(strategy = Json.webStrategy)
+	public boolean getIsLegalandeconomic() {
+		return EFinance.ismatch(type, EFinance.legalandeconomic);
+	}
+
+	@Json(strategy = Json.webStrategy)
+	public boolean getIsOfficecafe() {
+		return EFinance.ismatch(type, EFinance.officecafe);
+	}
+
+	@Json(strategy = Json.webStrategy)
+	public boolean getIsDabate() {
+		return EFinance.ismatch(type, EFinance.debate);
+	}
+
+	public String getContributeuid() {
+		return contributeuid;
+	}
+
+	public void setContributeuid(String contributeuid) {
+		this.contributeuid = contributeuid;
+	}
+
+	public String getAuthoruid() {
+		return authoruid;
+	}
+
+	public void setAuthoruid(String authoruid) {
+		this.authoruid = authoruid;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getShorttitle() {
+		return shorttitle;
+	}
+
+	public void setShorttitle(String shorttitle) {
+		this.shorttitle = shorttitle;
+	}
+
+	public EGrade getGrade() {
+		return grade;
+	}
+
+	public void setGrade(EGrade grade) {
+		this.grade = grade;
+	}
+	
+	@Json(strategy = {Json.webStrategy, Json.appStrategy})
+	public String getGradeName() {
+		return EGrade.getName(grade, Locale.CHINA);
+	}
+	
+	public String getImglittle() {
+		return imglittle;
+	}
+
+	public void setImglittle(String imglittle) {
+		this.imglittle = imglittle;
+	}
+
+	public String getImgmedium() {
+		return imgmedium;
+	}
+
+	public void setImgmedium(String imgmedium) {
+		this.imgmedium = imgmedium;
+	}
+
+	public String getImgbig() {
+		return imgbig;
+	}
+
+	public void setImgbig(String imgbig) {
+		this.imgbig = imgbig;
+	}
+
+	public String getImgoriginal() {
+		return imgoriginal;
+	}
+
+	public void setImgoriginal(String imgoriginal) {
+		this.imgoriginal = imgoriginal;
+	}
+
+	public String getOrigin() {
+		return origin;
+	}
+
+	public void setOrigin(String origin) {
+		this.origin = origin;
+	}
+
+	public String getOriginurl() {
+		return originurl;
+	}
+
+	public void setOriginurl(String originurl) {
+		this.originurl = originurl;
+	}
+
+	public String getSummary() {
+		if (StrUtil.isEmpty(summary) && StrUtil.isNotEmpty(content)) {
+			String ctx = WebUtil.clearHtml(content).toString();
+			if (ctx != null && ctx.length() > 600) {
+				summary = ctx.substring(0, 600);
+			} else {
+				summary = ctx;
+			}
+		}
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+
+	public String getKeywords() {
+		return keywords;
+	}
+
+	public void setKeywords(String keywords) {
+		this.keywords = keywords;
+	}
+
+	public int getSortorder() {
+		return sortorder;
+	}
+
+	public void setSortorder(int sortorder) {
+		this.sortorder = sortorder;
+	}
+
+	public boolean isIstop() {
+		return istop;
+	}
+
+	public void setIstop(boolean istop) {
+		this.istop = istop;
+	}
+
+	public boolean isIsrecommend() {
+		return isrecommend;
+	}
+
+	public void setIsrecommend(boolean isrecommend) {
+		this.isrecommend = isrecommend;
+	}
+
+	public boolean isIspublic() {
+		return ispublic;
+	}
+
+	public void setIspublic(boolean ispublic) {
+		this.ispublic = ispublic;
+	}
+
+	public int getConfig() {
+		return config;
+	}
+
+	public void setConfig(int config) {
+		this.config = config;
+	}
+
+	public DateTime getPublishtime() {
+		return publishtime;
+	}
+
+	public void setPublishtime(DateTime publishtime) {
+		this.publishtime = publishtime;
+	}
+
+	@Json(strategy = Json.allStrategy)
+	public String getPublishtimeStr() {
+		return getPublishtime().toString(DateUtil.FORMAT_DATETIME_CHINA);
+	}
+
+	public String getPublishDateStr() {
+		return getPublishtime().toString(DateUtil.FORMAT_DATE_CHINA);
+	}
+
+	
+	public String getData() {
+		return this.data;
+	}
+
+	public void setData(String data) {
+		this.data = data;
+	}
+	
+	@Json(strategy = Json.webStrategy)
+	public int getScore() {
+		Object score = getDataField(MapperDict.score);
+		if (score == null)
+			return 0;
+		return (int)score;
+	}
+	
+	public void setScore(int score) {
+		setDataField(MapperDict.score, score);
+	}
+	
+	@Json(strategy = Json.webStrategy)
+	public EScore getScoreType() {
+		Object score = getDataField(MapperDict.scoretype);
+		if (score == null)
+			return EScore.originalFinance;
+		return EScore.get((String)score);
+	}
+	
+	
+	public void setScoreType(EScore scoretype) {
+		setDataField(MapperDict.scoretype, scoretype.toString()); 
+	}
+	
+	@SuppressWarnings("unchecked")
+	private Object getDataField(String field){
+		Map<String, Object> map = JsonUtil.fromJson(this.data, Map.class);
+		if (map != null && map.size() > 0 && map.containsKey(field)) {
+			return map.get(field);
+		}
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void setDataField(String field, Object value) {
+		Map<String, Object> map = JsonUtil.fromJson(this.data, Map.class);
+		if (map == null) 
+			map = new HashMap<>();
+		map.put(field, value);
+		this.data = JsonUtil.toJson(map);
+	}
+	
+	public Contributor getContributor() {
+		return contributor;
+	}
+
+	public void setContributor(Contributor contributor) {
+		this.contributor = contributor;
+	}
+
+	/**
+	 * @param imgs
+	 */
+	public void setimgs(String[] imgs) {
+		this.imgoriginal = imgs[0];// 原图
+		this.imgbig = imgs[1];
+		this.imgmedium = imgs[2];
+		this.imglittle = imgs[3];
+	}
+
+	/**
+	 * 添加type类型
+	 * 
+	 * @param financetype
+	 */
+	public void setEFinanceType(String[] financetype) {
+		for (String item : financetype) {
+			plusType(EFinance.get(item));
+		}
+	}
+
+	/**
+	 * 针对性更新
+	 * 
+	 * @param t
+	 */
+	public void set(Finance t) {
+		this.title = t.getTitle();
+		this.shorttitle = t.getShorttitle();
+		this.keywords = t.getKeywords();
+		this.author = t.getAuthor();
+		this.origin = t.getOrigin();
+		this.content = t.getContent();
+		this.type = t.getType();
+		if (StringUtils.isNotEmpty(t.getImgoriginal())) {
+			this.imgoriginal = t.getImgoriginal();
+			this.imgbig = t.getImgbig();
+			this.imgmedium = t.getImgmedium();
+			this.imglittle = t.getImglittle();
+		}
+	}
+
+	/**
+	 * 将投稿保存在文章中
+	 * 
+	 * @param contribute
+	 */
+	public void set(Contribute contribute) {
+		this.authoruid = contribute.getUseruid();
+		this.author = contribute.getName();
+		this.contributeuid = contribute.getUid();
+		this.title = contribute.getTitle();
+		this.shorttitle = contribute.getShorttitle();
+		this.type = contribute.getType();
+		this.content = contribute.getContent();
+		this.keywords = contribute.getKeywords();
+		this.imgoriginal = contribute.getImgoriginal();
+		this.imgbig = contribute.getImgbig();
+		this.imgmedium = contribute.getImgmedium();
+		this.imglittle = contribute.getImglittle();
+		this.ispublic = true;
+		super.setStatus(EStatus.init);// 默认状态为未发布
+	}
+
+	@Json(strategy = {Json.webStrategy, Json.appStrategy, APPDEATIL})
+	public long getClickcount() {
+		Rule rule = new ClickCountArticleRule(this.uid);
+		clickcount = RedisUtil.getIncr(rule);
+		return clickcount > 0 ? clickcount : 0;
+	}
+
+	@Json(strategy = {Json.webStrategy, Json.appStrategy, APPDEATIL})
+	public long getCommentcount() {
+		Rule rule = new CommentCountArticleRule(this.uid);
+		commentcount = RedisUtil.getIncr(rule);
+		return commentcount > 0 ? commentcount : 0;
+	}
+
+	@Json(strategy = {Json.webStrategy, Json.appStrategy, APPDEATIL})
+	public long getPrizecount() {
+		Rule rule = new PrizeCountArticleRule(this.uid);
+		admirecount = RedisUtil.getIncr(rule);
+		return admirecount > 0 ? admirecount : 0;
+	}
+
+	public boolean getIsprize() {
+		return isprize;
+	}
+
+	public void setIsprize(Boolean isprize) {
+		this.isprize = isprize;
+	}
+
+	public String getFirstTypeName() {
+		List<EFinance> list = EFinance.getMatch(this.type);
+		if (list.size() != 0) {
+			return list.get(0).name();
+		}
+		return "";
+	}
+	
+	@Json(strategy = {Json.webStrategy, Json.appStrategy, APPDEATIL})
+	public boolean getIscollect() {
+		return iscollect;
+	}
+
+	public void setIscollect(Boolean collect) {
+		this.iscollect = collect;
+	}
+
+}

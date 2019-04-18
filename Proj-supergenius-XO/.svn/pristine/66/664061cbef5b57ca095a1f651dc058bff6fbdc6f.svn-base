@@ -1,0 +1,161 @@
+package com.supergenius.xo.finance.serviceimpl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.genius.model.base.entity.Pager;
+import com.genius.xo.base.serviceimpl.BaseSOImpl;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.finance.dao.InboxDao;
+import com.supergenius.xo.finance.dao.MessageDao;
+import com.supergenius.xo.finance.entity.Inbox;
+import com.supergenius.xo.finance.entity.Message;
+import com.supergenius.xo.finance.enums.EFinanceMsg;
+import com.supergenius.xo.finance.service.InboxSO;
+import com.supergenius.xo.user.dao.UserDao;
+
+/**
+ * 收件箱SO实现
+ * 
+ * @author LiJiacheng
+ */
+@Service
+public class InboxSOImpl extends BaseSOImpl<Inbox> implements InboxSO {
+
+	@Autowired
+	private InboxDao inboxDao;
+
+	@Autowired
+	private MessageDao messageDao;
+
+	@Autowired
+	private UserDao userDao;
+
+	@Override
+	protected InboxDao getDao() {
+		return inboxDao;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.supergenius.xo.finance.service.InboxSO#getUserInboxs()
+	 * 
+	 * @author: LiJiacheng 2015-11-30 下午3:10:15
+	 */
+	@Override
+	public List<Inbox> getUserInboxs(String useruid, Pager pager, EFinanceMsg[] type) {
+		Map<String, Object> map = getParamMap(pager);
+		List<String> typeList = new ArrayList<>();
+		map.put(MapperDict.useruid, useruid);
+		for (EFinanceMsg eFinanceMsg : type) {
+			typeList.add(eFinanceMsg.toString());
+		}
+		map.put(MapperDict.type, typeList);
+		return inboxDao.getListByType(map);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.supergenius.xo.finance.service.InboxSO#getMessageByInbox(com.supergenius.xo.finance.entity.Inbox)
+	 * 
+	 * @author: LiJiacheng 2015-12-1 上午10:28:07
+	 */
+	@Override
+	public Inbox getMessageAndUserByInbox(Inbox inbox) {
+		Message message = messageDao.get(inbox.getMsguid());
+		inbox.setMessage(message);
+		inbox.setSender(userDao.get(message.getSenderuid()));
+		return inbox;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.supergenius.xo.finance.service.InboxSO#getUnReadCount(java.lang.String, com.supergenius.xo.common.enums.EMsg)
+	 * 
+	 * @author: LiJiacheng 2015-12-1 下午12:21:51
+	 */
+	@Override
+	public List<Inbox> getListByType(String useruid, EFinanceMsg[] type) {
+		Map<String, Object> map = getParamMap();
+		List<String> list = new ArrayList<>();
+		map.put(MapperDict.useruid, useruid);
+		for (EFinanceMsg eFinanceMsg : type) {
+			list.add(eFinanceMsg.toString());
+		}
+		map.put(MapperDict.type, list);
+		return inboxDao.getListByType(map);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.supergenius.xo.finance.service.InboxSO#addInbox(java.util.Map)
+	 * 
+	 * @author: LiJiacheng 2015-12-3 下午12:25:28
+	 */
+	@Override
+	public boolean addInbox(Message message) {
+		Inbox inbox = new Inbox();
+		inbox.setUseruid(message.getRecipient());
+		inbox.setMsguid(message.getUid());
+		inbox.setType(message.getType());
+		inbox.setIsread(false);
+		inbox.setCreatetime(DateTime.now());
+		return inboxDao.insert(inbox);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.supergenius.xo.finance.service.InboxSO#updateReadInbox(java.util.List)
+	 * 
+	 * @author: LiJiacheng 2015-12-3 下午6:01:42
+	 */
+	@Override
+	public void updateReadInbox(List<Inbox> inboxs) {
+		List<String> uids = new ArrayList<>();
+		for (Inbox inbox : inboxs) {
+			if (inbox.isIsread() != true) {
+				uids.add(inbox.getUid());
+			}
+		}
+		if (uids.size() != 0) {
+			Map<String, Object> map = new HashMap<>();
+			map.put(MapperDict.uids, uids);
+			map.put(MapperDict.isread, true);
+			inboxDao.updateUnRead(map);
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.supergenius.xo.finance.service.InboxSO#getUnReadMsg(java.lang.String)
+	 * 
+	 * @author: LiJiacheng 2015-12-10 上午10:51:46
+	 */
+	@Override
+	public int getUnReadMsg(String useruid, EFinanceMsg... msgs) {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.useruid, useruid);
+		map.put(MapperDict.isread, false);
+		if (msgs.length != 0) {
+			List<String> list = new ArrayList<>();
+			for (EFinanceMsg eFinanceMsg : msgs) {
+				list.add(eFinanceMsg.toString());
+			}
+			map.put(MapperDict.type, list);
+		}
+		return inboxDao.getUnReadByType(map);
+	}
+
+}

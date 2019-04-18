@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.finance.dao.DebateDao">
+	
+	
+	<sql id="basecolumns">`oid`,`uid`,`createtime`</sql>
+	<sql id="othercolumns">`adminuid`, `title`, `author`, `periods`, `content`, `titlered`, `titleblue`, `countred`, `countblue`, `imglittle`, `imgmedium`, `imgbig`, `imgoriginal`, `istop`, `config`, `state`, `status`</sql>
+	<sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+	<sql id="table">debate</sql>
+	<sql id="whereid">where uid = #{uid}</sql>
+	<sql id="allfields"><include refid="basecolumns"/>, <include refid="othercolumns"/></sql>
+	<sql id="allparams">#{oid},#{uid},#{createtime},#{adminuid},#{title},#{author},#{periods},#{content},#{titlered},#{titleblue},#{countred},#{countblue},#{imglittle},#{imgmedium},#{imgbig},#{imgoriginal},#{istop},#{config},#{state},#{status}</sql>
+	<sql id="count">count(*)</sql>
+	<sql id="setoid">oid = #{oid}</sql>
+	<sql id="setuid">uid = #{uid}</sql>
+	<sql id="setadminuid">adminuid = #{adminuid}</sql>
+	<sql id="settitle">title = #{title}</sql>
+	<sql id="settitle_lk">title like CONCAT('%',#{title_lk},'%')</sql>
+	<sql id="setauthor">author = #{author}</sql>
+	<sql id="setperiods">periods = #{periods}</sql>
+	<sql id="setcontent">content = #{content}</sql>
+	<sql id="settitlered">titlered = #{titlered}</sql>
+	<sql id="settitleblue">titleblue = #{titleblue}</sql>
+	<sql id="setcountred">countred = #{countred}</sql>
+	<sql id="setcountblue">countblue = #{countblue}</sql>
+	<sql id="setimglittle">imglittle = #{imglittle}</sql>
+	<sql id="setimgmedium">imgmedium = #{imgmedium}</sql>
+	<sql id="setimgbig">imgbig = #{imgbig}</sql>
+	<sql id="setimgoriginal">imgoriginal = #{imgoriginal}</sql>
+	<sql id="setistop">istop = #{istop}</sql>
+	<sql id="setconfig">config = #{config}</sql>
+	<sql id="setstate">state = #{state}</sql>
+	<sql id="setstatus">status = #{status}</sql>
+	<sql id="setcreatetimestart">createtime &gt;= #{createtimestart}</sql>
+	<sql id="setcreatetimeend">createtime &lt;= #{createtimeend}</sql>
+	<sql id="setids">uid in #{ids}</sql>
+	<sql id="setcountredvote">countred = countred + ${votenum}</sql>
+	<sql id="setcountbluevote">countblue = countblue + ${votenum}</sql>
+	<sql id="allsets">set 
+	<include refid="setoid"/>,
+    <include refid="setuid"/>,
+	<include refid="setadminuid"/>,
+	<include refid="settitle"/>,
+	<include refid="setauthor"/>,
+	<include refid="setperiods"/>,
+	<include refid="setcontent"/>,
+	<include refid="settitlered"/>,
+	<include refid="settitleblue"/>,
+	<include refid="setcountred"/>,
+	<include refid="setcountblue"/>,
+	<include refid="setimglittle"/>,
+	<include refid="setimgmedium"/>,
+	<include refid="setimgbig"/>,
+	<include refid="setimgoriginal"/>,
+	<include refid="setistop"/>,
+	<include refid="setconfig"/>,
+	<include refid="setstate"/>,
+	<include refid="setstatus"/></sql>
+	<sql id="orderby">order by createtime</sql>
+	
+	<select id="get" parameterType="string" resultType="debate">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<include refid="whereid"/>
+	</select>
+	
+	<select id="getOne" parameterType="hashMap" resultType="debate">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="oid != null">
+				and <include refid="setoid"/>
+			</if>
+			<if test="uid != null">
+				and <include refid="setuid"/>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+			<if test="state != null">
+				and <include refid="setstate"/>
+			</if>
+		</where>
+		<!-- 处理orderby语句 -->
+		<choose>
+			<when test="orderBy != null">
+				${orderBy}
+			</when>
+			<otherwise>
+				<include refid="orderby"/>
+				<if test="ascDesc != null">
+					${ascDesc}
+				</if>
+			</otherwise>
+		</choose>
+		LIMIT 0,1
+	</select>
+	
+	<select id="getCount" parameterType="hashMap" resultType="int">
+		select
+		<include refid="count" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="oid != null">
+				and <include refid="setoid"/>
+			</if>
+			<if test="uid != null">
+				and <include refid="setuid"/>
+			</if>
+			<if test="adminuid != null">
+				and <include refid="setadminuid"/>
+			</if>
+			<if test="title != null">
+				and <include refid="settitle"/>
+			</if>
+			<if test="title_lk != null">
+				and <include refid="settitle_lk"/>
+			</if>
+			<if test="author != null">
+				and <include refid="setauthor"/>
+			</if>
+			<if test="setperiods != null">
+				and <include refid="setperiods"/>
+			</if>
+			<if test="titlered != null">
+				and <include refid="settitlered"/>
+			</if>
+			<if test="titleblue != null">
+				and <include refid="settitleblue"/>
+			</if>
+			<if test="istop != null">
+				and <include refid="setistop"/>
+			</if>
+			<if test="author != null">
+				and <include refid="setauthor"/>
+			</if>
+			<if test="state != null">
+				and <include refid="setstate"/>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+			<if test="createtimestart != null">
+				and <include refid="setcreatetimestart"/>
+			</if>
+			<if test="createtimeend != null">
+				and <include refid="setcreatetimeend"/>
+			</if>
+			<if test="exceptuids != null">
+				and uid not in 
+				<foreach item="item" index="index" collection="exceptuids" open="(" separator="," close=")">
+                 	 #{item}
+            	</foreach>
+			</if>
+		</where>
+	</select>
+	
+	<select id="getList" parameterType="hashMap" resultType="debate">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="oid != null">
+				and <include refid="setoid"/>
+			</if>
+			<if test="uid != null">
+				and <include refid="setuid"/>
+			</if>
+			<if test="adminuid != null">
+				and <include refid="setadminuid"/>
+			</if>
+			<if test="title != null">
+				and <include refid="settitle"/>
+			</if>
+			<if test="title_lk != null">
+				and <include refid="settitle_lk"/>
+			</if>
+			<if test="author != null">
+				and <include refid="setauthor"/>
+			</if>
+			<if test="setperiods != null">
+				and <include refid="setperiods"/>
+			</if>
+			<if test="titlered != null">
+				and <include refid="settitlered"/>
+			</if>
+			<if test="titleblue != null">
+				and <include refid="settitleblue"/>
+			</if>
+			<if test="istop != null">
+				and <include refid="setistop"/>
+			</if>
+			<if test="author != null">
+				and <include refid="setauthor"/>
+			</if>
+			<if test="state != null">
+				and <include refid="setstate"/>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+			<if test="createtimestart != null">
+				and <include refid="setcreatetimestart"/>
+			</if>
+			<if test="createtimeend != null">
+				and <include refid="setcreatetimeend"/>
+			</if>
+			<if test="uids != null">
+				and uid in 
+				<foreach item="item" index="index" collection="uids" open="(" separator="," close=")">
+                 	 #{item}
+            	</foreach>
+			</if>
+			<if test="exceptuids != null">
+				and uid not in 
+				<foreach item="item" index="index" collection="exceptuids" open="(" separator="," close=")">
+                 	 #{item}
+            	</foreach>
+			</if>
+		</where>
+		<!-- 处理orderby语句 -->
+		<choose>
+			<when test="orderBy != null">
+				${orderBy}
+			</when>
+			<otherwise>
+				<include refid="orderby"/>
+				<if test="ascDesc != null">
+					${ascDesc}
+				</if>
+			</otherwise>
+		</choose>
+		<!-- 处理limit语句 -->
+		<trim prefix="LIMIT" prefixOverrides=",">
+			<if test="startIndex != null and pageSize != null">
+				${startIndex}
+			</if>
+			<if test="pageSize != null">
+			 , ${pageSize}
+			 </if>
+		</trim>
+	</select>
+	
+	<insert id="insert" parameterType="debate">
+		<selectKey resultType="int" keyProperty="oid">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into
+		<include refid="table"/>
+		(<include refid="allfields"/>)
+		values (
+			<include refid="allparams"/>
+		)
+	</insert>
+	
+	<update id="update" parameterType="debate">
+		update
+		<include refid="table"/>
+		<include refid="allsets"/>
+		<include refid="whereid"/>
+	</update>
+
+	<update id="updateFields" parameterType="hashMap">
+		update
+		<include refid="table"/>
+		<set>
+			<if test="adminuid != null">
+				 <include refid="setadminuid"/>,
+			</if>
+			<if test="title != null">
+				 <include refid="settitle"/>,
+			</if>
+			<if test="author != null">
+				 <include refid="setauthor"/>,
+			</if>
+			<if test="setperiods != null">
+				 <include refid="setperiods"/>,
+			</if>
+			<if test="titlered != null">
+				 <include refid="settitlered"/>,
+			</if>
+			<if test="titleblue != null">
+				 <include refid="settitleblue"/>,
+			</if>
+			<if test="imgoriginal != null">
+			    <include refid="setimgoriginal"/>,
+			</if>
+			<if test="imgbig != null">
+				<include refid="setimgbig"/>,
+			</if>
+			<if test="imglittle != null">
+				 <include refid="setimglittle"/>,
+			</if>
+			<if test="imgmedium != null">
+				 <include refid="setimgmedium"/>,
+			</if>
+			<if test="istop != null">
+				 <include refid="setistop"/>,
+			</if>
+			<if test="author != null">
+				 <include refid="setauthor"/>,
+			</if>
+			<if test="state != null">
+				 <include refid="setstate"/>,
+			</if>
+			<if test="status != null">
+				 <include refid="setstatus"/>,
+			</if>
+		</set>
+		<include refid="whereid"/>
+	</update>
+	
+	<delete id="delete" parameterType="string">
+		delete from
+		<include refid="table"/>
+		<include refid="whereid"/>
+	</delete>
+	
+	<delete id="deleteByMap" parameterType="hashMap">
+		delete from
+		<include refid="table"/>
+		<where>
+			<if test="oid != null">
+				and <include refid="setoid"/>
+			</if>
+			<if test="uid != null">
+				and <include refid="setuid"/>
+			</if>
+			<if test="adminuid != null">
+				and <include refid="setadminuid"/>
+			</if>
+			<if test="title != null">
+				and <include refid="settitle"/>
+			</if>
+			<if test="title_lk != null">
+				and <include refid="settitle_lk"/>
+			</if>
+			<if test="author != null">
+				and <include refid="setauthor"/>
+			</if>
+			<if test="setperiods != null">
+				and <include refid="setperiods"/>
+			</if>
+			<if test="titlered != null">
+				and <include refid="settitlered"/>
+			</if>
+			<if test="titleblue != null">
+				and <include refid="settitleblue"/>
+			</if>
+			<if test="istop != null">
+				and <include refid="setistop"/>
+			</if>
+			<if test="author != null">
+				and <include refid="setauthor"/>
+			</if>
+			<if test="state != null">
+				and <include refid="setstate"/>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+			<if test="ids != null">
+				and uid in
+				<foreach item="item" index="index" collection="ids" 
+                 	 open="(" separator="," close=")">
+                 	 #{item}
+            	</foreach>
+			</if>
+		</where>
+	</delete>
+	
+	<update id="vote" parameterType="hashMap">
+		update
+		<include refid="table"/>
+		<set>
+			<if test="countred != null">
+			 	<include refid="setcountredvote"/>,
+			</if>
+			<if test="countblue != null">
+			 	<include refid="setcountbluevote"/>,
+			</if>
+		</set>
+		<include refid="whereid"/>
+	</update>
+</mapper>

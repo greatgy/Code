@@ -1,0 +1,75 @@
+package com.supergenius.xo.finance.enums;
+
+import java.util.Locale;
+
+import com.genius.core.base.utils.I18N;
+
+/**
+ * 天财评论消息类型
+ * 
+ * @author LiJiacheng
+ */
+public enum EFinanceMsg {
+
+	sys("0"), // 系统消息
+	commentarticle("1"), // 评论文章消息
+	commenttopic("2"), // 评论话题消息
+	replycomment("3"), // 回复评论
+	articlepraise("4"), // 文章赞
+	topicpraise("5"), // 话题赞
+	speakpraise("6"), // 发言赞
+	articlecollect("7"), // 文章收藏
+	topiccollect("8"), // 话题收藏
+	articlepass("10"), // 文章审核通过
+	topicpass("11"), // 话题审核通过
+	articleunpass("12"), // 文章未审核通过
+	topicunpass("13"), // 话题未审核通过
+	articledelete("14"), // 文章删除
+	topicdelete("15"), // 话题删除
+	topicinvite("16"), // 话题邀请
+	newarticle("17"), // 发布新文章
+	newtopic("18"), // 发布新话题
+	subscribe("19");// 订阅
+
+	private final String value;
+
+	private EFinanceMsg(String v) {
+		this.value = v;
+	}
+
+	public String toString() {
+		return this.value;
+	}
+
+	public int toInt() {
+		return Integer.valueOf(this.value);
+	}
+
+	public static EFinanceMsg get(int v) {
+		String str = String.valueOf(v);
+		for (EFinanceMsg e : values()) {
+			if (e.toString().equals(str)) {
+				return e;
+			}
+		}
+		return null;
+	}
+
+	public static EFinanceMsg get(String name) {
+		for (EFinanceMsg e : values()) {
+			if (e.name().equals(name)) {
+				return e;
+			}
+		}
+		return null;
+	}
+
+	public static String getName(EFinanceMsg e) {
+		return I18N.getEnumName(e, Locale.CHINA);
+	}
+
+	public static String getName(EFinanceMsg e, Locale locale) {
+		return I18N.getEnumName(e, locale);
+	}
+
+}

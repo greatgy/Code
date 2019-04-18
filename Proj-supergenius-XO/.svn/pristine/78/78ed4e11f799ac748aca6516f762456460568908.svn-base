@@ -1,0 +1,24 @@
+package com.supergenius.xo.finance.service;
+
+import java.util.Map;
+
+import com.genius.xo.base.service.BaseSO;
+import com.supergenius.xo.finance.entity.Message;
+
+/**
+ * 消息SO
+ * 
+ * @author LiJiacheng
+ */
+public interface MessageSO extends BaseSO<Message> {
+
+	/**
+	 * 添加消息,返回消息对象。
+	 * 
+	 * @param map
+	 * @return
+	 * @author LiJiacheng
+	 */
+	Message addMsg(Map<String, Object> map);
+
+}

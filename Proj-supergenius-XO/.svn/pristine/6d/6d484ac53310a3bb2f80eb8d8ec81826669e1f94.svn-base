@@ -1,0 +1,358 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.manager.dao.AppStudentDao">
+
+	<sql id="userinfotable">GUserDB2.userinfo</sql>
+	<sql id="appstudenton">on appstudent.useruid = userinfo.uid</sql>
+	<sql id="setusername_lk">`name` like CONCAT('%',#{username_lk},'%')</sql>
+	<sql id="appstudentcolumns">appstudent.`uid`, appstudent.`createtime`, `useruid`, `usersn`, `major`, `semester`, appstudent.`type`, appstudent.`money`, `reason`, appstudent.`status` , appstudent.`updatetime`</sql>
+
+    <sql id="basecolumns">`uid`, `createtime` </sql>
+    <sql id="othercolumns"><include refid="basecolumns"/>, `useruid`, `usersn`, `major`, `semester`, `type`, `money`, `reason`, `status` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+    <sql id="table">appstudent</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="whereid">where uid = #{uid}</sql>
+    <sql id="allfields"><include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{uid},#{createtime},#{useruid},#{usersn},#{major},#{semester},#{type},#{money},#{reason},#{status}</sql>
+    <sql id="setuseruid">`useruid` = #{useruid}</sql>
+    <sql id="setusersn">`usersn` = #{usersn}</sql>
+    <sql id="setusersn_lk">`usersn` like CONCAT('%',#{usersn_lk},'%')</sql>
+    <sql id="setuid">uid = #{uid}</sql>
+    <sql id="setmajor">`major` = #{major}</sql>
+    <sql id="setsemester">`semester` = #{semester}</sql>
+    <sql id="settype">`type` = #{type}</sql>
+    <sql id="setmoney">`money` = #{money}</sql>
+    <sql id="setreason">`reason` = #{reason}</sql>
+    <sql id="setstatus">`status` = #{status}</sql>
+    <sql id="setstatusin">`status`  in
+    	<foreach item="item" index="index" collection="status_in" open="(" separator="," close=")">  
+  			#{item}  
+ 		</foreach> 
+    </sql> 
+    
+    <sql id="allsets">set
+            <include refid="setuseruid"/>,
+            <include refid="setusersn"/>,
+            <include refid="setmajor"/>,
+            <include refid="setsemester"/>,
+            <include refid="settype"/>,
+            <include refid="setmoney"/>,
+            <include refid="setreason"/>,
+            <include refid="setstatus"/>
+    </sql>
+    <sql id="orderby">order by createtime</sql>
+
+    <select id="get" parameterType="string" resultType="appstudent">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="appstudent">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="uid != null">
+                and <include refid="setuid"/>
+            </if>         
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="usersn != null">
+                and <include refid="setusersn"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="semester != null">
+                and <include refid="setsemester"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="money != null">
+                and <include refid="setmoney"/>
+            </if>
+            <if test="reason != null">
+                and <include refid="setreason"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="usersn != null">
+                and <include refid="setusersn"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="semester != null">
+                and <include refid="setsemester"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="money != null">
+                and <include refid="setmoney"/>
+            </if>
+            <if test="reason != null">
+                and <include refid="setreason"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </select>
+    
+    <select id="searchCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        left join
+        <include refid="userinfotable"/>
+        <include refid="appstudenton"/>
+        <where>
+        	<if test="usersn_lk != null">
+               (<include refid="setusersn_lk"/>
+            </if>
+            <if test="username_lk != null">
+               or <include refid="setusername_lk"/>
+               )
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="usersn != null">
+                and <include refid="setusersn"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="semester != null">
+                and <include refid="setsemester"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="money != null">
+                and <include refid="setmoney"/>
+            </if>
+            <if test="reason != null">
+                and <include refid="setreason"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="status_in != null">
+                and <include refid="setstatusin"/>
+            </if>
+            <if test="createtime_gt != null">
+                and `appstudent`.createtime &gt;= #{createtime_gt}
+            </if>
+            <if test="createtime_lt != null">
+                and `appstudent`.createtime &lt;= #{createtime_lt}
+            </if>
+        </where>
+    </select>
+    
+
+    <select id="getList" parameterType="hashMap" resultType="appstudent">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="usersn != null">
+                and <include refid="setusersn"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="semester != null">
+                and <include refid="setsemester"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="money != null">
+                and <include refid="setmoney"/>
+            </if>
+            <if test="reason != null">
+                and <include refid="setreason"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+    
+    <select id="search" parameterType="hashMap" resultType="appstudent">
+        select
+        <include refid="appstudentcolumns" />
+        from
+        <include refid="table"/>
+        left join
+        <include refid="userinfotable"/>
+        <include refid="appstudenton"/>
+        <where>
+        	<if test="usersn_lk != null">
+               and <include refid="setusersn_lk"/>
+            </if>
+            <if test="username_lk != null">
+               and <include refid="setusername_lk"/>
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="usersn != null">
+                and <include refid="setusersn"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="semester != null">
+                and <include refid="setsemester"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="money != null">
+                and <include refid="setmoney"/>
+            </if>
+            <if test="reason != null">
+                and <include refid="setreason"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="status_in != null">
+                and <include refid="setstatusin"/>
+            </if>
+            <if test="createtime_gt != null">
+                and `appstudent`.createtime &gt;= #{createtime_gt}
+            </if>
+            <if test="createtime_lt != null">
+                and `appstudent`.createtime &lt;= #{createtime_lt}
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insert" parameterType="appstudent">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="appstudent">
+        update
+        <include refid="table"/>
+        <include refid="allsets"/>
+        <include refid="whereid"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="useruid != null">
+                <include refid="setuseruid"/>,
+            </if>
+            <if test="usersn != null">
+                <include refid="setusersn"/>,
+            </if>
+            <if test="major != null">
+                <include refid="setmajor"/>,
+            </if>
+            <if test="semester != null">
+                <include refid="setsemester"/>,
+            </if>
+            <if test="type != null">
+                <include refid="settype"/>,
+            </if>
+            <if test="money != null">
+                <include refid="setmoney"/>,
+            </if>
+            <if test="reason != null">
+                <include refid="setreason"/>,
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>
+            </if>
+        </set>
+        <include refid="whereid"/>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+
+</mapper>
+

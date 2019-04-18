@@ -1,0 +1,12 @@
+package com.supergenius.xo.finance.dao;
+
+import com.genius.xo.base.dao.BaseDao;
+import com.supergenius.xo.finance.entity.TopicGuest;
+
+/**
+ * 话题嘉宾Dao
+ * @author liushaomin
+ */
+public interface TopicGuestDao extends BaseDao<TopicGuest>{
+
+}

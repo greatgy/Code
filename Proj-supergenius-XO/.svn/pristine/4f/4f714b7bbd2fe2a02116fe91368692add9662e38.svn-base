@@ -1,0 +1,14 @@
+#the fourth mysql
+AiDB.jdbc.driverClassName=com.mysql.jdbc.Driver
+AiDB.jdbc.url=jdbc:mysql://localhost:3306/GAiDB?zeroDateTimeBehavior=convertToNull
+AiDB.jdbc.username=root
+AiDB.jdbc.password=123456
+AiDB.min=30
+AiDB.max=100
+#the second mysql
+UserDB.jdbc.driverClassName=com.mysql.jdbc.Driver
+UserDB.jdbc.url=jdbc:mysql://localhost:3306/GUserDB2
+UserDB.jdbc.username=root
+UserDB.jdbc.password=123456
+UserDB.min=30
+UserDB.max=100

@@ -1,0 +1,80 @@
+package com.supergenius.xo.finance.entity;
+
+
+import com.genius.core.base.annotation.Json;
+
+import com.supergenius.xo.common.entity.BaseEntity;
+import com.supergenius.xo.finance.enums.EFinanceMsg;
+import com.supergenius.xo.user.entity.User;
+
+/**
+ * 收件箱
+ * 
+ * @author LiJiacheng
+ */
+@Json(value = { "uid", "status", "createtime", "updatetime" }, ignoreTypeStrategy = {Json.appStrategy, Json.webStrategy}, strategy = {Json.appStrategy, Json.webStrategy})
+public class Inbox extends BaseEntity {
+
+	private static final long serialVersionUID = 8685864056509558018L;
+	@Json(strategy = { Json.webStrategy, Json.appStrategy})
+	private String useruid;// 接收者id
+	@Json(strategy = { Json.webStrategy, Json.appStrategy})
+	private String msguid;// 消息id
+	@Json(strategy = { Json.webStrategy, Json.appStrategy})
+	private boolean isread;// 是否已读
+	@Json(strategy = { Json.webStrategy, Json.appStrategy})
+	private EFinanceMsg type;// 消息类型
+	@Json(strategy = { Json.webStrategy, Json.appStrategy})
+	private Message message;// 消息
+	@Json(strategy = { Json.appStrategy})
+	private User sender;// 消息发送人
+
+	public String getUseruid() {
+		return useruid;
+	}
+
+	public void setUseruid(String useruid) {
+		this.useruid = useruid;
+	}
+
+	public String getMsguid() {
+		return msguid;
+	}
+
+	public void setMsguid(String msguid) {
+		this.msguid = msguid;
+	}
+
+	public boolean isIsread() {
+		return isread;
+	}
+
+	public void setIsread(boolean isread) {
+		this.isread = isread;
+	}
+
+	public EFinanceMsg getType() {
+		return type;
+	}
+
+	public void setType(EFinanceMsg type) {
+		this.type = type;
+	}
+
+	public Message getMessage() {
+		return message;
+	}
+
+	public void setMessage(Message message) {
+		this.message = message;
+	}
+
+	public User getSender() {
+		return sender;
+	}
+
+	public void setSender(User sender) {
+		this.sender = sender;
+	}
+
+}

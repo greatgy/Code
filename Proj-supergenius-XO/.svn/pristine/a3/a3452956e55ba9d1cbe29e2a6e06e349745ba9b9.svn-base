@@ -1,0 +1,12 @@
+package com.supergenius.xo.finance.service;
+
+import com.genius.xo.baseadmin.service.BaseSO;
+import com.supergenius.xo.finance.entity.Dynamic;
+
+/**
+ * 动态so
+ * @author YuYingJie
+ */
+public interface DynamicSO extends BaseSO<Dynamic> {
+
+}

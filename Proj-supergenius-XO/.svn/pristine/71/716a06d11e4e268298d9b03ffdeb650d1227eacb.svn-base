@@ -1,0 +1,14 @@
+package com.supergenius.xo.gupage.service;
+
+import com.genius.xo.base.service.BaseSO;
+import com.supergenius.xo.gupage.entity.Content;
+
+/**
+ * 内容so
+ * 
+ * @author loupengyu
+ * @date 2018年1月10日11:11:18
+ */
+public interface ContentSO extends BaseSO<Content>{
+
+}

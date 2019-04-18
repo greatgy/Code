@@ -1,0 +1,80 @@
+package com.supergenius.xo.user.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import com.genius.xo.base.dao.BaseDao;
+import com.supergenius.xo.user.entity.Comments;
+
+/**
+ * 评论dao
+ * @author liushaomin
+ */
+public interface CommentsDao extends BaseDao<Comments> {
+	
+	/**
+	 * 获取评论数排行
+	 * @param map
+	 * @return
+	 */
+	List<Map<?, ?>> getCommentcurr(Map<String, Object> map);
+	
+	/**
+	 * 获取评论
+	 * @param map
+	 * @return
+	 */
+	List<Comments> searchList(Map<String, Object> map);
+
+	/**
+	 * 获取发言用户排行版
+	 * @param map
+	 * @return
+	 * @author ShangJianguo
+	 */
+	List<Map<?, ?>> getRankUser(Map<String, Object> map);
+	
+	/**
+	 * 得到fromuid的list
+	 * @param map
+	 * @return
+	 */
+	List<String> getFromuidList(Map<String, Object> map);
+	
+	/**
+	 * 删除子查询
+	 * @param map
+	 */
+	boolean deleteByPraise(Map<String, Object> map);
+	
+	/**
+	 * 根据赞数查询
+	 * @param map
+	 * @return
+	 */
+	List<Map<?, ?>> getCountcurr(Map<String, Object> map);
+	
+	/**
+	 * 得到赞数最高的n条评论
+	 * @param map
+	 * @return
+	 */
+	List<Map<?, ?>> getCommentsFromPraise(Map<String, Object> map);
+	
+	/**
+	 * 获取最新的参与用户
+	 * @param map
+	 * @return List<String> fromuseruid的List
+	 * @author ShangJianguo
+	 */
+	List<String> getLatestFromuseruidList(Map<String, Object> map);
+	
+	/**
+	 * 我收到的赞的数量(评论)
+	 * @param map
+	 * @return
+	 * @author YuYingJie
+	 */
+	int getMyReceivedPrizeCount(Map<String, Object> map);
+	
+}

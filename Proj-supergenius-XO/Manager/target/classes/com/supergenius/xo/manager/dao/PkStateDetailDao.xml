@@ -1,0 +1,221 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.manager.dao.PkStateDetailDao">
+
+    <sql id="basecolumns">`uid`, `createtime` </sql>
+    <sql id="othercolumns"><include refid="basecolumns"/>, `pkscheduleuid`, `useruid`, `desc`, `fromstage`, `tostage`, `action`, `type`, `status` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+    <sql id="table">pkstatedetail</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="whereid">where uid = #{uid}</sql>
+    <sql id="allfields"><include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{uid},#{createtime},#{pkscheduleuid},#{useruid},#{desc},#{fromstage},#{tostage},#{action},#{type},#{status}</sql>
+    <sql id="setpkscheduleuid">`pkscheduleuid` = #{pkscheduleuid}</sql>
+    <sql id="setuseruid">`useruid` = #{useruid}</sql>
+    <sql id="setuid">uid = #{uid}</sql>
+    <sql id="setdesc">`desc` = #{desc}</sql>
+    <sql id="setfromstage">`fromstage` = #{fromstage}</sql>
+    <sql id="settostage">`tostage` = #{tostage}</sql>
+    <sql id="setaction">`action` = #{action}</sql>
+    <sql id="settype">`type` = #{type}</sql>
+    <sql id="setstatus">`status` = #{status}</sql>
+    <sql id="allsets">set
+            <include refid="setpkscheduleuid"/>,
+            <include refid="setuseruid"/>,
+            <include refid="setdesc"/>,
+            <include refid="setfromstage"/>,
+            <include refid="settostage"/>,
+            <include refid="setaction"/>,
+            <include refid="settype"/>,
+            <include refid="setstatus"/>
+    </sql>
+    <sql id="orderby">order by createtime</sql>
+
+    <select id="get" parameterType="string" resultType="pkstatedetail">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="pkstatedetail">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="uid != null">
+                and <include refid="setuid"/>
+            </if>         
+            <if test="pkscheduleuid != null">
+                and <include refid="setpkscheduleuid"/>
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="fromstage != null">
+                and <include refid="setfromstage"/>
+            </if>
+            <if test="tostage != null">
+                and <include refid="settostage"/>
+            </if>
+            <if test="action != null">
+                and <include refid="setaction"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="pkscheduleuid != null">
+                and <include refid="setpkscheduleuid"/>
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="fromstage != null">
+                and <include refid="setfromstage"/>
+            </if>
+            <if test="tostage != null">
+                and <include refid="settostage"/>
+            </if>
+            <if test="action != null">
+                and <include refid="setaction"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </select>
+
+    <select id="getList" parameterType="hashMap" resultType="pkstatedetail">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="pkscheduleuid != null">
+                and <include refid="setpkscheduleuid"/>
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="fromstage != null">
+                and <include refid="setfromstage"/>
+            </if>
+            <if test="tostage != null">
+                and <include refid="settostage"/>
+            </if>
+            <if test="action != null">
+                and <include refid="setaction"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insert" parameterType="pkstatedetail">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="pkstatedetail">
+        update
+        <include refid="table"/>
+        <include refid="allsets"/>
+        <include refid="whereid"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="pkscheduleuid != null">
+                <include refid="setpkscheduleuid"/>,
+            </if>
+            <if test="useruid != null">
+                <include refid="setuseruid"/>,
+            </if>
+            <if test="desc != null">
+                <include refid="setdesc"/>,
+            </if>
+            <if test="fromstage != null">
+                <include refid="setfromstage"/>,
+            </if>
+            <if test="tostage != null">
+                <include refid="settostage"/>,
+            </if>
+            <if test="action != null">
+                <include refid="setaction"/>,
+            </if>
+            <if test="type != null">
+                <include refid="settype"/>,
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>
+            </if>
+        </set>
+        <include refid="whereid"/>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+
+</mapper>
+

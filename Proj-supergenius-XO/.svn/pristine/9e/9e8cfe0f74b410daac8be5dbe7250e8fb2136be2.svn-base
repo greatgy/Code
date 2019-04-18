@@ -1,0 +1,29 @@
+package com.supergenius.xo.gupage.serviceimpl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.genius.xo.base.dao.BaseDao;
+import com.genius.xo.base.serviceimpl.BaseSOImpl;
+import com.supergenius.xo.gupage.dao.ContentDao;
+import com.supergenius.xo.gupage.entity.Content;
+import com.supergenius.xo.gupage.service.ContentSO;
+
+/**
+ * 内容SO实现
+ * 
+ * @author loupengyu
+ * @date 2018年1月10日11:15:22
+ */
+@Service("gupageContentSOImpl")
+public class ContentSOImpl extends BaseSOImpl<Content> implements ContentSO{
+	
+	@Autowired
+	private ContentDao dao;
+	
+	@Override
+	protected BaseDao<Content> getDao() {
+		return dao;
+	}
+
+}

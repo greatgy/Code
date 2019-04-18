@@ -1,0 +1,12 @@
+package com.supergenius.xo.finance.dao;
+
+import com.genius.xo.base.dao.BaseDao;
+import com.supergenius.xo.finance.entity.UserStatistics;
+
+/**
+ * 用户统计Dao
+ * @author YuYingJie
+ */
+public interface UserStatisticsDao extends BaseDao<UserStatistics> {
+
+}

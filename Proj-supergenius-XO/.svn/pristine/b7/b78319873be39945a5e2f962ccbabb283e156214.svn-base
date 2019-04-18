@@ -1,0 +1,44 @@
+package com.supergenius.xo.finance.enums;
+
+import java.util.Locale;
+
+import com.genius.core.base.utils.I18N;
+
+/**
+ * 话题嘉宾状态枚举
+ * @author liushaomin
+ */
+public enum EGuestState {
+
+	init("0"),//初始
+	accept("1"),//接受
+	refuse("2");//拒绝
+
+	private final String value;
+
+	private EGuestState(String v) {
+		this.value = v;
+	}
+
+	public String toString() {
+		return this.value;
+	}
+
+	public static EGuestState get(int v) {
+		String str = String.valueOf(v);
+		return get(str);
+	}
+
+	public static EGuestState get(String str) {
+		for (EGuestState e : values()) {
+			if (e.toString().equals(str)) {
+				return e;
+			}
+		}
+		return null;
+	}
+
+	public static String getName(EGuestState e, Locale locale) {
+		return I18N.getEnumName(e, locale);
+	}
+}

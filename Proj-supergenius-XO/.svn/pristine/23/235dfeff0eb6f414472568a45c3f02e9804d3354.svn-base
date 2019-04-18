@@ -1,0 +1,51 @@
+package com.supergenius.xo.user.entity;
+
+import com.genius.model.base.entity.BaseEntity;
+import com.supergenius.xo.user.enums.EQuestion;
+
+/** 
+ * 密保类实体
+ * @author LiuBin
+ * @date 2016-3-23 下午5:00:28
+ */
+public class SafeQA extends BaseEntity {
+
+	private static final long serialVersionUID = 2433393220265676807L;
+	private String useruid ;//会员UID
+	private EQuestion question;//问题
+	private String answer;//答案
+	private short sortorder;//排序从小到大
+
+	public String getUseruid() {
+		return useruid;
+	}
+	
+	public void setUseruid(String useruid) {
+		this.useruid = useruid;
+	}
+	
+	public EQuestion getQuestion() {
+		return question;
+	}
+	
+	public void setQuestion(EQuestion question) {
+		this.question = question;
+	}
+	
+	public String getAnswer() {
+		return answer;
+	}
+	
+	public void setAnswer(String answer) {
+		this.answer = answer;
+	}
+	
+	public short getSortorder() {
+		return sortorder;
+	}
+	
+	public void setSortorder(short sortorder) {
+		this.sortorder = sortorder;
+	}
+	
+}

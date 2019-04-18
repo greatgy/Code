@@ -1,0 +1,45 @@
+package com.supergenius.xo.finance.enums;
+
+import java.util.Locale;
+
+import com.genius.core.base.utils.I18N;
+
+/**
+ * 订阅状态枚举
+ * 
+ * @author LiJiacheng
+ */
+public enum EFollow {
+
+	follow("1"), // 订阅
+	bothfollow("2");// 互相订阅
+
+	private final String value;
+
+	private EFollow(String v) {
+		this.value = v;
+	}
+
+	public String toString() {
+		return this.value;
+	}
+
+	public static EFollow get(int v) {
+		String str = String.valueOf(v);
+		return get(str);
+	}
+
+	public static EFollow get(String str) {
+		for (EFollow e : values()) {
+			if (e.toString().equals(str)) {
+				return e;
+			}
+		}
+		return null;
+	}
+
+	public static String getName(EFollow e, Locale locale) {
+		return I18N.getEnumName(e, locale);
+	}
+
+}

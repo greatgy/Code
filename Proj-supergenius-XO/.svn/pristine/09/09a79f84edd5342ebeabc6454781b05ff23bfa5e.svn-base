@@ -1,0 +1,3 @@
+/** 增加keywords字段    **/
+alter table `article` ADD COLUMN `keywords` varchar(500) DEFAULT '' COMMENT 'seo关键字';
+alter table `debate` add  `keywords` varchar(500) COMMENT 'seo关键字';

@@ -1,0 +1,19 @@
+/*==============================================================*/
+/* DBMS name:      MySQL 5.5                                                                  */
+/* Created on:     19:01 2013/7/14                                                            */
+/*==============================================================*/
+
+/*==============================================================*/
+/*
+DataBase:      GUserDB2
+Author:        XieMing
+Description:   GUserDB1.0.0.0版本修改的表结构
+ModifyDate:    17:48 2016/9/8 
+*/
+
+/*==============================================================*/
+/*
+ALTER TABLE ordergoods add `refuid` default null;
+*/
+
+ALTER TABLE `ordergoods` ADD COLUMN `refuid` varchar(36)  NOT NULL COMMENT '商品的uid';

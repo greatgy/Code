@@ -1,0 +1,4 @@
+关于XO-User		11:54 2016/3/16
+之前的finance tpi等项目正式服务器现在还采用的GUserDB数据库，其中XO-Common中的message表放到了GUserDB2中，Common项目和User项目目前用的数据库是同一个数据库，但是要按功能划分，跟用户相关的都放到XO-User中，通用的功能放到XO-Common中，
+目前user表对应的类放到了xo-common中，即将开发的职业经理人培训项目和会员中心项目将创建新的表及新的类，放到XO-User项目中和GUserDB2项目中。
+待职业经理人和会员中心项目开发完成上线后将GUserDB替换为GUserDB2，并删除XO-common项目中跟User相关的类，可能还需要修改finance/tpi等项目。人间仙境有跟之前项目对接的接口，会员中心可能需要提供一些接口。。。。

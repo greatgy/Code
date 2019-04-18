@@ -1,0 +1,64 @@
+﻿﻿# 顾雏军专栏表结构
+# ---------------------------------------
+# Host     : localhost
+# Port     : 3306
+# Database : GGupageDB
+
+drop table if exists `article`;
+/*==============================================================*/
+/* Table: article   文章表                                      */
+/*==============================================================*/
+create table `article`(
+   `oid`		   int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增主键',
+   `uid`         varchar(36) NOT NULL COMMENT '唯一ID',
+   `cid`         smallint(6) NOT NULL COMMENT '模块id',
+   `adminuid`    varchar(36) COMMENT '操作管理员UID',
+   `useruid`     varchar(36) COMMENT '用户uid',
+   `author`      varchar(100) COMMENT '作者',
+   `content`     mediumtext COMMENT '内容',
+   `title`       varchar(500) COMMENT '标题', 
+   `imglittle`   varchar(255) DEFAULT '' COMMENT '小图',
+   `imgmedium`   varchar(255) DEFAULT '' COMMENT '中图',
+   `imgbig`      varchar(255) DEFAULT '' COMMENT '大图',
+   `imgoriginal` varchar(255) DEFAULT '' COMMENT '原图',
+   `origin`      varchar(100) COMMENT '来源',
+   `summary`     varchar(1000) COMMENT '摘要内容',
+   `keywords`    varchar(500) COMMENT '标签',
+   `isoriginal`  tinyint(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否发布',
+   `type`        tinyint(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否发布',
+   `kind`        tinyint(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '类型',
+   `istop`       tinyint(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '置顶(设为焦点文章)',
+   `toptime`	  datetime DEFAULT NULL COMMENT '置顶时间',
+   `status`      tinyint(1) DEFAULT 1 COMMENT '状态(0禁用1启用)',
+   `createtime`  timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '创建时间',
+   `updatetime`  timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+   PRIMARY KEY (`oid`,`uid`),
+   UNIQUE KEY `oid` (`oid`),
+   UNIQUE KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文章表';
+
+drop table if exists `comments`;
+
+/*==============================================================*/
+/* Table: comments    评论表                                    */
+/*==============================================================*/
+CREATE TABLE `comments`(
+   `uid`            varchar(36) NOT NULL COMMENT '唯一ID',
+   `fromuid`        varchar(36) NOT NULL COMMENT '所评论文章的UID',
+   `touid`          varchar(36) COMMENT '回复comment的uid，对应此表的uid',
+   `fromuseruid`    varchar(36) COMMENT '评论人uid',
+   `fromuseroid`    int(11) COMMENT '评论人oid',
+   `fromusername`   varchar(36) COMMENT '评论人name',
+   `touseruid`      varchar(36) COMMENT '评论给谁的uid',
+   `touseroid`      int(11) COMMENT '评论给谁的oid',
+   `tousername`     varchar(36) COMMENT '评论给谁的name',
+   `content`        longtext COMMENT '评论',
+   `channel`        int(4) UNSIGNED DEFAULT 0 COMMENT '频道',
+   `data`           varchar(255) COMMENT '其他数据json格式',
+   `type`           tinyint(1) UNSIGNED DEFAULT 0 COMMENT '类型，评论或者赞',
+   `adminuid`       varchar(36) COMMENT '操作人UID',
+   `status`         tinyint(1) DEFAULT 1 COMMENT '状态(0禁用1启用)',
+   `createtime`     timestamp NOT NULL DEFAULT '0000-00-00 00:00:00.000' COMMENT '创建时间',
+   PRIMARY KEY (uid),
+   UNIQUE KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评论表';

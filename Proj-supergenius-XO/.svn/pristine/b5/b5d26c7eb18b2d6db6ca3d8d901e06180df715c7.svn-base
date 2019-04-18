@@ -1,0 +1,156 @@
+﻿/*==============================================================*/
+/* DBMS name:      MySQL 5.5                                                                  */
+/* Created on:     18:10 2015/11/17                                                            */
+/*==============================================================*/
+
+/*==============================================================*/
+/*
+DataBase: GFinanceDB
+Author:        architect.bian
+Description:    GFinanceDB3.1.0版本添加表/修改表结构
+CreatedDate:   18:10 2015/11/17 
+ModifyDate:    18:10 2015/11/17
+*/
+
+/*==============================================================*/
+
+ALTER TABLE `finance`
+	add COLUMN `grade` TINYINT(11) UNSIGNED NULL DEFAULT NULL COMMENT '文章等级' AFTER `shorttitle`;
+
+drop table if exists `inbox`;
+
+drop table if exists `message`;
+
+drop table if exists `subscribe`;
+
+drop table if exists userstatistics;
+
+drop table if exists collectdetail;
+
+drop table if exists dynamic;
+
+drop table if exists scoredetail;
+
+/*==============================================================*/
+/* Table: inbox    收件箱表								*/
+/*==============================================================*/
+CREATE TABLE IF NOT EXISTS `inbox` (
+  `uid` 					char(32) NOT NULL COMMENT '唯一ID',
+  `useruid` 				char(32) NOT NULL COMMENT '接收者id',
+  `msguid` 					char(32) NOT NULL COMMENT '消息id',
+  `isread` 					tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否已读(0未读1已读)',
+  `status` 					tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态(0禁用1正常)',
+  `createtime` 				timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '创建时间',
+  `updatetime` 				timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+  PRIMARY KEY (`uid`),
+  UNIQUE KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='收件箱';
+
+/*==============================================================*/
+/* Table: message    消息表								*/
+/*==============================================================*/
+CREATE TABLE IF NOT EXISTS `message` (
+  `uid` 					char(32) NOT NULL COMMENT '唯一ID',
+  `senderuid` 				varchar(32) NOT NULL COMMENT '发送者id',
+  `title` 					varchar(500) DEFAULT NULL COMMENT '标题',
+  `content` 				varchar(500) DEFAULT NULL COMMENT '内容',
+  `type` 					tinyint(3) unsigned NOT NULL COMMENT '类型',
+  `deleted` 				tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否删除(0已删除1未删除)',
+  `status` 					tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态(0禁用1启用)',
+  `createtime` 				timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '创建时间',
+  `updatetime` 				timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+  PRIMARY KEY (`uid`),
+  UNIQUE KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='消息表';
+
+/*==============================================================*/
+/* Table: subscribe    订阅表								*/
+/*==============================================================*/
+CREATE TABLE IF NOT EXISTS `subscribe` (
+  `uid` 					char(32) NOT NULL COMMENT '唯一ID',
+  `useruid` 				varchar(32) NOT NULL COMMENT '订阅者uid',
+  `refuseruid` 				varchar(32) NOT NULL COMMENT '被订阅者uid',
+  `follow` 					tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '订阅状态枚举（1订阅，2互相订阅）',
+  `status` 					tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态(0禁用1启用)',
+  `createtime` 				timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '创建时间',
+  `updatetime` 				timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+  PRIMARY KEY (`uid`),
+  UNIQUE KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订阅表，记录订阅人和被订阅人之间的关系。';
+
+/*==============================================================*/
+/* Table: userstatistics    用户统计表								*/
+/*==============================================================*/
+create table userstatistics(
+   uid                      char(32) not null comment '唯一ID',
+   useruid            		char(32) not null comment '会员UID',
+   articlecount             int(11) unsigned comment '文章数量',
+   topiccount				int(11) unsigned comment '话题数量',
+   score					int(11) unsigned comment '积分',
+   clickcount				int(11) unsigned comment '总浏览量',
+   subscribecount			int(11) unsigned comment '订阅的数量',
+   besubscribecount			int(11) unsigned comment '被订阅的数量',
+   collectarticlecount		int(11) unsigned comment '收藏文章的数量',
+   collecttopiccount		int(11) unsigned comment '收藏话题的数量',
+   collectdebatecount		int(11) unsigned comment '收藏论战的数量',
+   status                	tinyint(1) default 1 comment '状态(0禁用1启用)',
+   createtime          		timestamp not null default '0000-00-00 00:00:00.000' comment '创建时间',
+   updatetime         		timestamp not null default current_timestamp on update current_timestamp comment '最后更新时间',
+   PRIMARY KEY (`uid`),
+   UNIQUE KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*==============================================================*/
+/* Table: collectdetail    收藏明细表								*/
+/*==============================================================*/
+create table collectdetail(
+   uid                      char(32) not null comment '唯一ID',
+   useruid            		char(32) not null comment '会员UID',
+   type             		tinyint(1) comment '类型(收藏文章、收藏话题、收藏论战)',
+   finance					tinyint(1) comment '文章类型',
+   refuid					char(32) not null comment '对应的uid',
+   status                	tinyint(1) default 1 comment '状态(0禁用1启用)',
+   createtime          		timestamp not null default '0000-00-00 00:00:00.000' comment '创建时间',
+   updatetime         		timestamp not null default current_timestamp on update current_timestamp comment '最后更新时间',
+   PRIMARY KEY (`uid`),
+   UNIQUE KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*==============================================================*/
+/* Table: dynamic    动态表										*/
+/*==============================================================*/
+create table dynamic(
+   uid                      char(32) not null comment '唯一ID',
+   useruid            		char(32) not null comment '会员UID',
+   username             	varchar(100) comment '会员姓名',
+   title					varchar(500) comment '标题',
+   content					mediumtext comment '内容',
+   img						varchar(500) comment '图片',
+   praisecount				int(11) default 0 comment '赞数',
+   commentcount				int(11) default 0 comment '评论数',
+   ispublic					tinyint(1) default 1 comment '是否公开(0 不公开 1公开)',
+   dynamic					tinyint(1) comment '类别(0系统,1会员))',
+   status                	tinyint(1) default 1 comment '状态(0禁用1启用)',
+   createtime          		timestamp not null default '0000-00-00 00:00:00.000' comment '创建时间',
+   updatetime         		timestamp not null default current_timestamp on update current_timestamp comment '最后更新时间',
+   PRIMARY KEY (`uid`),
+   UNIQUE KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*==============================================================*/
+/* Table: scoredetail    积分明细表								    */
+/*==============================================================*/
+create table scoredetail(
+   uid                      char(32) not null comment '唯一ID',
+   useruid            		char(32) not null comment '会员UID',
+   scorefrom             	int(11) comment '积分变更前',
+   score					int(11) comment '本次获得积分',
+   type						tinyint(1) comment '积分项',
+   `desc`				    varchar(500) comment '修改理由',
+   status                	tinyint(1) default 1 comment '状态(0禁用1启用)',
+   createtime          		timestamp not null default '0000-00-00 00:00:00.000' comment '创建时间',
+   updatetime         		timestamp not null default current_timestamp on update current_timestamp comment '最后更新时间',
+   PRIMARY KEY (`uid`),
+   UNIQUE KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

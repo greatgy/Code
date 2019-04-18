@@ -1,0 +1,10 @@
+
+ALTER TABLE forum  ADD  istop INT NOT NULL DEFAULT 0 AFTER isrecommend;
+
+ALTER TABLE forum MODIFY  activetime timestamp NOT NULL DEFAULT '0000-00-00 00:00:00';
+
+ALTER TABLE article ADD COLUMN data VARCHAR(1000);
+
+ALTER TABLE news MODIFY COLUMN title TEXT;  
+
+ALTER TABLE news MODIFY COLUMN content TEXT;  

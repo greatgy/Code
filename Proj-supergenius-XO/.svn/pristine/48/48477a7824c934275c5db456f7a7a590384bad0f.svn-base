@@ -1,0 +1,52 @@
+package com.supergenius.xo.finance.entity;
+
+import com.supergenius.xo.common.entity.BaseEntity;
+import com.supergenius.xo.finance.enums.ECollectType;
+import com.supergenius.xo.finance.enums.EFinance;
+
+
+/**
+ * 收藏明细实体
+ * @author YuYingJie
+ */
+public class CollectDetail extends BaseEntity {
+
+	private static final long serialVersionUID = 184713518064570931L;
+	private String useruid;//会员uid
+	private ECollectType type;//类型（收藏文章、收藏话题、收藏论战）
+	private EFinance finance;//文章类型
+	private String refuid;//对应的uid
+	
+	public String getUseruid() {
+		return useruid;
+	}
+	
+	public void setUseruid(String useruid) {
+		this.useruid = useruid;
+	}
+	
+	public ECollectType getType() {
+		return type;
+	}
+	
+	public void setType(ECollectType type) {
+		this.type = type;
+	}
+	
+	public EFinance getFinance() {
+		return finance;
+	}
+
+	public void setFinance(EFinance finance) {
+		this.finance = finance;
+	}
+
+	public String getRefuid() {
+		return refuid;
+	}
+	
+	public void setRefuid(String refuid) {
+		this.refuid = refuid;
+	}
+	
+}

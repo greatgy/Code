@@ -1,0 +1,26 @@
+package com.supergenius.xo.finance.serviceimpl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.genius.xo.baseadmin.serviceimpl.BaseSOImpl;
+import com.supergenius.xo.finance.dao.DynamicDao;
+import com.supergenius.xo.finance.entity.Dynamic;
+import com.supergenius.xo.finance.service.DynamicSO;
+
+/**
+ * 动态SOImpl
+ * @author YuYingJie
+ */
+@Service
+public class DynamicSOImpl extends BaseSOImpl<Dynamic> implements DynamicSO {
+
+	@Autowired
+	DynamicDao dao;
+	
+	@Override
+	protected DynamicDao getDao() {
+		return dao;
+	}
+
+}

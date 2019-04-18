@@ -1,0 +1,253 @@
+package com.supergenius.xo.finance.entity;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.genius.core.base.annotation.Json;
+import com.genius.core.base.utils.WebUtil;
+import com.supergenius.xo.common.entity.BaseEntity;
+import com.supergenius.xo.finance.enums.EContributeState;
+import com.supergenius.xo.finance.enums.EFinance;
+import com.supergenius.xo.finance.enums.EUsertype;
+
+/**
+ * 投稿表
+ * 
+ * @author ShangJianguo
+ */
+@Json(value = {"uid", "oid","status", "createtime", "updatetime"}, ignoreTypeStrategy = Json.webStrategy, strategy = Json.webStrategy)
+@JsonIgnoreProperties(value={"uid"})
+public class Contribute extends BaseEntity {
+
+	private static final long serialVersionUID = -4383237970731213358L;
+	private String useruid;
+	@Json(strategy = Json.webStrategy)
+	private String name;
+	@Json(strategy = Json.webStrategy)
+	private String email;
+	@Json(strategy = Json.webStrategy)
+	private String qq; // 投稿人QQ号码
+	@Json(strategy = Json.webStrategy)
+	private String phone; // 投稿人联系电话
+	@Json(strategy = Json.webStrategy)
+	private String summary; // 投稿人个人简介
+	@Json(strategy = Json.webStrategy)
+	private String title;
+	@Json(strategy = Json.webStrategy)
+	private String shorttitle;
+	private int type; // 投稿的类型（与文章类型相同）
+	private List<EFinance> listtype = new ArrayList<>();
+	@Json(strategy = Json.webStrategy)
+	private EUsertype usertype; // 投稿者类型(游客或会员)
+	@Json(strategy = Json.webStrategy)
+	private String keywords;
+	@Json(strategy = Json.webStrategy)
+	private String content;
+	@Json(strategy = Json.webStrategy)
+	private String imglittle;
+	private String imgmedium;
+	private String imgbig;
+	private String imgoriginal;
+	private EContributeState state; // 投稿审核状态(审核中、已发布、审核未通过)
+
+	public String getUseruid() {
+		return useruid;
+	}
+
+	public void setUseruid(String useruid) {
+		this.useruid = useruid;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getQq() {
+		return qq;
+	}
+
+	public void setQq(String qq) {
+		this.qq = qq;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getSummary() {
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getShorttitle() {
+		return shorttitle;
+	}
+
+	public void setShorttitle(String shorttitle) {
+		this.shorttitle = shorttitle;
+	}
+	
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+	
+	public void minusType(EFinance e) {
+        this.type = this.type ^ Integer.valueOf(e.toString());
+        this.listtype.remove(e);
+    }
+ 
+	public void plusType(EFinance e) {
+		if (e != null) {
+			this.type = this.type | Integer.valueOf(e.toString());
+	        this.listtype.add(e);
+		}
+	}
+	
+	public List<EFinance> getTypes() {
+	    if (listtype.size() == 0) {
+	    	listtype = EFinance.getMatch(this.type);
+	    }
+	    return listtype;
+	}
+	
+	/**
+	 * 显示所属的所有版块
+	 * @return
+	 */
+	@Json(strategy = Json.webStrategy)
+	public String getTypeName() {
+		StringBuffer typename = new StringBuffer();
+		for (EFinance item : getTypes()) {
+			typename.append(EFinance.getName(EFinance.get(item.toString()), Locale.CHINA).toString()).append(" ");
+		}
+		return typename.toString();
+	}
+
+	public EUsertype getUsertype() {
+		return usertype;
+	}
+
+	public void setUsertype(EUsertype usertype) {
+		this.usertype = usertype;
+	}
+	
+	@Json(strategy = Json.webStrategy)
+	public String getUsertypeName() {
+		return EUsertype.getName(usertype, Locale.CHINA);
+	}
+	
+	public String getKeywords() {
+		return keywords;
+	}
+
+	public void setKeywords(String keywords) {
+		this.keywords = keywords;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getImglittle() {
+		return imglittle;
+	}
+
+	public void setImglittle(String imglittle) {
+		this.imglittle = imglittle;
+	}
+
+	public String getImgmedium() {
+		return imgmedium;
+	}
+
+	public void setImgmedium(String imgmedium) {
+		this.imgmedium = imgmedium;
+	}
+
+	public String getImgbig() {
+		return imgbig;
+	}
+
+	public void setImgbig(String imgbig) {
+		this.imgbig = imgbig;
+	}
+
+	public String getImgoriginal() {
+		return imgoriginal;
+	}
+
+	public void setImgoriginal(String imgoriginal) {
+		this.imgoriginal = imgoriginal;
+	}
+	
+	public EContributeState getState() {
+		return state;
+	}
+
+	public void setState(EContributeState state) {
+		this.state = state;
+	}
+	
+	@Json(strategy = Json.webStrategy)
+	public String getContributeStateName() {
+		return EContributeState.getName(state, Locale.CHINA);
+	}
+
+	/**
+	 * @param imgs
+	 */
+	public void set(String[] imgs) {
+		this.imgoriginal = imgs[0];
+		this.imgbig = imgs[1];
+		this.imgmedium = imgs[2];
+		this.imglittle = imgs[3];
+	}
+	
+	/**
+	 * @param contribute
+	 * @author liushaomin
+	 */
+	public void clearXSS(Contribute contribute) {
+		contribute.setName(WebUtil.clearXSS(contribute.getName()));
+		contribute.setKeywords(WebUtil.clearXSS(contribute.getKeywords()));
+		contribute.setContent(WebUtil.clearXSS(contribute.getContent()));
+	}
+	
+}

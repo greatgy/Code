@@ -1,0 +1,15 @@
+#the fourth mysql
+UserDB.jdbc.driverClassName=com.mysql.jdbc.Driver
+UserDB.jdbc.url=jdbc:mysql://localhost:3306/GUserDB2
+UserDB.jdbc.username=root
+UserDB.jdbc.password=123456
+UserDB.min=30
+UserDB.max=100
+
+#GGupageDB
+GupageDB.jdbc.driverClassName=com.mysql.jdbc.Driver
+GupageDB.jdbc.url=jdbc:mysql://localhost:3306/GGupageDB?zeroDateTimeBehavior=convertToNull
+GupageDB.jdbc.username=root
+GupageDB.jdbc.password=123456
+GupageDB.min=30
+GupageDB.max=100

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+<!-- 	<typeAliases> -->
+<!-- 		  <typeAlias type="com.genius.web.platform.entity.OrderLog" alias="OrderLog" />   -->
+<!-- 	</typeAliases> -->
+	<typeHandlers>
+		<typeHandler handler="com.genius.xo.base.mybatis.handler.JodaDateTypeHandler" />
+		<typeHandler handler="com.genius.xo.base.mybatis.handler.JodaTimeTypeHandler" />
+		<typeHandler handler="com.genius.xo.base.mybatis.handler.JodaDateTimeTypeHandler" />
+	</typeHandlers>
+	<!-- <environments default="development"> -->
+	<!-- <environment id="development"> -->
+	<!-- <transactionManager type="JDBC" /> -->
+	<!-- <dataSource type="POOLED"> -->
+	<!-- <property name="driver" value="${driver}" /> -->
+	<!-- <property name="url" value="${url}" /> -->
+	<!-- <property name="username" value="${username}" /> -->
+	<!-- <property name="password" value="${password}" /> -->
+	<!-- </dataSource> -->
+	<!-- </environment> -->
+	<!-- </environments> -->
+</configuration>

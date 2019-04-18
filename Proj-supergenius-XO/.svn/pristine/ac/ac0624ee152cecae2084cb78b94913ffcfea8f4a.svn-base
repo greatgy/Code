@@ -1,0 +1,189 @@
+package com.supergenius.xo.finance.entity;
+
+import com.genius.core.base.annotation.Json;
+import com.supergenius.xo.common.entity.BaseEntity;
+import com.supergenius.xo.finance.enums.EDebateArticle;
+
+/**
+ * 论战文章实体
+ * @author liushaomin
+ */
+@Json(value = { "uid", "oid", "status", "createtime" }, ignoreTypeStrategy = Json.webStrategy, strategy = Json.webStrategy)
+public class DebateArticle extends BaseEntity{
+
+	private static final long serialVersionUID = -4341858504416651511L;
+	private String adminuid;
+	private String finaceuid;
+	private String debateuid;
+	private String useruid;
+	@Json(strategy = Json.webStrategy)
+	private String title;
+	private EDebateArticle type; //其他网站  本站天财评论文章 本站论战模块文章
+	private String author;
+	@Json(strategy = Json.webStrategy)
+	private String content;
+	private boolean isred; //true 红方 false 蓝方
+	private String imglittle;
+	private String imgmedium;
+	private String imgbig;
+	private String imgoriginal;
+	private String origin;
+	private String originurl;
+	private int sortorder = 0;
+	private int config; //采用二进制
+	private boolean ispublic;
+	private Finance finance;
+	
+	public String getAdminuid() {
+		return adminuid;
+	}
+	
+	public void setAdminuid(String adminuid) {
+		this.adminuid = adminuid;
+	}
+	
+	public String getFinaceuid() {
+		return finaceuid;
+	}
+	
+	public void setFinaceuid(String finaceuid) {
+		this.finaceuid = finaceuid;
+	}
+	
+	public String getDebateuid() {
+		return debateuid;
+	}
+	
+	public void setDebateuid(String debateuid) {
+		this.debateuid = debateuid;
+	}
+	
+	public String getUseruid() {
+		return useruid;
+	}
+	
+	public void setUseruid(String useruid) {
+		this.useruid = useruid;
+	}
+	
+	public String getTitle() {
+		return title;
+	}
+	
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	
+	public EDebateArticle getType() {
+		return type;
+	}
+	
+	public void setType(EDebateArticle type) {
+		this.type = type;
+	}
+	
+	public String getAuthor() {
+		return author;
+	}
+	
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+	
+	public String getContent() {
+		return content;
+	}
+	
+	public void setContent(String content) {
+		this.content = content;
+	}
+	
+	public boolean isIsred() {
+		return isred;
+	}
+	
+	public void setIsred(boolean isred) {
+		this.isred = isred;
+	}
+	
+	public String getImglittle() {
+		return imglittle;
+	}
+	
+	public void setImglittle(String imglittle) {
+		this.imglittle = imglittle;
+	}
+	
+	public String getImgmedium() {
+		return imgmedium;
+	}
+	
+	public void setImgmedium(String imgmedium) {
+		this.imgmedium = imgmedium;
+	}
+	
+	public String getImgbig() {
+		return imgbig;
+	}
+	
+	public void setImgbig(String imgbig) {
+		this.imgbig = imgbig;
+	}
+	
+	public String getImgoriginal() {
+		return imgoriginal;
+	}
+	
+	public void setImgoriginal(String imgoriginal) {
+		this.imgoriginal = imgoriginal;
+	}
+	
+	public String getOrigin() {
+		return origin;
+	}
+	
+	public void setOrigin(String origin) {
+		this.origin = origin;
+	}
+	
+	public String getOriginurl() {
+		return originurl;
+	}
+	
+	public void setOriginurl(String originurl) {
+		this.originurl = originurl;
+	}
+	
+	public int getSortorder() {
+		return sortorder;
+	}
+	
+	public void setSortorder(int sortorder) {
+		this.sortorder = sortorder;
+	}
+	
+	public int getConfig() {
+		return config;
+	}
+	
+	public void setConfig(int config) {
+		this.config = config;
+	}
+	
+	public boolean isIspublic() {
+		return ispublic;
+	}
+	
+	public void setIspublic(boolean ispublic) {
+		this.ispublic = ispublic;
+	}
+
+	public Finance getFinance() {
+		return finance;
+	}
+
+	public void setFinance(Finance finance) {
+		this.finance = finance;
+	}
+
+}

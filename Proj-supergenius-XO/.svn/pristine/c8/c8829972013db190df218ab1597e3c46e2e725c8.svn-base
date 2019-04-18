@@ -1,0 +1,106 @@
+package com.supergenius.xo.sudokuapi.dao;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+/**
+ * 站内消息单元测试
+ * @author YuYingJie
+ */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath*:**/applicationContext**.xml" })
+public class MessagesDaoTest {
+
+	@Autowired
+	MessagesDao dao;
+
+	@Test
+	public void testGet() {
+	}
+	/**
+	 * 在执行所有单元测试方法之前插入user
+	 */
+	//Messages entity = null;
+	/*@Before
+	public void before() {
+		entity = new Messages();
+		entity.setUid(TestConst.uid);
+		entity.setToid(Arrays.asList(TestConst.uid1,TestConst.uid2));
+		entity.setFromid(TestConst.uid2);
+		entity.setTitle(TestConst.title);
+		entity.setContent("welcome to sudokus");
+		entity.setUpdatetime(new Date());
+		boolean result = dao.insert(entity);
+		assertTrue(result);
+	}
+
+	@After
+	public void after() {
+		entity = null;
+		boolean result = dao.delete(TestConst.uid);
+		assertTrue(result);
+	}
+
+	@Test
+	public void testGet() {
+		assertNotNull(dao.get(TestConst.uid));
+	}
+
+	@Test
+	public void testGetOne() {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.content, "welcome to sudokus");
+		assertNotNull(dao.getOne(map));
+	}
+
+	@Test
+	public void testGetCount() {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.content, "welcome to sudokus");
+		assertEquals(1, dao.getCount(map));
+	}
+
+	@Test
+	public void testGetList() {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.content, "welcome to sudokus");
+		List<Messages> list = dao.getList(map);
+		assertEquals(1, list.size());
+	}
+
+
+	@Test
+	public void testUpdate() {
+		entity = dao.get(TestConst.uid);
+		entity.setContent("so good the game");
+		assertTrue(dao.update(entity));
+		Messages messages = dao.get(TestConst.uid);
+		assertEquals("so good the game", messages.getContent());
+	}
+
+	@Test
+	public void testUpdateFields() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put(MapperDict.title,TestConst.title1);
+		map.put(BaseMapperDict.uid, entity.getUid());
+		dao.updateFields(map);
+		assertEquals(TestConst.title1, dao.get(TestConst.uid).getTitle());
+	}
+
+	@Test
+	public void testDeleteByMap() {
+		for (int i = 0; i < 3; i++) {
+			Messages entity = new Messages();
+			entity.setContent("-99999999999999");
+			dao.insert(entity);
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put(MapperDict.content, "-99999999999999");
+		assertEquals(3, dao.getList(map).size());
+		dao.deleteByMap(map);
+		assertTrue(dao.getList(map).size() == 0);
+	}*/
+}

@@ -1,0 +1,26 @@
+package com.supergenius.xo.gupage.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Component;
+
+import com.genius.xo.base.dao.BaseDao;
+import com.supergenius.xo.gupage.entity.Article;
+
+/**
+ * 文章Dao
+ * @author yangguang
+ * @date 2017年11月13日16:00:07
+ */
+@Component("gupageArticleDao")
+public interface ArticleDao extends BaseDao<Article> {
+	
+	/**
+	 * 获得我的收藏
+	 * 
+	 * @author yangguang
+	 * @data 2017年11月13日16:00:20
+	 */
+	List<Article> getCollectList(Map<String, Object> map);
+}

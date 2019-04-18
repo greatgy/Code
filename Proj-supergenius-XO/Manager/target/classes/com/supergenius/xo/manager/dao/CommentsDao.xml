@@ -1,0 +1,484 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.manager.dao.CommentsDao">
+
+	<sql id="userinfotable">GUserDB2.userinfo</sql>
+	<sql id="userinfoon">on comments.fromuseruid = userinfo.uid</sql>
+	<sql id="setusername_lk">userinfo.`name` like CONCAT('%',#{username_lk},'%')</sql>
+	<sql id="setshowname_lk">`showname` like CONCAT('%',#{showname_lk},'%')</sql>
+	<sql id="commentscolumns">comments.`uid`, comments.`createtime`, `fromuid`, `touid`, `fromuseruid`, `touseruid`, comments.`content`, comments.`type`, comments.`channel`, comments.`status`, comments.`updatetime`</sql>
+	
+	<sql id="pkscheduletable">pkschedule</sql>
+	<sql id="pkscheduleon">on comments.fromuid = pkschedule.uid</sql>
+	<sql id="setpkname_lk">pkschedule.`name` like CONCAT('%',#{refname_lk},'%')</sql>
+	
+	<sql id="videotable">video</sql>
+	<sql id="videoon">on comments.fromuid = video.uid</sql>
+	
+	<sql id="setvideoname_lk">video.`name` like CONCAT('%',#{refname_lk},'%')</sql>
+
+    <sql id="basecolumns">`uid`, `createtime` </sql>
+    <sql id="othercolumns"><include refid="basecolumns"/>, `fromuid`, `touid`, `fromuseruid`, `touseruid`, `content`, `type`, `channel`, `status` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+    <sql id="table">comments</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="whereid">where uid = #{uid}</sql>
+    <sql id="allfields"><include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{uid},#{createtime},#{fromuid},#{touid},#{fromuseruid},#{touseruid},#{content},#{type},#{channel},#{status}</sql>
+    <sql id="setfromuid">`fromuid` = #{fromuid}</sql>
+    <sql id="settouid">`touid` = #{touid}</sql>
+    <sql id="setfromuseruid">`fromuseruid` = #{fromuseruid}</sql>
+    <sql id="settouseruid">`touseruid` = #{touseruid}</sql>
+    <sql id="setuid">uid = #{uid}</sql>
+    <sql id="setcontent">`content` = #{content}</sql>
+    <sql id="setcontent_lk">comments.`content` like CONCAT('%',#{content_lk},'%')</sql>
+    <sql id="settype">comments.`type` = #{type}</sql>
+    <sql id="setchannel">comments.`channel` = #{channel}</sql>
+    <sql id="setstatus">comments.`status` = #{status}</sql>
+    <sql id="allsets">set
+            <include refid="setfromuid"/>,
+            <include refid="settouid"/>,
+            <include refid="setfromuseruid"/>,
+            <include refid="settouseruid"/>,
+            <include refid="setcontent"/>,
+            <include refid="settype"/>,
+            <include refid="setchannel"/>,
+            <include refid="setstatus"/>
+    </sql>
+    <sql id="orderby">order by createtime</sql>
+
+    <select id="get" parameterType="string" resultType="comments">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="comments">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="uid != null">
+                and <include refid="setuid"/>
+            </if>         
+            <if test="fromuid != null">
+                and <include refid="setfromuid"/>
+            </if>
+            <if test="touid != null">
+                and <include refid="settouid"/>
+            </if>
+            <if test="fromuseruid != null">
+                and <include refid="setfromuseruid"/>
+            </if>
+            <if test="touseruid != null">
+                and <include refid="settouseruid"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="channel != null">
+                and <include refid="setchannel"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="fromuid != null">
+                and <include refid="setfromuid"/>
+            </if>
+            <if test="touid != null">
+                and <include refid="settouid"/>
+            </if>
+            <if test="fromuseruid != null">
+                and <include refid="setfromuseruid"/>
+            </if>
+            <if test="touseruid != null">
+                and <include refid="settouseruid"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="channel != null">
+                and <include refid="setchannel"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </select>
+	
+	<select id="searchCount" parameterType="hashMap" resultType="int">
+		select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        left join
+        <include refid="userinfotable"/>
+        <include refid="userinfoon"/>
+        left join
+        <include refid="pkscheduletable"/>
+        <include refid="pkscheduleon"/>
+        left join
+        <include refid="videotable"/>
+        <include refid="videoon"/>
+        <where>
+        	<if test="username_lk != null">
+              (  <include refid="setusername_lk"/>
+            </if>
+            <if test="content_lk != null">
+                or <include refid="setcontent_lk"/>
+            </if>
+            <if test="refname_lk != null">
+                or <include refid="setvideoname_lk"/>
+            </if>
+            <if test="refname_lk != null">
+                or <include refid="setpkname_lk"/>
+                )
+            </if>
+            <if test="fromuid != null">
+                and <include refid="setfromuid"/>
+            </if>
+            <if test="touid != null">
+                and <include refid="settouid"/>
+            </if>
+            <if test="fromuseruid != null">
+                and <include refid="setfromuseruid"/>
+            </if>
+            <if test="touseruid != null">
+                and <include refid="settouseruid"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="channel != null">
+                and <include refid="setchannel"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="createtime_gt != null">
+                and `comments`.createtime &gt;= #{createtime_gt}
+            </if>
+            <if test="createtime_lt != null">
+                and `comments`.createtime &lt;= #{createtime_lt}
+            </if>
+        </where>
+	</select>
+
+    <select id="getSpeakCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from (
+        select * 
+        from
+        <include refid="table"/>
+        <where>
+            <if test="fromuid != null">
+                and <include refid="setfromuid"/>
+            </if>
+            <if test="touid != null">
+                and <include refid="settouid"/>
+            </if>
+            <if test="fromuseruid != null">
+                and <include refid="setfromuseruid"/>
+            </if>
+            <if test="touseruid != null">
+                and <include refid="settouseruid"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="channel != null">
+                and <include refid="setchannel"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+         group by `fromuseruid` 
+        ) as speakcount
+    </select>
+
+    <select id="getList" parameterType="hashMap" resultType="comments">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="fromuid != null">
+                and <include refid="setfromuid"/>
+            </if>
+            <if test="touid != null">
+                and <include refid="settouid"/>
+            </if>
+            <if test="fromuseruid != null">
+                and <include refid="setfromuseruid"/>
+            </if>
+            <if test="touseruid != null">
+                and <include refid="settouseruid"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="channel != null">
+                and <include refid="setchannel"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+    
+    <select id="search" parameterType="hashMap" resultType="comments">
+		select
+        <include refid="commentscolumns" />
+        from
+        <include refid="table"/>
+        left join
+        <include refid="userinfotable"/>
+        <include refid="userinfoon"/>
+        left join
+        <include refid="pkscheduletable"/>
+        <include refid="pkscheduleon"/>
+        left join
+        <include refid="videotable"/>
+        <include refid="videoon"/>
+        <where>
+        	<if test="username_lk != null">
+              (  <include refid="setusername_lk"/>
+            </if>
+            <if test="content_lk != null">
+                or <include refid="setcontent_lk"/>
+            </if>
+            <if test="refname_lk != null">
+                or <include refid="setvideoname_lk"/>
+            </if>
+            <if test="refname_lk != null">
+                or <include refid="setpkname_lk"/>
+                )
+            </if>
+            <if test="fromuid != null">
+                and <include refid="setfromuid"/>
+            </if>
+            <if test="touid != null">
+                and <include refid="settouid"/>
+            </if>
+            <if test="fromuseruid != null">
+                and <include refid="setfromuseruid"/>
+            </if>
+            <if test="touseruid != null">
+                and <include refid="settouseruid"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="channel != null">
+                and <include refid="setchannel"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="createtime_gt != null">
+                and `comments`.createtime &gt;= #{createtime_gt}
+            </if>
+            <if test="createtime_lt != null">
+                and `comments`.createtime &lt;= #{createtime_lt}
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insert" parameterType="comments">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="comments">
+        update
+        <include refid="table"/>
+        <include refid="allsets"/>
+        <include refid="whereid"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="fromuid != null">
+                <include refid="setfromuid"/>,
+            </if>
+            <if test="touid != null">
+                <include refid="settouid"/>,
+            </if>
+            <if test="fromuseruid != null">
+                <include refid="setfromuseruid"/>,
+            </if>
+            <if test="touseruid != null">
+                <include refid="settouseruid"/>,
+            </if>
+            <if test="content != null">
+                <include refid="setcontent"/>,
+            </if>
+            <if test="type != null">
+                <include refid="settype"/>,
+            </if>
+            <if test="channel != null">
+                <include refid="setchannel"/>,
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>
+            </if>
+        </set>
+        <include refid="whereid"/>
+    </update>
+    
+    <update id="updateStatus" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="status != null">
+                <include refid="setstatus"/>
+            </if>
+        </set>
+       <where>
+            <if test="fromuid != null">
+                and <include refid="setfromuid"/>
+            </if>
+            <if test="touid != null">
+                and <include refid="settouid"/>
+            </if>
+            <if test="fromuseruid != null">
+                and <include refid="setfromuseruid"/>
+            </if>
+            <if test="touseruid != null">
+                and <include refid="settouseruid"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="channel != null">
+                and <include refid="setchannel"/>
+            </if>
+        </where>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+
+	<delete id="deleteByMap" parameterType="hashMap">
+       delete from
+        <include refid="table"/>
+        <where>
+        	<if test="uid != null">
+				and <include refid="setuid"/>
+			</if>
+            <if test="fromuid != null">
+                and <include refid="setfromuid"/>
+            </if>
+            <if test="touid != null">
+                and <include refid="settouid"/>
+            </if>
+            <if test="fromuseruid != null">
+                and <include refid="setfromuseruid"/>
+            </if>
+            <if test="touseruid != null">
+                and <include refid="settouseruid"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="channel != null">
+                and <include refid="setchannel"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </delete>
+
+</mapper>
+

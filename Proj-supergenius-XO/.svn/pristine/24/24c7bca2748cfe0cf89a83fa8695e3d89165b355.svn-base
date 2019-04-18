@@ -1,0 +1,44 @@
+package com.supergenius.xo.finance.enums;
+
+import java.util.Locale;
+
+import com.genius.core.base.utils.I18N;
+
+/**
+ * 论战文章类型枚举
+ * @author liushaomin
+ */
+public enum EDebateArticle {
+
+	otherwebsite("0"),//其他网站
+	finance("1"),//本站天财评论文章
+	debate("2");//本站论战文章
+
+	private final String value;
+
+	private EDebateArticle(String v) {
+		this.value = v;
+	}
+
+	public String toString() {
+		return this.value;
+	}
+
+	public static EDebateArticle get(int v) {
+		String str = String.valueOf(v);
+		return get(str);
+	}
+
+	public static EDebateArticle get(String str) {
+		for (EDebateArticle e : values()) {
+			if (e.toString().equals(str)) {
+				return e;
+			}
+		}
+		return null;
+	}
+
+	public static String getName(EDebateArticle e, Locale locale) {
+		return I18N.getEnumName(e, locale);
+	}
+}

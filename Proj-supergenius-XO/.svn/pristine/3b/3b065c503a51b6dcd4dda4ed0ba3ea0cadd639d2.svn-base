@@ -1,0 +1,80 @@
+package com.supergenius.xo.finance.entity;
+
+import com.genius.core.base.annotation.Json;
+import com.genius.core.base.annotation.Maps;
+import com.genius.core.base.annotation.MapsIgnore;
+import com.supergenius.xo.common.entity.BaseEntity;
+import com.supergenius.xo.finance.enums.EFinanceMsg;
+
+/**
+ * 消息表
+ * 
+ * @author LiJiacheng
+ */
+@Json(value = { "uid", "status", "createtime", "updatetime" }, ignoreTypeStrategy = Json.webStrategy, strategy = Json.webStrategy)
+public class Message extends BaseEntity {
+
+	private static final long serialVersionUID = 3678203561993880406L;
+	@Json(strategy = Json.webStrategy)
+	private String senderuid;// 发送者id
+	@Json(strategy = Json.webStrategy)
+	private String title;// 标题
+	@Json(strategy = Json.webStrategy)
+	private String content;// 内容
+	@Json(strategy = Json.webStrategy)
+	private EFinanceMsg type;// 类型
+	@Json(strategy = Json.webStrategy)
+	private boolean deleted;// 是否删除
+	private String recipient;// 临时存储接受者uid,不保存
+
+	public String getSenderuid() {
+		return senderuid;
+	}
+
+	public void setSenderuid(String senderuid) {
+		this.senderuid = senderuid;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public EFinanceMsg getType() {
+		return type;
+	}
+
+	public void setType(EFinanceMsg type) {
+		this.type = type;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	@MapsIgnore(strategy = Maps.dbStrategy)
+	public String getRecipient() {
+		return recipient;
+	}
+
+	@MapsIgnore(strategy = Maps.dbStrategy)
+	public void setRecipient(String recipient) {
+		this.recipient = recipient;
+	}
+
+}

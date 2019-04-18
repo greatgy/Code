@@ -1,0 +1,12 @@
+package com.supergenius.xo.finance.dao;
+
+import com.genius.xo.base.dao.BaseDao;
+import com.supergenius.xo.finance.entity.CollectDetail;
+
+/**
+ * 收藏明细Dao
+ * @author YuYingJie
+ */
+public interface CollectDetailDao extends BaseDao<CollectDetail> {
+
+}

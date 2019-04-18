@@ -1,0 +1,17 @@
+﻿/*==============================================================*/
+/* DBMS name:      MySQL 5.5                                                                  */
+/* Created on:     11:15 2015/12/01                                                            */
+/*==============================================================*/
+
+/*==============================================================*/
+/*
+DataBase: GFinanceDB
+Author:        LiJiacheng
+Description:    GFinanceDB3.1.0版本添加表/修改表结构
+CreatedDate:   11:15 2015/12/01 
+ModifyDate:    11:15 2015/12/01
+*/
+
+/*==============================================================*/
+
+ALTER TABLE `inbox` ADD COLUMN `type` TINYINT(2) UNSIGNED NULL DEFAULT NULL COMMENT '消息类型' AFTER `isread`;

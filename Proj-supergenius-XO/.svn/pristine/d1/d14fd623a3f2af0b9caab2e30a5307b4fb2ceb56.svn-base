@@ -1,0 +1,17 @@
+package com.supergenius.xo.enterpriser.service;
+
+import com.genius.xo.base.service.BaseSO;
+import com.supergenius.xo.enterpriser.entity.Catalogue;
+
+/**
+ * CatalogueSO
+ * @author loupengyu
+ * @date 2018年1月29日11:10:48
+ */
+public interface CatalogueSO extends BaseSO<Catalogue>{
+
+	Catalogue get(int cid);
+
+	
+	
+}

@@ -1,0 +1,642 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.common.dao.MessageDao">
+
+    <sql id="basecolumns">`uid`, `createtime` </sql>
+    <sql id="othercolumns"><include refid="basecolumns"/>, `fromuseruid`, `fromuseroid`, `fromusername`, `touseruid`, `touseroid`, `tousername`, `useravatar`, `title`, `content`, `href`, `state`, `type`, `site`, `sn`, `data`, `status` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+    <sql id="table">message</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="whereid">where uid = #{uid}</sql>
+    <sql id="allfields"><include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{uid},#{createtime},#{fromuseruid},#{fromuseroid},#{fromusername},#{touseruid},#{touseroid},#{tousername},#{useravatar},#{title},#{content},#{href},#{state},#{type},#{site},#{sn},#{data},#{status}</sql>
+    <sql id="setuid">uid = #{uid}</sql>
+    <sql id="setfromuseruid">fromuseruid = #{fromuseruid}</sql>
+    <sql id="setfromuseroid">fromuseroid = #{fromuseroid}</sql>
+    <sql id="setfromusername">fromusername = #{fromusername}</sql>
+    <sql id="settouseruid">touseruid = #{touseruid}</sql>
+    <sql id="settouseroid">touseroid = #{touseroid}</sql>
+    <sql id="settousername">tousername = #{tousername}</sql>
+    <sql id="setuseravatar">useravatar = #{useravatar}</sql>
+    <sql id="settitle">title = #{title}</sql>
+    <sql id="setcontent">content = #{content}</sql>
+    <sql id="sethref">href = #{href}</sql>
+    <sql id="setstate">state = #{state}</sql>
+    <sql id="settype">type = #{type}</sql>
+    <sql id="setsite">site = #{site}</sql>
+    <sql id="setsn">sn = #{sn}</sql>
+    <sql id="setdata">data = #{data}</sql>
+    <sql id="setstatus">status = #{status}</sql>
+    <sql id="wherestate">state = #{wherestate}</sql>
+    <sql id="wheretouseruid">touseruid = #{wheretouseruid}</sql>
+    <sql id="setcreatetime_ge">createtime &gt;= #{createtime_ge}</sql>
+    <sql id="setdata_lk">data like CONCAT('%',#{content_lk},'%')</sql>
+    <sql id="allsets">set
+            <include refid="setfromuseruid"/>,
+            <include refid="setfromuseroid"/>,
+            <include refid="setfromusername"/>,
+            <include refid="settouseruid"/>,
+            <include refid="settouseroid"/>,
+            <include refid="settousername"/>,
+            <include refid="setuseravatar"/>,
+            <include refid="settitle"/>,
+            <include refid="setcontent"/>,
+            <include refid="sethref"/>,
+            <include refid="setstate"/>,
+            <include refid="settype"/>,
+            <include refid="setsite"/>,
+            <include refid="setsn"/>,
+            <include refid="setdata"/>,
+            <include refid="setstatus"/>
+    </sql>
+    <sql id="orderby">order by createtime</sql>
+
+    <select id="get" parameterType="string" resultType="message">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="message">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="fromuseruid != null">
+                and <include refid="setfromuseruid"/>
+            </if>
+            <if test="fromuseroid != null">
+                and <include refid="setfromuseroid"/>
+            </if>
+            <if test="fromusername != null">
+                and <include refid="setfromusername"/>
+            </if>
+            <if test="touseruid != null">
+                and <include refid="settouseruid"/>
+            </if>
+            <if test="touseroid != null">
+                and <include refid="settouseroid"/>
+            </if>
+            <if test="tousername != null">
+                and <include refid="settousername"/>
+            </if>
+            <if test="useravatar != null">
+                and <include refid="setuseravatar"/>
+            </if>
+            <if test="title != null">
+                and <include refid="settitle"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="href != null">
+                and <include refid="sethref"/>
+            </if>
+            <if test="state != null">
+                and <include refid="setstate"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="site != null">
+                and <include refid="setsite"/>
+            </if>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="fromuseruid != null">
+                and <include refid="setfromuseruid"/>
+            </if>
+            <if test="fromuseroid != null">
+                and <include refid="setfromuseroid"/>
+            </if>
+            <if test="fromusername != null">
+                and <include refid="setfromusername"/>
+            </if>
+            <if test="touseruid != null">
+                and <include refid="settouseruid"/>
+            </if>
+            <if test="touseroid != null">
+                and <include refid="settouseroid"/>
+            </if>
+            <if test="tousername != null">
+                and <include refid="settousername"/>
+            </if>
+            <if test="useravatar != null">
+                and <include refid="setuseravatar"/>
+            </if>
+            <if test="title != null">
+                and <include refid="settitle"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="href != null">
+                and <include refid="sethref"/>
+            </if>
+            <if test="state != null">
+                and <include refid="setstate"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="site != null">
+                and <include refid="setsite"/>
+            </if>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="createtime_ge !=null">
+            	and <include refid="setcreatetime_ge"/>
+            </if>
+            <if test="data_list != null">
+                and 
+                <foreach item="item" index="index" collection="data_list" open="(" separator="or" close=")">
+				     data like CONCAT('%',#{item},'%') 
+				</foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="getList" parameterType="hashMap" resultType="message">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="fromuseruid != null">
+                and <include refid="setfromuseruid"/>
+            </if>
+            <if test="fromuseroid != null">
+                and <include refid="setfromuseroid"/>
+            </if>
+            <if test="fromusername != null">
+                and <include refid="setfromusername"/>
+            </if>
+            <if test="touseruid != null">
+                and <include refid="settouseruid"/>
+            </if>
+            <if test="touseroid != null">
+                and <include refid="settouseroid"/>
+            </if>
+            <if test="tousername != null">
+                and <include refid="settousername"/>
+            </if>
+            <if test="useravatar != null">
+                and <include refid="setuseravatar"/>
+            </if>
+            <if test="title != null">
+                and <include refid="settitle"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="href != null">
+                and <include refid="sethref"/>
+            </if>
+            <if test="state != null">
+                and <include refid="setstate"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="site != null">
+                and <include refid="setsite"/>
+            </if>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="createtime_ge != null">
+            	and <include refid="setcreatetime_ge"/>
+            </if>
+            <if test="data_lk != null">
+            	and <include refid="setdata_lk"/>
+            </if>
+            <if test="data_list != null">
+                and 
+                <foreach item="item" index="index" collection="data_list" open="(" separator="or" close=")">
+				     data like CONCAT('%',#{item},'%') 
+				</foreach>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insert" parameterType="message">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="message">
+        update
+        <include refid="table"/>
+        <include refid="allsets"/>
+        <include refid="whereid"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="fromuseruid != null">
+                <include refid="setfromuseruid"/>,
+            </if>
+            <if test="fromuseroid != null">
+                <include refid="setfromuseroid"/>,
+            </if>
+            <if test="fromusername != null">
+                <include refid="setfromusername"/>,
+            </if>
+            <if test="touseruid != null">
+                <include refid="settouseruid"/>,
+            </if>
+            <if test="touseroid != null">
+                <include refid="settouseroid"/>,
+            </if>
+            <if test="tousername != null">
+                <include refid="settousername"/>,
+            </if>
+            <if test="useravatar != null">
+                <include refid="setuseravatar"/>,
+            </if>
+            <if test="title != null">
+                <include refid="settitle"/>,
+            </if>
+            <if test="content != null">
+                <include refid="setcontent"/>,
+            </if>
+            <if test="href != null">
+                <include refid="sethref"/>,
+            </if>
+            <if test="state != null">
+                <include refid="setstate"/>,
+            </if>
+            <if test="type != null">
+                <include refid="settype"/>,
+            </if>
+            <if test="site != null">
+                <include refid="setsite"/>,
+            </if>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="data != null">
+                <include refid="setdata"/>,
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>
+            </if>
+        </set>
+        <where>
+			<if test="uid != null">
+				<include refid="setuid"/>
+			</if>
+		</where>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+
+	
+	<select id="getCountByMsgType" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="fromuseruid != null">
+                and <include refid="setfromuseruid"/>
+            </if>
+            <if test="fromuseroid != null">
+                and <include refid="setfromuseroid"/>
+            </if>
+            <if test="fromusername != null">
+                and <include refid="setfromusername"/>
+            </if>
+            <if test="touseruid != null">
+                and <include refid="settouseruid"/>
+            </if>
+            <if test="touseroid != null">
+                and <include refid="settouseroid"/>
+            </if>
+            <if test="tousername != null">
+                and <include refid="settousername"/>
+            </if>
+            <if test="useravatar != null">
+                and <include refid="setuseravatar"/>
+            </if>
+            <if test="title != null">
+                and <include refid="settitle"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="href != null">
+                and <include refid="sethref"/>
+            </if>
+            <if test="state != null">
+                and <include refid="setstate"/>
+            </if>
+            <if test="type != null">
+                and 
+                <foreach item="item" index="index" collection="type" open="(" separator="or" close=")">
+				     type=#{item} 
+				</foreach>
+            </if>
+            <if test="site != null">
+                and <include refid="setsite"/>
+            </if>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </select>
+	
+	<select id="getListByMsgType" parameterType="hashMap" resultType="message">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="fromuseruid != null">
+                and <include refid="setfromuseruid"/>
+            </if>
+            <if test="fromuseroid != null">
+                and <include refid="setfromuseroid"/>
+            </if>
+            <if test="fromusername != null">
+                and <include refid="setfromusername"/>
+            </if>
+            <if test="touseruid != null">
+                and <include refid="settouseruid"/>
+            </if>
+            <if test="touseroid != null">
+                and <include refid="settouseroid"/>
+            </if>
+            <if test="tousername != null">
+                and <include refid="settousername"/>
+            </if>
+            <if test="useravatar != null">
+                and <include refid="setuseravatar"/>
+            </if>
+            <if test="title != null">
+                and <include refid="settitle"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="href != null">
+                and <include refid="sethref"/>
+            </if>
+            <if test="state != null">
+                and <include refid="setstate"/>
+            </if>
+            <if test="type != null">
+               and 
+                <foreach item="item" index="index" collection="type" open="(" separator="or" close=")">
+				     type=#{item} 
+				</foreach>
+            </if>
+            <if test="site != null">
+                and <include refid="setsite"/>
+            </if>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+	<delete id="deleteByMap" parameterType="hashMap">
+		delete from
+		<include refid="table"/>
+		<where>
+			<if test="uid != null">
+				and <include refid="setuid"/>
+			</if>
+			<if test="fromuseruid != null">
+                and <include refid="setfromuseruid"/>
+            </if>
+            <if test="fromuseroid != null">
+                and <include refid="setfromuseroid"/>
+            </if>
+            <if test="fromusername != null">
+                and <include refid="setfromusername"/>
+            </if>
+            <if test="touseruid != null">
+                and <include refid="settouseruid"/>
+            </if>
+            <if test="touseroid != null">
+                and <include refid="settouseroid"/>
+            </if>
+            <if test="tousername != null">
+                and <include refid="settousername"/>
+            </if>
+            <if test="useravatar != null">
+                and <include refid="setuseravatar"/>
+            </if>
+            <if test="title != null">
+                and <include refid="settitle"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="href != null">
+                and <include refid="sethref"/>
+            </if>
+            <if test="state != null">
+                and <include refid="setstate"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="site != null">
+                and <include refid="setsite"/>
+            </if>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+			<if test="uids != null">
+				and uid in 
+				<foreach item="item" index="index" collection="uids" 
+                 	 open="(" separator="," close=")">
+                 	 #{item}
+            	</foreach>
+			</if>
+			<if test="touseruids != null">
+				and fromuid in 
+				<foreach item="item" index="index" collection="touseruids" 
+                 	 open="(" separator="," close=")">
+                 	 #{item}
+            	</foreach>
+			</if>
+		</where>
+	</delete>
+	
+	<update id="updateWhere" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="fromuseruid != null">
+                <include refid="setfromuseruid"/>,
+            </if>
+            <if test="fromuseroid != null">
+                <include refid="setfromuseroid"/>,
+            </if>
+            <if test="fromusername != null">
+                <include refid="setfromusername"/>,
+            </if>
+            <if test="touseruid != null">
+                <include refid="settouseruid"/>,
+            </if>
+            <if test="touseroid != null">
+                <include refid="settouseroid"/>,
+            </if>
+            <if test="tousername != null">
+                <include refid="settousername"/>,
+            </if>
+            <if test="useravatar != null">
+                <include refid="setuseravatar"/>,
+            </if>
+            <if test="title != null">
+                <include refid="settitle"/>,
+            </if>
+            <if test="content != null">
+                <include refid="setcontent"/>,
+            </if>
+            <if test="href != null">
+                <include refid="sethref"/>,
+            </if>
+            <if test="state != null">
+                <include refid="setstate"/>,
+            </if>
+            <if test="type != null">
+                <include refid="settype"/>,
+            </if>
+            <if test="site != null">
+                <include refid="setsite"/>,
+            </if>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="data != null">
+                <include refid="setdata"/>,
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>
+            </if>
+        </set>
+        <where>
+			<if test="wheretouseruid != null">
+				and <include refid="wheretouseruid"/>
+			</if>
+            <if test="wherestate != null">
+                and <include refid="wherestate"/>
+            </if>
+            <if test="wheretype_list != null">
+                and 
+                <foreach item="item" index="index" collection="wheretype_list" open="(" separator="or" close=")">
+				     type=#{item} 
+				</foreach>
+            </if>
+		</where>
+    </update>
+
+</mapper>
+

@@ -1,0 +1,297 @@
+package com.supergenius.xo.finance.entity;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.genius.core.base.annotation.Json;
+import com.genius.core.base.annotation.Maps;
+import com.genius.core.base.annotation.MapsIgnore;
+import com.genius.core.cache.rule.Rule;
+import com.genius.core.cache.utils.RedisUtil;
+import com.supergenius.core.rule.CommentCountDebateRule;
+import com.supergenius.core.rule.PrizeCountDebateRule;
+import com.supergenius.xo.common.entity.BaseEntity;
+import com.supergenius.xo.finance.enums.EDebate;
+
+/**
+ * 论战实体
+ * @author liushaomin
+ */
+@Json(value = { "uid", "oid", "status", "createtime", "updatetime" }, ignoreTypeStrategy = Json.webStrategy, strategy = Json.webStrategy)
+@Maps(strategy = { Maps.searchStrategy })
+@MapsIgnore(strategy = Maps.searchStrategy, value = { "adminuid", "config", "redArticles", "blueArticles", "redcommentcount", "bluecommentcount", "state", "statusName", "tid", "prizecount",
+		"isprize", "isInit", "isDisable", "isWait", "isEnable", "isEnd", "isStart", "commentcount", "iscollect", "beforetimeStr", "isOfficecafe", "clickcount" })
+public class Debate extends BaseEntity {
+
+	private static final long serialVersionUID = -8145908575864995833L;
+	@Json(strategy = Json.webStrategy)
+	private String adminuid;
+	@Json(strategy = Json.webStrategy)
+	private String title;
+	private String author;
+	@Json(strategy = Json.webStrategy)
+	private String periods; // 第几期论战
+	private String content;
+	@Json(strategy = Json.webStrategy)
+	private String titlered;
+	@Json(strategy = Json.webStrategy)
+	private String titleblue;
+	@Json(strategy = Json.webStrategy)
+	private int countred;
+	@Json(strategy = Json.webStrategy)
+	private int countblue;
+	@Json(strategy = Json.webStrategy)
+	private String imglittle;
+	@Json(strategy = Json.webStrategy)
+	private String imgmedium;
+	@Json(strategy = Json.webStrategy)
+	private String imgbig;
+	@Json(strategy = Json.webStrategy)
+	private String imgoriginal;
+	private boolean istop;
+	private int config; // 采用二进制,备用
+	@Json(strategy = Json.webStrategy)
+	private EDebate state = EDebate.begin; // 论战关闭、开始(0 关闭 1开始)
+	// 红方文章
+	private List<DebateArticle> redArticles = new ArrayList<>();
+	// 蓝方文章
+	private List<DebateArticle> blueArticles = new ArrayList<>();
+
+	private int redcommentcount;
+	private int bluecommentcount;
+
+	public int getRedcommentcount() {
+		return redcommentcount;
+	}
+
+	public void setRedcommentcount(int redcommentcount) {
+		this.redcommentcount = redcommentcount;
+	}
+
+	public int getBluecommentcount() {
+		return bluecommentcount;
+	}
+
+	public void setBluecommentcount(int bluecommentcount) {
+		this.bluecommentcount = bluecommentcount;
+	}
+
+	public String getAdminuid() {
+		return adminuid;
+	}
+
+	public void setAdminuid(String adminuid) {
+		this.adminuid = adminuid;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
+	public String getPeriods() {
+		return periods;
+	}
+
+	public void setPeriods(String periods) {
+		this.periods = periods;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getTitlered() {
+		return titlered;
+	}
+
+	public void setTitlered(String titlered) {
+		this.titlered = titlered;
+	}
+
+	public String getTitleblue() {
+		return titleblue;
+	}
+
+	public void setTitleblue(String titleblue) {
+		this.titleblue = titleblue;
+	}
+
+	public int getCountred() {
+		return countred;
+	}
+
+	public void setCountred(int countred) {
+		this.countred = countred;
+	}
+
+	public int getCountblue() {
+		return countblue;
+	}
+
+	public void setCountblue(int countblue) {
+		this.countblue = countblue;
+	}
+
+	public String getImglittle() {
+		return imglittle;
+	}
+
+	public void setImglittle(String imglittle) {
+		this.imglittle = imglittle;
+	}
+
+	public String getImgmedium() {
+		return imgmedium;
+	}
+
+	public void setImgmedium(String imgmedium) {
+		this.imgmedium = imgmedium;
+	}
+
+	public String getImgbig() {
+		return imgbig;
+	}
+
+	public void setImgbig(String imgbig) {
+		this.imgbig = imgbig;
+	}
+
+	public String getImgoriginal() {
+		return imgoriginal;
+	}
+
+	public void setImgoriginal(String imgoriginal) {
+		this.imgoriginal = imgoriginal;
+	}
+
+	public boolean isIstop() {
+		return istop;
+	}
+
+	public void setIstop(boolean istop) {
+		this.istop = istop;
+	}
+
+	public int getConfig() {
+		return config;
+	}
+
+	public void setConfig(int config) {
+		this.config = config;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public EDebate getState() {
+		return state;
+	}
+
+	@Json(strategy = Json.webStrategy)
+	public String getStateName() {
+		return EDebate.getName(this.state, Locale.CHINA);
+	}
+
+	public void setState(EDebate state) {
+		this.state = state;
+	}
+
+	public List<DebateArticle> getRedArticles() {
+		return redArticles;
+	}
+
+	public void setRedArticles(List<DebateArticle> redArticles) {
+		this.redArticles = redArticles;
+	}
+
+	public List<DebateArticle> getBlueArticles() {
+		return blueArticles;
+	}
+
+	public void setBlueArticles(List<DebateArticle> blueArticles) {
+		this.blueArticles = blueArticles;
+	}
+
+	@Json(strategy = Json.webStrategy)
+	public long getCommentcount() {
+		Rule rule = new CommentCountDebateRule(this.uid);
+		commentcount = RedisUtil.getIncr(rule);
+		return commentcount > 0 ? commentcount : 0;
+	}
+
+	/**
+	 * 设置图片
+	 * 
+	 * @param imgs
+	 * @author ShangJianguo
+	 */
+	public void setImgs(String[] imgs) {
+		this.setImgoriginal(imgs[0]);
+		this.setImgbig(imgs[1]);
+		this.setImgmedium(imgs[2]);
+		this.setImglittle(imgs[3]);
+	}
+
+	/**
+	 * 设置论战更新的字段
+	 * 
+	 * @param debate
+	 * @author ShangJianguo
+	 */
+	public void set(Debate debate) {
+		this.title = debate.getTitle();
+		this.periods = debate.getPeriods();
+		if (StringUtils.isNotEmpty(debate.getImgoriginal())) {
+			this.imgoriginal = debate.getImgoriginal();
+			this.imgbig = debate.getImgbig();
+			this.imgmedium = debate.getImgmedium();
+			this.imglittle = debate.getImglittle();
+		}
+		this.titlered = debate.getTitlered();
+		this.titleblue = debate.getTitleblue();
+	}
+
+	public boolean getIscollect() {
+		return iscollect;
+	}
+
+	public void setIscollect(Boolean collect) {
+		this.iscollect = collect;
+	}
+
+	public boolean getIsprize() {
+		return isprize;
+	}
+
+	public void setIsprize(Boolean isprize) {
+		this.isprize = isprize;
+	}
+
+	@Json(strategy = { Json.webStrategy, Json.appStrategy })
+	public long getPrizecount() {
+		Rule rule = new PrizeCountDebateRule(this.uid);
+		admirecount = RedisUtil.getIncr(rule);
+		return admirecount > 0 ? admirecount : 0;
+	}
+
+}

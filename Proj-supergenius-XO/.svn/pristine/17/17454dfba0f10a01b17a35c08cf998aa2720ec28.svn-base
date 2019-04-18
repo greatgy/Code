@@ -1,0 +1,68 @@
+package com.supergenius.xo.finance.service;
+
+import java.util.List;
+
+import com.genius.model.base.entity.Pager;
+import com.genius.xo.baseadmin.service.BaseSO;
+import com.supergenius.xo.finance.entity.CollectDetail;
+import com.supergenius.xo.finance.enums.ECollectType;
+import com.supergenius.xo.finance.enums.EFinance;
+
+/**
+ * 收藏明细so
+ * @author YuYingJie
+ */
+public interface CollectDetailSO extends BaseSO<CollectDetail> {
+
+	/**
+	 * 获取收藏明细
+	 * @param useruid
+	 * @param type
+	 * @return
+	 * @author YuYingJie
+	 */
+	List<CollectDetail> getList(String useruid, ECollectType type, Pager pager);
+
+	/**
+	 * 添加收藏
+	 * @param type
+	 * @param id
+	 * @return
+	 * @author YuYingJie
+	 */
+	boolean add(String useruid, ECollectType type, EFinance finance, String refuid);
+
+	/**
+	 * 取消收藏
+	 * @param useruid
+	 * @param type
+	 * @param refuid
+	 * @return
+	 * @author YuYingJie
+	 */
+	boolean cancleCollect(String useruid, ECollectType type, String refuid);
+
+	/**
+	 * 获取collectdetail
+	 * @param useruid
+	 * @param type
+	 * @param refuid
+	 * @return
+	 * @author YuYingJie
+	 */
+	CollectDetail getOne(String useruid, ECollectType type, String refuid);
+	
+	/**
+	 * 获取收藏
+	 * @param useruid
+	 * @param type
+	 * @param types
+	 * @param pager
+	 * @return
+	 * @author XieMing
+	 * 2017年1月6日 下午3:59:03
+	 */
+	List<CollectDetail> getList(String useruid, ECollectType type, List<EFinance> types, Pager pager);
+
+
+}

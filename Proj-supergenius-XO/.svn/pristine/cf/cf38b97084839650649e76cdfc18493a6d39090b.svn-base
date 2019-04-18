@@ -1,0 +1,25 @@
+package com.supergenius.xo.life.serviceimpl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.genius.xo.base.dao.BaseDao;
+import com.genius.xo.base.serviceimpl.BaseSOImpl;
+import com.supergenius.xo.life.dao.CoursesDao;
+import com.supergenius.xo.life.entity.Courses;
+import com.supergenius.xo.life.service.CoursesSO;
+
+/**
+ * 課程SOImpl
+ * @Author:JiaShitao
+ * @Date:2018年5月7日下午6:08:45
+ */
+@Service("lifeCoursesSOImpl")
+public class CoursesSOImpl extends BaseSOImpl<Courses> implements CoursesSO {
+	@Autowired
+	CoursesDao dao;
+	@Override
+	protected BaseDao<Courses> getDao() {
+		return dao;
+	}
+}

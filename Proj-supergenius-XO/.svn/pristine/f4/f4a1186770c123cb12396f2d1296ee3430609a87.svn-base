@@ -1,0 +1,17 @@
+﻿﻿/*==============================================================*/
+/* DBMS name:      MySQL 5.5                                                                 */
+/* Created on:     2017年12月29日16:00:00                                               */
+/*==============================================================*/
+
+ /**
+ * Article表测试数据
+ * @author : XueZhenYong
+ * @date : 2017年12月29日16:00:00
+ */
+insert into `article` (`oid`, `uid`, `cid`, `contributeuid`, `adminuid`, `authoruid`, `author`, `content`, `title`, `shorttitle`, `grade`, 
+	`imglittle`, `imgmedium`, `imgbig`, `imgoriginal`, `origin`, `originurl`, `summary`, `keywords`, `sortorder`, `config`, `data`, `type`, 
+	`kind`, `istop`, `isrecommend`, `ispublic`, `toptime`, `status`, `publishtime`, `createtime`, `updatetime`) values
+	('1','uid00000000000000000000000000000','1','1','1','1','二哈','这个好吃，那个好吃，反正都能吃！','吃吃吃','吃','0','http://baidu.com',
+	'http://baidu.com','http://baidu.com','http://baidu.com','外处','http://baidu.com','吃吃','吃','0','0','465465465465','0','0','0',
+	'0','0','2017-02-23 13:21:22','1','2017-02-23 13:21:22','2017-02-23 13:21:22','2017-12-29 16:39:02');
+

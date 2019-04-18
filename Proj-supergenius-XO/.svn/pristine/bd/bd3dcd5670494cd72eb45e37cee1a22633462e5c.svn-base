@@ -1,0 +1,154 @@
+package com.supergenius.xo.finance.dao;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.genius.core.base.constant.BaseMapperDict;
+import com.genius.core.base.utils.GlobalUtil;
+import com.genius.model.base.enums.EStatus;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.finance.entity.CollectDetail;
+import com.supergenius.xo.finance.enums.ECollectType;
+import com.supergenius.xo.mock.testconstants.TestConst;
+
+/**
+ * 收藏明细单元测试
+ * @author YuYingJie
+ */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath*:**/applicationContext**.xml" })
+public class CollerdetailDaoTest {
+	
+	@Autowired
+	CollectDetailDao dao;
+	
+	CollectDetail entity;
+
+	/**
+	 * Test Get()
+	 */
+	@Test
+	public void testGet() {
+		entity = dao.get(TestConst.uid);
+		assertNotNull(entity);
+		assertEquals(TestConst.uid, entity.getUid());
+	}
+
+	/**
+	 * Test GetOne()
+	 */
+	@Test
+	public void testGetOne() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put(BaseMapperDict.uid, TestConst.uid);
+		assertNotNull(dao.getOne(map));
+	}
+
+	/**
+	 * Test GetCount()
+	 */
+	@Test
+	public void testGetCount() {
+		assertTrue(dao.getCount(null) >= 1);
+	}
+	
+	/**
+	 * Test GetList()
+	 */
+	@Test
+	public void testGetList() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put(BaseMapperDict.uid, TestConst.uid);
+		assertTrue(dao.getList(map).size() > 0);
+	}
+
+	/**
+	 * Test Insert()
+	 */
+	@Test
+	public void testInsert() {
+		entity = new CollectDetail();
+		entity.setUid(TestConst.uid1);
+		entity.setUseruid(TestConst.uid2);
+		entity.setRefuid(GlobalUtil.getUUID());
+		entity.setFinance(null);
+		entity.setType(ECollectType.topic);
+		dao.insert(entity);
+		String uid = entity.getUid();
+		assertNotNull(dao.get(uid));
+		dao.delete(uid);
+		assertNull(dao.get(uid));
+	}
+	
+	/**
+	 * Test Update()
+	 */
+	@Test
+	public void testUpdate() {
+		String refuid = GlobalUtil.getUUID();
+		entity = new CollectDetail();
+		entity.setUid(TestConst.uid1);
+		entity.setUseruid(TestConst.uid2);
+		entity.setRefuid(refuid);
+		dao.insert(entity);
+		String uid = entity.getUid();
+		assertNotNull(dao.get(uid));
+		entity.setUseruid(refuid);
+		entity.setRefuid(TestConst.uid2);
+		assertTrue(dao.update(entity));
+		assertEquals(refuid, dao.get(uid).getUseruid());
+		dao.delete(uid);
+		assertNull(dao.get(uid));
+	}
+	
+	/**
+	 * Test UpdateFields()
+	 */
+	@Test
+	public void testUpdateFields() {
+		String refuid = GlobalUtil.getUUID();
+		entity = new CollectDetail();
+		entity.setUid(TestConst.uid1);
+		entity.setUseruid(TestConst.uid2);
+		entity.setRefuid(refuid);
+		dao.insert(entity);
+		String uid = entity.getUid();
+		assertNotNull(dao.get(uid));
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.uid, uid);
+		map.put(MapperDict.useruid, refuid);
+		assertTrue(dao.updateFields(map));
+		assertEquals(refuid, dao.get(uid).getUseruid());
+		dao.delete(uid);
+		assertNull(dao.get(uid));
+	}
+	
+	/**
+	 * Test Delete()
+	 */
+	@Test
+	public void testDelete() {
+		String uid = GlobalUtil.getUUID();
+		entity = new CollectDetail();
+		entity.setUid(TestConst.uid1);
+		entity.setUseruid(uid);
+		entity.setRefuid(GlobalUtil.getUUID());
+		entity.setStatus(EStatus.enable);
+		dao.insert(entity);
+		assertNotNull(dao.get(TestConst.uid1));
+		dao.delete(TestConst.uid1);
+		assertNull(dao.get(TestConst.uid1));
+	}
+
+}

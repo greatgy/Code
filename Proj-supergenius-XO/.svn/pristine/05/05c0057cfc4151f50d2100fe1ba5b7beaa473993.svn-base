@@ -1,0 +1,538 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.manager.dao.VideoDao">
+
+    <sql id="basecolumns">`uid`, `createtime` </sql>
+    <sql id="othercolumns"><include refid="basecolumns"/>,`sn`, `videouid`, `name`, `code`, `price`, `thumblittle`, `thumb`, `thumbbig`, `original`, `refuid`, `playcount`, `endcount`, `width`, `height`, `summary`, `title`, `desc`, `fileurl`, `sortorder`, `isrecommend`, `channelfrom`, `major`, `status` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+    <sql id="table">video</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="whereid">where uid = #{uid}</sql>
+    <sql id="setuid">uid = #{uid}</sql>
+    <sql id="allfields"><include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{uid},#{createtime},#{sn},#{videouid},#{name},#{code},#{price},#{thumblittle},#{thumb},#{thumbbig},#{original},#{refuid},#{playcount},#{endcount},#{width},#{height},#{summary},#{title},#{desc},#{fileurl},#{sortorder},#{isrecommend},#{channelfrom},#{major},#{status}</sql>
+    <sql id="setsn">`sn` = #{sn}</sql>
+    <sql id="setvideouid">`videouid` = #{videouid}</sql>
+    <sql id="setname">`name` = #{name}</sql>
+    <sql id="setcode">`code` = #{code}</sql>
+    <sql id="setprice">`price` = #{price}</sql>
+    <sql id="setthumblittle">`thumblittle` = #{thumblittle}</sql>
+    <sql id="setthumb">`thumb` = #{thumb}</sql>
+    <sql id="setthumbbig">`thumbbig` = #{thumbbig}</sql>
+    <sql id="setoriginal">`original` = #{original}</sql>
+    <sql id="setrefuid">`refuid` = #{refuid}</sql>
+    <sql id="setplaycount">`playcount` = #{playcount}</sql>
+    <sql id="setendcount">`endcount` = #{endcount}</sql>
+    <sql id="setwidth">`width` = #{width}</sql>
+    <sql id="setheight">`height` = #{height}</sql>
+    <sql id="setsummary">`summary` = #{summary}</sql>
+    <sql id="settitle">`title` = #{title}</sql>
+    <sql id="setdesc">`desc` = #{desc}</sql>
+    <sql id="setfileurl">`fileurl` = #{fileurl}</sql>
+    <sql id="setsortorder">`sortorder` = #{sortorder}</sql>
+    <sql id="setisrecommend">`isrecommend` = #{isrecommend}</sql>
+    <sql id="setchannelfrom">`channelfrom` = #{channelfrom}</sql>
+    <sql id="setchannelfromnotin">`channelfrom` not in ( #{channelfrom_not_in} )</sql>
+    <sql id="setmajor">`major` = #{major}</sql>
+    <sql id="setstatus">`status` = #{status}</sql>
+    <sql id="setcreatetimegt">createtime &gt;= #{createtime_gt}</sql>
+    <sql id="allsets">set
+            <include refid="setsn"/>,
+            <include refid="setvideouid"/>,
+            <include refid="setname"/>,
+            <include refid="setcode"/>,
+            <include refid="setprice"/>,
+            <include refid="setthumblittle"/>,
+            <include refid="setthumb"/>,
+            <include refid="setthumbbig"/>,
+            <include refid="setoriginal"/>,
+            <include refid="setrefuid"/>,
+            <include refid="setplaycount"/>,
+            <include refid="setendcount"/>,
+            <include refid="setwidth"/>,
+            <include refid="setheight"/>,
+            <include refid="setsummary"/>,
+            <include refid="settitle"/>,
+            <include refid="setdesc"/>,
+            <include refid="setfileurl"/>,
+            <include refid="setsortorder"/>,
+            <include refid="setisrecommend"/>,
+            <include refid="setchannelfrom"/>,
+            <include refid="setmajor"/>,
+            <include refid="setstatus"/>
+    </sql>
+    <sql id="orderby">order by createtime</sql>
+
+    <select id="get" parameterType="string" resultType="video">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="video">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="uid != null">
+                and <include refid="setuid"/>
+            </if>        
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="videouid != null">
+                and <include refid="setvideouid"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="code != null">
+                and <include refid="setcode"/>
+            </if>
+            <if test="price != null">
+                and <include refid="setprice"/>
+            </if>
+            <if test="thumblittle != null">
+                and <include refid="setthumblittle"/>
+            </if>
+            <if test="thumb != null">
+                and <include refid="setthumb"/>
+            </if>
+            <if test="thumbbig != null">
+                and <include refid="setthumbbig"/>
+            </if>
+            <if test="original != null">
+                and <include refid="setoriginal"/>
+            </if>
+            <if test="refuid != null">
+                and <include refid="setrefuid"/>
+            </if>
+            <if test="playcount != null">
+                and <include refid="setplaycount"/>
+            </if>
+            <if test="endcount != null">
+                and <include refid="setendcount"/>
+            </if>
+            <if test="width != null">
+                and <include refid="setwidth"/>
+            </if>
+            <if test="height != null">
+                and <include refid="setheight"/>
+            </if>
+            <if test="summary != null">
+                and <include refid="setsummary"/>
+            </if>
+            <if test="title != null">
+                and <include refid="settitle"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="fileurl != null">
+                and <include refid="setfileurl"/>
+            </if>
+            <if test="sortorder != null">
+                and <include refid="setsortorder"/>
+            </if>
+            <if test="isrecommend != null">
+                and <include refid="setisrecommend"/>
+            </if>
+            <if test="channelfrom != null">
+                and <include refid="setchannelfrom"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="videouid != null">
+                and <include refid="setvideouid"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="code != null">
+                and <include refid="setcode"/>
+            </if>
+            <if test="price != null">
+                and <include refid="setprice"/>
+            </if>
+            <if test="thumblittle != null">
+                and <include refid="setthumblittle"/>
+            </if>
+            <if test="thumb != null">
+                and <include refid="setthumb"/>
+            </if>
+            <if test="thumbbig != null">
+                and <include refid="setthumbbig"/>
+            </if>
+            <if test="original != null">
+                and <include refid="setoriginal"/>
+            </if>
+            <if test="refuid != null">
+                and <include refid="setrefuid"/>
+            </if>
+            <if test="playcount != null">
+                and <include refid="setplaycount"/>
+            </if>
+            <if test="endcount != null">
+                and <include refid="setendcount"/>
+            </if>
+            <if test="width != null">
+                and <include refid="setwidth"/>
+            </if>
+            <if test="height != null">
+                and <include refid="setheight"/>
+            </if>
+            <if test="summary != null">
+                and <include refid="setsummary"/>
+            </if>
+            <if test="title != null">
+                and <include refid="settitle"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="fileurl != null">
+                and <include refid="setfileurl"/>
+            </if>
+            <if test="sortorder != null">
+                and <include refid="setsortorder"/>
+            </if>
+            <if test="isrecommend != null">
+                and <include refid="setisrecommend"/>
+            </if>
+            <if test="channelfrom != null">
+                and <include refid="setchannelfrom"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="createtime_gt != null">
+				and <include refid="setcreatetimegt" />
+			</if>
+			<if test="title_lk != null">
+				and (`title` like CONCAT('%',#{title_lk},'%')
+		   </if>
+		   <if test="title_lk != null and sn_lk == null">
+                )
+           </if>
+           <if test="sn_lk != null">
+                or `sn` like CONCAT('%',#{sn_lk},'%'))
+           </if>
+        </where>
+    </select>
+    
+    <select id="getTotalPlayCount" parameterType="hashMap" resultType="integer">
+        select
+        SUM(playcount) AS totalPlayCount
+        from
+        <include refid="table"/>
+        <where>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="videouid != null">
+                and <include refid="setvideouid"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="code != null">
+                and <include refid="setcode"/>
+            </if>
+            <if test="price != null">
+                and <include refid="setprice"/>
+            </if>
+            <if test="thumblittle != null">
+                and <include refid="setthumblittle"/>
+            </if>
+            <if test="thumb != null">
+                and <include refid="setthumb"/>
+            </if>
+            <if test="thumbbig != null">
+                and <include refid="setthumbbig"/>
+            </if>
+            <if test="original != null">
+                and <include refid="setoriginal"/>
+            </if>
+            <if test="refuid != null">
+                and <include refid="setrefuid"/>
+            </if>
+            <if test="playcount != null">
+                and <include refid="setplaycount"/>
+            </if>
+            <if test="endcount != null">
+                and <include refid="setendcount"/>
+            </if>
+            <if test="width != null">
+                and <include refid="setwidth"/>
+            </if>
+            <if test="height != null">
+                and <include refid="setheight"/>
+            </if>
+            <if test="summary != null">
+                and <include refid="setsummary"/>
+            </if>
+            <if test="title != null">
+                and <include refid="settitle"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="fileurl != null">
+                and <include refid="setfileurl"/>
+            </if>
+            <if test="sortorder != null">
+                and <include refid="setsortorder"/>
+            </if>
+            <if test="isrecommend != null">
+                and <include refid="setisrecommend"/>
+            </if>
+            <if test="channelfrom != null">
+                and <include refid="setchannelfrom"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </select>
+    
+    <select id="getList" parameterType="hashMap" resultType="video">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="videouid != null">
+                and <include refid="setvideouid"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="code != null">
+                and <include refid="setcode"/>
+            </if>
+            <if test="price != null">
+                and <include refid="setprice"/>
+            </if>
+            <if test="thumblittle != null">
+                and <include refid="setthumblittle"/>
+            </if>
+            <if test="thumb != null">
+                and <include refid="setthumb"/>
+            </if>
+            <if test="thumbbig != null">
+                and <include refid="setthumbbig"/>
+            </if>
+            <if test="original != null">
+                and <include refid="setoriginal"/>
+            </if>
+            <if test="refuid != null">
+                and <include refid="setrefuid"/>
+            </if>
+            <if test="playcount != null">
+                and <include refid="setplaycount"/>
+            </if>
+            <if test="endcount != null">
+                and <include refid="setendcount"/>
+            </if>
+            <if test="width != null">
+                and <include refid="setwidth"/>
+            </if>
+            <if test="height != null">
+                and <include refid="setheight"/>
+            </if>
+            <if test="summary != null">
+                and <include refid="setsummary"/>
+            </if>
+            <if test="title != null">
+                and <include refid="settitle"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="fileurl != null">
+                and <include refid="setfileurl"/>
+            </if>
+            <if test="sortorder != null">
+                and <include refid="setsortorder"/>
+            </if>
+            <if test="isrecommend != null">
+                and <include refid="setisrecommend"/>
+            </if>
+            <if test="channelfrom != null">
+                and <include refid="setchannelfrom"/>
+            </if>
+             <if test="channelfrom_not_in != null">
+                and <include refid="setchannelfromnotin"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+           <if test="createtime_gt != null">
+				and <include refid="setcreatetimegt" />
+		   </if>
+		   <if test="title_lk != null">
+				and (`title` like CONCAT('%',#{title_lk},'%')
+		   </if>
+		   <if test="title_lk != null and sn_lk == null">
+                )
+           </if>
+           <if test="sn_lk != null">
+                or `sn` like CONCAT('%',#{sn_lk},'%'))
+           </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insert" parameterType="video">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="video">
+        update
+        <include refid="table"/>
+        <include refid="allsets"/>
+        <include refid="whereid"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="sn != null">
+                <include refid="setsn"/>,
+            </if>
+            <if test="videouid != null">
+                <include refid="setvideouid"/>,
+            </if>
+            <if test="name != null">
+                <include refid="setname"/>,
+            </if>
+            <if test="code != null">
+                <include refid="setcode"/>,
+            </if>
+            <if test="price != null">
+                <include refid="setprice"/>,
+            </if>
+            <if test="thumblittle != null">
+                <include refid="setthumblittle"/>,
+            </if>
+            <if test="thumb != null">
+                <include refid="setthumb"/>,
+            </if>
+            <if test="thumbbig != null">
+                <include refid="setthumbbig"/>,
+            </if>
+            <if test="original != null">
+                <include refid="setoriginal"/>,
+            </if>
+            <if test="refuid != null">
+                <include refid="setrefuid"/>,
+            </if>
+            <if test="playcount != null">
+                <include refid="setplaycount"/>,
+            </if>
+            <if test="endcount != null">
+                <include refid="setendcount"/>,
+            </if>
+            <if test="width != null">
+                <include refid="setwidth"/>,
+            </if>
+            <if test="height != null">
+                <include refid="setheight"/>,
+            </if>
+            <if test="summary != null">
+                <include refid="setsummary"/>,
+            </if>
+            <if test="title != null">
+                <include refid="settitle"/>,
+            </if>
+            <if test="desc != null">
+                <include refid="setdesc"/>,
+            </if>
+            <if test="fileurl != null">
+                <include refid="setfileurl"/>,
+            </if>
+            <if test="sortorder != null">
+                <include refid="setsortorder"/>,
+            </if>
+            <if test="isrecommend != null">
+                <include refid="setisrecommend"/>
+            </if>
+            <if test="channelfrom != null">
+                <include refid="setchannelfrom"/>,
+            </if>
+            <if test="major != null">
+                <include refid="setmajor"/>,
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>
+            </if>
+        </set>
+        <include refid="whereid"/>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+
+</mapper>
+

@@ -1,0 +1,20 @@
+package com.supergenius.xo.finance.service;
+
+import java.util.List;
+
+import com.genius.xo.baseadmin.service.BaseSO;
+import com.supergenius.xo.finance.entity.TopicGuest;
+
+/**
+ * 话题嘉宾SO
+ * @author liushaomin
+ */
+public interface TopicGuestSO extends BaseSO<TopicGuest>{
+
+	/**
+	 * 得到某个话题的所有嘉宾
+	 * @param uid
+	 */
+	List<TopicGuest> getList(String topicuid);
+
+}

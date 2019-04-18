@@ -1,0 +1,44 @@
+package com.supergenius.xo.finance.enums;
+
+import java.util.Locale;
+
+import com.genius.core.base.utils.I18N;
+
+/**
+ * 投稿人身份枚举
+ * @author liushaomin
+ */
+public enum EUsertype {
+	
+	user("0"),//会员
+	visitor("1");//游客
+
+	private final String value;
+
+	private EUsertype(String v) {
+		this.value = v;
+	}
+
+	public String toString() {
+		return this.value;
+	}
+
+	public static EUsertype get(int v) {
+		String str = String.valueOf(v);
+		return get(str);
+	}
+
+	public static EUsertype get(String str) {
+		for (EUsertype e : values()) {
+			if (e.toString().equals(str)) {
+				return e;
+			}
+		}
+		return null;
+	}
+
+	public static String getName(EUsertype e, Locale locale) {
+		return I18N.getEnumName(e, locale);
+	}
+
+}

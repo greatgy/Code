@@ -1,0 +1,33 @@
+package com.supergenius.xo.enterpriser.service;
+
+import com.genius.xo.base.service.BaseSO;
+import com.supergenius.xo.enterpriser.entity.Content;
+import com.supergenius.xo.enterpriser.enums.EContent;
+
+/**
+ * contentSO
+ * @author XieMing
+ * @date 2016-10-24 下午4:43:29
+ */
+public interface ContentSO extends BaseSO<Content>{
+
+	/**
+	 * 根据类型获取内容
+	 * @param type
+	 * @return
+	 * @author XieMing
+	 * 2016-10-25 上午11:57:51
+	 */
+	Content getOneByType(EContent type);
+	
+	/**
+	 * 根据类型获取数量
+	 * @param type
+	 * @return
+	 * @author liubin
+	 * @createtime 2016-10-28下午4:46:35
+	 * @return int
+	 */
+	int getCount(EContent type);
+	
+}

@@ -1,0 +1,21 @@
+package com.supergenius.xo.user.service;
+
+import java.util.List;
+
+import com.genius.xo.base.service.BaseSO;
+import com.supergenius.xo.user.entity.SafeQA;
+
+/** 
+ * 密保SO
+ * @author LiuBin
+ * @date 2016-3-23 下午6:01:46 
+ */
+public interface SafeQASO extends BaseSO<SafeQA> {
+	
+	/**
+	 * 根据useruid获取密保
+	 * @param useruid
+	 * @return
+	 */
+	List<SafeQA> getList(String useruid);
+}

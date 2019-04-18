@@ -1,0 +1,75 @@
+package com.supergenius.xo.finance.serviceimpl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.genius.core.base.utils.GlobalUtil;
+import com.genius.model.base.entity.Pager;
+import com.genius.xo.baseadmin.serviceimpl.BaseSOImpl;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.finance.dao.UserStatisticsDao;
+import com.supergenius.xo.finance.entity.UserStatistics;
+import com.supergenius.xo.finance.service.UserStatisticsSO;
+
+/**
+ * 用户统计SOImpl
+ * @author YuYingJie
+ */
+@Service("FinanceUserStatisticsSOImpl")
+public class UserStatisticsSOImpl extends BaseSOImpl<UserStatistics> implements UserStatisticsSO {
+
+	@Autowired
+	private UserStatisticsDao dao;
+	
+	@Override
+	protected UserStatisticsDao getDao() {
+		return dao;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.UserStatisticsSO#getOne(java.lang.String)
+	 */
+	@Override
+	public UserStatistics obtainOne(String useruid) {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.useruid, useruid);
+		UserStatistics statistics = dao.getOne(map);
+		if (statistics != null) {
+			return statistics;
+		} else {
+			String uid = GlobalUtil.getUUID();
+			statistics = new UserStatistics(uid, useruid);
+			dao.insert(statistics);
+			return statistics;
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.UserStatisticsSO#update(java.lang.String, int, java.lang.String)
+	 */
+	@Override
+	public boolean update(String uid, int number, String field) {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.uid, uid);
+		map.put(field, number);
+		return dao.updateFields(map);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.UserStatisticsSO#getByBeSubscribeCount(com.genius.model.base.entity.Pager)
+	 */
+	@Override
+	public List<UserStatistics> getByBeSubscribeCount(Pager pager) {
+		Map<String,	Object> map = getParamMap(pager);
+		map.put(MapperDict.orderBy, MapperDict.sql_order_by + MapperDict.besubscribecount + MapperDict.desc);
+		return dao.getList(map);
+	}
+
+}

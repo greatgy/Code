@@ -1,0 +1,239 @@
+package com.supergenius.xo.user.entity;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.genius.core.base.annotation.Json;
+import com.genius.core.cache.rule.Rule;
+import com.genius.core.cache.utils.RedisUtil;
+import com.supergenius.core.rule.PrizeCountCommentRule;
+import com.supergenius.xo.common.entity.BaseEntity;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.user.enums.EComment;
+import com.supergenius.xo.user.enums.ECommentConfig;
+
+/**
+ * 评论的实体
+ * @author liushaomin
+ */
+@Json(value = {"uid", "oid","status", "createtime", "updatetime"}, ignoreTypeStrategy ={ Json.webStrategy}, strategy = Json.webStrategy)
+@JsonIgnoreProperties(value={"uid"})
+public class Comments extends BaseEntity {
+	
+	private static final long serialVersionUID = -5019724309340086339L;
+	private String fromuid;//所评论的UID
+	@Json(strategy = Json.webStrategy)
+	private String touid;//回复comment的uid，对应此表的uid
+	@Json(strategy = Json.webStrategy)
+	private String fromuseruid;//评论人uid
+	@Json(strategy = Json.webStrategy)
+	private int fromuseroid;//评论人oid
+	@Json(strategy = Json.webStrategy)
+	private String fromusername;//评论人name
+	private String touseruid;//评论给谁的uid
+	@Json(strategy = Json.webStrategy)
+	private int touseroid;//评论给谁的oid
+	@Json(strategy = Json.webStrategy)
+	private String tousername;//评论给谁的name
+	@Json(strategy = Json.webStrategy)
+	private String content;
+	private EComment type;//类型，评论或者赞
+	private EChannel channel;//频道
+	private String data;
+	private int config;
+	@Json(strategy = Json.webStrategy)
+	private User fromUser;
+	@Json(strategy = Json.webStrategy)
+	private User toUser;
+	@Json(strategy = Json.webStrategy)
+	private Visitor fromVisitor;
+	@Json(strategy = Json.webStrategy)
+	private Visitor toVisitor;
+	public Visitor getFromVisitor() {
+		return fromVisitor;
+	}
+
+	public void setFromVisitor(Visitor fromVisitor) {
+		this.fromVisitor = fromVisitor;
+	}
+
+	public Visitor getToVisitor() {
+		return toVisitor;
+	}
+
+	public void setToVisitor(Visitor toVisitor) {
+		this.toVisitor = toVisitor;
+	}
+
+	@Json(strategy = Json.webStrategy)
+	private List<Comments> replys = new ArrayList<>();
+	
+	public User getFromUser() {
+		return fromUser;
+	}
+
+	public void setFromUser(User fromUser) {
+		this.fromUser = fromUser;
+	}
+
+	public User getToUser() {
+		return toUser;
+	}
+
+	public void setToUser(User toUser) {
+		this.toUser = toUser;
+	}
+	
+	public String getFromuid() {
+		return fromuid;
+	}
+	
+	public void setFromuid(String fromuid) {
+		this.fromuid = fromuid;
+	}
+	
+	public String getTouid() {
+		return touid;
+	}
+	
+	public void setTouid(String touid) {
+		this.touid = touid;
+	}
+	
+	public String getFromuseruid() {
+		return fromuseruid;
+	}
+	
+	public void setFromuseruid(String fromuseruid) {
+		this.fromuseruid = fromuseruid;
+	}
+	
+	public int getFromuseroid() {
+		return fromuseroid;
+	}
+	
+	public void setFromuseroid(int fromuseroid) {
+		this.fromuseroid = fromuseroid;
+	}
+	
+	public String getFromusername() {
+		return fromusername;
+	}
+	
+	public void setFromusername(String fromusername) {
+		this.fromusername = fromusername;
+	}
+	
+	public String getTouseruid() {
+		return touseruid;
+	}
+	
+	public void setTouseruid(String touseruid) {
+		this.touseruid = touseruid;
+	}
+	
+	public int getTouseroid() {
+		return touseroid;
+	}
+	
+	public void setTouseroid(int touseroid) {
+		this.touseroid = touseroid;
+	}
+	
+	public String getTousername() {
+		return tousername;
+	}
+	
+	public void setTousername(String tousername) {
+		this.tousername = tousername;
+	}
+	
+	public String getContent() {
+		return content;
+	}
+	
+	public void setContent(String content) {
+		this.content = content;
+	}
+	
+	public EComment getType() {
+		return type;
+	}
+	
+	public void setType (EComment type) {
+		this.type = type;
+	}
+	
+	@Json(strategy = Json.webStrategy)
+	public String getTypeName() {
+		return this.type.getName();
+	}
+	
+	public EChannel getChannel() {
+		return channel;
+	}
+	
+	public void setChannel(EChannel channel) {
+		this.channel = channel;
+	}
+	
+	@Json(strategy = Json.webStrategy)
+	public String getChannelName() {
+		return EChannel.getName(channel, Locale.CHINA);
+	}
+	
+	public int getConfig() {
+		return config;
+	}
+	
+	public void setConfig(int config) {
+		this.config = config;
+	}
+	
+	public void plusConfig(ECommentConfig config){
+		if (config != null) {
+			this.config = this.config | Integer.valueOf(config.toString());
+		}
+	}
+
+	public List<Comments> getReplys() {
+		return replys;
+	}
+
+	public void setReplys(List<Comments> replys) {
+		this.replys = replys;
+	}
+
+	public boolean getIsred(){
+		return ECommentConfig.ismatch(this.config, ECommentConfig.debatered);
+	}
+
+	public String getData() {
+		return data;
+	}
+
+	public void setData(String data) {
+		this.data = data;
+	}
+	
+	/**
+	 * 得到评论的赞数
+	 * @return
+	 */
+	@Json(strategy = Json.webStrategy)
+	public long getPrizecount(){
+		Rule rule = new PrizeCountCommentRule(this.uid);
+		admirecount = RedisUtil.getIncr(rule);
+		return admirecount > 0 ? admirecount : 0;
+	}
+	
+	@Json(strategy = Json.webStrategy)
+	public boolean getIsprize(){
+		return this.isprize;
+	}
+	
+	public void setIsprize(Boolean isprize) {
+		this.isprize = isprize;
+	}
+}

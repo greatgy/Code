@@ -1,0 +1,45 @@
+package com.supergenius.xo.finance.enums;
+
+/**
+ * 收藏类型枚举
+ * @author YuYingJie
+ */
+public enum ECollectType {
+	
+	article("0"),//收藏文章
+	topic("1"),//收藏话题
+	debate("2");//收藏论战
+	
+	private final String value;
+
+	private ECollectType(String v) {
+		this.value = v;
+	}
+
+	public String toString() {
+		return this.value;
+	}
+
+	public static ECollectType get(int v) {
+		String str = String.valueOf(v);
+		return get(str);
+	}
+
+	public static ECollectType get(String str) {
+		for (ECollectType e : values()) {
+			if (e.toString().equals(str)) {
+				return e;
+			}
+		}
+		return null;
+	}
+	
+	public static ECollectType getByName(String name) {
+		for (ECollectType e : values()) {
+			if (e.name().equals(name)) {
+				return e;
+			}
+		}
+		return null;
+	}
+}

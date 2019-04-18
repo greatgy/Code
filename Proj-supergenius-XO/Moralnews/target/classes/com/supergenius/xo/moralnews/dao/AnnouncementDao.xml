@@ -1,0 +1,220 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.moralnews.dao.AnnouncementDao">
+
+    <sql id="basecolumns">`uid`, `createtime` </sql>
+    <sql id="othercolumns">`sn`, `title`, `content`, `addtime`, `endtime`, `status`, `istop` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+    <sql id="table">announcement</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="whereid">where uid = #{uid}</sql>
+    <sql id="allfields"><include refid="basecolumns"/>, <include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{uid},#{createtime},#{sn},#{title},#{content},#{addtime},#{endtime},#{status},#{istop}</sql>
+    <sql id="setsn">`sn` = #{sn}</sql>
+    <sql id="setuid">`uid` = #{uid}</sql>
+    <sql id="settitle">`title` = #{title}</sql>
+    <sql id="setcontent">`content` = #{content}</sql>
+    <sql id="setaddtime">`addtime` = #{addtime}</sql>
+    <sql id="setendtime">`endtime` = #{endtime}</sql>
+    <sql id="setstatus">`status` = #{status}</sql>
+    <sql id="setistop">`istop` = #{istop}</sql>
+    <sql id="settitle_lk">`title` like  CONCAT('%',#{title_lk},'%') </sql>
+    <sql id="allsets">set
+            <include refid="setsn"/>,
+            <include refid="settitle"/>,
+            <include refid="setcontent"/>,
+            <include refid="setaddtime"/>,
+            <include refid="setendtime"/>,
+            <include refid="setstatus"/>,
+            <include refid="setistop"/>
+    </sql>
+    <sql id="orderby">order by createtime</sql>
+
+    <select id="get" parameterType="string" resultType="announcement">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="announcement">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="title != null">
+                and <include refid="settitle"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="addtime != null">
+                and <include refid="setaddtime"/>
+            </if>
+            <if test="endtime != null">
+                and <include refid="setendtime"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="istop != null">
+                and <include refid="setistop"/>
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="title != null">
+                and <include refid="settitle"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="addtime != null">
+                and <include refid="setaddtime"/>
+            </if>
+            <if test="endtime != null">
+                and <include refid="setendtime"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="istop != null">
+                and <include refid="setistop"/>
+            </if>
+            <if test="title_lk != null">
+                and <include refid="settitle_lk"/>
+            </if>
+        </where>
+    </select>
+
+    <select id="getList" parameterType="hashMap" resultType="announcement">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="uid != null">
+                and <include refid="setuid"/>
+            </if>
+            <if test="title != null">
+                and <include refid="settitle"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="addtime != null">
+                and <include refid="setaddtime"/>
+            </if>
+            <if test="endtime != null">
+                and <include refid="setendtime"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="istop != null">
+                and <include refid="setistop"/>
+            </if>
+            <if test="title_lk != null">
+                and <include refid="settitle_lk"/>
+            </if>
+            <if test="statuslist != null">
+				and status in 
+				<foreach item="item" index="index" collection="statuslist" open="(" separator="," close=")">
+                 	 #{item}
+            	</foreach>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insert" parameterType="announcement">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="announcement">
+        update
+        <include refid="table"/>
+        <include refid="allsets"/>
+        <include refid="whereid"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="sn != null">
+                <include refid="setsn"/>,
+            </if>
+            <if test="title != null">
+                <include refid="settitle"/>,
+            </if>
+            <if test="content != null">
+                <include refid="setcontent"/>,
+            </if>
+            <if test="addtime != null">
+                <include refid="setaddtime"/>,
+            </if>
+            <if test="endtime != null">
+                <include refid="setendtime"/>,
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>,
+            </if>
+            <if test="istop != null">
+                <include refid="setistop"/>
+            </if>
+        </set>
+        <include refid="whereid"/>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+
+</mapper>
+

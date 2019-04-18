@@ -1,0 +1,56 @@
+package com.supergenius.xo.finance.service;
+
+import java.util.List;
+
+import com.genius.model.base.entity.Pager;
+import com.genius.xo.base.service.BaseSO;
+import com.supergenius.xo.finance.entity.Subscribe;
+import com.supergenius.xo.finance.enums.EFollow;
+
+/**
+ * 订阅SO
+ * 
+ * @author LiJiacheng
+ */
+public interface SubscribeSO extends BaseSO<Subscribe> {
+
+	/**
+	 * 根据2个uid获取对象
+	 * @param uid
+	 * @param refuid
+	 * @return
+	 * @author YuYingJie
+	 */
+	Subscribe get(String uid, String refuid);
+
+	/**
+	 * 更新
+	 * @param uid
+	 * @param useruid
+	 * @param refuid
+	 * @param follow
+	 * @return
+	 * @author YuYingJie
+	 */
+	boolean updateFollow(String uid, String useruid, String refuid, EFollow follow);
+
+	/**
+	 * 添加
+	 * @param useruid
+	 * @param refuid
+	 * @param follow
+	 * @return
+	 * @author YuYingJie
+	 */
+	boolean add(String useruid, String refuid, EFollow follow);
+
+	/**
+	 * 获取我的
+	 * @param uid
+	 * @param pager
+	 * @return
+	 * @author YuYingJie
+	 */
+	List<Subscribe> getList(String useruid, Pager pager);
+
+}

@@ -1,0 +1,89 @@
+package com.supergenius.xo.finance.entity;
+
+import org.joda.time.DateTime;
+
+import com.genius.core.base.utils.DateUtil;
+import com.supergenius.xo.common.enums.EChannel;
+
+/**
+ * 
+ * @author ShangJianguo
+ */
+public class SearchResult {
+	
+	private String id;
+	private String title;
+	private EChannel channel;
+	private DateTime createtime;
+	private String createdate;
+	private String summary;
+	private String financetype;
+
+	public SearchResult(){
+	}
+	
+	public SearchResult(String id, String title, EChannel channel, DateTime createtime){
+		this.id = id;
+		this.title = title;
+		this.channel = channel;
+		this.createtime = createtime;
+		this.createdate = DateUtil.parseDateTime(createtime, DateUtil.FORMAT_DATE_CHINA);
+	}
+	
+	
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public EChannel getChannel() {
+		return channel;
+	}
+
+	public void setChannel(EChannel channel) {
+		this.channel = channel;
+	}
+
+	public DateTime getCreatetime() {
+		return createtime;
+	}
+
+	public void setCreatetime(DateTime createtime) {
+		this.createtime = createtime;
+	}
+
+	public String getSummary() {
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+
+	public String getFinancetype() {
+		return financetype;
+	}
+
+	public void setFinancetype(String financetype) {
+		this.financetype = financetype;
+	}
+
+	public String getCreatedate() {
+		return createdate;
+	}
+
+	public void setCreatedate(String createdate) {
+		this.createdate = createdate;
+	}
+}

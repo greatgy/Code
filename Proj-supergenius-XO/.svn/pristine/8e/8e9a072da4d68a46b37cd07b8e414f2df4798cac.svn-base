@@ -1,0 +1,233 @@
+package com.supergenius.xo.finance.serviceimpl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.genius.core.cache.rule.Rule;
+import com.genius.core.cache.utils.RedisUtil;
+import com.genius.model.base.entity.Pager;
+import com.genius.xo.baseadmin.serviceimpl.BaseSOImpl;
+import com.supergenius.core.rule.CountDebateVoteRule;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.finance.dao.DebateArticleDao;
+import com.supergenius.xo.finance.dao.DebateDao;
+import com.supergenius.xo.finance.entity.Debate;
+import com.supergenius.xo.finance.entity.DebateArticle;
+import com.supergenius.xo.finance.enums.EDebate;
+import com.supergenius.xo.finance.service.DebateSO;
+import com.supergenius.xo.user.dao.CommentsDao;
+import com.supergenius.xo.user.entity.Comments;
+import com.supergenius.xo.user.entity.User;
+import com.supergenius.xo.user.enums.EComment;
+import com.supergenius.xo.user.enums.ECommentConfig;
+
+/**
+ * 论战SOImpl
+ * @author liushaomin
+ */
+@Service
+public class DebateSOImpl extends BaseSOImpl<Debate> implements DebateSO{
+
+	@Autowired
+	private DebateDao dao;
+	
+	@Autowired
+	private DebateArticleDao debateArticleDao;
+
+	@Autowired
+	private CommentsDao commentsDao;
+
+	@Override
+	protected DebateDao getDao() {
+		return dao;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.DebateSO#updateState(java.lang.String[], java.lang.String)
+	 * @author: ShangJianguo
+	 * 2014-10-23 下午6:16:46
+	 */
+	@Override
+	public boolean updateState(String[] uids, int state) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put(MapperDict.state, state);
+		for (String item : uids) {
+			map.put(MapperDict.uid, item);
+			dao.updateFields(map);
+		}
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.DebateSO#addDebateWithArticle(com.supergenius.xo.finance.entity.Debate, java.util.List)
+	 * @author: ShangJianguo
+	 * 2014-10-24 下午12:27:00
+	 */
+	@Override
+	public boolean addDebateWithArticle(Debate debate, List<DebateArticle> articles) {
+		dao.insert(debate);
+		if (articles != null) {
+			for (DebateArticle item : articles) {
+				item.setDebateuid(debate.getUid());
+			}
+			debateArticleDao.insertList(articles);
+		}
+		return true;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.genius.xo.base.serviceimpl.BaseSOImpl#update(java.lang.Object)
+	 * @author: ShangJianguo
+	 * 2014-10-25 下午5:53:51
+	 */
+	@Override
+	public boolean update(Debate t) {
+		Debate debate= dao.get(t.getUid());
+		debate.set(t);
+		dao.update(debate);
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.DebateSO#getList(java.util.List)
+	 */
+	@Override
+	public List<Debate> getList(List<String> debateuid) {
+		List<Debate> list = new ArrayList<>();
+		if (debateuid==null || debateuid.size() == 0) {
+			return list;
+		}
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.uids, debateuid);
+		return dao.getList(map);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.DebateSO#getList(com.supergenius.xo.finance.enums.EDebate)
+	 * @author: ShangJianguo
+	 * 2014-10-31 下午4:24:18
+	 */
+	@Override
+	public List<Debate> getList(EDebate state, Pager pager) {
+		Map<String, Object> map = getParamMap(pager);
+		map.put(MapperDict.state, state);
+		return dao.getList(map);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.DebateSO#getCurDebate()
+	 * @author: ShangJianguo
+	 * 2014-11-3 上午11:41:33
+	 */
+	@Override
+	public Debate getCurDebate() {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.state, EDebate.begin);
+		map.put(MapperDict.ascDesc, MapperDict.desc);
+		return dao.getOne(map);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.DebateSO#getHistoryList(java.util.List)
+	 * @author: ShangJianguo
+	 * 2014-11-4 下午7:36:09
+	 */
+	@Override
+	public List<Debate> getHistoryList(List<String> debateuid, Pager pager) {
+		Map<String, Object> map = getParamMap(pager);
+		if (debateuid == null || debateuid.size() == 0) {
+			return dao.getList(map);
+		}
+		map.put(MapperDict.exceptuids, debateuid);
+		return dao.getList(map);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.DebateSO#get(int)
+	 * @author: ShangJianguo
+	 * 2014-11-4 下午7:59:22
+	 */
+	@Override
+	public Debate get(int oid) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.oid, oid);
+		Debate debate = dao.getOne(map);
+		if (debate != null) {
+			debate.setRedcommentcount(getCommentCount(debate.getUid(), true));
+			debate.setBluecommentcount(getCommentCount(debate.getUid(), false));
+		}
+		return debate;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.DebateSO#vote(java.lang.String, boolean, com.supergenius.xo.user.entity.User)
+	 * @author: ShangJianguo
+	 * 2014-11-7 下午2:05:22
+	 */
+	@Override
+	public boolean vote(String uid, boolean isred, int votenum, User user) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.uid, uid);
+		if (isred) {
+			map.put(MapperDict.countred, MapperDict.countred);
+		}else {
+			map.put(MapperDict.countblue, MapperDict.countblue);
+		}
+		map.put(MapperDict.votenum, votenum);
+		dao.vote(map);
+		
+		Comments comments = new Comments();
+		comments.setChannel(EChannel.debate);
+		comments.setFromuid(uid);
+		comments.setType(EComment.debatevote);
+		if (user != null) {
+			comments.setFromuseruid(user.getUid());
+			comments.setFromuseroid(user.getOid());
+			comments.setFromusername(user.getShowname());
+		}
+		if (isred) {
+			comments.plusConfig(ECommentConfig.debatered);
+		}else {
+			comments.plusConfig(ECommentConfig.debateblue);
+		}
+		commentsDao.insert(comments);
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.DebateSO#getCommentCount(java.lang.String, Boolean)
+	 * @author: ShangJianguo
+	 * 2014-11-19 下午2:45:37
+	 */
+	@Override
+	public int getCommentCount(String debateuid, Boolean isred) {
+		Rule rule = new CountDebateVoteRule(debateuid + isred);
+		int count = (int) RedisUtil.getIncr(rule);
+		if (count != -1) {
+			return count;
+		}
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.fromuid, debateuid);
+		if (isred != null) {
+			if (isred) {
+				map.put(MapperDict.config, ECommentConfig.debatered);
+			}else {
+				map.put(MapperDict.config, ECommentConfig.debateblue);
+			}
+		}
+		map.put(MapperDict.touid, null);
+		map.put(MapperDict.channel, EChannel.debate);
+		map.put(MapperDict.type, EComment.comment);
+		int num = commentsDao.getCount(map);
+		RedisUtil.setIncr(rule, num);
+		return num;
+	}
+	
+	
+}

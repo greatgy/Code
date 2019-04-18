@@ -1,0 +1,4 @@
+mongodb.url=mongodb://localhost:27017/sudoku_game
+mongodb.username=
+mongodb.password=
+mongodb.safe=true

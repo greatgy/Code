@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.finance.dao.DynamicDao">
+
+    <sql id="basecolumns">`uid`, `createtime` </sql>
+    <sql id="othercolumns"><include refid="basecolumns"/>, `useruid`, `username`, `title`, `content`, `img`, `praisecount`, `commentcount`, `ispublic`, `dynamic`, `status` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+    <sql id="table">dynamic</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="whereid">where uid = #{uid}</sql>
+    <sql id="allfields"><include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{uid},#{createtime},#{useruid},#{username},#{title},#{content},#{img},#{praisecount},#{commentcount},#{ispublic},#{dynamic},#{status}</sql>
+    <sql id="setuseruid">useruid = #{useruid}</sql>
+    <sql id="setusername">username = #{username}</sql>
+    <sql id="settitle">title = #{title}</sql>
+    <sql id="setcontent">content = #{content}</sql>
+    <sql id="setimg">img = #{img}</sql>
+    <sql id="setpraisecount">praisecount = #{praisecount}</sql>
+    <sql id="setcommentcount">commentcount = #{commentcount}</sql>
+    <sql id="setispublic">ispublic = #{ispublic}</sql>
+    <sql id="setdynamic">dynamic = #{dynamic}</sql>
+    <sql id="setstatus">status = #{status}</sql>
+    <sql id="allsets">set
+            <include refid="setuseruid"/>,
+            <include refid="setusername"/>,
+            <include refid="settitle"/>,
+            <include refid="setcontent"/>,
+            <include refid="setimg"/>,
+            <include refid="setpraisecount"/>,
+            <include refid="setcommentcount"/>,
+            <include refid="setispublic"/>,
+            <include refid="setdynamic"/>,
+            <include refid="setstatus"/>
+    </sql>
+    <sql id="orderby">order by createtime</sql>
+
+    <select id="get" parameterType="string" resultType="dynamic">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="dynamic">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="username != null">
+                and <include refid="setusername"/>
+            </if>
+            <if test="title != null">
+                and <include refid="settitle"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="img != null">
+                and <include refid="setimg"/>
+            </if>
+            <if test="praisecount != null">
+                and <include refid="setpraisecount"/>
+            </if>
+            <if test="commentcount != null">
+                and <include refid="setcommentcount"/>
+            </if>
+            <if test="ispublic != null">
+                and <include refid="setispublic"/>
+            </if>
+            <if test="dynamic != null">
+                and <include refid="setdynamic"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="username != null">
+                and <include refid="setusername"/>
+            </if>
+            <if test="title != null">
+                and <include refid="settitle"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="img != null">
+                and <include refid="setimg"/>
+            </if>
+            <if test="praisecount != null">
+                and <include refid="setpraisecount"/>
+            </if>
+            <if test="commentcount != null">
+                and <include refid="setcommentcount"/>
+            </if>
+            <if test="ispublic != null">
+                and <include refid="setispublic"/>
+            </if>
+            <if test="dynamic != null">
+                and <include refid="setdynamic"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </select>
+
+    <select id="getList" parameterType="hashMap" resultType="dynamic">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="username != null">
+                and <include refid="setusername"/>
+            </if>
+            <if test="title != null">
+                and <include refid="settitle"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="img != null">
+                and <include refid="setimg"/>
+            </if>
+            <if test="praisecount != null">
+                and <include refid="setpraisecount"/>
+            </if>
+            <if test="commentcount != null">
+                and <include refid="setcommentcount"/>
+            </if>
+            <if test="ispublic != null">
+                and <include refid="setispublic"/>
+            </if>
+            <if test="dynamic != null">
+                and <include refid="setdynamic"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insert" parameterType="dynamic">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="dynamic">
+        update
+        <include refid="table"/>
+        <include refid="allsets"/>
+        <include refid="whereid"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="useruid != null">
+                <include refid="setuseruid"/>,
+            </if>
+            <if test="username != null">
+                <include refid="setusername"/>,
+            </if>
+            <if test="title != null">
+                <include refid="settitle"/>,
+            </if>
+            <if test="content != null">
+                <include refid="setcontent"/>,
+            </if>
+            <if test="img != null">
+                <include refid="setimg"/>,
+            </if>
+            <if test="praisecount != null">
+                <include refid="setpraisecount"/>,
+            </if>
+            <if test="commentcount != null">
+                <include refid="setcommentcount"/>,
+            </if>
+            <if test="ispublic != null">
+                <include refid="setispublic"/>,
+            </if>
+            <if test="dynamic != null">
+                <include refid="setdynamic"/>,
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>
+            </if>
+        </set>
+        <include refid="whereid"/>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+
+</mapper>
+

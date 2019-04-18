@@ -1,0 +1,340 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.user.dao.TradeDetailDao">
+
+    <sql id="basecolumns">`uid`, `createtime` </sql>
+    <sql id="othercolumns"><include refid="basecolumns"/>, `useruid`, `tradeeventuid`, `money`, `accountcurr`, `sn`, `orderuid`, `type`, `name`, `site`, `successtime`, `failedtime`, `memo`, `status` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+    <sql id="table">tradedetail</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="whereid">where uid = #{uid}</sql>
+    <sql id="allfields"><include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{uid},#{createtime},#{useruid},#{tradeeventuid},#{money},#{accountcurr},#{sn},#{orderuid},#{type},#{name},#{site},#{successtime},#{failedtime},#{memo},#{status}</sql>
+    <sql id="setuseruid">`useruid` = #{useruid}</sql>
+    <sql id="useruidsin">useruid in 
+    	<foreach item="item" index="index" collection="useruids" open="(" separator="," close=")">  
+  			#{item}  
+ 		</foreach>  
+    </sql>
+    <sql id="settradeeventuid">`tradeeventuid` = #{tradeeventuid}</sql>
+    <sql id="setmoney">`money` = #{money}</sql>
+    <sql id="setaccountcurr">`accountcurr` = #{accountcurr}</sql>
+    <sql id="setsn">`sn` = #{sn}</sql>
+    <sql id="setsns">sn in (${sns})</sql>
+    <sql id="setorderuid">`orderuid` = #{orderuid}</sql>
+    <sql id="settype">`type` = #{type}</sql>
+    <sql id="setname">`name` = #{name}</sql>
+    <sql id="setsite">`site` = #{site}</sql>
+    <sql id="setsuccesstime">`successtime` = #{successtime}</sql>
+    <sql id="setfailedtime">`failedtime` = #{failedtime}</sql>
+    <sql id="setmemo">`memo` = #{memo}</sql>
+    <sql id="setstatus">`status` = #{status}</sql>
+    <sql id="allsets">set
+            <include refid="setuseruid"/>,
+            <include refid="settradeeventuid"/>,
+            <include refid="setmoney"/>,
+            <include refid="setaccountcurr"/>,
+            <include refid="setsn"/>,
+            <include refid="setorderuid"/>,
+            <include refid="settype"/>,
+            <include refid="setname"/>,
+            <include refid="setsite"/>,
+            <include refid="setsuccesstime"/>,
+            <include refid="setfailedtime"/>,
+            <include refid="setmemo"/>,
+            <include refid="setstatus"/>
+    </sql>
+    <sql id="orderby">order by createtime</sql>
+
+    <select id="get" parameterType="string" resultType="tradedetail">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="tradedetail">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="tradeeventuid != null">
+                and <include refid="settradeeventuid"/>
+            </if>
+            <if test="money != null">
+                and <include refid="setmoney"/>
+            </if>
+            <if test="accountcurr != null">
+                and <include refid="setaccountcurr"/>
+            </if>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="orderuid != null">
+                and <include refid="setorderuid"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="site != null">
+                and <include refid="setsite"/>
+            </if>
+            <if test="successtime != null">
+                and <include refid="setsuccesstime"/>
+            </if>
+            <if test="failedtime != null">
+                and <include refid="setfailedtime"/>
+            </if>
+            <if test="memo != null">
+                and <include refid="setmemo"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="useruids != null">
+                and <include refid="useruidsin"/>
+            </if>
+            <if test="tradeeventuid != null">
+                and <include refid="settradeeventuid"/>
+            </if>
+            <if test="money != null">
+                and <include refid="setmoney"/>
+            </if>
+            <if test="totalprice_gt != null">
+                and money &gt;= #{totalprice_gt}
+            </if>
+            <if test="totalprice_lt != null">
+                and money &lt;= #{totalprice_lt}
+            </if>
+            <if test="accountcurr != null">
+                and <include refid="setaccountcurr"/>
+            </if>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="orderuid != null">
+                and <include refid="setorderuid"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="site != null">
+                and <include refid="setsite"/>
+            </if>
+            <if test="successtime != null">
+                and <include refid="setsuccesstime"/>
+            </if>
+            <if test="failedtime != null">
+                and <include refid="setfailedtime"/>
+            </if>
+            <if test="memo != null">
+                and <include refid="setmemo"/>
+            </if>
+             <if test="createtime_gt != null">
+                and createtime &gt;= #{createtime_gt}
+            </if>
+            <if test="createtime_lt != null">
+                and createtime &lt;= #{createtime_lt}
+            </if>
+            <if test="sns != null">
+                and <include refid="setsns"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </select>
+
+    <select id="getList" parameterType="hashMap" resultType="tradedetail">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="useruids != null">
+                and <include refid="useruidsin"/>
+            </if>
+            <if test="tradeeventuid != null">
+                and <include refid="settradeeventuid"/>
+            </if>
+            <if test="money != null">
+                and <include refid="setmoney"/>
+            </if>
+            <if test="totalprice_gt != null">
+                and money &gt;= #{totalprice_gt}
+            </if>
+            <if test="totalprice_lt != null">
+                and money &lt;= #{totalprice_lt}
+            </if>
+            <if test="accountcurr != null">
+                and <include refid="setaccountcurr"/>
+            </if>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="orderuid != null">
+                and <include refid="setorderuid"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="site != null">
+                and <include refid="setsite"/>
+            </if>
+            <if test="successtime != null">
+                and <include refid="setsuccesstime"/>
+            </if>
+            <if test="failedtime != null">
+                and <include refid="setfailedtime"/>
+            </if>
+            <if test="memo != null">
+                and <include refid="setmemo"/>
+            </if>
+             <if test="createtime_gt != null">
+                and createtime &gt;= #{createtime_gt}
+            </if>
+            <if test="createtime_lt != null">
+                and createtime &lt;= #{createtime_lt}
+            </if>
+            <if test="sns != null">
+                and <include refid="setsns"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+    
+    <select id="getSumMoney" parameterType="hashMap" resultType="double">
+    	select sum(money)
+    	from
+    	<include refid="table"/>
+    	<where>
+    		<if test="site != null">
+    			<include refid="setsite"/>
+    		</if>
+    	</where>
+    </select>
+
+    <insert id="insert" parameterType="tradedetail">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="tradedetail">
+        update
+        <include refid="table"/>
+        <include refid="allsets"/>
+        <include refid="whereid"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="useruid != null">
+                <include refid="setuseruid"/>,
+            </if>
+            <if test="tradeeventuid != null">
+                <include refid="settradeeventuid"/>,
+            </if>
+            <if test="money != null">
+                <include refid="setmoney"/>,
+            </if>
+            <if test="accountcurr != null">
+                <include refid="setaccountcurr"/>,
+            </if>
+            <if test="sn != null">
+                <include refid="setsn"/>,
+            </if>
+            <if test="orderuid != null">
+                <include refid="setorderuid"/>,
+            </if>
+            <if test="type != null">
+                <include refid="settype"/>,
+            </if>
+            <if test="name != null">
+                <include refid="setname"/>,
+            </if>
+            <if test="site != null">
+                <include refid="setsite"/>,
+            </if>
+            <if test="successtime != null">
+                <include refid="setsuccesstime"/>,
+            </if>
+            <if test="failedtime != null">
+                <include refid="setfailedtime"/>,
+            </if>
+            <if test="memo != null">
+                <include refid="setmemo"/>,
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>
+            </if>
+        </set>
+        <include refid="whereid"/>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+
+</mapper>
+

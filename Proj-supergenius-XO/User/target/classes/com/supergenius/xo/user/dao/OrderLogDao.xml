@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.user.dao.OrderLogDao">
+
+    <sql id="basecolumns">`uid`, `createtime` </sql>
+    <sql id="othercolumns"><include refid="basecolumns"/>, `logsn`, `orderuid`, `ordersn`, `useruid`, `name`, `statefrom`, `stateto`, `status` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+    <sql id="table">`orderlog`</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="whereid">where uid = #{uid}</sql>
+    <sql id="allfields"><include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{uid},#{createtime},#{logsn},#{orderuid},#{ordersn},#{useruid},#{name},#{statefrom},#{stateto},#{status}</sql>
+    <sql id="setlogsn">logsn = #{logsn}</sql>
+    <sql id="setorderuid">orderuid = #{orderuid}</sql>
+    <sql id="orderuidin">orderuid in 
+        <foreach item="item" index="index" collection="orderuid" open="(" separator="," close=")">  
+  			#{item}  
+ 		</foreach>  
+    </sql>
+    <sql id="setordersn">ordersn = #{ordersn}</sql>
+    <sql id="setuseruid">useruid = #{useruid}</sql>
+    <sql id="setname">name = #{name}</sql>
+    <sql id="setstatefrom">statefrom = #{statefrom}</sql>
+    <sql id="setstateto">stateto = #{stateto}</sql>
+    <sql id="setstatus">status = #{status}</sql>
+    <sql id="allsets">set
+            <include refid="setlogsn"/>,
+            <include refid="setorderuid"/>,
+            <include refid="setordersn"/>,
+            <include refid="setuseruid"/>,
+            <include refid="setname"/>,
+            <include refid="setstatefrom"/>,
+            <include refid="setstateto"/>,
+            <include refid="setstatus"/>
+    </sql>
+    <sql id="orderby">order by createtime</sql>
+
+    <select id="get" parameterType="string" resultType="OrderLog">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="OrderLog">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="logsn != null">
+                and <include refid="setlogsn"/>
+            </if>
+            <if test="orderuid != null">
+                and <include refid="setorderuid"/>
+            </if>
+            <if test="ordersn != null">
+                and <include refid="setordersn"/>
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="statefrom != null">
+                and <include refid="setstatefrom"/>
+            </if>
+            <if test="stateto != null">
+                and <include refid="setstateto"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="logsn != null">
+                and <include refid="setlogsn"/>
+            </if>
+            <if test="orderuid != null">
+                and <include refid="orderuidin"/>
+            </if>
+            <if test="ordersn != null">
+                and <include refid="setordersn"/>
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="statefrom != null">
+                and <include refid="setstatefrom"/>
+            </if>
+            <if test="stateto != null">
+                and <include refid="setstateto"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </select>
+
+    <select id="getList" parameterType="hashMap" resultType="OrderLog">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="logsn != null">
+                and <include refid="setlogsn"/>
+            </if>
+            <if test="orderuid != null">
+                and <include refid="orderuidin"/>
+            </if>
+            <if test="ordersn != null">
+                and <include refid="setordersn"/>
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="statefrom != null">
+                and <include refid="setstatefrom"/>
+            </if>
+            <if test="stateto != null">
+                and <include refid="setstateto"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insert" parameterType="OrderLog">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="OrderLog">
+        update
+        <include refid="table"/>
+        <include refid="allsets"/>
+        <include refid="whereid"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="logsn != null">
+                <include refid="setlogsn"/>,
+            </if>
+            <if test="orderuid != null">
+                <include refid="setorderuid"/>,
+            </if>
+            <if test="ordersn != null">
+                <include refid="setordersn"/>,
+            </if>
+            <if test="useruid != null">
+                <include refid="setuseruid"/>,
+            </if>
+            <if test="name != null">
+                <include refid="setname"/>,
+            </if>
+            <if test="statefrom != null">
+                <include refid="setstatefrom"/>,
+            </if>
+            <if test="stateto != null">
+                <include refid="setstateto"/>,
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>
+            </if>
+        </set>
+        <include refid="whereid"/>
+    </update>
+    
+    <update id="removeOrder" parameterType="string">
+    	update
+    	<include refid="table"/>
+    	<set>
+            <if test="status != null">
+                <include refid="setstatus"/>
+            </if>
+        </set>
+        <where>
+        	<if test="orderuid != null">
+                and <include refid="setorderuid"/>
+            </if>
+        </where>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+
+</mapper>
+

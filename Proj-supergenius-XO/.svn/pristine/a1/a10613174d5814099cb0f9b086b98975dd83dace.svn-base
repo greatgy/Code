@@ -1,0 +1,100 @@
+package com.supergenius.xo.finance.serviceimpl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.genius.model.base.entity.Pager;
+import com.genius.xo.base.serviceimpl.BaseSOImpl;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.finance.dao.SubscribeDao;
+import com.supergenius.xo.finance.entity.Subscribe;
+import com.supergenius.xo.finance.enums.EFollow;
+import com.supergenius.xo.finance.service.SubscribeSO;
+
+/**
+ * 订阅SO实现
+ * 
+ * @author LiJiacheng
+ */
+@Service
+public class SubscribeSOImpl extends BaseSOImpl<Subscribe> implements SubscribeSO {
+
+	@Autowired
+	private SubscribeDao dao;
+
+	@Override
+	protected SubscribeDao getDao() {
+		return dao;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.SubscribeSO#get(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Subscribe get(String uid, String refuid) {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.useruid, uid);
+		map.put(MapperDict.refuseruid, refuid);
+		Subscribe subscribe = dao.getOne(map);
+		if (subscribe == null) {
+			map.clear();
+			map.put(MapperDict.useruid, refuid);
+			map.put(MapperDict.refuseruid, uid);
+			return dao.getOne(map);
+		}
+		return subscribe;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.SubscribeSO#updateFollow(java.lang.String, java.lang.String, java.lang.String, com.supergenius.xo.finance.enums.EFollow)
+	 */
+	@Override
+	public boolean updateFollow(String uid, String useruid, String refuid, EFollow follow) {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.uid, uid);
+		if (useruid != null) {
+			map.put(MapperDict.useruid, useruid);
+		}
+		if (refuid != null) {
+			map.put(MapperDict.refuseruid, refuid);
+		}
+		map.put(MapperDict.follow, follow);
+		return dao.updateFields(map);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.SubscribeSO#add(java.lang.String, java.lang.String, com.supergenius.xo.finance.enums.EFollow)
+	 */
+	@Override
+	public boolean add(String useruid, String refuid, EFollow follow) {
+		Subscribe subscribe = new Subscribe();
+		subscribe.setUseruid(useruid);
+		subscribe.setRefuseruid(refuid);
+		subscribe.setFollow(follow);
+		return dao.insert(subscribe);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.SubscribeSO#getList(java.lang.String, com.genius.model.base.entity.Pager)
+	 */
+	@Override
+	public List<Subscribe> getList(String useruid, Pager pager) {
+		Map<String, Object> map;
+		if (pager != null) {
+			map = getParamMap(pager);
+		} else {
+			map = new HashMap<>();
+		}
+		map.put(MapperDict.useruid, useruid);
+		return dao.getMySubscribes(map);
+	}
+
+}

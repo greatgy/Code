@@ -1,0 +1,47 @@
+package com.supergenius.xo.life.enums;
+
+import java.util.Locale;
+
+import com.genius.core.base.utils.I18N;
+
+/**
+ * 年级枚举类
+ * 
+ * @author 杨光
+ * @date 2018年5月9日12:04:54
+ */
+public enum EGrade {
+	
+	six("0"),//六年级
+	seven("1"),//七年级
+	eight("2"),//八年级
+	nine("3");//九年级
+	
+	private final String value;
+
+	private EGrade(String v) {
+		this.value = v;
+	}
+
+	public String toString() {
+		return this.value;
+	}
+
+	public static EGrade get(int v) {
+		String str = String.valueOf(v);
+		return get(str);
+	}
+
+	public static EGrade get(String str) {
+		for (EGrade e : values()) {
+			if (e.toString().equals(str)) {
+				return e;
+			}
+		}
+		return null;
+	}
+	
+	public String getName() {
+		return I18N.getEnumName(this, Locale.CHINA);
+	}
+}

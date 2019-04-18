@@ -1,0 +1,22 @@
+package com.supergenius.xo.finance.service;
+
+import com.genius.xo.base.service.BaseSO;
+import com.supergenius.xo.finance.entity.Catalogue;
+
+/**
+ * 目录SO
+ * @author XueZhenYong
+ * @date 2017年12月29日下午3:24:36
+ */
+public interface CatalogueSO extends BaseSO<Catalogue>{
+
+	/**
+	 * 根据cid获取一个分类板块
+	 * 
+	 * @param cid
+	 * @return
+	 * @author ChenQi
+	 * @date 2017年11月15日15:19:20
+	 */
+	Catalogue get(int cid);
+}

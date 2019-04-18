@@ -1,0 +1,307 @@
+package com.supergenius.xo.finance.entity;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.genius.core.base.annotation.Json;
+import com.genius.core.base.annotation.Maps;
+import com.genius.core.base.annotation.MapsIgnore;
+import com.genius.core.base.utils.DateUtil;
+import com.genius.core.base.utils.StrUtil;
+import com.genius.core.base.utils.WebUtil;
+import com.genius.core.cache.rule.Rule;
+import com.genius.core.cache.utils.RedisUtil;
+import com.supergenius.core.rule.ClickCountTopicRule;
+import com.supergenius.core.rule.CommentCountTopicRule;
+import com.supergenius.core.rule.PrizeCountTopicRule;
+import com.supergenius.xo.common.entity.BaseEntity;
+import com.supergenius.xo.finance.enums.ETopicState;
+import com.supergenius.xo.user.entity.Comments;
+import com.supergenius.xo.user.entity.User;
+
+/**
+ * 话题实体
+ * 
+ * @author liushaomin
+ */
+
+@Json(value = { "uid", "oid", "status", "createtime", "updatetime" }, ignoreTypeStrategy = { Json.webStrategy, Json.appStrategy }, strategy = { Json.webStrategy, Json.appStrategy })
+@JsonIgnoreProperties(value = { "uid" })
+@Maps(strategy = { Maps.searchStrategy })
+@MapsIgnore(strategy = Maps.searchStrategy, value = { "authorUser", "state", "publishtime", "comments", "topicStateName", "statusName", "tid", "prizecount", "isprize", "isInit", "isDisable",
+		"isWait", "isEnable", "isEnd", "isStart", "commentcount", "iscollect", "beforetimeStr", "isOfficecafe", "clickcount", "publishtimeStr" })
+public class Topic extends BaseEntity {
+
+	private static final long serialVersionUID = -3261487991443720914L;
+	private String useruid;
+	@Json(strategy = { Json.webStrategy, Json.appStrategy })
+	private String title;
+	@Json(strategy = { Json.webStrategy, Json.appStrategy })
+	private String author;
+	@Json(strategy = { Json.webStrategy, Json.appStrategy })
+	private String content;
+	@Json(strategy = { Json.webStrategy, Json.appStrategy })
+	private String imglittle;
+	private String imgmedium;
+	private String imgbig;
+	private String imgoriginal;
+	@Json(strategy = Json.webStrategy)
+	private boolean istop;
+	@Json(strategy = Json.webStrategy)
+	private boolean isrecommend;
+	private boolean ispublic;
+	private int config;
+	private User authorUser;// 作者
+	private ETopicState state; // 话题审核状态(审核中、已发布、未通过)
+	private DateTime publishtime; // 话题发布时间
+	private List<Comments> comments = new ArrayList<>();
+
+	public String getUseruid() {
+		return useruid;
+	}
+
+	public void setUseruid(String useruid) {
+		this.useruid = useruid;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getImglittle() {
+		return imglittle;
+	}
+
+	public void setImglittle(String imglittle) {
+		this.imglittle = imglittle;
+	}
+
+	public String getImgmedium() {
+		return imgmedium;
+	}
+
+	public void setImgmedium(String imgmedium) {
+		this.imgmedium = imgmedium;
+	}
+
+	public String getImgbig() {
+		return imgbig;
+	}
+
+	public void setImgbig(String imgbig) {
+		this.imgbig = imgbig;
+	}
+
+	public String getImgoriginal() {
+		return imgoriginal;
+	}
+
+	public void setImgoriginal(String imgoriginal) {
+		this.imgoriginal = imgoriginal;
+	}
+
+	public boolean isIstop() {
+		return istop;
+	}
+
+	public void setIstop(boolean istop) {
+		this.istop = istop;
+	}
+
+	public boolean isIsrecommend() {
+		return isrecommend;
+	}
+
+	public void setIsrecommend(boolean isrecommend) {
+		this.isrecommend = isrecommend;
+	}
+
+	public boolean isIspublic() {
+		return ispublic;
+	}
+
+	public void setIspublic(boolean ispublic) {
+		this.ispublic = ispublic;
+	}
+
+	public int getConfig() {
+		return config;
+	}
+
+	public void setConfig(int config) {
+		this.config = config;
+	}
+
+	public User getAuthorUser() {
+		return authorUser;
+	}
+
+	public void setAuthorUser(User authorUser) {
+		this.authorUser = authorUser;
+	}
+
+	public ETopicState getState() {
+		return state;
+	}
+
+	public void setState(ETopicState state) {
+		this.state = state;
+	}
+
+	public boolean getIsTopicStateInit() {
+		return this.state == ETopicState.init;
+	}
+
+	public boolean getIsTopicStateSucceed() {
+		return this.state == ETopicState.succeed;
+	}
+
+	public boolean getIsTopicStateFailed() {
+		return this.state == ETopicState.failed;
+	}
+
+	@Json(strategy = { Json.webStrategy, Json.appStrategy })
+	public String getTopicStateName() {
+		return ETopicState.getName(state, Locale.CHINA);
+	}
+
+	public DateTime getPublishtime() {
+		return publishtime;
+	}
+
+	public void setPublishtime(DateTime publishtime) {
+		this.publishtime = publishtime;
+	}
+
+	@Json(strategy = Json.allStrategy)
+	public String getPublishtimeStr() {
+		return getPublishtime() == null ? null : getPublishtime().toString(DateUtil.FORMAT_DATETIME_CHINA);
+	}
+
+	/**
+	 * 针对性更新
+	 * 
+	 * @param t
+	 */
+	public void set(Topic t) {
+		this.title = t.getTitle();
+		this.content = t.getContent();
+		this.state = t.getState();
+		if (StringUtils.isNotEmpty(t.getImgoriginal())) {
+			this.setImgoriginal(t.getImgoriginal());
+			this.setImgbig(t.getImgbig());
+			this.setImgmedium(t.getImgmedium());
+			this.setImglittle(t.getImglittle());
+		}
+	}
+
+	/**
+	 * 图片处理
+	 * 
+	 * @param imgs
+	 */
+	public void setimgs(String[] imgs) {
+		this.imgoriginal = imgs[0];// 原图
+		this.imgbig = imgs[1];
+		this.imgmedium = imgs[2];
+		this.imglittle = imgs[3];
+	}
+
+	/**
+	 * 得到点击(阅读)数
+	 * 
+	 * @return
+	 */
+	@Json(strategy = { Json.webStrategy, Json.appStrategy })
+	public long getClickcount() {
+		Rule rule = new ClickCountTopicRule(this.uid);
+		clickcount = RedisUtil.getIncr(rule);
+		return clickcount > 0 ? clickcount : 0;
+	}
+
+	/**
+	 * 得到评论数
+	 * 
+	 * @return
+	 */
+	@Json(strategy = { Json.webStrategy, Json.appStrategy })
+	public long getCommentcount() {
+		Rule rule = new CommentCountTopicRule(this.uid);
+		commentcount = RedisUtil.getIncr(rule);
+		return commentcount > 0 ? commentcount : 0;
+	}
+
+	/**
+	 * 得到赞数
+	 * 
+	 * @return
+	 */
+	@Json(strategy = { Json.webStrategy, Json.appStrategy })
+	public Long getPrizecount() {
+		Rule rule = new PrizeCountTopicRule(this.uid);
+		admirecount = RedisUtil.getIncr(rule);
+		return admirecount > 0 ? admirecount : 0;
+	}
+
+	public List<Comments> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<Comments> comments) {
+		this.comments = comments;
+	}
+
+	public boolean getIsprize() {
+		return isprize;
+	}
+
+	public void setIsprize(Boolean isprize) {
+		this.isprize = isprize;
+	}
+
+	public boolean getIscollect() {
+		return iscollect;
+	}
+
+	public void setIscollect(Boolean iscollect) {
+		this.iscollect = iscollect;
+	}
+	
+	public String getSummary() {
+		if (StrUtil.isNotEmpty(content)) {
+			String ctx = WebUtil.clearHtml(content).toString();
+			if (ctx != null && ctx.length() > 600) {
+				return ctx.substring(0, 600);
+			} else {
+				return ctx;
+			}
+		}
+		return null;
+	}
+
+}

@@ -1,0 +1,217 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.gupage.dao.ContentDao">
+
+    <sql id="basecolumns">`uid`, `createtime` </sql>
+    <sql id="othercolumns">`name`, `type`, `data`, `summary`, `content`, `originurl`, `status`, `adminuid` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+    <sql id="table">content</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="whereid">where uid = #{uid}</sql>
+    <sql id="allfields"><include refid="basecolumns"/>, <include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{uid},#{createtime},#{name},#{type},#{data},#{summary},#{content},#{originurl},#{status},#{adminuid}</sql>
+    <sql id="setname">`name` = #{name}</sql>
+    <sql id="settype">`type` = #{type}</sql>
+    <sql id="setdata">`data` = #{data}</sql>
+    <sql id="setsummary">`summary` = #{summary}</sql>
+    <sql id="setcontent">`content` = #{content}</sql>
+    <sql id="setoriginurl">`originurl` = #{originurl}</sql>
+    <sql id="setstatus">`status` = #{status}</sql>
+    <sql id="setadminuid">`adminuid` = #{adminuid}</sql>
+    <sql id="allsets">set
+            <include refid="setname"/>,
+            <include refid="settype"/>,
+            <include refid="setdata"/>,
+            <include refid="setsummary"/>,
+            <include refid="setcontent"/>,
+            <include refid="setoriginurl"/>,
+            <include refid="setstatus"/>,
+            <include refid="setadminuid"/>
+    </sql>
+    <sql id="orderby">order by createtime</sql>
+
+    <select id="get" parameterType="string" resultType="content">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="content">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="summary != null">
+                and <include refid="setsummary"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="originurl != null">
+                and <include refid="setoriginurl"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="adminuid != null">
+                and <include refid="setadminuid"/>
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="summary != null">
+                and <include refid="setsummary"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="originurl != null">
+                and <include refid="setoriginurl"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="adminuid != null">
+                and <include refid="setadminuid"/>
+            </if>
+        </where>
+    </select>
+
+    <select id="getList" parameterType="hashMap" resultType="content">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="summary != null">
+                and <include refid="setsummary"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="originurl != null">
+                and <include refid="setoriginurl"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="adminuid != null">
+                and <include refid="setadminuid"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insert" parameterType="content">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="content">
+        update
+        <include refid="table"/>
+        <include refid="allsets"/>
+        <include refid="whereid"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="name != null">
+                <include refid="setname"/>,
+            </if>
+            <if test="type != null">
+                <include refid="settype"/>,
+            </if>
+            <if test="data != null">
+                <include refid="setdata"/>,
+            </if>
+            <if test="summary != null">
+                <include refid="setsummary"/>,
+            </if>
+            <if test="content != null">
+                <include refid="setcontent"/>,
+            </if>
+            <if test="originurl != null">
+                <include refid="setoriginurl"/>,
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>,
+            </if>
+            <if test="adminuid != null">
+                <include refid="setadminuid"/>
+            </if>
+        </set>
+        <include refid="whereid"/>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+
+</mapper>
+

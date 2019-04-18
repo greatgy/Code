@@ -1,0 +1,20 @@
+﻿/*==============================================================*/
+/* DBMS name:      MySQL 5.5                                                                  */
+/* Created on:     18:59 2016/5/27                                                            */
+/*==============================================================*/
+
+/*==============================================================*/
+/*
+DataBase: WebDB
+Author:        XieMing
+Description:    GWebDB1.0版本修改的表结构
+CreatedDate:   19:01 2013/7/14
+ModifyDate:    19:01 2016/5/27
+*/
+
+/*==============================================================*/
+/*
+ALTER TABLE content MODIFY `data` default null;
+*/
+
+ALTER TABLE `content` MODIFY COLUMN `data` varchar(1000) default null comment '以json的方式记录';

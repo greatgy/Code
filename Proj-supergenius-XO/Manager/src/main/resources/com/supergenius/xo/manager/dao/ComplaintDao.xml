@@ -1,0 +1,508 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.manager.dao.ComplaintDao">
+	
+	<sql id="fromuserinfotable">GUserDB2.`userinfo` as f</sql>
+	<sql id="fromuseron">c.`fromuseruid` = f.`uid`</sql>
+	<sql id="fromusername_lk">f.`showname` like CONCAT('%',#{fromusername_lk},'%')</sql>
+	<sql id="touserinfotable">GUserDB2.`userinfo` as t</sql>
+	<sql id="touseron">c.`touseruid` = t.`uid`</sql>
+	<sql id="tousername_lk">t.`showname` like CONCAT('%',#{tousername_lk},'%')</sql>
+	<sql id="complainttable">complaint as c</sql>
+	<sql id="complaintcolumns">c.`uid`, c.`createtime`, `fromuseruid`, `touseruid`, `refuid`, `refname`, `type`, `tousertype`, c.`desc`, c.`file`, `result`, c.`status`, c.`updatetime`</sql>
+	<sql id="pkscheduletable">GManagerDB.`pkschedule`</sql>
+	<sql id="pkscheduleon">c.`refuid` = pkschedule.`uid`</sql>
+	<sql id="appreplytable">GManagerDB.`appreply`</sql>
+	<sql id="appreplyon">c.`refuid` = appreply.`uid`</sql>
+	<sql id="setpkschedulemajor">pkschedule.`major` = #{major}</sql>
+	<sql id="setappreplymajor">appreply.`major` = #{major}</sql>
+	<sql id="distinctcount">count(distinct c.uid)</sql>
+
+    <sql id="basecolumns">`uid`, `createtime` </sql>
+    <sql id="othercolumns"><include refid="basecolumns"/>, `fromuseruid`, `touseruid`, `refuid`, `refname`, `type`, `tousertype`, `desc`, `file`, `result`, `status` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+    <sql id="table">complaint</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="whereid">where uid = #{uid}</sql>
+    <sql id="allfields"><include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{uid},#{createtime},#{fromuseruid},#{touseruid},#{refuid},#{refname},#{type},#{tousertype},#{desc},#{file},#{result},#{status}</sql>
+    <sql id="setfromuseruid">`fromuseruid` = #{fromuseruid}</sql>
+    <sql id="settouseruid">`touseruid` = #{touseruid}</sql>
+    <sql id="setrefuid">`refuid` = #{refuid}</sql>
+    <sql id="setuid">uid = #{uid}</sql>
+    <sql id="setrefname">`refname` = #{refname}</sql>
+    <sql id="setrefname_lk">`refname` like CONCAT('%',#{refname_lk},'%')</sql>
+    <sql id="settype">`type` = #{type}</sql>
+    <sql id="settousertype">`tousertype` = #{tousertype}</sql>
+    <sql id="setdesc">`desc` = #{desc}</sql>
+    <sql id="setfile">`file` = #{file}</sql>
+    <sql id="setresult">`result` = #{result}</sql>
+    <sql id="setstatus">`status` = #{status}</sql>
+    <sql id="allsets">set
+            <include refid="setfromuseruid"/>,
+            <include refid="settouseruid"/>,
+            <include refid="setrefuid"/>,
+            <include refid="setrefname"/>,
+            <include refid="settype"/>,
+            <include refid="settousertype"/>,
+            <include refid="setdesc"/>,
+            <include refid="setfile"/>,
+            <include refid="setresult"/>,
+            <include refid="setstatus"/>
+    </sql>
+    <sql id="orderby">order by createtime</sql>
+
+    <select id="get" parameterType="string" resultType="complaint">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="complaint">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="uid != null">
+                and <include refid="setuid"/>
+            </if>         
+            <if test="fromuseruid != null">
+                and <include refid="setfromuseruid"/>
+            </if>
+            <if test="touseruid != null">
+                and <include refid="settouseruid"/>
+            </if>
+            <if test="refuid != null">
+                and <include refid="setrefuid"/>
+            </if>
+            <if test="refname != null">
+                and <include refid="setrefname"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="tousertype != null">
+                and <include refid="settousertype"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="result != null">
+                and <include refid="setresult"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="fromuseruid != null">
+                and <include refid="setfromuseruid"/>
+            </if>
+            <if test="touseruid != null">
+                and <include refid="settouseruid"/>
+            </if>
+            <if test="refuid != null">
+                and <include refid="setrefuid"/>
+            </if>
+            <if test="refname != null">
+                and <include refid="setrefname"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="tousertype != null">
+                and <include refid="settousertype"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="result != null">
+                and <include refid="setresult"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </select>
+
+    <select id="searchCount" parameterType="hashMap" resultType="int">
+        select
+	   <include refid="distinctcount"/>
+        from
+        <include refid="complainttable"/>
+        left join
+        <include refid="touserinfotable"/>
+        on
+        <include refid="touseron"/>
+        left join
+        <include refid="fromuserinfotable"/>
+        on
+        <include refid="fromuseron"/>
+        left join
+        <include refid="pkscheduletable"/>
+        on
+        <include refid="pkscheduleon"/>
+        left join
+        <include refid="appreplytable"/>
+        on
+        <include refid="appreplyon"/>
+        <where>
+            <if test="fromusername_lk != null">
+               ( <include refid="fromusername_lk"/>
+            </if>
+            <if test="refname_lk != null">
+                or <include refid="setrefname_lk"/>
+            </if>
+            <if test="tousername_lk != null">
+                or <include refid="tousername_lk"/>
+                )
+            </if>
+            <if test="fromuseruid != null">
+                and <include refid="setfromuseruid"/>
+            </if>
+            <if test="touseruid != null">
+                and <include refid="settouseruid"/>
+            </if>
+            <if test="refuid != null">
+                and <include refid="setrefuid"/>
+            </if>
+            <if test="refname != null">
+                and <include refid="setrefname"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="tousertype != null">
+                and <include refid="settousertype"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="result != null">
+                and <include refid="setresult"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="major != null">
+                and (<include refid="setpkschedulemajor"/>
+                or <include refid="setappreplymajor"/>
+                )
+            </if>
+        </where>
+    </select>
+
+    <select id="getList" parameterType="hashMap" resultType="complaint">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="fromuseruid != null">
+                and <include refid="setfromuseruid"/>
+            </if>
+            <if test="touseruid != null">
+                and <include refid="settouseruid"/>
+            </if>
+            <if test="refuid != null">
+                and <include refid="setrefuid"/>
+            </if>
+            <if test="refname != null">
+                and <include refid="setrefname"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="tousertype != null">
+                and <include refid="settousertype"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="result != null">
+                and <include refid="setresult"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+    
+    <select id="search" parameterType="hashMap" resultType="complaint">
+        select
+	   <include refid="complaintcolumns"/>
+        from
+        (
+        <include refid="complainttable"/>
+        left join
+        <include refid="touserinfotable"/>
+        on
+        <include refid="touseron"/>
+        )
+        left join
+        <include refid="fromuserinfotable"/>
+        on
+        <include refid="fromuseron"/>
+        <where>
+            <if test="fromusername_lk != null">
+               ( <include refid="fromusername_lk"/>
+            </if>
+            <if test="refname_lk != null">
+                or <include refid="setrefname_lk"/>
+            </if>
+            <if test="tousername_lk != null">
+                or <include refid="tousername_lk"/>
+                )
+            </if>
+            <if test="fromuseruid != null">
+                and <include refid="setfromuseruid"/>
+            </if>
+            <if test="touseruid != null">
+                and <include refid="settouseruid"/>
+            </if>
+            <if test="refuid != null">
+                and <include refid="setrefuid"/>
+            </if>
+            <if test="refname != null">
+                and <include refid="setrefname"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="tousertype != null">
+                and <include refid="settousertype"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="result != null">
+                and <include refid="setresult"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+    
+   <select id="searchList" parameterType="hashMap" resultType="complaint">
+        select distinct c.`uid`,
+	   <include refid="complaintcolumns"/>
+        from
+        <include refid="complainttable"/>
+        left join
+        <include refid="touserinfotable"/>
+        on
+        <include refid="touseron"/>
+        left join
+        <include refid="fromuserinfotable"/>
+        on
+        <include refid="fromuseron"/>
+         left join
+        <include refid="pkscheduletable"/>
+        on
+        <include refid="pkscheduleon"/>
+        left join
+        <include refid="appreplytable"/>
+        on
+        <include refid="appreplyon"/>
+        <where>
+            <if test="fromusername_lk != null">
+               ( <include refid="fromusername_lk"/>
+            </if>
+            <if test="refname_lk != null">
+                or <include refid="setrefname_lk"/>
+            </if>
+            <if test="tousername_lk != null">
+                or <include refid="tousername_lk"/>
+                )
+            </if>
+            <if test="fromuseruid != null">
+                and <include refid="setfromuseruid"/>
+            </if>
+            <if test="touseruid != null">
+                and <include refid="settouseruid"/>
+            </if>
+            <if test="refuid != null">
+                and <include refid="setrefuid"/>
+            </if>
+            <if test="refname != null">
+                and <include refid="setrefname"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="tousertype != null">
+                and <include refid="settousertype"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="result != null">
+                and <include refid="setresult"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+             <if test="major != null">
+                and (<include refid="setpkschedulemajor"/>
+                or <include refid="setappreplymajor"/>
+                )
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+
+    <insert id="insert" parameterType="complaint">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="complaint">
+        update
+        <include refid="table"/>
+        <include refid="allsets"/>
+        <include refid="whereid"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="fromuseruid != null">
+                <include refid="setfromuseruid"/>,
+            </if>
+            <if test="touseruid != null">
+                <include refid="settouseruid"/>,
+            </if>
+            <if test="refuid != null">
+                <include refid="setrefuid"/>,
+            </if>
+            <if test="refname != null">
+                <include refid="setrefname"/>,
+            </if>
+            <if test="type != null">
+                <include refid="settype"/>,
+            </if>
+            <if test="tousertype != null">
+                <include refid="settousertype"/>,
+            </if>
+            <if test="desc != null">
+                <include refid="setdesc"/>,
+            </if>
+            <if test="file != null">
+                <include refid="setfile"/>,
+            </if>
+            <if test="result != null">
+                <include refid="setresult"/>,
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>
+            </if>
+        </set>
+        <include refid="whereid"/>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+
+</mapper>
+

@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.finance.dao.ContributorDao">
+	<sql id="basecolumns">`oid`,`uid`,`createtime`</sql>
+	<sql id="othercolumns">`name`, `useruid`, `email`, `qq`, `phone`, `summary`, `avatarbig`, `avatarmedium`, `avatarlittle`, `avataroriginal`,`status`</sql>
+	<sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>,`updatetime`</sql>
+	<sql id="table">contributor</sql>
+	<sql id="whereid">where uid = #{uid}</sql>
+	<sql id="allfields"><include refid="basecolumns"/>, <include refid="othercolumns"/></sql>
+	<sql id="allparams">#{oid},#{uid},#{createtime},#{name},#{useruid},#{email},#{qq},#{phone},#{summary},#{avatarbig},#{avatarmedium},#{avatarlittle},#{avataroriginal},#{status}</sql>
+	<sql id="count">count(*)</sql>
+	<sql id="setoid">oid = #{oid}</sql>
+	<sql id="setuid">uid = #{uid}</sql>
+	<sql id="setname">name = #{name}</sql>
+	<sql id="setuseruid">useruid = #{useruid}</sql>
+	<sql id="setemail">email = #{email}</sql>
+	<sql id="setqq">qq = #{qq}</sql>
+	<sql id="setphone">phone = #{phone}</sql>
+	<sql id="setsummary">summary = #{summary}</sql>
+	<sql id="setavatarbig">avatarbig = #{avatarbig}</sql>
+	<sql id="setavatarmedium">avatarmedium = #{avatarmedium}</sql>
+	<sql id="setavatarlittle">avatarlittle = #{avatarlittle}</sql>
+	<sql id="setavataroriginal">avataroriginal = #{avataroriginal}</sql>
+	<sql id="setstatus">status = #{status}</sql>
+	<sql id="setcreatetimestart">createtime &gt;= #{createtimestart}</sql>
+	<sql id="setcreatetimeend">createtime &lt;= #{createtimeend}</sql>
+	<sql id="allsets">set 
+	<include refid="setoid"/>,
+    <include refid="setuid"/>,
+	<include refid="setname"/>,
+	<include refid="setuseruid"/>,
+	<include refid="setemail"/>,
+	<include refid="setqq"/>,
+	<include refid="setphone"/>,
+	<include refid="setsummary"/>,
+	<include refid="setavatarbig"/>,
+	<include refid="setavatarmedium"/>,
+	<include refid="setavatarlittle"/>,
+	<include refid="setavataroriginal"/>,
+	<include refid="setstatus"/></sql>
+	<sql id="orderby">order by createtime</sql>
+	
+	<select id="get" parameterType="string" resultType="contributor">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<include refid="whereid"/>
+	</select>
+	
+	<select id="getOne" parameterType="hashMap" resultType="contributor">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="oid != null">
+				and <if test="oid != null" />
+			</if>
+			<if test="uid != null">
+			    and <include refid="setuid"/>
+			</if>
+			<if test="name != null">
+				and <include refid="setname"/>
+			</if>
+			<if test="useruid != null">
+				and <include refid="setuseruid"/>
+			</if>
+			<if test="email != null">
+				and <include refid="setemail"/>
+			</if>
+			<if test="qq != null">
+				and <include refid="setqq"/>
+			</if>
+			<if test="phone != null">
+				and <include refid="setphone"/>
+			</if>
+			<if test="summary != null">
+				and <include refid="setsummary"/>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+		</where>
+		LIMIT 0,1
+	</select>
+	
+	<select id="getCount" parameterType="hashMap" resultType="int">
+		select
+		<include refid="count" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="oid != null">
+				and <if test="oid != null"/>
+			</if>
+			<if test="uid != null">
+			    and <include refid="setuid"/>
+			</if>
+			<if test="name != null">
+				and <include refid="setname"/>
+			</if>
+			<if test="useruid != null">
+				and <include refid="setuseruid"/>
+			</if>
+			<if test="email != null">
+				and <include refid="setemail"/>
+			</if>
+			<if test="qq != null">
+				and <include refid="setqq"/>
+			</if>
+			<if test="phone != null">
+				and <include refid="setphone"/>
+			</if>
+			<if test="summary != null">
+				and <include refid="setsummary"/>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+			<if test="createtimestart != null">
+				and <include refid="setcreatetimestart" />
+			</if>
+			<if test="createtimeend != null">
+				and <include refid="setcreatetimeend" />
+			</if>
+		</where>
+	</select>
+	
+	<select id="getList" parameterType="hashMap" resultType="contributor">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="oid != null">
+				and <if test="oid != null"/>
+			</if>
+			<if test="uid != null">
+			    and <include refid="setuid"/>
+			</if>
+			<if test="name != null">
+				and <include refid="setname"/>
+			</if>
+			<if test="useruid != null">
+				and <include refid="setuseruid"/>
+			</if>
+			<if test="email != null">
+				and <include refid="setemail"/>
+			</if>
+			<if test="qq != null">
+				and <include refid="setqq"/>
+			</if>
+			<if test="phone != null">
+				and <include refid="setphone"/>
+			</if>
+			<if test="summary != null">
+				and <include refid="setsummary"/>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+			<if test="createtimestart != null">
+				and <include refid="setcreatetimestart" />
+			</if>
+			<if test="createtimeend != null">
+				and <include refid="setcreatetimeend" />
+			</if>
+		</where>
+		<!-- 处理orderby语句 -->
+		<choose>
+			<when test="orderBy != null">
+				${orderBy}
+			</when>
+			<otherwise>
+				<include refid="orderby"/>
+				<if test="ascDesc != null">
+					${ascDesc}
+				</if>
+			</otherwise>
+		</choose>
+		<!-- 处理limit语句 -->
+		<trim prefix="LIMIT" prefixOverrides=",">
+			<if test="startIndex != null and pageSize != null">
+				${startIndex}
+			</if>
+			<if test="pageSize != null">
+			 , ${pageSize}
+			 </if>
+		</trim>
+	</select>
+	
+	<insert id="insert" parameterType="contributor">
+		<selectKey resultType="int" keyProperty="oid">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into
+		<include refid="table"/>
+		(<include refid="allfields"/>)
+		values (
+			<include refid="allparams"/>
+		)
+	</insert>
+	
+	<update id="update" parameterType="contributor">
+		update
+		<include refid="table"/>
+		<include refid="allsets"/>
+		<include refid="whereid"/>
+	</update>
+	
+	<update id="updateFields" parameterType="hashMap">
+		update
+		<include refid="table"/>
+		<set>
+			<if test="summary != null">
+				 <include refid="setsummary"/>,
+			</if>
+			<if test="useruid != null">
+				 <include refid="setuseruid"/>,
+			</if>
+			<if test="status != null">
+				 <include refid="setstatus"/>,
+			</if>
+			<if test="avatarbig != null">
+				 <include refid="setavatarbig"/>,
+			</if>
+			<if test="avatarmedium != null">
+				 <include refid="setavatarmedium"/>,
+			</if>
+			<if test="avatarlittle != null">
+				 <include refid="setavatarlittle"/>,
+			</if>
+			<if test="avataroriginal != null">
+				 <include refid="setavataroriginal"/>,
+			</if>
+		</set>
+			<if test="uid != null">
+				<include refid="whereid"/>
+			</if>
+	</update>
+	
+	
+	<delete id="delete" parameterType="string">
+		delete from
+		<include refid="table"/>
+		<include refid="whereid"/>
+	</delete>
+	
+	<delete id="deleteByMap" parameterType="hashMap">
+		delete from
+		<include refid="table"/>
+		<where>
+			<if test="oid != null">
+				and <if test="oid != null"/>
+			</if>
+			<if test="uid != null">
+			    and <include refid="setuid"/>
+			</if>
+			<if test="name != null">
+				and <include refid="setname"/>
+			</if>
+			<if test="useruid != null">
+				and <include refid="setuseruid"/>
+			</if>
+			<if test="email != null">
+				and <include refid="setemail"/>
+			</if>
+			<if test="qq != null">
+				and <include refid="setqq"/>
+			</if>
+			<if test="phone != null">
+				and <include refid="setphone"/>
+			</if>
+			<if test="summary != null">
+				and <include refid="setsummary"/>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+		</where>
+	</delete>
+</mapper>

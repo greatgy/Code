@@ -1,0 +1,17 @@
+/*==============================================================*/
+/* DBMS name:      MySQL 5.5                                                                  */
+/* Created on:     19:01 2013/7/14                                                            */
+/*==============================================================*/
+
+/*==============================================================*/
+/*
+DataBase:      GUserDB2
+Author:        ChenQi
+Description:   GUserDB2.0.0.0版本修改的表结构
+ModifyDate:    2017年10月18日17:42:39 
+*/
+
+/*==============================================================*/
+
+ALTER TABLE `visitor` add `nickname` varchar(100) DEFAULT NULL COMMENT '游客昵称';
+ALTER TABLE `visitor` add `avatar` varchar(255) DEFAULT NULL COMMENT '游客头像';

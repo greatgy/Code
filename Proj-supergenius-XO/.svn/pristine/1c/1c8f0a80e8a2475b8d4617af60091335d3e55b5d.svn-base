@@ -1,0 +1,139 @@
+package com.supergenius.xo.finance.enums;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import com.genius.core.base.utils.I18N;
+
+/**
+ * 天财评论文章类型枚举
+ * 
+ * @author liushaomin
+ */
+public enum EFinance {
+
+	geniusfocus(Integer.valueOf("1000000000000000000000000000000", 2)), // 天才焦点1073741824（微观经济学）
+	careerexecutives(Integer.valueOf("0100000000000000000000000000000", 2)), // 职场新观点536870912
+	officecafe(Integer.valueOf("0010000000000000000000000000000", 2)), // 职场夜话268435456
+	industries(Integer.valueOf("0001000000000000000000000000000", 2)), // 产业134217728
+	corporations(Integer.valueOf("0000100000000000000000000000000", 2)), // 企业67108864
+	mergerandacquisition(Integer.valueOf("0000010000000000000000000000000", 2)), // 并购33554432
+	debate(Integer.valueOf("0000001000000000000000000000000", 2)), // 论战16777216
+	legalandeconomic(Integer.valueOf("0000000100000000000000000000000", 2)), // 法治与经济(经济与法)8388608
+	goldlanguage(Integer.valueOf("0000000010000000000000000000000", 2)), //醒世金语4194304
+	goodarticle(Integer.valueOf("0000000001000000000000000000000", 2)), // 文萃2097152
+	economicobservation(Integer.valueOf("0000000000100000000000000000000", 2));// 经济观察1048576
+
+	private final int value;
+
+	private EFinance(int v) {
+		this.value = v;
+	}
+
+	public int getValue(){
+		return this.value;
+	}
+	
+	public String toString() {
+		return String.valueOf(value);
+	}
+
+	public static EFinance get(int v) {
+		String str = String.valueOf(v);
+		return get(str);
+	}
+
+	public static EFinance get(String str) {
+		for (EFinance e : values()) {
+			int var = Integer.valueOf(e.toString());
+			if (var == (var & Integer.valueOf(str))) {
+				return e;
+			}
+		}
+		return null;
+	}
+
+	public static EFinance getByName(String name) {
+		for (EFinance e : values()) {
+			if (e.name().equals(name)) {
+				return e;
+			}
+		}
+		return null;
+	}
+
+	public String getName() {
+		return EFinance.getName(EFinance.get(value), Locale.CHINA);
+	}
+
+	public static String getName(EFinance e, Locale locale) {
+		return I18N.getEnumName(e, locale);
+	}
+
+	/**
+	 * 判断此类型是否与值匹配
+	 * 
+	 * @param int type
+	 * @return
+	 */
+	public boolean ismatch(int type) {
+		return value == (value & type);
+	}
+
+	/**
+	 * 判断此类型是否与值匹配
+	 * 
+	 * @param EFinance
+	 *            type
+	 * @return
+	 */
+	public static boolean ismatch(int v, EFinance type) {
+		return v == (v | Integer.valueOf(type.toString()));
+	}
+
+	/**
+	 * @param education2
+	 * @return
+	 */
+	public Integer plus(EFinance e) {
+		return value | Integer.valueOf(e.toString());
+	}
+
+	/**
+	 * @param education2
+	 * @return
+	 */
+	public int minus(EFinance e) {
+		return value ^ Integer.valueOf(e.toString());
+	}
+
+	/**
+	 * 得到最先匹配的类型
+	 * 
+	 * @param type
+	 */
+	public static List<EFinance> getMatch(int type) {
+		List<EFinance> list = new ArrayList<>();
+		for (EFinance item : EFinance.values()) {
+			if (item.ismatch(type)) {
+				list.add(item);
+			}
+		}
+		return list;
+	}
+	
+	/**
+	 * 获取finance app 上的文章类型
+	 * @return
+	 * @author XieMing
+	 * 2017年1月5日 下午5:58:31
+	 */
+	public static List<EFinance> getAppTypes() {
+		List<EFinance> list = new ArrayList<>();
+		list.add(EFinance.geniusfocus);
+		list.add(EFinance.goldlanguage);
+		list.add(EFinance.officecafe);
+		return list;
+	}
+}

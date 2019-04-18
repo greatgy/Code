@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.finance.dao.ContributeDao">
+	<sql id="basecolumns">`oid`,`uid`,`createtime`</sql>
+	<sql id="othercolumns">`useruid`, `name`, `email`, `qq`, `phone`, `summary`, `title`, `shorttitle`,`type`, `usertype`, `keywords`, `content` , `imglittle` ,`imgmedium` ,`imgbig` ,`imgoriginal` ,`state`, `status`</sql>
+	<sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/></sql>
+	<sql id="table">contribute</sql>
+	<sql id="whereid">where uid = #{uid}</sql>
+	<sql id="allfields"><include refid="basecolumns"/>, <include refid="othercolumns"/></sql>
+	<sql id="allparams">#{oid},#{uid},#{createtime},#{useruid},#{name},#{email},#{qq},#{phone},#{summary},#{title},#{shorttitle},#{type},#{usertype},#{keywords},#{content},#{imglittle},#{imgmedium},#{imgbig},#{imgoriginal},#{state},#{status}</sql>
+	<sql id="count">count(*)</sql>
+	<sql id="setoid">oid = #{oid}</sql>
+	<sql id="setuid">uid = #{uid}</sql>
+	<sql id="setuseruid">useruid = #{useruid}</sql>
+	<sql id="setname">name = #{name}</sql>
+	<sql id="setname_lk">name like CONCAT('%',#{name_lk},'%')</sql>
+	<sql id="setemail">email = #{email}</sql>
+	<sql id="setqq">qq = #{qq}</sql>
+	<sql id="setphone">phone = #{phone}</sql>
+	<sql id="setsummary">summary = #{summary}</sql>
+	<sql id="settitle">title = #{title}</sql>
+	<sql id="settitle_lk">title like CONCAT('%',#{title_lk},'%')</sql>
+	<sql id="setshorttitle">shorttitle = #{shorttitle}</sql>
+	<sql id="setshorttitle_lk">shorttitle like CONCAT('%',#{shorttitle_lk},'%')</sql>
+	<sql id="settype">type = #{type}</sql>
+	<sql id="setusertype">usertype = #{usertype}</sql>
+	<sql id="setkeywords">keywords = #{keywords}</sql>
+	<sql id="setkeywords_lk">keywords like CONCAT('%',#{keywords_lk},'%')</sql>
+	<sql id="setcontent">content = #{content}</sql>
+	<sql id="setimglittle">imglittle = #{imglittle}</sql>
+	<sql id="setimgmedium">imgmedium = #{imgmedium}</sql>
+	<sql id="setimgbig">imgbig = #{imgbig}</sql>
+	<sql id="setimgoriginal">imgoriginal = #{imgoriginal}</sql>
+	<sql id="setstate">state = #{state}</sql>
+	<sql id="setstatus">status = #{status}</sql>
+	<sql id="setcreatetimestart">createtime &gt;= #{createtimestart}</sql>
+	<sql id="setcreatetimeend">createtime &lt;= #{createtimeend}</sql>
+	<sql id="allsets">set 
+	<include refid="setoid"/>,
+    <include refid="setuid"/>,
+	<include refid="setuseruid"/>,
+	<include refid="setname"/>,
+	<include refid="setemail"/>,
+	<include refid="setqq"/>,
+	<include refid="setphone"/>,
+	<include refid="setsummary"/>,
+	<include refid="settitle"/>,
+	<include refid="setshorttitle"/>,
+	<include refid="settype"/>,
+	<include refid="setusertype"/>,
+	<include refid="setkeywords"/>,
+	<include refid="setcontent"/>,
+	<include refid="setimglittle"/>,
+	<include refid="setimgmedium"/>,
+	<include refid="setimgbig"/>,
+	<include refid="setimgoriginal"/>,
+	<include refid="setstate"/>,
+	<include refid="setstatus"/></sql>
+	<sql id="orderby">order by createtime</sql>
+	
+	<select id="get" parameterType="string" resultType="contribute">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<include refid="whereid"/>
+	</select>
+	
+	<select id="getOne" parameterType="hashMap" resultType="contribute">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="oid != null">
+				and <if test="oid != null" />
+			</if>
+			<if test="uid != null">
+			    and <include refid="setuid"/>
+			</if>
+			<if test="useruid != null">
+				and <include refid="setuseruid"/>
+			</if>
+			<if test="name != null">
+				and <include refid="setname"/>
+			</if>
+			<if test="email != null">
+				and <include refid="setemail"/>
+			</if>
+			<if test="qq != null">
+				and <include refid="setqq"/>
+			</if>
+			<if test="phone != null">
+				and <include refid="setphone"/>
+			</if>
+			<if test="summary != null">
+				and <include refid="setsummary"/>
+			</if>
+			<if test="title != null">
+				and <include refid="settitle"/>
+			</if>
+			<if test="shorttitle != null">
+				and <include refid="setshorttitle"/>
+			</if>
+			<if test="type != null">
+				and <include refid="settype"/>
+			</if>
+			<if test="usertype != null">
+				and <include refid="setusertype"/>
+			</if>
+			<if test="keywords != null">
+				and <include refid="setkeywords"/>
+			</if>
+			<if test="content != null">
+				and <include refid="setcontent"/>
+			</if>
+			<if test="state != null">
+				and <include refid="setstate"/>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+		</where>
+		LIMIT 0,1
+	</select>
+	
+	<select id="getCount" parameterType="hashMap" resultType="int">
+		select
+		<include refid="count" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="oid != null">
+				and <if test="oid != null"/>
+			</if>
+			<if test="uid != null">
+			    and <include refid="setuid"/>
+			</if>
+			<if test="useruid != null">
+				and <include refid="setuseruid"/>
+			</if>
+			<if test="name != null">
+				and <include refid="setname"/>
+			</if>
+			<if test="name_lk != null">
+				and <include refid="setname_lk"/>
+			</if>
+			<if test="email != null">
+				and <include refid="setemail"/>
+			</if>
+			<if test="qq != null">
+				and <include refid="setqq"/>
+			</if>
+			<if test="phone != null">
+				and <include refid="setphone"/>
+			</if>
+			<if test="summary != null">
+				and <include refid="setsummary"/>
+			</if>
+			<if test="title != null">
+				and <include refid="settitle"/>
+			</if>
+			<if test="title_lk != null">
+				and <include refid="settitle_lk"/>
+			</if>
+			<if test="shorttitle != null">
+				and <include refid="setshorttitle"/>
+			</if>
+			<if test="shorttitle_lk != null">
+				and <include refid="setshorttitle_lk"/>
+			</if>
+			<if test="type != null">
+				and <include refid="settype"/>
+			</if>
+			<if test="usertype != null">
+				and <include refid="setusertype"/>
+			</if>
+			<if test="keywords != null">
+				and <include refid="setkeywords"/>
+			</if>
+			<if test="keywords_lk != null">
+				and <include refid="setkeywords_lk"/>
+			</if>
+			<if test="content != null">
+				and <include refid="setcontent"/>
+			</if>
+			<if test="state != null">
+				and <include refid="setstate"/>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+			<if test="createtimestart != null">
+				and <include refid="setcreatetimestart" />
+			</if>
+			<if test="createtimeend != null">
+				and <include refid="setcreatetimeend" />
+			</if>
+		</where>
+	</select>
+	
+	<select id="getList" parameterType="hashMap" resultType="contribute">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="oid != null">
+				and <if test="oid != null"/>
+			</if>
+			<if test="uid != null">
+			    and <include refid="setuid"/>
+			</if>
+			<if test="useruid != null">
+				and <include refid="setuseruid"/>
+			</if>
+			<if test="name != null">
+				and <include refid="setname"/>
+			</if>
+			<if test="name_lk != null">
+				and <include refid="setname_lk"/>
+			</if>
+			<if test="email != null">
+				and <include refid="setemail"/>
+			</if>
+			<if test="qq != null">
+				and <include refid="setqq"/>
+			</if>
+			<if test="phone != null">
+				and <include refid="setphone"/>
+			</if>
+			<if test="summary != null">
+				and <include refid="setsummary"/>
+			</if>
+			<if test="title != null">
+				and <include refid="settitle"/>
+			</if>
+			<if test="title_lk != null">
+				and <include refid="settitle_lk"/>
+			</if>
+			<if test="shorttitle != null">
+				and <include refid="setshorttitle"/>
+			</if>
+			<if test="shorttitle_lk != null">
+				and <include refid="setshorttitle_lk"/>
+			</if>
+			<if test="type != null">
+				and <include refid="settype"/>
+			</if>
+			<if test="usertype != null">
+				and <include refid="setusertype"/>
+			</if>
+			<if test="keywords != null">
+				and <include refid="setkeywords"/>
+			</if>
+			<if test="keywords_lk != null">
+				and <include refid="setkeywords_lk"/>
+			</if>
+			<if test="content != null">
+				and <include refid="setcontent"/>
+			</if>
+			<if test="state != null">
+				and <include refid="setstate"/>
+			</if>
+			<if test="states != null">
+				and state in
+				<foreach item="item" index="index" collection="states" open="(" separator="," close=")">
+                 	 #{item}
+            	</foreach>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+			<if test="createtimestart != null">
+				and <include refid="setcreatetimestart" />
+			</if>
+			<if test="createtimeend != null">
+				and <include refid="setcreatetimeend" />
+			</if>
+		</where>
+		<!-- 处理orderby语句 -->
+		<choose>
+			<when test="orderBy != null">
+				${orderBy}
+			</when>
+			<otherwise>
+				<include refid="orderby"/>
+				<if test="ascDesc != null">
+					${ascDesc}
+				</if>
+			</otherwise>
+		</choose>
+		<!-- 处理limit语句 -->
+		<trim prefix="LIMIT" prefixOverrides=",">
+			<if test="startIndex != null and pageSize != null">
+				${startIndex}
+			</if>
+			<if test="pageSize != null">
+			 , ${pageSize}
+			 </if>
+		</trim>
+	</select>
+	
+	<select id="getInitList" parameterType="hashMap" resultType="contribute">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<where>
+			useruid="${useruid}" and 
+			(
+				state=0	or (state=1 and uid in (select contributeuid from finance f where f.status=10 and f.authoruid="${useruid}"))
+			)
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+		</where>
+		<!-- 处理orderby语句 -->
+		<choose>
+			<when test="orderBy != null">
+				${orderBy}
+			</when>
+			<otherwise>
+				<include refid="orderby"/>
+				<if test="ascDesc != null">
+					${ascDesc}
+				</if>
+			</otherwise>
+		</choose>
+		<!-- 处理limit语句 -->
+		<trim prefix="LIMIT" prefixOverrides=",">
+			<if test="startIndex != null and pageSize != null">
+				${startIndex}
+			</if>
+			<if test="pageSize != null">
+			 , ${pageSize}
+			 </if>
+		</trim>
+	</select>
+	
+	<update id="updateFields" parameterType="hashMap">
+		update
+		<include refid="table"/>
+		<set>
+			<if test="state != null">
+				 <include refid="setstate"/>,
+			</if>
+		</set>
+			<if test="uid != null">
+				<include refid="whereid"/>
+			</if>
+	</update>
+	
+	<insert id="insert" parameterType="contribute">
+		<selectKey resultType="int" keyProperty="oid">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into
+		<include refid="table"/>
+		(<include refid="allfields"/>)
+		values (
+			<include refid="allparams"/>
+		)
+	</insert>
+	
+	<delete id="delete" parameterType="string">
+		delete from
+		<include refid="table"/>
+		<include refid="whereid"/>
+	</delete>
+	
+	<delete id="deleteByMap" parameterType="hashMap">
+		delete from
+		<include refid="table"/>
+		<where>
+			<if test="oid != null">
+				and <if test="oid != null"/>
+			</if>
+			<if test="uid != null">
+			    and <include refid="setuid"/>
+			</if>
+			<if test="useruid != null">
+				and <include refid="setuseruid"/>
+			</if>
+			<if test="name != null">
+				and <include refid="setname"/>
+			</if>
+			<if test="title != null">
+				and <include refid="settitle"/>
+			</if>
+			<if test="shorttitle != null">
+				and <include refid="setshorttitle"/>
+			</if>
+			<if test="type != null">
+				and <include refid="settype"/>
+			</if>
+			<if test="usertype != null">
+				and <include refid="setusertype"/>
+			</if>
+			<if test="keywords != null">
+				and <include refid="setkeywords"/>
+			</if>
+			<if test="state != null">
+				and <include refid="setstate"/>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+		</where>
+	</delete>
+</mapper>

@@ -1,0 +1,20 @@
+package com.supergenius.xo.finance.service;
+
+import java.util.List;
+
+import com.supergenius.xo.finance.entity.SearchResult;
+
+/**
+ *
+ * @author ShangJianguo
+ */
+public interface SearchSO {
+
+	/**
+	 * 根据关键字进行搜索
+	 * @param keyword
+	 * @return 
+	 * @author ShangJianguo
+	 */
+	public List<SearchResult> search(String keyword, String channel);
+}

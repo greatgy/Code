@@ -1,0 +1,85 @@
+package com.supergenius.xo.life.enums;
+
+import java.util.Locale;
+
+import com.genius.core.base.utils.I18N;
+
+/**
+ * 目录枚举类
+ * 
+ * @author YangGuang
+ * @date 2018年5月14日17:48:03
+ */
+public enum ECatalogue {
+	
+	index("0"),//首页
+	dreaming("1"),//疯狂理想
+	position("2"),//人生定位
+	middle("3"),//梦之初心
+	high("4"),//放飞梦想
+	college("5"),//追梦时光
+	senior("6"),//人生守望
+	answer("7"),//人生问答
+	idol("8"),//我的偶像
+	member("9"),//会员通道
+	purpose("21"),//人生宗旨
+	Location("22"),//人生定位
+	path("23"),//人生路径
+	duty("31"),//家长责任
+	course("32"),//课程推荐
+	test("33"),//效果检验
+	ideal("34"),//我的理想
+	abroadguide("35"),//留学指南
+	communication("36"),//交流对话
+	difference("41"),//别出心裁
+	thinking("42"),//思维拓展
+	perspectives("43"),//课程见解
+	material("44"),//资料交流
+	major("45"),//专业匹配
+	university("46"),//大学优选
+	abroadtrend("47"),//留学风向
+	insight("51"),//火眼金睛
+	fraud("52"),//识别骗局
+	history("53"),//水煮历史
+	technology("54"),//去伪存真
+	design("55"),//人生设计
+	stage("56"),//我的舞台
+	abroadworld("57"),//留学天地
+	dream("61"),//梦想成真
+	watching("62"),//守望初心
+	changing("63"),//理想变迁
+	partner("64"),//携手前行
+	recommendation("65"),//人生推荐
+	travel("66"),//走万里路
+	side("81"),//我身边的偶像
+	worship("82"),//我崇拜的偶像
+	fantasy("83");//我幻想的偶像
+	
+	private final String value;
+
+	private ECatalogue(String v) {
+		this.value = v;
+	}
+
+	public String toString() {
+		return this.value;
+	}
+
+	public static ECatalogue get(int v) {
+		String str = String.valueOf(v);
+		return get(str);
+	}
+
+	public static ECatalogue get(String str) {
+		for (ECatalogue e : values()) {
+			if (e.name().equals(str)) {
+				return e;
+			}
+		}
+		return null;
+	}
+	
+	public String getName() {
+		return I18N.getEnumName(this, Locale.CHINA);
+	}
+}

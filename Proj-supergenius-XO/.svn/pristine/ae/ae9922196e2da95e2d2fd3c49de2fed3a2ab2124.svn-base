@@ -1,0 +1,106 @@
+package com.supergenius.xo.finance.serviceimpl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.genius.model.base.entity.Pager;
+import com.genius.xo.baseadmin.serviceimpl.BaseSOImpl;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.finance.dao.ContributeDao;
+import com.supergenius.xo.finance.entity.Contribute;
+import com.supergenius.xo.finance.enums.EContributeState;
+import com.supergenius.xo.finance.service.ContributeSO;
+
+/**
+ * @author liushaomin
+ *
+ */
+@Service
+public class ContributeSOImpl extends BaseSOImpl<Contribute> implements ContributeSO{
+
+	@Autowired
+	private ContributeDao dao;
+
+	@Override
+	protected ContributeDao getDao() {
+		return dao;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.ContributeSO#UpdateState()
+	 */
+	@Override
+	public boolean UpdateState(Contribute t) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put(MapperDict.state, t.getState());
+		map.put(MapperDict.uid, t.getUid());
+		dao.updateFields(map);
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.ContributeSO#getList(java.lang.String, com.genius.model.base.entity.Pager)
+	 * @author: ShangJianguo
+	 * 2014-10-28 下午7:49:59
+	 */
+	@Override
+	public List<Contribute> getList(String useruid, Pager pager) {
+		Map<String, Object> map = getParamMap(pager);
+		map.put(MapperDict.useruid, useruid);
+		return dao.getList(map);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.ContributeSO#getList(java.lang.String, com.supergenius.xo.finance.enums.EContributeState, com.genius.model.base.entity.Pager)
+	 * @author: ShangJianguo
+	 * 2014-10-31 下午12:50:49
+	 */
+	@Override
+	public List<Contribute> getList(String useruid, EContributeState state, Pager pager) {
+		Map<String, Object> map = getParamMap(pager);
+		map.put(MapperDict.useruid, useruid);
+		map.put(MapperDict.state, state);
+		return dao.getList(map);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.ContributeSO#getList(java.lang.String, java.util.List, com.genius.model.base.entity.Pager)
+	 * @author: ShangJianguo
+	 * 2014-10-31 下午3:15:19
+	 */
+	@Override
+	public List<Contribute> getList(String useruid, List<EContributeState> states, Pager pager) {
+		Map<String, Object> map = getParamMap(pager);
+		map.put(MapperDict.useruid, useruid);
+		map.put(MapperDict.states, states);
+		return dao.getList(map);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.ContributeSO#getCount(java.lang.String)
+	 * @author: ShangJianguo
+	 * 2014-11-5 下午12:23:49
+	 */
+	@Override
+	public int getCount(String useruid) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.useruid, useruid);
+		return dao.getCount(map);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.ContributeSO#getInitList(java.lang.String)
+	 * @author: ShangJianguo
+	 * 2014-11-5 下午6:09:07
+	 */
+	@Override
+	public List<Contribute> getInitList(String useruid, Pager pager) {
+		Map<String, Object> map = getParamMap(pager);
+		map.put(MapperDict.useruid, useruid);
+		return dao.getInitList(map);
+	}
+}

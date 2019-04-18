@@ -1,0 +1,579 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.career.dao.TeaseDao">
+
+    <sql id="basecolumns">`uid`, `createtime` </sql>
+    <sql id="othercolumns">`touid`, `fromuseruid`, `fromuseroid`, `fromusername`, `touseruid`, `touseroid`, `tousername`, `content`, `imglittle`, `imgmedium`, `imgbig`, `imgoriginal`, `data`, `channel`, `type`, `adminuid`, `status` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/></sql>
+    <sql id="table">tease</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="whereid">where uid = #{uid}</sql>
+    <sql id="allfields"><include refid="basecolumns"/>, <include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{uid},#{createtime},#{touid},#{fromuseruid},#{fromuseroid},#{fromusername},#{touseruid},#{touseroid},#{tousername},#{content},#{imglittle},#{imgmedium},#{imgbig},#{imgoriginal},#{data},#{channel},#{type},#{adminuid},#{status}</sql>
+    <sql id="settouid">`touid` = #{touid}</sql>
+    <sql id="setfromuseruid">`fromuseruid` = #{fromuseruid}</sql>
+    <sql id="setfromuseroid">`fromuseroid` = #{fromuseroid}</sql>
+    <sql id="setfromusername">`fromusername` = #{fromusername}</sql>
+    <sql id="settouseruid">`touseruid` = #{touseruid}</sql>
+    <sql id="settouseroid">`touseroid` = #{touseroid}</sql>
+    <sql id="settousername">`tousername` = #{tousername}</sql>
+    <sql id="setcontent">`content` = #{content}</sql>
+    <sql id="setcontent_lk">`content` like CONCAT('%', #{content_lk}, '%')</sql>
+    <sql id="setimglittle">`imglittle` = #{imglittle}</sql>
+    <sql id="setimgmedium">`imgmedium` = #{imgmedium}</sql>
+    <sql id="setimgbig">`imgbig` = #{imgbig}</sql>
+    <sql id="setimgoriginal">`imgoriginal` = #{imgoriginal}</sql>
+    <sql id="setdata">`data` = #{data}</sql>
+    <sql id="setchannel">`channel` = #{channel}</sql>
+    <sql id="settype">`type` = #{type}</sql>
+    <sql id="setadminuid">`adminuid` = #{adminuid}</sql>
+    <sql id="setcreatetimestart">`createtime` &gt;= #{createtimestart}</sql>
+    <sql id="setcreatetimeend">`createtime` &lt;= #{createtimeend}</sql>
+    <sql id="setcreatetime">`createtime` = #{createtime}</sql>
+    <sql id="setstatus">`status` = #{status}</sql>
+    <sql id="settouidnull">`touid` is null</sql>
+    <sql id="setjudge">`touid` is not null</sql>
+    <sql id="setuid">`uid` = #{uid}</sql>
+    <sql id="allsets">set
+            <include refid="settouid"/>,
+            <include refid="setfromuseruid"/>,
+            <include refid="setfromuseroid"/>,
+            <include refid="setfromusername"/>,
+            <include refid="settouseruid"/>,
+            <include refid="settouseroid"/>,
+            <include refid="settousername"/>,
+            <include refid="setcontent"/>,
+            <include refid="setimglittle"/>,
+            <include refid="setimgmedium"/>,
+            <include refid="setimgbig"/>,
+            <include refid="setcreatetime"/>,
+            <include refid="setimgoriginal"/>,
+            <include refid="setdata"/>,
+            <include refid="setchannel"/>,
+            <include refid="settype"/>,
+            <include refid="setadminuid"/>,
+            <include refid="setstatus"/>
+    </sql>
+    <sql id="orderby">order by createtime</sql>
+
+    <select id="get" parameterType="string" resultType="tease">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="tease">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="touid != null">
+                and <include refid="settouid"/>
+            </if>
+            <if test="fromuseruid != null">
+                and <include refid="setfromuseruid"/>
+            </if>
+            <if test="fromuseroid != null">
+                and <include refid="setfromuseroid"/>
+            </if>
+            <if test="fromusername != null">
+                and <include refid="setfromusername"/>
+            </if>
+            <if test="touseruid != null">
+                and <include refid="settouseruid"/>
+            </if>
+            <if test="touseroid != null">
+                and <include refid="settouseroid"/>
+            </if>
+            <if test="tousername != null">
+                and <include refid="settousername"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="imglittle != null">
+                and <include refid="setimglittle"/>
+            </if>
+            <if test="imgmedium != null">
+                and <include refid="setimgmedium"/>
+            </if>
+            <if test="imgbig != null">
+                and <include refid="setimgbig"/>
+            </if>
+            <if test="imgoriginal != null">
+                and <include refid="setimgoriginal"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="channel != null">
+                and <include refid="setchannel"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="adminuid != null">
+                and <include refid="setadminuid"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="touid != null">
+                and <include refid="settouid"/>
+            </if>
+            <if test="fromuseruid != null">
+                and <include refid="setfromuseruid"/>
+            </if>
+            <if test="fromuseroid != null">
+                and <include refid="setfromuseroid"/>
+            </if>
+            <if test="fromusername != null">
+                and <include refid="setfromusername"/>
+            </if>
+            <if test="touseruid != null">
+                and <include refid="settouseruid"/>
+            </if>
+            <if test="touseroid != null">
+                and <include refid="settouseroid"/>
+            </if>
+            <if test="tousername != null">
+                and <include refid="settousername"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="imglittle != null">
+                and <include refid="setimglittle"/>
+            </if>
+            <if test="imgmedium != null">
+                and <include refid="setimgmedium"/>
+            </if>
+            <if test="imgbig != null">
+                and <include refid="setimgbig"/>
+            </if>
+            <if test="imgoriginal != null">
+                and <include refid="setimgoriginal"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="channel != null">
+                and <include refid="setchannel"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="adminuid != null">
+                and <include refid="setadminuid"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="touidnull != null">
+                and <include refid="settouidnull"/>
+            </if>
+            <if test="judge != null">
+                and <include refid="setjudge"/>
+            </if>
+        </where>
+    </select>
+
+	<select id="getCountByfromuseruid" parameterType="hashMap" resultType="int">
+        select
+                count(DISTINCT `fromuseruid`)
+        from
+        <include refid="table"/>
+        <where>
+        	<if test="channel != null">
+                and <include refid="setchannel"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </select>
+    
+    <select id="searchCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="content_lk != null">
+                and <include refid="setcontent_lk"/>
+            </if>
+            <if test="touid != null">
+                and <include refid="settouid"/>
+            </if>
+            <if test="fromuseruid != null">
+                and <include refid="setfromuseruid"/>
+            </if>
+            <if test="fromuseroid != null">
+                and <include refid="setfromuseroid"/>
+            </if>
+            <if test="fromusername != null">
+                and <include refid="setfromusername"/>
+            </if>
+            <if test="touseruid != null">
+                and <include refid="settouseruid"/>
+            </if>
+            <if test="touseroid != null">
+                and <include refid="settouseroid"/>
+            </if>
+            <if test="tousername != null">
+                and <include refid="settousername"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="channel != null">
+                and <include refid="setchannel"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="adminuid != null">
+                and <include refid="setadminuid"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="createtimestart != null">
+				and <include refid="setcreatetimestart" />
+			</if>
+			<if test="createtimeend != null">
+				and <include refid="setcreatetimeend" />
+			</if>
+			<if test="touidnull != null">
+                and <include refid="settouidnull"/>
+            </if>
+            <if test="judge != null">
+                and <include refid="setjudge"/>
+            </if>
+			<if test="statuslist != null">
+				and status in 
+				<foreach item="item" index="index" collection="statuslist" open="(" separator="," close=")">
+                 	 #{item}
+            	</foreach>
+            </if>
+        </where>
+    </select>
+    
+    <select id="search" parameterType="hashMap" resultType="tease">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="content_lk != null">
+                and <include refid="setcontent_lk"/>
+            </if>
+            <if test="touid != null">
+                and <include refid="settouid"/>
+            </if>
+            <if test="fromuseruid != null">
+                and <include refid="setfromuseruid"/>
+            </if>
+            <if test="fromuseroid != null">
+                and <include refid="setfromuseroid"/>
+            </if>
+            <if test="fromusername != null">
+                and <include refid="setfromusername"/>
+            </if>
+            <if test="touseruid != null">
+                and <include refid="settouseruid"/>
+            </if>
+            <if test="touseroid != null">
+                and <include refid="settouseroid"/>
+            </if>
+            <if test="tousername != null">
+                and <include refid="settousername"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="channel != null">
+                and <include refid="setchannel"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="adminuid != null">
+                and <include refid="setadminuid"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="createtimestart != null">
+				and <include refid="setcreatetimestart" />
+			</if>
+			<if test="createtimeend != null">
+				and <include refid="setcreatetimeend" />
+			</if>
+			<if test="touidnull != null">
+                and <include refid="settouidnull"/>
+            </if>
+            <if test="judge != null">
+                and <include refid="setjudge"/>
+            </if>
+			<if test="statuslist != null">
+				and status in 
+				<foreach item="item" index="index" collection="statuslist" open="(" separator="," close=")">
+                 	 #{item}
+            	</foreach>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+    
+    <select id="getList" parameterType="hashMap" resultType="tease">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="touid != null">
+                and <include refid="settouid"/>
+            </if>
+            <if test="fromuseruid != null">
+                and <include refid="setfromuseruid"/>
+            </if>
+            <if test="fromuseroid != null">
+                and <include refid="setfromuseroid"/>
+            </if>
+            <if test="fromusername != null">
+                and <include refid="setfromusername"/>
+            </if>
+            <if test="touseruid != null">
+                and <include refid="settouseruid"/>
+            </if>
+            <if test="touseroid != null">
+                and <include refid="settouseroid"/>
+            </if>
+            <if test="tousername != null">
+                and <include refid="settousername"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="imglittle != null">
+                and <include refid="setimglittle"/>
+            </if>
+            <if test="imgmedium != null">
+                and <include refid="setimgmedium"/>
+            </if>
+            <if test="imgbig != null">
+                and <include refid="setimgbig"/>
+            </if>
+            <if test="imgoriginal != null">
+                and <include refid="setimgoriginal"/>
+            </if>
+            <if test="touidnull != null">
+                and <include refid="settouidnull"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="channel != null">
+                and <include refid="setchannel"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="adminuid != null">
+                and <include refid="setadminuid"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insert" parameterType="tease">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="tease">
+        update
+        <include refid="table"/>
+        <include refid="allsets"/>
+        <include refid="whereid"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="touid != null">
+                <include refid="settouid"/>,
+            </if>
+            <if test="fromuseruid != null">
+                <include refid="setfromuseruid"/>,
+            </if>
+            <if test="fromuseroid != null">
+                <include refid="setfromuseroid"/>,
+            </if>
+            <if test="fromusername != null">
+                <include refid="setfromusername"/>,
+            </if>
+            <if test="touseruid != null">
+                <include refid="settouseruid"/>,
+            </if>
+            <if test="touseroid != null">
+                <include refid="settouseroid"/>,
+            </if>
+            <if test="tousername != null">
+                <include refid="settousername"/>,
+            </if>
+            <if test="content != null">
+                <include refid="setcontent"/>,
+            </if>
+            <if test="imglittle != null">
+                <include refid="setimglittle"/>,
+            </if>
+            <if test="imgmedium != null">
+                <include refid="setimgmedium"/>,
+            </if>
+            <if test="imgbig != null">
+                <include refid="setimgbig"/>,
+            </if>
+            <if test="imgoriginal != null">
+                <include refid="setimgoriginal"/>,
+            </if>
+            <if test="data != null">
+                <include refid="setdata"/>,
+            </if>
+            <if test="channel != null">
+                <include refid="setchannel"/>,
+            </if>
+            <if test="type != null">
+                <include refid="settype"/>,
+            </if>
+            <if test="adminuid != null">
+                <include refid="setadminuid"/>,
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>
+            </if>
+        </set>
+        <if test="uidlist != null">
+			where uid in 
+			<foreach item="item" index="index" collection="uidlist" open="(" separator="," close=")">
+                	 #{item}
+           	</foreach>
+        </if>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+
+	<delete id="deleteByMap" parameterType="hashMap">
+		delete from
+		<include refid="table"/>
+		<where>
+			<if test="uid != null">
+				and <include refid="setuid"/>
+			</if>
+			<if test="touid != null">
+				and <include refid="settouid"/>
+			</if>
+			<if test="fromuseruid != null">
+				and <include refid="setfromuseruid"/>
+			</if>
+			<if test="fromuseroid != null">
+				and <include refid="setfromuseroid"/>
+			</if>
+			<if test="fromusername != null">
+				and <include refid="setfromusername"/>
+			</if>
+			<if test="touseruid != null">
+				and <include refid="settouseruid"/>
+			</if>
+			<if test="touseroid != null">
+				and <include refid="settouseroid"/>
+			</if>
+			<if test="tousername != null">
+				and <include refid="settousername"/>
+			</if>
+			<if test="type != null">
+				and <include refid="settype"/>
+			</if>
+			<if test="channel != null">
+				and <include refid="setchannel"/>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+		</where>
+	</delete>
+
+</mapper>
+

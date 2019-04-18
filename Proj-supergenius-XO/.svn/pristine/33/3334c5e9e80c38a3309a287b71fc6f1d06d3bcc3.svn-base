@@ -1,0 +1,18 @@
+﻿/*==============================================================*/
+/* DBMS name:      MySQL 5.5                                                                  */
+/* Created on:     11:15 2015/12/18                                                           */
+/*==============================================================*/
+
+/*==============================================================*/
+/*
+DataBase: GFinanceDB
+Author:        YuYingJie
+Description:    GFinanceDB3.1.0版本添加表/修改表结构
+CreatedDate:   11:15 2015/12/01 
+ModifyDate:    14:00 2015/12/18
+*/
+
+/*==============================================================*/
+
+ALTER TABLE `userstatistics` ADD COLUMN `mycommentcount` int(11) unsigned COMMENT '发表评论的数量' AFTER `collectdebatecount`;
+ALTER TABLE `userstatistics` ADD COLUMN `tomeprizecount` int(11) unsigned COMMENT '收到的赞的数量(评论的赞)' AFTER `mycommentcount`;

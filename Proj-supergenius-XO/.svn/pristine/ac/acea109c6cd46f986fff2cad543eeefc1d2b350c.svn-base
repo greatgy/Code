@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.account.dao.AccountDao">
+
+    <sql id="basecolumns">`uid`, `createtime` </sql>
+    <sql id="othercolumns"><include refid="basecolumns"/>, `payuid`, `accountsn`, `useruid`, `username`, `useremail`, `userip`, `resulturl`, `notifyurl`, `site`, `type`, `money`, `bank`, `desc`, `successtime`, `failedtime`, `state`, `status` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+    <sql id="table">account</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="summoney">sum(money)</sql>
+    <sql id="whereid">where uid = #{uid}</sql>
+    <sql id="allfields"><include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{uid},#{createtime},#{payuid},#{accountsn},#{useruid},#{username},#{useremail},#{userip},#{resulturl},#{notifyurl},#{site},#{type},#{money},#{bank},#{desc},#{successtime},#{failedtime},#{state},#{status}</sql>
+    <sql id="setaccountsn">accountsn = #{accountsn}</sql>
+    <sql id="setuseruid">useruid = #{useruid}</sql>
+    <sql id="setusername">username = #{username}</sql>
+    <sql id="setuseremail">useremail = #{useremail}</sql>
+    <sql id="setuserip">userip = #{userip}</sql>
+    <sql id="setresulturl">resulturl = #{resulturl}</sql>
+    <sql id="setnotifyurl">notifyurl = #{notifyurl}</sql>
+    <sql id="setsite">site = #{site}</sql>
+    <sql id="setpayuid">payuid = #{payuid}</sql>
+    <sql id="settype">type = #{type}</sql>
+    <sql id="setmoney">money = #{money}</sql>
+    <sql id="setbank">bank = #{bank}</sql>
+    <sql id="setdesc">`desc` = #{desc}</sql>
+    <sql id="setsuccesstime">successtime = #{successtime}</sql>
+    <sql id="setfailedtime">failedtime = #{failedtime}</sql>
+    <sql id="setstate">state = #{state}</sql>
+    <sql id="setstatus">status = #{status}</sql>
+    <sql id="setcreatetime_ge">createtime &gt;= #{createtime_ge}</sql>
+    <sql id="setcreatetime_le">createtime &lt;= #{createtime_le}</sql>
+    <sql id="allsets">set
+            <include refid="setaccountsn"/>,
+            <include refid="setuseruid"/>,
+            <include refid="setusername"/>,
+            <include refid="setuseremail"/>,
+            <include refid="setuserip"/>,
+            <include refid="setresulturl"/>,
+            <include refid="setnotifyurl"/>,
+            <include refid="setsite"/>,
+            <include refid="setpayuid"/>,
+            <include refid="settype"/>,
+            <include refid="setmoney"/>,
+            <include refid="setbank"/>,
+            <include refid="setdesc"/>,
+            <include refid="setsuccesstime"/>,
+            <include refid="setfailedtime"/>,
+            <include refid="setstate"/>,
+            <include refid="setstatus"/>
+    </sql>
+    <sql id="orderby">order by createtime</sql>
+
+    <select id="get" parameterType="string" resultType="account">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="account">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="accountsn != null">
+                and <include refid="setaccountsn"/>
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="username != null">
+                and <include refid="setusername"/>
+            </if>
+            <if test="useremail != null">
+                and <include refid="setuseremail"/>
+            </if>
+            <if test="userip != null">
+                and <include refid="setuserip"/>
+            </if>
+            <if test="resulturl != null">
+                and <include refid="setresulturl"/>
+            </if>
+            <if test="notifyurl != null">
+                and <include refid="setnotifyurl"/>
+            </if>
+            <if test="site != null">
+                and <include refid="setsite"/>
+            </if>
+            <if test="payuid != null">
+                and <include refid="setpayuid"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="money != null">
+                and <include refid="setmoney"/>
+            </if>
+            <if test="bank != null">
+                and <include refid="setbank"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="successtime != null">
+                and <include refid="setsuccesstime"/>
+            </if>
+            <if test="failedtime != null">
+                and <include refid="setfailedtime"/>
+            </if>
+            <if test="state != null">
+                and <include refid="setstate"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="accountsn != null">
+                and <include refid="setaccountsn"/>
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="username != null">
+                and <include refid="setusername"/>
+            </if>
+            <if test="useremail != null">
+                and <include refid="setuseremail"/>
+            </if>
+            <if test="userip != null">
+                and <include refid="setuserip"/>
+            </if>
+            <if test="resulturl != null">
+                and <include refid="setresulturl"/>
+            </if>
+            <if test="notifyurl != null">
+                and <include refid="setnotifyurl"/>
+            </if>
+            <if test="site != null">
+                and <include refid="setsite"/>
+            </if>
+            <if test="payuid != null">
+                and <include refid="setpayuid"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="money != null">
+                and <include refid="setmoney"/>
+            </if>
+            <if test="bank != null">
+                and <include refid="setbank"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="successtime != null">
+                and <include refid="setsuccesstime"/>
+            </if>
+            <if test="failedtime != null">
+                and <include refid="setfailedtime"/>
+            </if>
+            <if test="state != null">
+                and <include refid="setstate"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="createtime_ge != null">
+                and <include refid="setcreatetime_ge"/>
+            </if>
+            <if test="createtime_le != null">
+                and <include refid="setcreatetime_le"/>
+            </if>
+            <if test="accountsn == null and sns != null">
+               and 
+                <foreach item="item" index="index" collection="sns" open="(" separator="or" close=")">
+				     accountsn=#{item} 
+				</foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="getList" parameterType="hashMap" resultType="account">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="accountsn != null">
+                and <include refid="setaccountsn"/>
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="username != null">
+                and <include refid="setusername"/>
+            </if>
+            <if test="useremail != null">
+                and <include refid="setuseremail"/>
+            </if>
+            <if test="userip != null">
+                and <include refid="setuserip"/>
+            </if>
+            <if test="resulturl != null">
+                and <include refid="setresulturl"/>
+            </if>
+            <if test="notifyurl != null">
+                and <include refid="setnotifyurl"/>
+            </if>
+            <if test="site != null">
+                and <include refid="setsite"/>
+            </if>
+            <if test="payuid != null">
+                and <include refid="setpayuid"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="money != null">
+                and <include refid="setmoney"/>
+            </if>
+            <if test="bank != null">
+                and <include refid="setbank"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="successtime != null">
+                and <include refid="setsuccesstime"/>
+            </if>
+            <if test="failedtime != null">
+                and <include refid="setfailedtime"/>
+            </if>
+            <if test="state != null">
+                and <include refid="setstate"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="createtime_ge != null">
+                and <include refid="setcreatetime_ge"/>
+            </if>
+            <if test="createtime_le != null">
+                and <include refid="setcreatetime_le"/>
+            </if>
+            <if test="accountsn == null and sns != null">
+               and 
+                <foreach item="item" index="index" collection="sns" open="(" separator="or" close=")">
+				     accountsn=#{item} 
+				</foreach>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insert" parameterType="account">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="account">
+        update
+        <include refid="table"/>
+        <include refid="allsets"/>
+        <include refid="whereid"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="accountsn != null">
+                <include refid="setaccountsn"/>,
+            </if>
+            <if test="useruid != null">
+                <include refid="setuseruid"/>,
+            </if>
+            <if test="username != null">
+                <include refid="setusername"/>,
+            </if>
+            <if test="useremail != null">
+                <include refid="setuseremail"/>,
+            </if>
+            <if test="userip != null">
+                <include refid="setuserip"/>,
+            </if>
+            <if test="resulturl != null">
+                <include refid="setresulturl"/>,
+            </if>
+            <if test="notifyurl != null">
+                <include refid="setnotifyurl"/>,
+            </if>
+            <if test="site != null">
+                <include refid="setsite"/>,
+            </if>
+            <if test="payuid != null">
+                <include refid="setpayuid"/>,
+            </if>
+            <if test="type != null">
+                <include refid="settype"/>,
+            </if>
+            <if test="money != null">
+                <include refid="setmoney"/>,
+            </if>
+            <if test="bank != null">
+                <include refid="setbank"/>,
+            </if>
+            <if test="desc != null">
+                <include refid="setdesc"/>,
+            </if>
+            <if test="successtime != null">
+                <include refid="setsuccesstime"/>,
+            </if>
+            <if test="failedtime != null">
+                <include refid="setfailedtime"/>,
+            </if>
+            <if test="state != null">
+                <include refid="setstate"/>,
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>
+            </if>
+        </set>
+        <include refid="whereid"/>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+	
+	<select id="getSumMoney" parameterType="hashMap" resultType="Double">
+        select
+        <include refid="summoney"/>
+        from
+        <include refid="table"/>
+        <where>
+            <if test="accountsn != null">
+                and <include refid="setaccountsn"/>
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="username != null">
+                and <include refid="setusername"/>
+            </if>
+            <if test="useremail != null">
+                and <include refid="setuseremail"/>
+            </if>
+            <if test="userip != null">
+                and <include refid="setuserip"/>
+            </if>
+            <if test="resulturl != null">
+                and <include refid="setresulturl"/>
+            </if>
+            <if test="notifyurl != null">
+                and <include refid="setnotifyurl"/>
+            </if>
+            <if test="site != null">
+                and <include refid="setsite"/>
+            </if>
+            <if test="payuid != null">
+                and <include refid="setpayuid"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="money != null">
+                and <include refid="setmoney"/>
+            </if>
+            <if test="bank != null">
+                and <include refid="setbank"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="successtime != null">
+                and <include refid="setsuccesstime"/>
+            </if>
+            <if test="failedtime != null">
+                and <include refid="setfailedtime"/>
+            </if>
+            <if test="state != null">
+                and <include refid="setstate"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </select>
+
+</mapper>
+

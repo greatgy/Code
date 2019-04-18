@@ -1,0 +1,107 @@
+package com.supergenius.xo.finance.serviceimpl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.genius.model.base.entity.Pager;
+import com.genius.xo.baseadmin.serviceimpl.BaseSOImpl;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.finance.dao.CollectDetailDao;
+import com.supergenius.xo.finance.entity.CollectDetail;
+import com.supergenius.xo.finance.enums.ECollectType;
+import com.supergenius.xo.finance.enums.EFinance;
+import com.supergenius.xo.finance.service.CollectDetailSO;
+
+/**
+ * 收藏明细SOImpl
+ * @author YuYingJie
+ */
+@Service
+public class CollectDetailSOImpl extends BaseSOImpl<CollectDetail> implements CollectDetailSO {
+
+	@Autowired
+	CollectDetailDao dao;
+	
+	@Override
+	protected CollectDetailDao getDao() {
+		return dao;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.CollectDetailSO#getList(com.supergenius.xo.finance.enums.ECollectType)
+	 */
+	@Override
+	public List<CollectDetail> getList(String useruid, ECollectType type, Pager pager) {
+		Map<String, Object> map;
+		if (pager != null) {
+			map = getParamMap(pager);
+		} else {
+			map = getParamMap();
+		}
+		map.put(MapperDict.useruid, useruid);
+		map.put(MapperDict.type, type);
+		return dao.getList(map);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.CollectDetailSO#add(java.lang.String, com.supergenius.xo.finance.enums.ECollectType, com.supergenius.xo.common.enums.EFinance, java.lang.String)
+	 */
+	@Override
+	public boolean add(String useruid, ECollectType type, EFinance finance, String refuid) {
+		CollectDetail collectDetail = new CollectDetail();
+		collectDetail.setUseruid(useruid);
+		collectDetail.setType(type);
+		collectDetail.setFinance(finance);
+		collectDetail.setRefuid(refuid);
+		return dao.insert(collectDetail);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.CollectDetailSO#cancleCollect(java.lang.String, com.supergenius.xo.finance.enums.ECollectType, java.lang.String)
+	 */
+	@Override
+	public boolean cancleCollect(String useruid, ECollectType type, String refuid) {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.useruid, useruid);
+		map.put(MapperDict.type, type);
+		map.put(MapperDict.refuid, refuid);
+		return dao.deleteByMap(map);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.CollectDetailSO#getOne(java.lang.String, com.supergenius.xo.finance.enums.ECollectType, java.lang.String)
+	 */
+	@Override
+	public CollectDetail getOne(String useruid, ECollectType type, String refuid) {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.useruid, useruid);
+		map.put(MapperDict.type, type);
+		map.put(MapperDict.refuid, refuid);
+		return dao.getOne(map);
+	}
+
+	@Override
+	public List<CollectDetail> getList(String useruid, ECollectType type, List<EFinance> types, Pager pager) {
+		Map<String, Object> map;
+		if (pager != null) {
+			map = getParamMap(pager);
+		} else {
+			map = getParamMap();
+		}
+		if (types != null) {
+			map.put(MapperDict.finance + MapperDict.suffix_in_key, types);
+		}
+		map.put(MapperDict.useruid, useruid);
+		map.put(MapperDict.type, type);
+		return dao.getList(map);
+	}
+
+}

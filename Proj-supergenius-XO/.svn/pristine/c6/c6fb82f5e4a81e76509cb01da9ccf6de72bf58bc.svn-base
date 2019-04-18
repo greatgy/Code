@@ -1,0 +1,182 @@
+package com.supergenius.xo.life.entity;
+
+import com.genius.core.base.annotation.Json;
+import com.supergenius.xo.common.entity.BaseEntity;
+
+/**
+ * 视频实体类
+ * 
+ * @Author:JiaShitao
+ *
+ */
+@Json(value = { "uid", "createtime", "updatetime", "cid", "grade", "subjectcid", "title", "order", "content", "keywords", "summary", "imglittle", "imgmedium", "imgbig", "imgoriginal", "data", "istop",
+		"useruid", "adminuid", "type", "state", "status" }, ignoreTypeStrategy = Json.webStrategy, strategy = { Json.webStrategy, Json.cacheStrategy })
+public class Video extends BaseEntity {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 429534148810632794L;
+	private int cid;// 模块id
+	private int grade;// 所属年级
+	private int subjectcid;// 所属科目id
+	private String title;// 标题
+	private int order;// 编号
+	private String content;// 视频代码
+	private String keywords;// 视频标签
+	private String summary;// 视频描述
+	private String imglittle;// 小图
+	private String imgmedium;// 中图
+	private String imgbig;// 大图
+	private String imgoriginal;// 原图
+	private String data;// 其他数据json格式(保存点评与用户回复，list中嵌套map)
+	private int istop;// 置顶
+	private String useruid;// 用户uid
+	private String adminuid;// 操作人UID
+	private int type;// 状态(0视频1音频)
+	private int state;// 状态(保存待点评、待回复等状态)
+
+	public int getCid() {
+		return cid;
+	}
+
+	public void setCid(int cid) {
+		this.cid = cid;
+	}
+
+	public int getGrade() {
+		return grade;
+	}
+
+	public void setGrade(int grade) {
+		this.grade = grade;
+	}
+
+	public int getSubjectcid() {
+		return subjectcid;
+	}
+
+	public void setSubjectcid(int subjectcid) {
+		this.subjectcid = subjectcid;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public int getOrder() {
+		return order;
+	}
+
+	public void setOrder(int order) {
+		this.order = order;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getKeywords() {
+		return keywords;
+	}
+
+	public void setKeywords(String keywords) {
+		this.keywords = keywords;
+	}
+
+	public String getSummary() {
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+
+	public String getImglittle() {
+		return imglittle;
+	}
+
+	public void setImglittle(String imglittle) {
+		this.imglittle = imglittle;
+	}
+
+	public String getImgmedium() {
+		return imgmedium;
+	}
+
+	public void setImgmedium(String imgmedium) {
+		this.imgmedium = imgmedium;
+	}
+
+	public String getImgbig() {
+		return imgbig;
+	}
+
+	public void setImgbig(String imgbig) {
+		this.imgbig = imgbig;
+	}
+
+	public String getImgoriginal() {
+		return imgoriginal;
+	}
+
+	public void setImgoriginal(String imgoriginal) {
+		this.imgoriginal = imgoriginal;
+	}
+
+	public String getData() {
+		return data;
+	}
+
+	public void setData(String data) {
+		this.data = data;
+	}
+
+	public int getIstop() {
+		return istop;
+	}
+
+	public void setIstop(int istop) {
+		this.istop = istop;
+	}
+
+	public String getUseruid() {
+		return useruid;
+	}
+
+	public void setUseruid(String useruid) {
+		this.useruid = useruid;
+	}
+
+	public String getAdminuid() {
+		return adminuid;
+	}
+
+	public void setAdminuid(String adminuid) {
+		this.adminuid = adminuid;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
+	public int getState() {
+		return state;
+	}
+
+	public void setState(int state) {
+		this.state = state;
+	}
+
+}

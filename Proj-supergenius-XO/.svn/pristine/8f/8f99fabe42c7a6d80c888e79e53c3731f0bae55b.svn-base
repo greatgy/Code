@@ -1,0 +1,92 @@
+package com.supergenius.xo.finance.service;
+
+import java.util.List;
+
+import com.genius.model.base.entity.Pager;
+import com.genius.xo.baseadmin.service.BaseSO;
+import com.supergenius.xo.finance.entity.Debate;
+import com.supergenius.xo.finance.entity.DebateArticle;
+import com.supergenius.xo.finance.enums.EDebate;
+import com.supergenius.xo.user.entity.User;
+
+/**
+ * 论战SO
+ * @author liushaomin
+ */
+public interface DebateSO extends BaseSO<Debate>{
+	
+	/**
+	 * 重写get方法，根据oid获取数据
+	 * @param oid
+	 * @return
+	 * @author ShangJianguo
+	 */
+	Debate get(int oid);
+	
+	/**
+	 * 修改阶段
+	 * @param uids
+	 * @param state
+	 * @return
+	 * @author ShangJianguo
+	 */
+	public boolean updateState(String[] uids, int state);
+	
+	/**
+	 * 添加论战的同时添加论战文章
+	 * @param debate
+	 * @param articles
+	 * @author ShangJianguo
+	 */
+	public boolean addDebateWithArticle(Debate debate, List<DebateArticle> articles);
+
+	/**
+	 * @param fromuid
+	 * @return
+	 */
+	public List<Debate> getList(List<String> fromuid);
+	
+	/**
+	 * 根据状态获取论战
+	 * @param state
+	 * @return
+	 * @author ShangJianguo
+	 */
+	public List<Debate> getList(EDebate state, Pager pager);
+
+	/**
+	 * 获取当前期论战(最新的一期)
+	 * @return
+	 * @author ShangJianguo
+	 */
+	public Debate getCurDebate();
+	
+	/**
+	 * 获取往期论战，除debateuid包含的uid之外
+	 * @param debateuid
+	 * @param pager
+	 * @return
+	 * @author ShangJianguo
+	 */
+	public List<Debate> getHistoryList(List<String> debateuid, Pager pager);
+	
+	/**
+	 * 为论战投票
+	 * @param uid
+	 * @param isred
+	 * @param user 投票人
+	 * @param votenum 票数，默认1
+	 * @return
+	 * @author ShangJianguo
+	 */
+	public boolean vote(String uid, boolean isred, int votenum, User user);
+
+	/**
+	 * 获取评论数
+	 * @param debateuid
+	 * @param isred 若为null，则获取所有的数目
+	 * @return
+	 * @author ShangJianguo
+	 */
+	public int getCommentCount(String debateuid, Boolean isred);
+}

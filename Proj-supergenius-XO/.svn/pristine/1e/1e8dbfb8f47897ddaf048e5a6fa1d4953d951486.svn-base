@@ -1,0 +1,111 @@
+package com.supergenius.xo.finance.entity;
+
+import java.util.List;
+
+import com.genius.core.base.annotation.Maps;
+import com.genius.core.base.annotation.MapsIgnore;
+import com.genius.core.base.utils.JsonUtil;
+import com.supergenius.xo.common.entity.BaseEntity;
+import com.supergenius.xo.finance.enums.EDynamic;
+
+/**
+ * 动态实体
+ * @author YuYingJie
+ */
+public class Dynamic extends BaseEntity {
+	
+	private static final long serialVersionUID = 1662467252347762198L;
+	private String useruid;//会员uid
+	private String username;//会员姓名
+	private String title;//标题
+	private String content;//内容
+	private List<String> img;//图片
+	private long  praisecount;//赞数
+	private long commentcount;//评论数
+	private boolean ispublic;//是否公开
+	private EDynamic dynamic;//类别(系统，会员)
+	
+	public String getUseruid() {
+		return useruid;
+	}
+	
+	public void setUseruid(String useruid) {
+		this.useruid = useruid;
+	}
+	
+	public String getUsername() {
+		return username;
+	}
+	
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	
+	public String getTitle() {
+		return title;
+	}
+	
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	
+	public String getContent() {
+		return content;
+	}
+	
+	public void setContent(String content) {
+		this.content = content;
+	}
+	
+	public String getImg() {
+		return JsonUtil.toJson(img);
+	}
+	
+	@MapsIgnore(strategy = Maps.dbStrategy)
+	public List<String> getImgList() {
+		return img;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void setImg(String img) {
+		this.img = JsonUtil.fromJson(img, List.class);
+	}
+	
+	@MapsIgnore(strategy = Maps.dbStrategy)
+	public void setImgList(List<String> img) {
+		this.img = img;
+	}
+	
+	public long getPraisecount() {
+		return praisecount;
+	}
+	
+	public void setPraisecount(long praisecount) {
+		this.praisecount = praisecount;
+	}
+	
+	public long getCommentcount() {
+		return commentcount;
+	}
+	
+	public void setCommentcount(long commentcount) {
+		this.commentcount = commentcount;
+	}
+	
+	public boolean isIspublic() {
+		return ispublic;
+	}
+	
+	public void setIspublic(boolean ispublic) {
+		this.ispublic = ispublic;
+	}
+	
+	public EDynamic getDynamic() {
+		return dynamic;
+	}
+	
+	public void setDynamic(EDynamic dynamic) {
+		this.dynamic = dynamic;
+	}
+	
+}

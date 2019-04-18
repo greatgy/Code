@@ -1,0 +1,220 @@
+package com.supergenius.xo.finance.serviceimpl;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.genius.core.base.utils.FileUtil;
+import com.genius.model.base.entity.Pager;
+import com.genius.model.base.enums.EStatus;
+import com.genius.xo.baseadmin.serviceimpl.BaseSOImpl;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.finance.dao.TopicDao;
+import com.supergenius.xo.finance.entity.Topic;
+import com.supergenius.xo.finance.enums.ETopicState;
+import com.supergenius.xo.finance.service.TopicSO;
+import com.supergenius.xo.user.service.CommentsSO;
+
+/**
+ * 话题SOImpl
+ * @author liushaomin
+ */
+@Service
+public class TopicSOImpl extends BaseSOImpl<Topic> implements TopicSO{
+
+	@Autowired
+	private TopicDao dao;
+	@Autowired
+	private CommentsSO commentsSO;
+	
+	@Override
+	protected TopicDao getDao() {
+		return dao;
+	}
+	
+	
+
+	/* (non-Javadoc)
+	 * @see com.genius.xo.base.serviceimpl.BaseSOImpl#get(java.lang.String)
+	 * @author: ShangJianguo
+	 * 2014-11-20 下午12:27:36
+	 */
+	@Override
+	public Topic get(String id) {
+		Topic topic = super.get(id);
+		return topic;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.TopicSO#deleteByUids(java.lang.String[])
+	 */
+	@Override
+	public boolean deleteByUids(String[] ids) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> delcommentmap = new HashMap<String, Object>();
+		List<String> list = Arrays.asList(ids);
+		map.put(MapperDict.uids, list);
+		for (String str : list) {
+			Topic topic = dao.get(str);
+			if (topic.getImgoriginal() != null) {
+				FileUtil.deleteImg(topic.getImgoriginal());
+				FileUtil.deleteImg(topic.getImglittle());
+				FileUtil.deleteImg(topic.getImgmedium());
+				FileUtil.deleteImg(topic.getImgbig());
+			}
+			dao.deleteByMap(map);
+			delcommentmap.put(MapperDict.fromuid, topic.getUid());
+			delcommentmap.put(MapperDict.channel, EChannel.topic);
+			commentsSO.deleteByMap(delcommentmap);
+		}
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.TopicSO#setTop(java.lang.String[], boolean)
+	 */
+	@Override
+	public boolean setTop(String[] ids, boolean istop) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		for (String id : ids) {
+			map.put(MapperDict.uid, id);
+			map.put(MapperDict.istop, istop);
+			dao.updateFields(map);
+		}
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.TopicSO#setRecommend(java.lang.String[], boolean)
+	 */
+	@Override
+	public boolean setRecommend(String[] ids, boolean isrecommend) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		for (String id : ids) {
+			map.put(MapperDict.uid, id);
+			map.put(MapperDict.isrecommend, isrecommend);
+			dao.updateFields(map);
+		}
+		return true;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.genius.xo.base.serviceimpl.BaseSOImpl#update(java.lang.Object)
+	 */
+	@Override
+	public boolean update(Topic t) {
+		Topic topic = dao.get(t.getUid());
+		topic.set(t);
+		dao.update(topic);
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.genius.xo.base.serviceimpl.BaseSOImpl#getList()
+	 */
+	@Override
+	public List<Topic> getList() {
+		Map<String, Object> map = getParamMap();
+		return dao.getList(map);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.TopicSO#get(int)
+	 */
+	@Override
+	public Topic get(int oid) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put(MapperDict.oid, oid);
+		return dao.getOne(map);
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.TopicSO#getUserTopicList(java.lang.String)
+	 */
+	@Override
+	public List<Topic> getList(String useruid) {
+		Map<String, Object> map = getParamMap(true);
+		map.put(MapperDict.useruid, useruid);
+		return dao.getList(map);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.TopicSO#getList(java.lang.String, com.supergenius.xo.finance.enums.ETopicState)
+	 */
+	@Override
+	public List<Topic> getList(String useruid, ETopicState etopicstate, Pager pager) {
+		Map<String, Object> map = getParamMap(pager);
+		map.put(MapperDict.useruid, useruid);
+		map.put(MapperDict.state, etopicstate);
+		if (etopicstate.equals(ETopicState.succeed)) {
+			map.put(MapperDict.orderBy, "order by publishtime desc");
+		}
+		return dao.getList(map);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.TopicSO#getList(java.lang.String, com.genius.model.base.enums.EStatus)
+	 */
+	@Override
+	public List<Topic> getList(String useruid, EStatus estatus, Pager pager) {
+		Map<String, Object> map = getParamMap(pager, true);
+		map.put(MapperDict.useruid, useruid);
+		map.put(MapperDict.status, estatus);
+		return dao.getList(map);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.TopicSO#getRandomOid()
+	 */
+	@Override
+	public int getRandomOid() {
+		return dao.getRandomOid();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.TopicSO#getList(java.util.List)
+	 */
+	@Override
+	public List<Topic> getList(List<String> topicuids) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.uids, topicuids);
+		return dao.getList(map);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.TopicSO#getList(java.lang.String, com.genius.model.base.entity.Pager)
+	 */
+	@Override
+	public List<Topic> getList(String useruid, Pager pager) {
+		Map<String, Object> map = getParamMap(pager);
+		map.put(MapperDict.useruid, useruid);
+		return dao.getList(map);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.TopicSO#getAuthorTopicCount(java.lang.String)
+	 */
+	@Override
+	public int getAuthorTopicCount(String useruid) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.useruid, useruid);
+		map.put(MapperDict.state, ETopicState.succeed);
+		return dao.getCount(map);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.TopicSO#getList(com.genius.model.base.entity.Pager, com.supergenius.xo.finance.enums.ETopicState)
+	 */
+	@Override
+	public List<Topic> getList(Pager pager, ETopicState estate) {
+		Map<String, Object> map = getParamMap(pager);
+		map.put(MapperDict.state, estate);
+		map.put(MapperDict.orderBy, "order by publishtime desc");
+		return dao.getList(map);
+	}
+}

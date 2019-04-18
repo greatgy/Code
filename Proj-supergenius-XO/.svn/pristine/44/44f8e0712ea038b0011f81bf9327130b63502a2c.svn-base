@@ -1,0 +1,31 @@
+package com.supergenius.xo.finance.serviceimpl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.genius.xo.base.dao.BaseDao;
+import com.genius.xo.base.serviceimpl.BaseSOImpl;
+import com.supergenius.xo.finance.dao.LabelDao;
+import com.supergenius.xo.finance.entity.Label;
+import com.supergenius.xo.finance.service.LabelSO;
+
+/**
+ * 标签so实现
+ * 
+ * @author LouPengYu
+ * @date 2018年1月2日09:55:19
+ */
+@Service("financeLabelSOImpl")
+public class LabelSOImpl extends BaseSOImpl<Label> implements LabelSO{
+
+	@Autowired
+	private LabelDao dao;
+	
+	@Override
+	protected BaseDao<Label> getDao() {
+		// TODO Auto-generated method stub
+		return dao;
+	}
+
+	
+}

@@ -1,0 +1,45 @@
+package com.supergenius.xo.finance.enums;
+
+import java.util.Locale;
+
+import com.genius.core.base.utils.I18N;
+
+/**
+ * 话题状态枚举
+ * @author liushaomin
+ * @modifier architect.bian
+ */
+public enum ETopicState {
+
+	init("0"),//审核中
+	succeed("1"),//已发布
+	failed("2");//未通过
+
+	private final String value;
+
+	private ETopicState(String v) {
+		this.value = v;
+	}
+
+	public String toString() {
+		return this.value;
+	}
+
+	public static ETopicState get(int v) {
+		String str = String.valueOf(v);
+		return get(str);
+	}
+
+	public static ETopicState get(String str) {
+		for (ETopicState e : values()) {
+			if (e.toString().equals(str)) {
+				return e;
+			}
+		}
+		return null;
+	}
+
+	public static String getName(ETopicState e, Locale locale) {
+		return I18N.getEnumName(e, locale);
+	}
+}

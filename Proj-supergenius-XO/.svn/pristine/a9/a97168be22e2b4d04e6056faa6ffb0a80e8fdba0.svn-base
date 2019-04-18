@@ -1,0 +1,375 @@
+package com.supergenius.xo.user.serviceimpl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.genius.core.base.utils.MathUtil;
+import com.genius.model.base.entity.Pager;
+import com.genius.model.base.enums.EStatus;
+import com.genius.model.baseadmin.entity.AdminLog;
+import com.genius.xo.base.dao.BaseDao;
+import com.genius.xo.base.serviceimpl.BaseSOImpl;
+import com.genius.xo.baseadmin.service.AdminLogSO;
+import com.supergenius.xo.base.enums.EUser;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.user.dao.UserDao;
+import com.supergenius.xo.user.dao.UserInfoDao;
+import com.supergenius.xo.user.entity.TradeDetail;
+import com.supergenius.xo.user.entity.User;
+import com.supergenius.xo.user.entity.UserInfo;
+import com.supergenius.xo.user.enums.EUserChannel;
+import com.supergenius.xo.user.service.TradeDetailSO;
+import com.supergenius.xo.user.service.UserSO;
+
+/**
+ * UserSOImpl
+ * 
+ * @author chenminchang
+ * @date 2016-3-24 下午12:55:07
+ */
+@Service
+public class UserSOImpl extends BaseSOImpl<User> implements UserSO {
+	
+	private static List<Integer> statusList = new ArrayList<>();
+	
+	static {
+		statusList.add(1);
+		statusList.add(11);
+		statusList.add(12);
+	}
+
+	@Autowired
+	UserDao dao;
+
+	@Autowired
+	UserInfoDao userInfoDao;
+	
+	@Autowired
+	AdminLogSO adminLogSO;
+	
+	@Autowired
+	TradeDetailSO tradeDetailSO;
+
+	@Override
+	protected BaseDao<User> getDao() {
+		return dao;
+	}
+
+	@Override
+	public User get(int oid) {
+		Map<String, Object> map = getParamMap(true);
+		getAvailable(map);
+		map.put(MapperDict.oid, oid);
+		return dao.getOne(map);
+	}
+
+	@Override
+	public List<User> getList(int[] oids) {
+		Map<String, Object> map = getParamMap(true);
+		getAvailable(map);
+		map.put(MapperDict.oids, oids);
+		return dao.getList(map);
+	}
+
+	@Override
+	public User getByUsersn(String usersn) {
+		Map<String, Object> map = getParamMap(true);
+		map.put(MapperDict.usersn, usersn);
+		return dao.getOne(map);
+	}
+	@Override
+	public User getEnableByUsersn(String usersn) {
+		Map<String, Object> map = getParamMap(true);
+		getAvailable(map);
+		map.put(MapperDict.usersn, usersn);
+		return dao.getOne(map);
+	}
+
+	@Override
+	public User getByEmail(String email) {
+		Map<String, Object> map = getParamMap(true);
+		map.put(MapperDict.email, email);
+		return dao.getOne(map);
+	}
+	
+	@Override
+	public User getEnableByEmail(String email) {
+		Map<String, Object> map = getParamMap(true);
+		getAvailable(map);
+		map.put(MapperDict.email, email);
+		return dao.getOne(map);
+	}
+
+	@Override
+	public boolean isExistEmail(String email) {
+		Map<String, Object> map = getParamMap(true);
+		map.put(MapperDict.email, email);
+		map.put(MapperDict.prefix_no_key + MapperDict.status, EStatus.disable + "," + EStatus.deleted);
+		if(dao.getOne(map) == null) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public User getByMobile(String mobile) {
+		Map<String, Object> map = getParamMap(true);
+		getAvailable(map);
+		map.put(MapperDict.mobile, mobile);
+		return dao.getOne(map);
+	}
+
+	@Override
+	public List<User> search(String showname) {
+		Map<String, Object> map = getParamMap(true);
+		getAvailable(map);
+		map.put(MapperDict.showname, showname);
+		return dao.getList(map);
+	}
+
+	@Override
+	public boolean updateAccount(User user, Double account) {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.uid, user.getUid());
+		map.put(MapperDict.account, account);
+		return dao.updateFields(map);
+	}
+
+	@Override
+	public boolean updatePwd(User user) {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.uid, user.getUid());
+		map.put(MapperDict.password, user.getPassword());
+		return dao.updateFields(map);
+	}
+
+	@Override
+	public boolean updatePayPwd(User user) {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.uid, user.getUid());
+		map.put(MapperDict.paypwd, user.getPaypwd());
+		return dao.updateFields(map);
+	}
+
+	@Override
+	public boolean updateEmail(User user) {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.uid, user.getUid());
+		map.put(MapperDict.email, user.getEmail());
+		return dao.updateFields(map);
+	}
+
+	@Override
+	public boolean updateNewemail(User user) {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.uid, user.getUid());
+		map.put(MapperDict.newemail, user.getNewemail());
+		map.put(MapperDict.validcode, user.getValidcode());
+		return dao.updateFields(map);
+	}
+
+	@Override
+	public boolean updateUsersn(User user) {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.uid, user.getUid());
+		map.put(MapperDict.usersn, user.getUsersn());
+		return dao.updateFields(map);
+	}
+
+	@Override
+	public boolean updateStatus(User user) {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.uid, user.getUid());
+		map.put(MapperDict.status, user.getStatus());
+		return dao.updateFields(map);
+	}
+
+	@Override
+	public boolean updateresetpwd(User user) {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.uid, user.getUid());
+		map.put(MapperDict.resetpwd, user.getResetpwd());
+		map.put(MapperDict.data, user.getData());
+		return dao.updateFields(map);
+	}
+
+	@Override
+	public boolean updateAccount(User user) {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.uid, user.getUid());
+		map.put(MapperDict.account, user.getAccount());
+		return dao.updateFields(map);
+	}
+
+	@Override
+	public boolean insertInvite(User user) {
+		if(!dao.insert(user)) {
+			return false;
+		} else {
+			UserInfo userInfo = user.getUserInfo();
+			if(!userInfoDao.insert(userInfo)) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+	}
+
+	@Override
+	public int getCount(EStatus status) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.status, status);
+		return dao.getCount(map);
+	}
+
+	@Override
+	public int getCount(EUserChannel userChannel) {
+		Map<String, Object> map = getParamMap();
+		getAvailable(map);
+		map.put(MapperDict.channelfrom, userChannel);
+		return dao.getCount(map);
+	}
+
+	@Override
+	public List<Map<String, Object>> searchJudge(String keyword, Pager pager, int major, String useruid, String useruid2) {
+		Map<String, Object> map = getParamMap(pager, true);
+		map.put(MapperDict.major, major);
+		getAvailable(map);
+		if(StringUtils.isNotEmpty(keyword)) {
+			map.put(MapperDict.sn + MapperDict.suffix_like_key, keyword);
+			map.put(MapperDict.showname + MapperDict.suffix_like_key, keyword);
+		}
+		map.put(MapperDict.pkuseruid, useruid);
+		map.put(MapperDict.pkuseruid2, useruid2);
+		return dao.searchJudge(map);
+	}
+
+	@Override
+	public List<User> searchStudent(String keyword, int major, int levelTo, EUser usertype, Pager pager) {
+		Map<String, Object> map = getParamMap(pager, true);
+		getAvailable(map);
+		if(StringUtils.isNotEmpty(keyword)) {
+			map.put(MapperDict.showname + MapperDict.suffix_like_key, keyword);
+			map.put(MapperDict.company + MapperDict.suffix_like_key, keyword);
+			map.put(MapperDict.job + MapperDict.suffix_like_key, keyword);
+		}
+		map.put(MapperDict.usertype, usertype);
+		map.put(MapperDict.major, major);
+		map.put(MapperDict.userleveltype, EUser.student);
+		map.put(MapperDict.levelto, levelTo);
+		map.put(MapperDict.userlevelstatus, EStatus.enable);
+		return dao.searchStudent(map);
+	}
+
+	@Override
+	public boolean updateFreezeaccount(User user, Double cost) {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.uid, user.getUid());
+		map.put(MapperDict.account, MathUtil.subtract(user.getAccount(), cost));
+		map.put(MapperDict.freezeaccount, MathUtil.add(user.getFreezeaccount(), cost));
+		dao.updateFields(map);
+		user.subtractAccount(cost);
+		return true;
+		
+	}
+	
+	@Override
+	public boolean updateUnFreezeaccount(User user, Double cost) {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.uid, user.getUid());
+		map.put(MapperDict.account, MathUtil.add(user.getAccount(), cost));
+		map.put(MapperDict.freezeaccount, MathUtil.subtract(user.getFreezeaccount(), cost));
+		dao.updateFields(map);
+		user.plusAccount(cost);
+		return true;
+		
+	}
+
+	@Override
+	public boolean updateAccountAndTotalpay(User user) {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.uid, user.getUid());
+		map.put(MapperDict.account, user.getAccount());
+		map.put(MapperDict.totalpay, user.getTotalpay());
+		return dao.updateFields(map);
+	}
+
+	@Override
+	public boolean updateAccountAndTotalpayAndFreezeAccount(User user, Double cost) {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.uid, user.getUid());
+		map.put(MapperDict.account, user.getAccount());
+		map.put(MapperDict.totalpay, user.getTotalpay());
+		map.put(MapperDict.freezeaccount, MathUtil.subtract(user.getFreezeaccount(), cost));
+		return dao.updateFields(map);
+	}
+
+	@Override
+	public boolean updateStatus(User user, AdminLog adminLog) {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.uid, user.getUid());
+		map.put(MapperDict.status, user.getStatus());
+		return dao.updateFields(map) && adminLogSO.add(adminLog);
+	}
+
+	@Override
+	public boolean updateAccount(User user, AdminLog adminLog) {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.uid, user.getUid());
+		map.put(MapperDict.account, user.getAccount());
+		return dao.updateFields(map) && adminLogSO.add(adminLog);
+	}
+
+	@Override
+	public boolean update(User user, TradeDetail tradeDetail) {
+		return dao.update(user) && tradeDetailSO.add(tradeDetail);
+	}
+
+	@Override
+	public boolean updateData(String uid, String data) {
+		Map<String, Object> map = getParamMap(true);
+		map.put(MapperDict.uid, uid);
+		map.put(MapperDict.data, data);
+		return dao.updateFields(map);
+	}
+	
+	@Override
+	public boolean updateType(User user) {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.uid, user.getUid());
+		map.put(MapperDict.type, user.getType());
+		return dao.updateFields(map);
+	}
+
+	@Override
+	public List<User> searchCustomer(Map<String, Object> map, Pager pager) {
+		Map<String, Object> map2 = getParamMap(pager, true);
+		getAvailable(map);
+		map2.putAll(map);
+		return dao.searchCustomer(map2);
+	}
+
+	@Override
+	public int searchCount(Map<String, Object> map) {
+		Map<String, Object> map2 = getParamMap(true);
+		getAvailable(map);
+		map2.putAll(map);
+		return dao.searchCount(map2);
+	}
+
+	@Override
+	public List<String> getUids(Map<String, Object> map) {
+		List<String> list = dao.getUids(map);
+		return list;
+	}
+	
+	private void getAvailable(Map<String, Object> map){
+		map.put(MapperDict.statuslist, statusList);
+	}
+}

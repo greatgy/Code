@@ -1,0 +1,54 @@
+package com.supergenius.xo.finance.enums;
+
+import java.util.Locale;
+
+import com.genius.core.base.utils.I18N;
+
+/**
+ * 投稿状态枚举
+ *
+ * @author ShangJianguo
+ */
+public enum EContributeState {
+
+	init("0"),// 审核中
+	accept("1"),// 已通过
+	refuse("2");// 未通过
+
+	private final String value;
+
+	private EContributeState(String v) {
+		this.value = v;
+	}
+
+	public String toString() {
+		return this.value;
+	}
+
+	public static EContributeState get(int v) {
+		String str = String.valueOf(v);
+		return get(str);
+	}
+	
+	public static EContributeState getByName(String name) {
+		for (EContributeState e : values()) {
+			if (e.name().equals(name)) {
+				return e;
+			}
+		}
+		return null;
+	}
+
+	public static EContributeState get(String str) {
+		for (EContributeState e : values()) {
+			if (e.toString().equals(str)) {
+				return e;
+			}
+		}
+		return null;
+	}
+
+	public static String getName(EContributeState e, Locale locale) {
+		return I18N.getEnumName(e, locale);
+	}
+}

@@ -1,0 +1,17 @@
+package com.supergenius.xo.finance.dao;
+
+import com.genius.xo.base.dao.BaseDao;
+import com.supergenius.xo.finance.entity.Topic;
+
+/**
+ * 话题Dao
+ * @author liushaomin
+ */
+public interface TopicDao extends BaseDao<Topic>{
+
+	/**
+	 * 随机获取数据库的一条oid
+	 * @return 
+	 */
+	int getRandomOid();
+}

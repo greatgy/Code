@@ -1,0 +1,568 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.manager.dao.ExpertDao">
+
+	<sql id="userinfotable">GUserDB2.userinfo</sql>
+	<sql id="experton">on expert.useruid = userinfo.uid</sql>
+	<sql id="setshowname_lk">`showname` like CONCAT('%',#{showname_lk},'%')</sql>
+	<sql id="setcompany_lk">`company` like CONCAT('%',#{company_lk},'%')</sql>
+	<sql id="setjob_lk">`job` like CONCAT('%',#{job_lk},'%')</sql>
+	<sql id="expertcolumns">expert.`uid`, `useruid`, `sn`, `major`, `level`, `chaircount`, `desc`, `type`, `certificateuid`, `file`, `status` </sql>
+	
+	<sql id="usertable">GUserDB2.user</sql>
+    <sql id="useron">on expert.useruid = user.uid</sql>
+    <sql id="setusersn_lk">`usersn` like CONCAT('%',#{usersn_lk},'%')</sql>
+	
+    <sql id="basecolumns">expert.`uid`, expert.`createtime` </sql>
+    <sql id="othercolumns"><include refid="basecolumns"/>, `useruid`, `sn`, `major`, `level`, `chaircount`, `complaintcount`, `desc`, expert.`type`, `certificateuid`, `file`, expert.`status` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, expert.`updatetime`</sql>
+    <sql id="table">expert</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="whereid">where uid = #{uid}</sql>
+    <sql id="allfields"><include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{uid},#{createtime},#{useruid},#{sn},#{major},#{level},#{chaircount},#{complaintcount},#{desc},#{type},#{certificateuid},#{file},#{status}</sql>
+    <sql id="setuseruid">`useruid` = #{useruid}</sql>
+    <sql id="setsn">`sn` = #{sn}</sql>
+    <sql id="setsn_lk">`sn` like CONCAT('%',#{sn_lk},'%')</sql>
+    <sql id="setmajor">`major` = #{major}</sql>
+    <sql id="setlevel">`level` = #{level}</sql>
+    <sql id="setuid">uid = #{uid}</sql>
+    <sql id="setchaircount">`chaircount` = #{chaircount}</sql>
+    <sql id="setchaircount_le">`chaircount` &lt;= #{chaircount_le}</sql>
+    <sql id="setchaircount_ge">`chaircount` &gt;= #{chaircount_ge}</sql>
+    <sql id="setcomplaintcount">`complaintcount` = #{complaintcount}</sql>
+    <sql id="setdesc">`desc` = #{desc}</sql>
+    <sql id="settype">expert.`type` = #{type}</sql>
+    <sql id="setcertificateuid">`certificateuid` = #{certificateuid}</sql>
+    <sql id="setfile">`file` = #{file}</sql>
+    <sql id="setstatus">expert.`status` = #{status}</sql>
+    <sql id="allsets">set
+            <include refid="setuseruid"/>,
+            <include refid="setsn"/>,
+            <include refid="setmajor"/>,
+            <include refid="setlevel"/>,
+            <include refid="setchaircount"/>,
+            <include refid="setcomplaintcount"/>,
+            <include refid="setdesc"/>,
+            <include refid="settype"/>,
+            <include refid="setcertificateuid"/>,
+            <include refid="setfile"/>,
+            <include refid="setstatus"/>
+    </sql>
+    <sql id="orderby">order by createtime</sql>
+
+    <select id="get" parameterType="string" resultType="expert">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="expert">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="uid != null">
+                and <include refid="setuid"/>
+            </if>         
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="level != null">
+                and <include refid="setlevel"/>
+            </if>
+            <if test="chaircount != null">
+                and <include refid="setchaircount"/>
+            </if>
+            <if test="complaintcount != null">
+                and <include refid="setcomplaintcount"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="certificateuid != null">
+                and <include refid="setcertificateuid"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+    
+    <select id="getOneByStatus" parameterType="hashMap" resultType="expert">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="uid != null">
+                and <include refid="setuid"/>
+            </if>         
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="level != null">
+                and <include refid="setlevel"/>
+            </if>
+            <if test="chaircount != null">
+                and <include refid="setchaircount"/>
+            </if>
+            <if test="complaintcount != null">
+                and <include refid="setcomplaintcount"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="certificateuid != null">
+                and <include refid="setcertificateuid"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="status != null">
+                and status in
+                <foreach item="item" index="index" collection="status" open="(" separator="," close=")">
+                	#{item}
+                </foreach>
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        left join
+        <include refid="userinfotable"/>
+        <include refid="experton"/>
+         left join
+        <include refid="usertable"/>
+        <include refid="useron"/>
+        <where>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="sn_lk != null">
+                and (<include refid="setsn_lk"/>
+            </if>
+            <if test="showname_lk != null">
+                or <include refid="setshowname_lk"/>
+            </if>
+            <if test="usersn_lk != null">
+                or <include refid="setusersn_lk"/>)
+            </if>
+            <if test="sn_lk != null and usersn_lk == null">
+                )
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="level != null">
+                and <include refid="setlevel"/>
+            </if>
+            <if test="chaircount != null">
+                and <include refid="setchaircount"/>
+            </if>
+            <if test="chaircount_le != null">
+                and <include refid="setchaircount_le"/>
+            </if>
+            <if test="chaircount_ge != null">
+                and <include refid="setchaircount_ge"/>
+            </if>
+            <if test="complaintcount != null">
+                and <include refid="setcomplaintcount"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="certificateuid != null">
+                and <include refid="setcertificateuid"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </select>
+    
+    <select id="searchCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        left join
+        <include refid="userinfotable"/>
+        <include refid="experton"/>
+        <where>
+        	<if test="sn_lk != null">
+                ( <include refid="setsn_lk"/>
+            </if>
+            <if test="showname_lk != null">
+                or <include refid="setshowname_lk"/>
+            </if>
+            <if test="company_lk != null">
+                or <include refid="setcompany_lk"/>
+            </if>
+            <if test="job_lk != null">
+                or <include refid="setjob_lk"/>
+                )
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="level != null">
+                and <include refid="setlevel"/>
+            </if>
+            <if test="chaircount != null">
+                and <include refid="setchaircount"/>
+            </if>
+            <if test="complaintcount != null">
+                and <include refid="setcomplaintcount"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="certificateuid != null">
+                and <include refid="setcertificateuid"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </select>
+    
+    <select id="search" parameterType="hashMap" resultType="expert">
+        select
+        <include refid="expertcolumns" />
+        from
+        <include refid="table"/>
+        left join
+        <include refid="userinfotable"/>
+        <include refid="experton"/>
+       <where>
+        	<if test="sn_lk != null">
+                ( <include refid="setsn_lk"/>
+            </if>
+            <if test="showname_lk != null">
+                or <include refid="setshowname_lk"/>
+            </if>
+            <if test="company_lk != null">
+                or <include refid="setcompany_lk"/>
+            </if>
+            <if test="job_lk != null">
+                or <include refid="setjob_lk"/>
+                )
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="level != null">
+                and <include refid="setlevel"/>
+            </if>
+            <if test="chaircount != null">
+                and <include refid="setchaircount"/>
+            </if>
+            <if test="complaintcount != null">
+                and <include refid="setcomplaintcount"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="certificateuid != null">
+                and <include refid="setcertificateuid"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+            	</if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <select id="getListByStatus" parameterType="hashMap" resultType="expert">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="sn_lk != null">
+                and <include refid="setsn_lk"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="level != null">
+                and <include refid="setlevel"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="certificateuid != null">
+                and <include refid="setcertificateuid"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="status != null">
+                and status in
+                <foreach item="item" index="index" collection="status" open="(" separator="," close=")">
+                	#{item}
+                </foreach>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+            	</if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <select id="getList" parameterType="hashMap" resultType="expert">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        left join
+        <include refid="userinfotable"/>
+        <include refid="experton"/>
+         left join
+        <include refid="usertable"/>
+        <include refid="useron"/>
+        <where>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="sn_lk != null">
+                and (<include refid="setsn_lk"/>
+            </if>
+            <if test="showname_lk != null">
+                or <include refid="setshowname_lk"/>
+            </if>
+            <if test="usersn_lk != null">
+                or <include refid="setusersn_lk"/>)
+            </if>
+            <if test="sn_lk != null and usersn_lk == null">
+                )
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="chaircount_le != null">
+                and <include refid="setchaircount_le"/>
+            </if>
+            <if test="chaircount_ge != null">
+                and <include refid="setchaircount_ge"/>
+            </if>
+            <if test="level != null">
+                and <include refid="setlevel"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="certificateuid != null">
+                and <include refid="setcertificateuid"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+            	</if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+    
+    <insert id="insert" parameterType="expert">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="expert">
+        update
+        <include refid="table"/>
+        <include refid="allsets"/>
+        <include refid="whereid"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="useruid != null">
+                <include refid="setuseruid"/>,
+            </if>
+            <if test="sn != null">
+                <include refid="setsn"/>,
+            </if>
+            <if test="major != null">
+                <include refid="setmajor"/>,
+            </if>
+            <if test="level != null">
+                <include refid="setlevel"/>,
+            </if>
+            <if test="chaircount != null">
+                <include refid="setchaircount"/>,
+            </if>
+            <if test="complaintcount != null">
+                <include refid="setcomplaintcount"/>
+            </if>
+            <if test="desc != null">
+                <include refid="setdesc"/>,
+            </if>
+            <if test="type != null">
+                <include refid="settype"/>,
+            </if>
+            <if test="certificateuid != null">
+                <include refid="setcertificateuid"/>,
+            </if>
+            <if test="file != null">
+                <include refid="setfile"/>,
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>
+            </if>
+        </set>
+        <include refid="whereid"/>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+
+</mapper>
+

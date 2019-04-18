@@ -1,0 +1,219 @@
+﻿/*==============================================================*/
+/* DBMS name:      MySQL 5.5                                                                  */
+/* Created on:     19:00 2013/7/14                                                           */
+/*==============================================================*/
+
+/*==============================================================*/
+/*
+DataBase: GAdminDB
+Author:        architect.bian
+Description:    创建数据库
+CreatedDate:    19:00 2013/7/14
+ModifyDate:     19:00 2013/7/14
+*/
+/*==============================================================*/
+
+drop table if exists finance;
+
+drop table if exists topic;
+
+drop table if exists topicguest;
+
+drop table if exists debate;
+
+drop table if exists debatearticle;
+
+drop table if exists contribute;
+
+drop table if exists contributor;
+
+/*==============================================================*/
+/* Table: finance    天财评论文章表                          		                    */
+/*==============================================================*/
+create table finance(
+   oid						int(11) unsigned not null auto_increment comment '自增主键',
+   uid                      char(32) not null comment '唯一ID',
+   adminuid            		char(32) not null comment '最新操作管理员UID',
+   type                   	int(11) unsigned comment '类型（枚举类型可管理）',
+   authoruid				char(32) comment '作者uid',
+   contributeuid			char(32) comment '投稿uid',
+   author               	varchar(100) comment '作者',
+   content             		mediumtext comment '内容',
+   title                    varchar(500) comment '标题',
+   imglittle             	varchar(255) default '' comment '小图',
+   imgmedium        		varchar(255) default '' comment '中图',
+   imgbig                	varchar(255) default '' comment '大图',
+   imgoriginal         		varchar(255) default '' comment '原图',
+   origin                 	varchar(100) comment '来源',
+   originurl             	varchar(255) comment '来源链接',
+   summary           		varchar(1000) comment '摘要内容',
+   keywords        			varchar(500) comment '关键字',
+   sortorder           		smallint(5) not null default 0 comment '排列顺序',
+   istop                  	tinyint(1) unsigned not null default 0 comment '置顶(设为焦点文章)',
+   isrecommend     			tinyint(1) unsigned not null default 0 comment '是否推荐(0 不推荐 1 推荐)',
+   ispublic              	tinyint(1) unsigned not null default 1 comment '是否公开(0 不公开 1公开)',
+   config                 	int(11) unsigned not null  comment '采用配置属性的二进制数据',
+   data  	                varchar(1000) comment '相关的其他json数据',
+   publishtime           	timestamp default '0000-00-00 00:00:00.000' comment '发布时间',
+   status                	tinyint(1) default 1 comment '状态(0禁用1启用)',
+   createtime          		timestamp not null default '0000-00-00 00:00:00.000' comment '创建时间',
+   updatetime         		timestamp not null default current_timestamp on update current_timestamp comment '最后更新时间',
+   PRIMARY KEY (`oid`,`uid`),
+   UNIQUE KEY `oid` (`oid`),
+   UNIQUE KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*==============================================================*/
+/* Table: topic    话题表											*/
+/*==============================================================*/
+create table topic(
+   oid                      int(11) unsigned not null auto_increment comment '自增主键',
+   uid                      char(32) not null comment '唯一ID',
+   useruid               	char(32) not null comment '话题发起人的uid',
+   title                    varchar(500) comment '标题',
+   author                  	varchar(100) comment '作者',
+   content               	mediumtext comment '内容',
+   imglittle               	varchar(255) default '' comment '小图',
+   imgmedium         		varchar(255) default '' comment '中图',
+   imgbig                 	varchar(255) default '' comment '大图',
+   imgoriginal          	varchar(255) default '' comment '原图',
+   istop                    tinyint(1) unsigned not null default 0 comment '置顶(0 不置顶 1置顶)',
+   isrecommend     			tinyint(1) unsigned not null default 0 comment '是否推荐(0 不推荐 1 推荐)',
+   ispublic              	tinyint(1) unsigned not null default 1 comment '是否公开(0 不公开 1公开)',
+   config                   int(11) unsigned not null  comment '采用二进制',
+   state                    tinyint(1) default 0 comment '话题审核状态(审核中、已发布、未通过、已撤销)',
+   publishtime           	timestamp default '0000-00-00 00:00:00.000' comment '发布时间',
+   status                  	tinyint(1) default 1 comment '状态(0禁用1正常)',
+   createtime           	timestamp not null default '0000-00-00 00:00:00.000' comment '创建时间',
+   updatetime           	timestamp not null default current_timestamp on update current_timestamp comment '最后更新时间',
+   PRIMARY KEY (`oid`,`uid`),
+   UNIQUE KEY `oid` (`oid`),
+   UNIQUE KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*==============================================================*/
+/* Table: topicguest    话题表									*/
+/*==============================================================*/
+create table topicguest(
+   uid                      char(32) not null comment '唯一ID',
+   useruid               	char(32) not null comment '嘉宾UID，用户表uid ',
+   topicuid               	char(32) not null comment '话题UID，话题表uid ',
+   name                  	varchar(100) comment '嘉宾姓名',
+   state                   	tinyint(1) default 0 comment '嘉宾状态（初始 接受 拒绝）',
+   status                 	tinyint(1) default 1 comment '状态(0禁用1正常)',
+   createtime           	timestamp not null default '0000-00-00 00:00:00.000' comment '创建时间',
+   updatetime         		timestamp not null default current_timestamp on update current_timestamp comment '最后更新时间',
+   PRIMARY KEY (`uid`),
+   UNIQUE KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*==============================================================*/
+/* Table: contribute    投稿表									*/
+/*==============================================================*/
+create table contribute(
+   oid                      int(11) unsigned not null auto_increment comment '自增主键',
+   uid                      char(32) not null comment '唯一ID',
+   useruid           		char(32) not null comment '投稿人UID(游客、会员)',
+   name             		varchar(100) comment '投稿人姓名',
+   email              		varchar(255) comment '投稿人邮箱',
+   qq                 		varchar(36) comment ' 投稿人QQ号码',
+   phone            		varchar(36) comment '投稿人联系电话',
+   summary       			varchar(1000) comment '投稿人个人简介',
+   title                	varchar(500) comment '标题',
+   `type`                	int(11) unsigned comment '投稿的类型（与文章类型相同）',
+   usertype                	int(1) unsigned comment '投稿者类型(游客或会员)',
+   keywords       			varchar(500) comment '关键字',
+   content           		mediumtext comment '稿件内容',
+   imglittle             	varchar(255) default '' comment '小图',
+   imgmedium        		varchar(255) default '' comment '中图',
+   imgbig                	varchar(255) default '' comment '大图',
+   imgoriginal         		varchar(255) default '' comment '原图',
+   state             		tinyint(1) default 0 comment '投稿审核状态(审核中、已发布、审核未通过)',
+   status             		tinyint(1) default 1 comment '状态(0禁用1 正常)',
+   createtime     			timestamp not null default '0000-00-00 00:00:00.000' comment '创建时间',
+   PRIMARY KEY (`oid`,`uid`),
+   UNIQUE KEY `oid` (`oid`),
+   UNIQUE KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*==============================================================*/
+/* Table: contributor    投稿人表									*/
+/*==============================================================*/
+create table contributor(
+   oid                      int(11) unsigned not null auto_increment comment '自增主键',
+   uid                 		char(32) not null comment '唯一ID',
+   name             		varchar(100) comment '姓名',
+   email              		varchar(100) comment '邮箱',
+   qq                  		char(32) comment ' QQ号码',
+   phone             		char(32) comment '联系电话',
+   summary         			varchar(1000) comment '个人简介',
+   status             		tinyint(1) default 1 comment '状态(0禁用1启用)',
+   createtime      			timestamp not null default '0000-00-00 00:00:00.000' comment '创建时间',
+   updatetime      			timestamp not null default current_timestamp on update current_timestamp comment '最后更新时间',
+   PRIMARY KEY (`oid`,`uid`),
+   UNIQUE KEY `oid` (`oid`),
+   UNIQUE KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*==============================================================*/
+/* Table: debate    论战表										*/
+/*==============================================================*/
+create table debate(
+   oid                  int(11) unsigned not null auto_increment comment '自增主键',
+   uid                  char(32) not null comment '唯一ID',
+   adminuid         	char(32) not null comment '管理员uid',
+   title                varchar(500) comment '标题',
+   author             	varchar(100) comment '作者',
+   periods            	varchar(1000) comment '第几期',
+   content            	mediumtext comment '内容',
+   titlered             varchar(500) comment '红方观点',
+   titleblue            varchar(500) comment '蓝方观点',
+   countred           	int(11) unsigned  comment '红方点击数',
+   countblue          	int(11) unsigned  comment '蓝方点击数',
+   imglittle            varchar(255) default '' comment '小图',
+   imgmedium       		varchar(255) default '' comment '中图',
+   imgbig               varchar(255) default '' comment '大图',
+   imgoriginal        	varchar(255) default '' comment '原图',
+   istop                tinyint(1) unsigned not null default 0 comment '置顶(0 不置顶 1置顶)',
+   config               int(11) unsigned not null comment '采用二进制',
+   state                tinyint(1) default 1 comment '论战关闭、开始(0 关闭 1开始)',
+   status               tinyint(1) default 1 comment '状态(0禁用1正常)',
+   createtime        	timestamp not null default '0000-00-00 00:00:00.000' comment '创建时间',
+   updatetime       	timestamp not null default current_timestamp on update current_timestamp comment '最后更新时间',
+   PRIMARY KEY (`oid`,`uid`),
+   UNIQUE KEY `oid` (`oid`),
+   UNIQUE KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*==============================================================*/
+/* Table: debatearticle    论战文章表								*/
+/*==============================================================*/
+create table debatearticle(
+   oid                  int(11) unsigned not null auto_increment comment '自增主键',
+   uid                  char(32) not null comment '唯一ID',
+   adminuid         	char(32) not null comment '最新操作管理员UID',
+   finaceuid         	char(32)  comment '对应天财评论文章的uid',
+   debateuid      		char(32)  not null comment '论战uid',
+   useruid          	char(32)  not null comment '作者uid（会员、游客）',
+   title                varchar(500) comment '标题',
+   type                	tinyint(1) unsigned comment '其他网站  本站天财评论文章 本站论战模块文章',
+   author            	varchar(100) comment '作者',
+   content           	mediumtext comment '内容',
+   isred               	varchar(1) comment 'true 红方 false 蓝方',
+   imglittle           	varchar(255) default '' comment '小图',
+   imgmedium     		varchar(255) default '' comment '中图',
+   imgbig             	varchar(255) default '' comment '大图',
+   imgoriginal      	varchar(255) default '' comment '原图',
+   origin              	varchar(100) comment '来源',
+   originurl          	varchar(255) comment '来源链接',
+   sortorder        	smallint(5) not null default 0 comment '排列顺序',
+   config             	int(11) unsigned not null comment '采用二进制',
+   ispublic          	tinyint(1) unsigned not null default 1 comment '是否公开(0 不公开 1公开)',
+   status            	tinyint(1) default 1 comment '状态(0禁用1启用)',
+   createtime      		timestamp not null default '0000-00-00 00:00:00.000' comment '创建时间',
+   updatetime    		timestamp not null default current_timestamp on update current_timestamp comment '最后更新时间',
+   PRIMARY KEY (`oid`,`uid`),
+   UNIQUE KEY `oid` (`oid`),
+   UNIQUE KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

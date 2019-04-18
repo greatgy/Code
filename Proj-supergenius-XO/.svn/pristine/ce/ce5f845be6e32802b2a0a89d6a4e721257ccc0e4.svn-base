@@ -1,0 +1,13 @@
+package com.supergenius.xo.life.service;
+
+import com.genius.xo.base.service.BaseSO;
+import com.supergenius.xo.life.entity.Courses;
+
+/**
+ * 课程SO
+ *@Author:JiaShitao
+ *@Date:2018年5月7日下午6:03:23
+ */
+public interface CoursesSO extends BaseSO<Courses> {
+
+}

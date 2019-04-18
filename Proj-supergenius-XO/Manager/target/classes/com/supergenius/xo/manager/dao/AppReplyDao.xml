@@ -1,0 +1,739 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.manager.dao.AppReplyDao">
+
+    <sql id="userinfotable">GUserDB2.userinfo</sql>
+    <sql id="usertable">GUserDB2.user</sql>
+    <sql id="studenttable">GManagerDB.student</sql>
+    <sql id="certificatetable">GManagerDB.certificate</sql>
+    <sql id="userinfoon">on appreply.`useruid` = userinfo.uid</sql>
+    <sql id="useron">on appreply.`useruid` = user.uid</sql>
+    <sql id="studenton">on appreply.`useruid` = student.uid</sql>
+    <sql id="certificateon">on appreply.`certificated` = certificate.uid</sql>
+    <sql id="setshowname_lk">`userinfo`.`showname` like CONCAT('%',#{keyword},'%')</sql>
+    <sql id="setusersn_lk">`user`.`usersn` like CONCAT('%',#{keyword},'%')</sql>
+    <sql id="setstudentsn_lk">`student`.`sn` like CONCAT('%',#{keyword},'%')</sql>
+    <sql id="setname_lk">appreply.`name` like CONCAT('%',#{keyword},'%')</sql>
+    <sql id="setdegree">certificate.`type` = #{degree}</sql>
+    <sql id="setdegreenull">certificate.`type` is null</sql>
+
+    <sql id="basecolumns">appreply.`uid`, appreply.`createtime` </sql>
+    <sql id="othercolumns"><include refid="basecolumns"/>, appreply.`sn`, appreply.`useruid`, appreply.`major`, appreply.`name`, `majorlevel`, `appstudentuid`, `confuid`, appreply.`desc`, `file`, `file2`, `descto`, `topic`, `certificated`, `certificate`, `isvideoreply`, `isvideotopic`, `opentimes`, `opentimeok`, `openaddress`, `replytimes`, `replytimeok`, `replyaddress`, `qqgroup`, appreply.`data`, `replystage`, appreply.`status` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, appreply.`updatetime`</sql>
+    <sql id="table">appreply</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="whereid">where uid = #{uid}</sql>
+    <sql id="allfields"><include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{uid},#{createtime},#{sn},#{useruid},#{major},#{name},#{majorlevel},#{appstudentuid},#{confuid},#{desc},#{file},#{file2},#{descto},#{topic},#{certificated},#{certificate},#{isvideoreply},#{isvideotopic},#{opentimes},#{opentimeok},#{openaddress},#{replytimes},#{replytimeok},#{replyaddress},#{qqgroup},#{data},#{replystage},#{status}</sql>
+    <sql id="setsn">appreply.`sn` = #{sn}</sql>
+    <sql id="setuid">appreply.uid = #{uid}</sql>
+    <sql id="setuseruid">appreply.`useruid` = #{useruid}</sql>
+    <sql id="setmajor">appreply.`major` = #{major}</sql>
+    <sql id="setname">appreply.`name` = #{name}</sql>
+    <sql id="setmajorlevel">`majorlevel` = #{majorlevel}</sql>
+    <sql id="setappstudentuid">`appstudentuid` = #{appstudentuid}</sql>
+    <sql id="setconfuid">`confuid` = #{confuid}</sql>
+    <sql id="setdesc">appreply.`desc` = #{desc}</sql>
+    <sql id="setfile">`file` = #{file}</sql>
+    <sql id="setfile2">`file2` = #{file2}</sql>
+    <sql id="setdescto">`descto` = #{descto}</sql>
+    <sql id="settopic">`topic` = #{topic}</sql>
+    <sql id="setcertificated">`certificated` = #{certificated}</sql>
+    <sql id="setcertificate">`certificate` = #{certificate}</sql>
+    <sql id="setisvideoreply">`isvideoreply` = #{isvideoreply}</sql>
+    <sql id="setisvideotopic">`isvideotopic` = #{isvideotopic}</sql>
+    <sql id="setopentimes">`opentimes` = #{opentimes}</sql>
+    <sql id="setopentimeok">`opentimeok` = #{opentimeok}</sql>
+    <sql id="setopenaddress">`openaddress` = #{openaddress}</sql>
+    <sql id="setreplytimes">`replytimes` = #{replytimes}</sql>
+    <sql id="setreplytimeok">`replytimeok` = #{replytimeok}</sql>
+    <sql id="setreplyaddress">`replyaddress` = #{replyaddress}</sql>
+    <sql id="setqqgroup">`qqgroup` = #{qqgroup}</sql>
+    <sql id="setdata">`data` = #{data}</sql>
+    <sql id="setreplystage">`replystage` = #{replystage}</sql>
+    <sql id="setstatus">appreply.`status` = #{status}</sql>
+    <sql id="allsets">set
+            <include refid="setsn"/>,
+            <include refid="setuseruid"/>,
+            <include refid="setmajor"/>,
+            <include refid="setname"/>,
+            <include refid="setmajorlevel"/>,
+            <include refid="setappstudentuid"/>,
+            <include refid="setconfuid"/>,
+            <include refid="setdesc"/>,
+            <include refid="setfile"/>,
+            <include refid="setfile2"/>,
+            <include refid="setdescto"/>,
+            <include refid="settopic"/>,
+            <include refid="setcertificated"/>,
+            <include refid="setcertificate"/>,
+            <include refid="setisvideoreply"/>,
+            <include refid="setisvideotopic"/>,
+            <include refid="setopentimes"/>,
+            <include refid="setopentimeok"/>,
+            <include refid="setopenaddress"/>,
+            <include refid="setreplytimes"/>,
+            <include refid="setreplytimeok"/>,
+            <include refid="setreplyaddress"/>,
+            <include refid="setqqgroup"/>,
+            <include refid="setdata"/>,
+            <include refid="setreplystage"/>,
+            <include refid="setstatus"/>
+    </sql>
+    <sql id="orderby">order by appreply.createtime</sql>
+
+    <select id="get" parameterType="string" resultType="appreply">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="appreply">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="uid != null">
+                and <include refid="setuid"/>
+            </if>         
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="majorlevel != null">
+                and <include refid="setmajorlevel"/>
+            </if>
+            <if test="appstudentuid != null">
+                and <include refid="setappstudentuid"/>
+            </if>
+            <if test="confuid != null">
+                and <include refid="setconfuid"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="file2 != null">
+                and <include refid="setfile2"/>
+            </if>
+            <if test="descto != null">
+                and <include refid="setdescto"/>
+            </if>
+            <if test="topic != null">
+                and <include refid="settopic"/>
+            </if>
+            <if test="certificated != null">
+                and <include refid="setcertificated"/>
+            </if>
+            <if test="certificate != null">
+                and <include refid="setcertificate"/>
+            </if>
+            <if test="isvideoreply != null">
+                and <include refid="setisvideoreply"/>
+            </if>
+            <if test="isvideotopic != null">
+                and <include refid="setisvideotopic"/>
+            </if>
+            <if test="opentimes != null">
+                and <include refid="setopentimes"/>
+            </if>
+            <if test="opentimeok != null">
+                and <include refid="setopentimeok"/>
+            </if>
+            <if test="openaddress != null">
+                and <include refid="setopenaddress"/>
+            </if>
+            <if test="replytimes != null">
+                and <include refid="setreplytimes"/>
+            </if>
+            <if test="replytimeok != null">
+                and <include refid="setreplytimeok"/>
+            </if>
+            <if test="replyaddress != null">
+                and <include refid="setreplyaddress"/>
+            </if>
+            <if test="qqgroup != null">
+                and <include refid="setqqgroup"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="replystage != null">
+                and <include refid="setreplystage"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="majorlevel != null">
+                and <include refid="setmajorlevel"/>
+            </if>
+            <if test="appstudentuid != null">
+                and <include refid="setappstudentuid"/>
+            </if>
+            <if test="confuid != null">
+                and <include refid="setconfuid"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="file2 != null">
+                and <include refid="setfile2"/>
+            </if>
+            <if test="descto != null">
+                and <include refid="setdescto"/>
+            </if>
+            <if test="topic != null">
+                and <include refid="settopic"/>
+            </if>
+            <if test="certificated != null">
+                and <include refid="setcertificated"/>
+            </if>
+            <if test="certificate != null">
+                and <include refid="setcertificate"/>
+            </if>
+            <if test="isvideoreply != null">
+                and <include refid="setisvideoreply"/>
+            </if>
+            <if test="isvideotopic != null">
+                and <include refid="setisvideotopic"/>
+            </if>
+            <if test="opentimes != null">
+                and <include refid="setopentimes"/>
+            </if>
+            <if test="opentimeok != null">
+                and <include refid="setopentimeok"/>
+            </if>
+            <if test="openaddress != null">
+                and <include refid="setopenaddress"/>
+            </if>
+            <if test="replytimes != null">
+                and <include refid="setreplytimes"/>
+            </if>
+            <if test="replytimeok != null">
+                and <include refid="setreplytimeok"/>
+            </if>
+            <if test="replyaddress != null">
+                and <include refid="setreplyaddress"/>
+            </if>
+            <if test="qqgroup != null">
+                and <include refid="setqqgroup"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="replystage != null">
+                and <include refid="setreplystage"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </select>
+    
+    <select id="searchCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        left join 
+        <include refid="userinfotable"/>
+        <include refid="userinfoon"/>
+        left join 
+        <include refid="usertable"/>
+        <include refid="useron"/>
+        left join 
+        <include refid="studenttable"/>
+        <include refid="studenton"/>
+        left join 
+        <include refid="certificatetable"/>
+        <include refid="certificateon"/>
+        <where>
+        	<if test="keyword != null">
+                ( <include refid="setshowname_lk"/>
+                or <include refid="setusersn_lk"/>
+                or <include refid="setstudentsn_lk"/>
+                or <include refid="setname_lk"/>
+                )
+            </if>
+            <if test="degree != null">
+                and <include refid="setdegree"/>
+            </if>
+            <if test="degreenull == null">
+                and <include refid="setdegreenull"/>
+            </if>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="majorlevel != null">
+                and <include refid="setmajorlevel"/>
+            </if>
+            <if test="appstudentuid != null">
+                and <include refid="setappstudentuid"/>
+            </if>
+            <if test="confuid != null">
+                and <include refid="setconfuid"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="file2 != null">
+                and <include refid="setfile2"/>
+            </if>
+            <if test="descto != null">
+                and <include refid="setdescto"/>
+            </if>
+            <if test="topic != null">
+                and <include refid="settopic"/>
+            </if>
+            <if test="certificated != null">
+                and <include refid="setcertificated"/>
+            </if>
+            <if test="certificate != null">
+                and <include refid="setcertificate"/>
+            </if>
+            <if test="isvideoreply != null">
+                and <include refid="setisvideoreply"/>
+            </if>
+            <if test="isvideotopic != null">
+                and <include refid="setisvideotopic"/>
+            </if>
+            <if test="opentimes != null">
+                and <include refid="setopentimes"/>
+            </if>
+            <if test="opentimeok != null">
+                and <include refid="setopentimeok"/>
+            </if>
+            <if test="openaddress != null">
+                and <include refid="setopenaddress"/>
+            </if>
+            <if test="replytimes != null">
+                and <include refid="setreplytimes"/>
+            </if>
+            <if test="replytimeok != null">
+                and <include refid="setreplytimeok"/>
+            </if>
+            <if test="replyaddress != null">
+                and <include refid="setreplyaddress"/>
+            </if>
+            <if test="qqgroup != null">
+                and <include refid="setqqgroup"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="replystage != null">
+                and <include refid="setreplystage"/>
+            </if>
+            <if test="replystage_in != null">
+                and `replystage` in 
+                 <foreach item="item" index="index" collection="replystage_in" open="(" separator="," close=")">  
+                    #{item}
+                </foreach> 
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </select>
+
+    <select id="getList" parameterType="hashMap" resultType="appreply">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="majorlevel != null">
+                and <include refid="setmajorlevel"/>
+            </if>
+            <if test="appstudentuid != null">
+                and <include refid="setappstudentuid"/>
+            </if>
+            <if test="confuid != null">
+                and <include refid="setconfuid"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="file2 != null">
+                and <include refid="setfile2"/>
+            </if>
+            <if test="descto != null">
+                and <include refid="setdescto"/>
+            </if>
+            <if test="topic != null">
+                and <include refid="settopic"/>
+            </if>
+            <if test="certificated != null">
+                and <include refid="setcertificated"/>
+            </if>
+            <if test="certificate != null">
+                and <include refid="setcertificate"/>
+            </if>
+            <if test="isvideoreply != null">
+                and <include refid="setisvideoreply"/>
+            </if>
+            <if test="isvideotopic != null">
+                and <include refid="setisvideotopic"/>
+            </if>
+            <if test="opentimes != null">
+                and <include refid="setopentimes"/>
+            </if>
+            <if test="opentimeok != null">
+                and <include refid="setopentimeok"/>
+            </if>
+            <if test="openaddress != null">
+                and <include refid="setopenaddress"/>
+            </if>
+            <if test="replytimes != null">
+                and <include refid="setreplytimes"/>
+            </if>
+            <if test="replytimeok != null">
+                and <include refid="setreplytimeok"/>
+            </if>
+            <if test="replyaddress != null">
+                and <include refid="setreplyaddress"/>
+            </if>
+            <if test="qqgroup != null">
+                and <include refid="setqqgroup"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="replystage != null">
+                and <include refid="setreplystage"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+    
+    <select id="searchList" parameterType="hashMap" resultType="appreply">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        left join 
+        <include refid="userinfotable"/>
+        <include refid="userinfoon"/>
+        left join 
+        <include refid="usertable"/>
+        <include refid="useron"/>
+        left join 
+        <include refid="studenttable"/>
+        <include refid="studenton"/>
+        left join 
+        <include refid="certificatetable"/>
+        <include refid="certificateon"/>
+        <where>
+        	<if test="keyword != null">
+                ( <include refid="setshowname_lk"/>
+                or <include refid="setusersn_lk"/>
+                or <include refid="setstudentsn_lk"/>
+                or <include refid="setname_lk"/>
+                )
+            </if>
+            <if test="degree != null">
+                and <include refid="setdegree"/>
+            </if>
+            <if test="degreenull != null">
+                and <include refid="setdegreenull"/>
+            </if>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="majorlevel != null">
+                and <include refid="setmajorlevel"/>
+            </if>
+            <if test="appstudentuid != null">
+                and <include refid="setappstudentuid"/>
+            </if>
+            <if test="confuid != null">
+                and <include refid="setconfuid"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="file2 != null">
+                and <include refid="setfile2"/>
+            </if>
+            <if test="descto != null">
+                and <include refid="setdescto"/>
+            </if>
+            <if test="topic != null">
+                and <include refid="settopic"/>
+            </if>
+            <if test="certificated != null">
+                and <include refid="setcertificated"/>
+            </if>
+            <if test="certificate != null">
+                and <include refid="setcertificate"/>
+            </if>
+            <if test="isvideoreply != null">
+                and <include refid="setisvideoreply"/>
+            </if>
+            <if test="isvideotopic != null">
+                and <include refid="setisvideotopic"/>
+            </if>
+            <if test="opentimes != null">
+                and <include refid="setopentimes"/>
+            </if>
+            <if test="opentimeok != null">
+                and <include refid="setopentimeok"/>
+            </if>
+            <if test="openaddress != null">
+                and <include refid="setopenaddress"/>
+            </if>
+            <if test="replytimes != null">
+                and <include refid="setreplytimes"/>
+            </if>
+            <if test="replytimeok != null">
+                and <include refid="setreplytimeok"/>
+            </if>
+            <if test="replyaddress != null">
+                and <include refid="setreplyaddress"/>
+            </if>
+            <if test="qqgroup != null">
+                and <include refid="setqqgroup"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="replystage != null">
+                and <include refid="setreplystage"/>
+            </if>
+            <if test="replystage_in != null">
+                and `replystage` in 
+                 <foreach item="item" index="index" collection="replystage_in" open="(" separator="," close=")">  
+                    #{item}
+                </foreach> 
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insert" parameterType="appreply">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="appreply">
+        update
+        <include refid="table"/>
+        <include refid="allsets"/>
+        <include refid="whereid"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="sn != null">
+                <include refid="setsn"/>,
+            </if>
+            <if test="useruid != null">
+                <include refid="setuseruid"/>,
+            </if>
+            <if test="major != null">
+                <include refid="setmajor"/>,
+            </if>
+            <if test="name != null">
+                <include refid="setname"/>
+            </if>
+            <if test="majorlevel != null">
+                <include refid="setmajorlevel"/>,
+            </if>
+            <if test="appstudentuid != null">
+                <include refid="setappstudentuid"/>,
+            </if>
+            <if test="confuid != null">
+                <include refid="setconfuid"/>,
+            </if>
+            <if test="desc != null">
+                <include refid="setdesc"/>,
+            </if>
+            <if test="file != null">
+                <include refid="setfile"/>,
+            </if>
+            <if test="file2 != null">
+                <include refid="setfile2"/>,
+            </if>
+            <if test="descto != null">
+                <include refid="setdescto"/>,
+            </if>
+            <if test="topic != null">
+                <include refid="settopic"/>,
+            </if>
+            <if test="certificated != null">
+                <include refid="setcertificated"/>,
+            </if>
+            <if test="certificate != null">
+                <include refid="setcertificate"/>,
+            </if>
+            <if test="isvideoreply != null">
+                <include refid="setisvideoreply"/>,
+            </if>
+            <if test="isvideotopic != null">
+                <include refid="setisvideotopic"/>,
+            </if>
+            <if test="opentimes != null">
+                <include refid="setopentimes"/>,
+            </if>
+            <if test="opentimeok != null">
+                <include refid="setopentimeok"/>,
+            </if>
+            <if test="openaddress != null">
+                and <include refid="setopenaddress"/>
+            </if>
+            <if test="replytimes != null">
+                <include refid="setreplytimes"/>,
+            </if>
+            <if test="replytimeok != null">
+                <include refid="setreplytimeok"/>,
+            </if>
+            <if test="replyaddress != null">
+                and <include refid="setreplyaddress"/>
+            </if>
+            <if test="qqgroup != null">
+                and <include refid="setqqgroup"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="replystage != null">
+                <include refid="setreplystage"/>,
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>
+            </if>
+        </set>
+        <include refid="whereid"/>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+
+</mapper>
+

@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.life.dao.SubjectDao">
+
+    <sql id="basecolumns">`createtime` </sql>
+    <sql id="othercolumns">`sid`, `grade`, `name`, `data`, `status`, `adminuid` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+    <sql id="table">subject</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="whereid">where sid = #{sid}</sql>
+    <sql id="allfields"><include refid="basecolumns"/>, <include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{createtime},#{sid},#{grade},#{name},#{data},#{status},#{adminuid}</sql>
+    <sql id="setsid">`sid` = #{sid}</sql>
+    <sql id="setgrade">`grade` = #{grade}</sql>
+    <sql id="setname">`name` = #{name}</sql>
+    <sql id="setdata">`data` = #{data}</sql>
+    <sql id="setstatus">`status` = #{status}</sql>
+    <sql id="setadminuid">`adminuid` = #{adminuid}</sql>
+    <sql id="allsets">set
+            <include refid="setsid"/>,
+            <include refid="setgrade"/>,
+            <include refid="setname"/>,
+            <include refid="setdata"/>,
+            <include refid="setstatus"/>,
+            <include refid="setadminuid"/>
+    </sql>
+    <sql id="orderby">order by createtime</sql>
+
+    <select id="get" parameterType="int" resultType="subject">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="subject">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="sid != null">
+                and <include refid="setsid"/>
+            </if>
+            <if test="grade != null">
+                and <include refid="setgrade"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="adminuid != null">
+                and <include refid="setadminuid"/>
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="sid != null">
+                and <include refid="setsid"/>
+            </if>
+            <if test="grade != null">
+                and <include refid="setgrade"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="adminuid != null">
+                and <include refid="setadminuid"/>
+            </if>
+        </where>
+    </select>
+
+    <select id="getList" parameterType="hashMap" resultType="subject">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="sid != null">
+                and <include refid="setsid"/>
+            </if>
+            <if test="grade != null">
+                and <include refid="setgrade"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="adminuid != null">
+                and <include refid="setadminuid"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insert" parameterType="subject">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="subject">
+        update
+        <include refid="table"/>
+        <include refid="allsets"/>
+        <include refid="whereid"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="sid != null">
+                <include refid="setsid"/>,
+            </if>
+            <if test="grade != null">
+                <include refid="setgrade"/>,
+            </if>
+            <if test="name != null">
+                <include refid="setname"/>,
+            </if>
+            <if test="data != null">
+                <include refid="setdata"/>,
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>,
+            </if>
+            <if test="adminuid != null">
+                <include refid="setadminuid"/>
+            </if>
+        </set>
+        <include refid="whereid"/>
+    </update>
+
+    <delete id="delete" parameterType="int">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+
+</mapper>
+

@@ -1,0 +1,393 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.enterpriser.dao.LectureDao">
+
+    <sql id="basecolumns">`uid`, `createtime` </sql>
+    <sql id="othercolumns"><include refid="basecolumns"/>, `sn`, `name`, `username`, `time`, `address`, `notice`, `fee`, `maxcount`, `registercount`, `semester`, `data`, `file`, `status` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+    <sql id="table">lecture</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="whereid">where uid = #{uid}</sql>
+    <sql id="allfields"><include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{uid},#{createtime},#{sn},#{name},#{username},#{time},#{address},#{notice},#{fee},#{maxcount},#{registercount},#{semester},#{data},#{file},#{status}</sql>
+    <sql id="setsn">`sn` = #{sn}</sql>
+    <sql id="setgroupbysn">group by `sn`</sql>
+    <sql id="setname">`name` = #{name}</sql>
+    <sql id="setname_lk">`name` like CONCAT('%',#{name_lk},'%')</sql>
+    <sql id="setname_keywords">`name` like CONCAT('%',#{keywords_lk},'%')</sql>
+    <sql id="setusername">`username` = #{username}</sql>
+    <sql id="setusername_lk">`username` like CONCAT('%',#{username_lk},'%')</sql>
+    <sql id="setusername_keywords">`username` like CONCAT('%',#{keywords_lk},'%')</sql>
+    <sql id="settime">`time` = #{time}</sql>
+    <sql id="setaddress">`address` = #{address}</sql>
+    <sql id="setaddress_lk">`address` like CONCAT('%',#{address_lk},'%')</sql>
+    <sql id="setaddress_keywords">`address` like CONCAT('%',#{keywords_lk},'%')</sql>
+    <sql id="setnotice">`notice` = #{notice}</sql>
+    <sql id="setfee">`fee` = #{fee}</sql>
+    <sql id="setmaxcount">`maxcount` = #{maxcount}</sql>
+    <sql id="setregistercount">`registercount` = #{registercount}</sql>
+    <sql id="setsemester">`semester` = #{semester}</sql>
+    <sql id="setsemester_keywords">`semester` like CONCAT('%',#{keywords_lk},'%')</sql>
+    <sql id="setdata">`data` = #{data}</sql>
+    <sql id="setfile">`file` = #{file}</sql>
+    <sql id="setstatus">`status` = #{status}</sql>
+    <sql id="allsets">set
+            <include refid="setsn"/>,
+            <include refid="setname"/>,
+            <include refid="setusername"/>,
+            <include refid="settime"/>,
+            <include refid="setaddress"/>,
+            <include refid="setnotice"/>,
+            <include refid="setfee"/>,
+            <include refid="setmaxcount"/>,
+            <include refid="setregistercount"/>,
+            <include refid="setsemester"/>,
+            <include refid="setdata"/>,
+            <include refid="setfile"/>,
+            <include refid="setstatus"/>
+    </sql>
+    <sql id="orderby">order by createtime</sql>
+
+    <select id="get" parameterType="string" resultType="lecture">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="lecture">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="username != null">
+                and <include refid="setusername"/>
+            </if>
+            <if test="time != null">
+                and <include refid="settime"/>
+            </if>
+            <if test="address != null">
+                and <include refid="setaddress"/>
+            </if>
+            <if test="notice != null">
+                and <include refid="setnotice"/>
+            </if>
+            <if test="fee != null">
+                and <include refid="setfee"/>
+            </if>
+            <if test="maxcount != null">
+                and <include refid="setmaxcount"/>
+            </if>
+            <if test="registercount != null">
+                and <include refid="setregistercount"/>
+            </if>
+            <if test="semester != null">
+                and <include refid="setsemester"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+        	<if test="keywords_lk != null">
+                ( <include refid="setname_keywords"/>
+                or <include refid="setusername_keywords"/>
+                or <include refid="setaddress_keywords"/>
+                or <include refid="setsemester_keywords"/>
+                )
+            </if>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="name_lk != null">
+                and <include refid="setname_lk"/>
+            </if>
+            <if test="username != null">
+                and <include refid="setusername"/>
+            </if>
+            <if test="username_lk != null">
+                and <include refid="setusername_lk"/>
+            </if>
+            <if test="time != null">
+                and <include refid="settime"/>
+            </if>
+            <if test="time_gt != null">
+                and time &gt;= #{time_gt}
+            </if>
+            <if test="time_lt != null">
+                and time &lt;= #{time_lt}
+            </if>
+            <if test="address != null">
+                and <include refid="setaddress"/>
+            </if>
+            <if test="address_lk != null">
+                and <include refid="setaddress_lk"/>
+            </if>
+            <if test="notice != null">
+                and <include refid="setnotice"/>
+            </if>
+            <if test="fee != null">
+                and <include refid="setfee"/>
+            </if>
+            <if test="maxcount != null">
+                and <include refid="setmaxcount"/>
+            </if>
+            <if test="registercount != null">
+                and <include refid="setregistercount"/>
+            </if>
+            <if test="semester != null">
+                and <include refid="setsemester"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </select>
+    
+    <select id="getLectureCount" parameterType="hashMap" resultType="int">
+    	 select
+        <include refid="count" />
+        from
+        (
+		    select
+		    <include refid="count" />
+		    from
+		    <include refid="table"/>
+		    <where>
+		        <if test="sn != null">
+		            and <include refid="setsn"/>
+		        </if>
+		        <if test="name != null">
+		            and <include refid="setname"/>
+		        </if>
+		        <if test="username != null">
+		            and <include refid="setusername"/>
+		        </if>
+		        <if test="time != null">
+		            and <include refid="settime"/>
+		        </if>
+		        <if test="address != null">
+		            and <include refid="setaddress"/>
+		        </if>
+		        <if test="notice != null">
+		            and <include refid="setnotice"/>
+		        </if>
+		        <if test="fee != null">
+		            and <include refid="setfee"/>
+		        </if>
+		        <if test="maxcount != null">
+		            and <include refid="setmaxcount"/>
+		        </if>
+		        <if test="registercount != null">
+		            and <include refid="setregistercount"/>
+		        </if>
+		        <if test="semester != null">
+		            and <include refid="setsemester"/>
+		        </if>
+		        <if test="data != null">
+		            and <include refid="setdata"/>
+		        </if>
+		        <if test="file != null">
+                    and <include refid="setfile"/>
+                </if>
+		        <if test="status != null">
+		            and <include refid="setstatus"/>
+		        </if>
+		    </where>
+		    <include refid="setgroupbysn"/>
+        ) lc
+    </select>
+
+    <select id="getList" parameterType="hashMap" resultType="lecture">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+        	<if test="keywords_lk != null">
+                ( <include refid="setname_keywords"/>
+                or <include refid="setusername_keywords"/>
+                or <include refid="setaddress_keywords"/>
+                or <include refid="setsemester_keywords"/>
+                )
+            </if>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="name_lk != null">
+                and <include refid="setname_lk"/>
+            </if>
+            <if test="username != null">
+                and <include refid="setusername"/>
+            </if>
+            <if test="username_lk != null">
+                and <include refid="setusername_lk"/>
+            </if>
+            <if test="time != null">
+                and <include refid="settime"/>
+            </if>
+            <if test="time_gt != null">
+                and time &gt;= #{time_gt}
+            </if>
+            <if test="time_lt != null">
+                and time &lt;= #{time_lt}
+            </if>
+            <if test="address != null">
+                and <include refid="setaddress"/>
+            </if>
+            <if test="address_lk != null">
+                and <include refid="setaddress_lk"/>
+            </if>
+            <if test="notice != null">
+                and <include refid="setnotice"/>
+            </if>
+            <if test="fee != null">
+                and <include refid="setfee"/>
+            </if>
+            <if test="maxcount != null">
+                and <include refid="setmaxcount"/>
+            </if>
+            <if test="registercount != null">
+                and <include refid="setregistercount"/>
+            </if>
+            <if test="semester != null">
+                and <include refid="setsemester"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insert" parameterType="lecture">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="lecture">
+        update
+        <include refid="table"/>
+        <include refid="allsets"/>
+        <include refid="whereid"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="sn != null">
+                <include refid="setsn"/>,
+            </if>
+            <if test="name != null">
+                <include refid="setname"/>,
+            </if>
+            <if test="username != null">
+                <include refid="setusername"/>,
+            </if>
+            <if test="time != null">
+                <include refid="settime"/>,
+            </if>
+            <if test="address != null">
+                <include refid="setaddress"/>,
+            </if>
+            <if test="notice != null">
+                <include refid="setnotice"/>,
+            </if>
+            <if test="fee != null">
+                <include refid="setfee"/>,
+            </if>
+            <if test="maxcount != null">
+                <include refid="setmaxcount"/>,
+            </if>
+            <if test="registercount != null">
+                <include refid="setregistercount"/>,
+            </if>
+            <if test="semester != null">
+                <include refid="setsemester"/>,
+            </if>
+            <if test="data != null">
+                <include refid="setdata"/>,
+            </if>
+            <if test="file != null">
+                <include refid="setfile"/>
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>
+            </if>
+        </set>
+        <include refid="whereid"/>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+
+</mapper>
+

@@ -1,0 +1,13 @@
+package com.supergenius.xo.managernews.service;
+
+import com.genius.xo.base.service.BaseSO;
+import com.supergenius.xo.managernews.entity.Comments;
+
+/**
+ * 评论SO
+ * @author XueZhenYong
+ * @date 2017年12月29日下午3:25:28
+ */
+public interface CommentsSO extends BaseSO<Comments>{
+	
+}

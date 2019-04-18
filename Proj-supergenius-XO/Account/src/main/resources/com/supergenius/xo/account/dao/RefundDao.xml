@@ -1,0 +1,329 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.account.dao.RefundDao">
+
+    <sql id="basecolumns">`uid`, `createtime` </sql>
+    <sql id="othercolumns">`accountuid`, `out_refund_no`, `transaction_id`, `useruid`, `username`, `useremail`, `site`, `money`, `refundmoney`, `bank`, `currency`, `data`, `adminuid`, `desc`, `state`, `status` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+    <sql id="table">refund</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="whereid">where uid = #{uid}</sql>
+    <sql id="allfields"><include refid="basecolumns"/>, <include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{uid},#{createtime},#{accountuid},#{out_refund_no},#{transaction_id},#{useruid},#{username},#{useremail},#{site},#{money},#{refundmoney},#{bank},#{currency},#{data},#{adminuid},#{desc},#{state},#{status}</sql>
+    <sql id="setaccountuid">`accountuid` = #{accountuid}</sql>
+    <sql id="setout_refund_no">`out_refund_no` = #{out_refund_no}</sql>
+    <sql id="settransaction_id">`transaction_id` = #{transaction_id}</sql>
+    <sql id="setuseruid">`useruid` = #{useruid}</sql>
+    <sql id="setusername">`username` = #{username}</sql>
+    <sql id="setuseremail">`useremail` = #{useremail}</sql>
+    <sql id="setsite">`site` = #{site}</sql>
+    <sql id="setmoney">`money` = #{money}</sql>
+    <sql id="setrefundmoney">`refundmoney` = #{refundmoney}</sql>
+    <sql id="setbank">`bank` = #{bank}</sql>
+    <sql id="setcurrency">`currency` = #{currency}</sql>
+    <sql id="setdata">`data` = #{data}</sql>
+    <sql id="setadminuid">`adminuid` = #{adminuid}</sql>
+    <sql id="setdesc">`desc` = #{desc}</sql>
+    <sql id="setstate">`state` = #{state}</sql>
+    <sql id="setstatus">`status` = #{status}</sql>
+    <sql id="allsets">set
+            <include refid="setaccountuid"/>,
+            <include refid="setout_refund_no"/>,
+            <include refid="settransaction_id"/>,
+            <include refid="setuseruid"/>,
+            <include refid="setusername"/>,
+            <include refid="setuseremail"/>,
+            <include refid="setsite"/>,
+            <include refid="setmoney"/>,
+            <include refid="setrefundmoney"/>,
+            <include refid="setbank"/>,
+            <include refid="setcurrency"/>,
+            <include refid="setdata"/>,
+            <include refid="setadminuid"/>,
+            <include refid="setdesc"/>,
+            <include refid="setstate"/>,
+            <include refid="setstatus"/>
+    </sql>
+    <sql id="orderby">order by createtime</sql>
+
+    <select id="get" parameterType="string" resultType="refund">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="refund">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="accountuid != null">
+                and <include refid="setaccountuid"/>
+            </if>
+            <if test="out_refund_no != null">
+                and <include refid="setout_refund_no"/>
+            </if>
+            <if test="transaction_id != null">
+                and <include refid="settransaction_id"/>
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="username != null">
+                and <include refid="setusername"/>
+            </if>
+            <if test="useremail != null">
+                and <include refid="setuseremail"/>
+            </if>
+            <if test="site != null">
+                and <include refid="setsite"/>
+            </if>
+            <if test="money != null">
+                and <include refid="setmoney"/>
+            </if>
+            <if test="refundmoney != null">
+                and <include refid="setrefundmoney"/>
+            </if>
+            <if test="bank != null">
+                and <include refid="setbank"/>
+            </if>
+            <if test="currency != null">
+                and <include refid="setcurrency"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="adminuid != null">
+                and <include refid="setadminuid"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="state != null">
+                and <include refid="setstate"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="accountuid != null">
+                and <include refid="setaccountuid"/>
+            </if>
+            <if test="out_refund_no != null">
+                and <include refid="setout_refund_no"/>
+            </if>
+            <if test="transaction_id != null">
+                and <include refid="settransaction_id"/>
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="username != null">
+                and <include refid="setusername"/>
+            </if>
+            <if test="useremail != null">
+                and <include refid="setuseremail"/>
+            </if>
+            <if test="site != null">
+                and <include refid="setsite"/>
+            </if>
+            <if test="money != null">
+                and <include refid="setmoney"/>
+            </if>
+            <if test="refundmoney != null">
+                and <include refid="setrefundmoney"/>
+            </if>
+            <if test="bank != null">
+                and <include refid="setbank"/>
+            </if>
+            <if test="currency != null">
+                and <include refid="setcurrency"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="adminuid != null">
+                and <include refid="setadminuid"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="state != null">
+                and <include refid="setstate"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </select>
+
+    <select id="getList" parameterType="hashMap" resultType="refund">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="accountuid != null">
+                and <include refid="setaccountuid"/>
+            </if>
+            <if test="out_refund_no != null">
+                and <include refid="setout_refund_no"/>
+            </if>
+            <if test="transaction_id != null">
+                and <include refid="settransaction_id"/>
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="username != null">
+                and <include refid="setusername"/>
+            </if>
+            <if test="useremail != null">
+                and <include refid="setuseremail"/>
+            </if>
+            <if test="site != null">
+                and <include refid="setsite"/>
+            </if>
+            <if test="money != null">
+                and <include refid="setmoney"/>
+            </if>
+            <if test="refundmoney != null">
+                and <include refid="setrefundmoney"/>
+            </if>
+            <if test="bank != null">
+                and <include refid="setbank"/>
+            </if>
+            <if test="currency != null">
+                and <include refid="setcurrency"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="adminuid != null">
+                and <include refid="setadminuid"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="state != null">
+                and <include refid="setstate"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insert" parameterType="refund">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="refund">
+        update
+        <include refid="table"/>
+        <include refid="allsets"/>
+        <include refid="whereid"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="accountuid != null">
+                <include refid="setaccountuid"/>,
+            </if>
+            <if test="out_refund_no != null">
+                <include refid="setout_refund_no"/>,
+            </if>
+            <if test="transaction_id != null">
+                <include refid="settransaction_id"/>,
+            </if>
+            <if test="useruid != null">
+                <include refid="setuseruid"/>,
+            </if>
+            <if test="username != null">
+                <include refid="setusername"/>,
+            </if>
+            <if test="useremail != null">
+                <include refid="setuseremail"/>,
+            </if>
+            <if test="site != null">
+                <include refid="setsite"/>,
+            </if>
+            <if test="money != null">
+                <include refid="setmoney"/>,
+            </if>
+            <if test="refundmoney != null">
+                <include refid="setrefundmoney"/>,
+            </if>
+            <if test="bank != null">
+                <include refid="setbank"/>,
+            </if>
+            <if test="currency != null">
+                <include refid="setcurrency"/>,
+            </if>
+            <if test="data != null">
+                <include refid="setdata"/>,
+            </if>
+            <if test="adminuid != null">
+                <include refid="setadminuid"/>,
+            </if>
+            <if test="desc != null">
+                <include refid="setdesc"/>,
+            </if>
+            <if test="state != null">
+                <include refid="setstate"/>,
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>
+            </if>
+        </set>
+        <include refid="whereid"/>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+
+</mapper>
+

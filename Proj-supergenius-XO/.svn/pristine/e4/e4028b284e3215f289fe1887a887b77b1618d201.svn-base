@@ -1,0 +1,514 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.career.dao.ArticleDao">
+
+    <sql id="basecolumns">`uid`, `createtime` </sql>
+    <sql id="othercolumns">`oid`, `cid`, `adminuid`, `useruid`, `author`, `content`, `title`, `kind`, `isoriginal`, `imglittle`, `imgmedium`, `imgbig`, `imgoriginal`, `origin`, `summary`, `keywords`,`tags`, `type`, `istop`, `toptime`, `status` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+    <sql id="table">article</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="whereid">where uid = #{uid}</sql>
+    <sql id="allfields"><include refid="basecolumns"/>, <include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{uid},#{createtime},#{oid},#{cid},#{adminuid},#{useruid},#{author},#{content},#{title},#{kind},#{isoriginal},#{imglittle},#{imgmedium},#{imgbig},#{imgoriginal},#{origin},#{summary},#{keywords},#{tags},#{type},#{istop},#{toptime},#{status}</sql>
+    <sql id="setoid">`oid` = #{oid}</sql>
+    <sql id="setcid">`cid` = #{cid}</sql>
+    <sql id="setuid">`uid` = #{uid}</sql>
+    <sql id="setadminuid">`adminuid` = #{adminuid}</sql>
+    <sql id="setuseruid">`useruid` = #{useruid}</sql>
+    <sql id="setauthor">`author` = #{author}</sql>
+    <sql id="setcontent">`content` = #{content}</sql>
+    <sql id="settitle">`title` = #{title}</sql>
+    <sql id="settitle_lk">`title` like CONCAT('%', #{title_lk}, '%')</sql>
+    <sql id="setkind">`kind` = #{kind}</sql>
+    <sql id="setisoriginal">`isoriginal` = #{isoriginal}</sql>
+    <sql id="setimglittle">`imglittle` = #{imglittle}</sql>
+    <sql id="setimgmedium">`imgmedium` = #{imgmedium}</sql>
+    <sql id="setimgbig">`imgbig` = #{imgbig}</sql>
+    <sql id="setimgoriginal">`imgoriginal` = #{imgoriginal}</sql>
+    <sql id="setorigin">`origin` = #{origin}</sql>
+    <sql id="setsummary">`summary` = #{summary}</sql>
+    <sql id="setkeywords">`keywords` = #{keywords}</sql>
+    <sql id="settags">`tags` = #{tags}</sql>
+    <sql id="settype">`type` = #{type}</sql>
+    <sql id="setistop">`istop` = #{istop}</sql>
+    <sql id="settoptime">`toptime` = #{toptime}</sql>
+    <sql id="setcreatetime">`createtime` = #{createtime}</sql>
+    <sql id="setstatus">`status` = #{status}</sql>
+    <sql id="setinitstatus">`status` = #{initstatus}</sql>
+	<sql id="setcreatetime_le">`createtime` &lt;= #{createtime_le}</sql>
+    <sql id="setimgoriginal_ne">`imgoriginal` is not null</sql>
+    <sql id="setkeywords_lk">( author like CONCAT('%',#{keywords_lk},'%') or title like CONCAT('%',#{keywords_lk},'%') or origin like CONCAT('%',#{keywords_lk},'%')or summary like CONCAT('%',#{keywords_lk},'%') )</sql>
+    <sql id="allsets">set
+            <include refid="setoid"/>,
+            <include refid="setcid"/>,
+            <include refid="setadminuid"/>,
+            <include refid="setuseruid"/>,
+            <include refid="setauthor"/>,
+            <include refid="setcontent"/>,
+            <include refid="settitle"/>,
+            <include refid="setkind"/>,
+            <include refid="setisoriginal"/>,
+            <include refid="setimglittle"/>,
+            <include refid="setimgmedium"/>,
+            <include refid="setimgbig"/>,
+            <include refid="setimgoriginal"/>,
+            <include refid="setorigin"/>,
+            <include refid="setsummary"/>,
+            <include refid="setkeywords"/>,
+            <include refid="settags"/>,
+            <include refid="settype"/>,
+            <include refid="setistop"/>,
+            <include refid="settoptime"/>,
+            <include refid="setstatus"/>
+    </sql>
+    <sql id="orderby">order by createtime</sql>
+
+    <select id="get" parameterType="string" resultType="article">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="article">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="oid != null">
+                and <include refid="setoid"/>
+            </if>
+            <if test="cid != null">
+                and <include refid="setcid"/>
+            </if>
+            <if test="adminuid != null">
+                and <include refid="setadminuid"/>
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="author != null">
+                and <include refid="setauthor"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="title != null">
+                and <include refid="settitle"/>
+            </if>
+            <if test="title_lk != null">
+                and <include refid="settitle_lk"/>
+            </if>
+            <if test="kind != null">
+                and <include refid="setkind"/>
+            </if>
+            <if test="isoriginal != null">
+                and <include refid="setisoriginal"/>
+            </if>
+            <if test="imglittle != null">
+                and <include refid="setimglittle"/>
+            </if>
+            <if test="imgmedium != null">
+                and <include refid="setimgmedium"/>
+            </if>
+            <if test="imgbig != null">
+                and <include refid="setimgbig"/>
+            </if>
+            <if test="imgoriginal != null">
+                and <include refid="setimgoriginal"/>
+            </if>
+            <if test="origin != null">
+                and <include refid="setorigin"/>
+            </if>
+            <if test="summary != null">
+                and <include refid="setsummary"/>
+            </if>
+            <if test="keywords != null">
+                and <include refid="setkeywords"/>
+            </if>
+            <if test="tags != null">
+                and <include refid="settags"/>
+            </if>
+            <if test="keywords_lk != null">
+				and <include refid="setkeywords_lk"/>
+			</if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="istop != null">
+                and <include refid="setistop"/>
+            </if>
+            <if test="toptime != null">
+                and <include refid="settoptime"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="uid != null">
+                and `uid` = #{uid}
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="oid != null">
+                and <include refid="setoid"/>
+            </if>
+            <if test="cid != null">
+                and <include refid="setcid"/>
+            </if>
+            <if test="adminuid != null">
+                and <include refid="setadminuid"/>
+            </if>
+            <if test="isnottop != null">
+                and `istop` != #{isnottop}
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="author != null">
+                and <include refid="setauthor"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="title != null">
+                and <include refid="settitle"/>
+            </if>
+            <if test="kind != null">
+                and <include refid="setkind"/>
+            </if>
+            <if test="isoriginal != null">
+                and <include refid="setisoriginal"/>
+            </if>
+            <if test="imglittle != null">
+                and <include refid="setimglittle"/>
+            </if>
+            <if test="imgmedium != null">
+                and <include refid="setimgmedium"/>
+            </if>
+            <if test="imgbig != null">
+                and <include refid="setimgbig"/>
+            </if>
+            <if test="imgoriginal != null">
+                and <include refid="setimgoriginal"/>
+            </if>
+            <if test="origin != null">
+                and <include refid="setorigin"/>
+            </if>
+            <if test="summary != null">
+                and <include refid="setsummary"/>
+            </if>
+            <if test="keywords != null">
+                and <include refid="setkeywords"/>
+            </if>
+               <if test="tags != null">
+                and <include refid="settags"/>
+            </if>
+            <if test="keywords_lk != null">
+				and <include refid="setkeywords_lk"/>
+			</if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="istop != null">
+                and <include refid="setistop"/>
+            </if>
+            <if test="toptime != null">
+                and <include refid="settoptime"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="statuslist != null">
+				and status in 
+				<foreach item="item" index="index" collection="statuslist" open="(" separator="," close=")">
+                 	 #{item}
+            	</foreach>
+            </if>
+            <if test="cidlist != null">
+				and cid in 
+				<foreach item="item" index="index" collection="cidlist" open="(" separator="," close=")">
+                 	 #{item}
+            	</foreach>
+            </if>
+        </where>
+    </select>
+    
+    <select id="getCollectList" parameterType="hashMap" resultType="article">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+        	uid in (select refuid from collect where useruid=#{useruid})
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <select id="getList" parameterType="hashMap" resultType="article">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="oid != null">
+                and <include refid="setoid"/>
+            </if>
+            <if test="cid != null">
+                and <include refid="setcid"/>
+            </if>
+            <if test="imgoriginal_ne != null">
+                and <include refid="setimgoriginal_ne"/>
+            </if>
+            <if test="adminuid != null">
+                and <include refid="setadminuid"/>
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="author != null">
+                and <include refid="setauthor"/>
+            </if>
+            <if test="content != null">
+                and <include refid="setcontent"/>
+            </if>
+            <if test="title != null">
+                and <include refid="settitle"/>
+            </if>
+            <if test="kind != null">
+                and <include refid="setkind"/>
+            </if>
+            <if test="isoriginal != null">
+                and <include refid="setisoriginal"/>
+            </if>
+            <if test="imglittle != null">
+                and <include refid="setimglittle"/>
+            </if>
+            <if test="imgmedium != null">
+                and <include refid="setimgmedium"/>
+            </if>
+            <if test="imgbig != null">
+                and <include refid="setimgbig"/>
+            </if>
+            <if test="imgoriginal != null">
+                and <include refid="setimgoriginal"/>
+            </if>
+            <if test="origin != null">
+                and <include refid="setorigin"/>
+            </if>
+            <if test="summary != null">
+                and <include refid="setsummary"/>
+            </if>
+            <if test="keywords != null">
+                and <include refid="setkeywords"/>
+            </if>
+               <if test="tags != null">
+                and <include refid="settags"/>
+            </if>
+            <if test="keywords_lk != null">
+				and <include refid="setkeywords_lk"/>
+			</if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="istop != null">
+                and <include refid="setistop"/>
+            </if>
+            <if test="isnottop != null">
+                and `istop` != #{isnottop}
+            </if>
+            <if test="toptime != null">
+                and <include refid="settoptime"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="createtime_le != null">
+				and
+				<include refid="setcreatetime_le" />
+			</if>
+			<if test="initstatus != null">
+				and
+				<include refid="setinitstatus" />
+			</if>
+            <if test="refuid != null">
+				and uid in 
+				<foreach item="item" index="index" collection="refuid" open="(" separator="," close=")">
+                 	 #{item}
+            	</foreach>
+            </if>
+            <if test="statuslist != null">
+				and status in 
+				<foreach item="item" index="index" collection="statuslist" open="(" separator="," close=")">
+                 	 #{item}
+            	</foreach>
+            </if>
+            <if test="cidlist != null">
+				and cid in 
+				<foreach item="item" index="index" collection="cidlist" open="(" separator="," close=")">
+                 	 #{item}
+            	</foreach>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insert" parameterType="article">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="article">
+        update
+        <include refid="table"/>
+        <include refid="allsets"/>
+        <include refid="whereid"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="oid != null">
+                <include refid="setoid"/>,
+            </if>
+            <if test="cid != null">
+                <include refid="setcid"/>,
+            </if>
+            <if test="adminuid != null">
+                <include refid="setadminuid"/>,
+            </if>
+            <if test="createtime != null">
+				<include refid="setcreatetime" />,
+			</if>
+            <if test="useruid != null">
+                <include refid="setuseruid"/>,
+            </if>
+            <if test="author != null">
+                <include refid="setauthor"/>,
+            </if>
+            <if test="content != null">
+                <include refid="setcontent"/>,
+            </if>
+            <if test="title != null">
+                <include refid="settitle"/>,
+            </if>
+            <if test="kind != null">
+                <include refid="setkind"/>,
+            </if>
+            <if test="isoriginal != null">
+                and <include refid="setisoriginal"/>
+            </if>
+            <if test="imglittle != null">
+                <include refid="setimglittle"/>,
+            </if>
+            <if test="imgmedium != null">
+                <include refid="setimgmedium"/>,
+            </if>
+            <if test="imgbig != null">
+                <include refid="setimgbig"/>,
+            </if>
+            <if test="imgoriginal != null">
+                <include refid="setimgoriginal"/>,
+            </if>
+            <if test="origin != null">
+                <include refid="setorigin"/>,
+            </if>
+            <if test="summary != null">
+                <include refid="setsummary"/>,
+            </if>
+            <if test="keywords != null">
+                <include refid="setkeywords"/>,
+            </if>
+               <if test="tags != null">
+                and <include refid="settags"/>
+            </if>
+            <if test="type != null">
+                <include refid="settype"/>,
+            </if>
+            <if test="istop != null">
+                <include refid="setistop"/>,
+            </if>
+            <if test="toptime != null">
+                <include refid="settoptime"/>,
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>
+            </if>
+        </set>
+        <where>
+			<if test="uid != null">
+				<include refid="setuid" />
+			</if>
+			<if test="createtime_le != null">
+				and
+				<include refid="setcreatetime_le" />
+			</if>
+			<if test="initstatus != null">
+				and
+				<include refid="setinitstatus" />
+			</if>
+		</where>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+
+</mapper>
+

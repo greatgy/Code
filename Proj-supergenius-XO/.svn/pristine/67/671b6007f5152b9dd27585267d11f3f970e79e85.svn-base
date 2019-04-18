@@ -1,0 +1,48 @@
+package com.supergenius.xo.finance.enums;
+
+import java.util.Locale;
+
+import com.genius.core.base.utils.I18N;
+
+/**
+ * 文章等级枚举
+ * 
+ * @author LiJiacheng
+ */
+public enum EGrade {
+
+	A("1"), // A级文章
+	B("2"), // B级文章
+	C("3"), // C级文章
+	D("4"), // D级文章
+	E("5"); // E级文章
+
+	private final String value;
+
+	private EGrade(String v) {
+		this.value = v;
+	}
+
+	public String toString() {
+		return this.value;
+	}
+
+	public static EGrade get(int v) {
+		String str = String.valueOf(v);
+		return get(str);
+	}
+
+	public static EGrade get(String str) {
+		for (EGrade e : values()) {
+			if (e.toString().equals(str)) {
+				return e;
+			}
+		}
+		return null;
+	}
+
+	public static String getName(EGrade e, Locale locale) {
+		return I18N.getEnumName(e, locale);
+	}
+
+}

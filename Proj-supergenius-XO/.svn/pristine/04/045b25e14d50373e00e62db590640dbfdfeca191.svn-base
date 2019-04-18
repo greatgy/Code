@@ -1,0 +1,20 @@
+package com.supergenius.xo.finance.dao;
+
+import java.util.Map;
+
+import com.genius.xo.base.dao.BaseDao;
+import com.supergenius.xo.finance.entity.Debate;
+
+/**
+ * 论战Dao
+ * @author liushaomin
+ */
+public interface DebateDao extends BaseDao<Debate>{
+	
+	/**
+	 * 投票
+	 * @param map
+	 * @author ShangJianguo
+	 */
+	void vote(Map<String, Object> map);
+}

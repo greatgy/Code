@@ -1,0 +1,565 @@
+package com.supergenius.xo.user.serviceimpl;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.genius.core.base.utils.DateUtil;
+import com.genius.core.cache.rule.Rule;
+import com.genius.core.cache.utils.RedisUtil;
+import com.genius.model.base.entity.Pager;
+import com.genius.xo.baseadmin.serviceimpl.BaseSOImpl;
+import com.supergenius.core.rule.CommentCountTopicRule;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.user.dao.CommentsDao;
+import com.supergenius.xo.user.entity.Comments;
+import com.supergenius.xo.user.enums.EComment;
+import com.supergenius.xo.user.enums.ECommentConfig;
+import com.supergenius.xo.user.service.CommentsSO;
+import com.supergenius.xo.user.service.UserSO;
+import com.supergenius.xo.user.service.VisitorSO;
+
+/**
+ * 评论SOIMPL
+ * 
+ * @author liushaomin
+ */
+@Service
+public class CommentsSOImpl extends BaseSOImpl<Comments> implements CommentsSO {
+
+	@Autowired
+	private CommentsDao dao;
+
+	@Autowired
+	private UserSO userSO;
+	
+	@Autowired
+	private VisitorSO VisitorSO;
+
+	@Override
+	protected CommentsDao getDao() {
+		return dao;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.supergenius.xo.user.service.CommentsSO#deleteByUids(java.lang.String[
+	 * ])
+	 */
+	@Override
+	public boolean deleteByUids(String[] ids) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<String> list = Arrays.asList(ids);
+		map.put(MapperDict.uids, list);
+		dao.deleteByMap(map);
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.supergenius.xo.user.service.CommentsSO#getListByCountcurrType(com.
+	 * supergenius.xo.common.enums.EChannel,
+	 * com.supergenius.xo.common.enums.ECommentType, int, int)
+	 */
+	@Override
+	public List<Map<?, ?>> getListByCountcurrType(String useruid, EChannel channel, EComment type, int commentday, int publishday, int ranknum) {
+		Map<String, Object> map = getParamMap();
+		if (EChannel.topic.equals(channel)) {
+			map.put(MapperDict.istopic, true);
+			if (publishday != -1) {
+				map.put(MapperDict.topicpublishday, publishday);
+			}
+			if (useruid != null) {
+				map.put(MapperDict.useruid, useruid);
+			}
+		} else if (EChannel.debate.equals(channel)) {
+			map.put(MapperDict.isdebate, true);
+			if (publishday != -1) {
+				map.put(MapperDict.debatepublishday, publishday);
+			}
+		}
+		if (commentday != -1) {
+			map.put(MapperDict.before, commentday);
+		}
+		map.put(MapperDict.type, type);
+		map.put(MapperDict.channel, channel);
+		map.put(MapperDict.orderBy, "order by v desc");
+		map.put(MapperDict.ranknum, ranknum);
+		return dao.getCommentcurr(map);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.supergenius.xo.user.service.CommentsSO#getRankUser(com.supergenius.xo
+	 * .common.enums.EChannel, com.supergenius.xo.common.enums.ECommentType,
+	 * int, int)
+	 * 
+	 * @author: ShangJianguo 2014-11-3 上午11:05:41
+	 */
+	@Override
+	public List<Map<?, ?>> getRankUser(EChannel channel, EComment type, int commentday, int ranknum, int anonymousoid) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.channel, channel);
+		map.put(MapperDict.type, type);
+		map.put(MapperDict.anonymousoid, anonymousoid);
+		DateTime dCommentday = DateTime.now().minusDays(commentday);
+		map.put(MapperDict.commentdayfrom, DateUtil.parseDateTime(dCommentday, DateUtil.FORMAT_DATE_CHINA));
+		map.put(MapperDict.ranknum, ranknum);
+		return dao.getRankUser(map);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.supergenius.xo.user.service.CommentsSO#getList(com.supergenius.xo.
+	 * common.enums.EChannel, com.supergenius.xo.common.enums.ECommentType, int)
+	 */
+	@Override
+	public List<Comments> getList(EChannel channel, EComment type, String fromuid, int usernum, ECommentConfig config) {
+		Pager pager = new Pager(usernum);
+		Map<String, Object> map = getParamMap(pager);
+		map.put(MapperDict.channel, channel);
+		map.put(MapperDict.type, type);
+		map.put(MapperDict.fromuid, fromuid);
+		if (config != null) {
+			map.put(MapperDict.config, config);
+		}
+		return dao.getList(map);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.supergenius.xo.user.service.CommentsSO#isNotPrized(java.lang.String,
+	 * java.lang.String, com.supergenius.xo.common.enums.EChannel)
+	 */
+	@Override
+	public boolean isNotPrized(String fromuid, String fromuseruid, EChannel channel) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.fromuid, fromuid);
+		map.put(MapperDict.fromuseruid, fromuseruid);
+		map.put(MapperDict.channel, channel);
+		map.put(MapperDict.type, EComment.praise);
+		return dao.getCount(map) == 0;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.supergenius.xo.user.service.CommentsSO#isNotVote(java.lang.String,
+	 * java.lang.String)
+	 * 
+	 * @author: ShangJianguo 2014-11-7 下午7:16:07
+	 */
+	@Override
+	public Comments get(String debateuid, String useruid, int hour) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.fromuid, debateuid);
+		map.put(MapperDict.fromuseruid, useruid);
+		map.put(MapperDict.channel, EChannel.debate);
+		map.put(MapperDict.type, EComment.debatevote);
+		return dao.getOne(map);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.supergenius.xo.user.service.CommentsSO#getFromuidList(java.lang.
+	 * String, com.supergenius.xo.common.enums.EChannel,
+	 * com.supergenius.xo.common.enums.ECommentType,
+	 * com.genius.model.base.entity.Pager)
+	 */
+	@Override
+	public List<String> getFromuidList(String fromuseruid, EChannel channel, EComment type, Pager pager) {
+		Map<String, Object> map = getParamMap(pager, true);
+		map.put(MapperDict.fromuseruid, fromuseruid);
+		map.put(MapperDict.type, type);
+		map.put(MapperDict.channel, channel);
+		return dao.getFromuidList(map);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.supergenius.xo.user.service.CommentsSO#getList(com.supergenius.xo.
+	 * common.enums.EChannel, com.supergenius.xo.common.enums.ECommentType)
+	 * 
+	 * @author: ShangJianguo 2014-11-11 下午3:12:22
+	 */
+	@Override
+	public List<Comments> getList(String fromuid, EComment type, Pager pager, String order) {
+		Map<String, Object> map = pager == null ? getParamMap() : getParamMap(pager);
+		map.put(MapperDict.fromuid, fromuid);
+		map.put(MapperDict.type, type);
+		if (StringUtils.isNotEmpty(order)) {
+			map.put(MapperDict.ascDesc, order);
+		}
+		List<Comments> list = dao.getList(map);
+		for (Comments item : list) {
+			if (StringUtils.isNotEmpty(item.getFromuseruid()) && MapperDict.DefaultAnonymousOid != item.getFromuseroid()) {
+				item.setFromUser(userSO.get(item.getFromuseruid()));
+			} else {
+				item.setFromVisitor(VisitorSO.get(item.getFromuseruid()));
+			}
+			if (StringUtils.isNotEmpty(item.getTouseruid()) && MapperDict.DefaultAnonymousOid != item.getTouseroid()) {
+				item.setToUser(userSO.get(item.getTouseruid()));
+			} else {
+				item.setToVisitor(VisitorSO.get(item.getTouseruid()));
+			}
+		}
+		return list;
+	}
+	
+	@Override
+	public List<Comments> getList(String touid, Pager pager) {
+		Map<String, Object> map = pager == null ? getParamMap() : getParamMap(pager);
+		map.put(MapperDict.touid, touid);
+		List<Comments> list = dao.getList(map);
+		for (Comments item : list) {
+			if (StringUtils.isNotEmpty(item.getFromuseruid()) && MapperDict.DefaultAnonymousOid != item.getFromuseroid()) {
+				item.setFromUser(userSO.get(item.getFromuseruid()));
+			} else {
+				item.setFromVisitor(VisitorSO.get(item.getFromuseruid()));
+			}
+			if (StringUtils.isNotEmpty(item.getTouseruid()) && MapperDict.DefaultAnonymousOid != item.getTouseroid()) {
+				item.setToUser(userSO.get(item.getTouseruid()));
+			} else {
+				item.setToVisitor(VisitorSO.get(item.getTouseruid()));
+			}
+		}
+		return list;
+	}
+	
+	@Override
+	public List<Comments> searchList(List<String> fromuid, Boolean touid_isnull, String touseruid, Pager pager) {
+		Map<String, Object> map = pager == null ? getParamMap() : getParamMap(pager);
+		map.put(MapperDict.fromuid, fromuid);
+		map.put(MapperDict.touid+MapperDict.suffix_isnull_key, touid_isnull);
+		map.put(MapperDict.touseruid, touseruid);
+		List<Comments> list = dao.searchList(map);
+		for (Comments item : list) {
+			if (StringUtils.isNotEmpty(item.getFromuseruid()) && MapperDict.DefaultAnonymousOid != item.getFromuseroid()) {
+				item.setFromUser(userSO.get(item.getFromuseruid()));
+			} else {
+				item.setFromVisitor(VisitorSO.get(item.getFromuseruid()));
+			}
+			if (StringUtils.isNotEmpty(item.getTouseruid()) && MapperDict.DefaultAnonymousOid != item.getTouseroid()) {
+				item.setToUser(userSO.get(item.getTouseruid()));
+			} else {
+				item.setToVisitor(VisitorSO.get(item.getTouseruid()));
+			}
+		}
+		return list;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.supergenius.xo.user.service.CommentsSO#getFromuidList(java.lang.
+	 * String, com.supergenius.xo.common.enums.EChannel,
+	 * com.supergenius.xo.common.enums.ECommentType,
+	 * com.genius.model.base.entity.Pager)
+	 */
+	@Override
+	public List<String> getFromuidList(String fromuseruid, EChannel channel, EComment type) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.fromuseruid, fromuseruid);
+		map.put(MapperDict.type, type);
+		map.put(MapperDict.channel, channel);
+		return dao.getFromuidList(map);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.supergenius.xo.user.service.CommentsSO#deleteByPraise(int,
+	 * java.lang.String)
+	 */
+	@Override
+	public boolean deleteByPraise(int fromuseroid, String fromuid, EChannel channel) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.fromuseroid, fromuseroid);
+		map.put(MapperDict.fromuid, "'" + fromuid + "'");
+		map.put(MapperDict.type, EComment.praise);
+		map.put(MapperDict.channel, channel);
+		return dao.deleteByPraise(map);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.supergenius.xo.user.service.CommentsSO#getList(java.lang.String,
+	 * com.supergenius.xo.common.enums.EChannel,
+	 * com.supergenius.xo.common.enums.ECommentType,
+	 * com.genius.model.base.entity.Pager)
+	 */
+	@Override
+	public List<Comments> getList(String useruid, String topicuid, Pager pager) {
+		Map<String, Object> map = getParamMap(pager);
+		map.put(MapperDict.useruid, useruid);
+		map.put(MapperDict.fromuid, topicuid);
+		map.put(MapperDict.type, EComment.comment);
+		map.put(MapperDict.channel, EChannel.topic);
+		return dao.getList(map);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.supergenius.xo.official.service.CountDetailSO#getCountcurr(com.
+	 * supergenius.xo.common.enums.EChannel,
+	 * com.supergenius.xo.official.enums.ECountType, int, int)
+	 */
+	@Override
+	public List<Map<?, ?>> getPraisecurr(EChannel channel, EComment type, int Praisehour, int ListNum, List<String> nofromuids) {
+		DateTime praishours = DateTime.now().minusHours(Praisehour);
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.type, type);
+		map.put(MapperDict.channel, channel);
+		map.put(MapperDict.ranknum, ListNum);
+		map.put(MapperDict.orderBy, "order by v desc");
+		map.put(MapperDict.praisday, DateUtil.parseDateTime(praishours, MapperDict.FORMAT_DATETIME_HOUR));
+		if (nofromuids != null && nofromuids.size() != 0) {
+			map.put(MapperDict.nofromuids, nofromuids);
+		}
+		if (EChannel.topic == channel) {
+			map.put(MapperDict.praisdayfromtopic, true);
+		} else if (EChannel.finance == channel) {
+			map.put(MapperDict.praisdayfromfinance, true);
+		}
+
+		return getDao().getCountcurr(map);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.supergenius.xo.user.service.CommentsSO#getCommentsFromPraise(java.
+	 * lang.String, com.supergenius.xo.common.enums.EChannel,
+	 * com.supergenius.xo.common.enums.ECommentType, int)
+	 */
+	@Override
+	public List<Map<?, ?>> getCommentsFromPraise(String fromuid, EChannel channel, EComment type, int ranknum) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.type, type);
+		map.put(MapperDict.fromuid, fromuid);
+		map.put(MapperDict.channel, channel);
+		map.put(MapperDict.ranknum, ranknum);
+		map.put(MapperDict.orderBy, "order by v desc");
+		return dao.getCommentsFromPraise(map);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.supergenius.xo.user.service.CommentsSO#getLatestFromuseruidList(java.
+	 * lang.String, com.supergenius.xo.common.enums.EChannel,
+	 * com.supergenius.xo.common.enums.ECommentType,
+	 * com.supergenius.xo.common.enums.ECommentConfig, int)
+	 * 
+	 * @author: ShangJianguo 2014-11-14 下午3:02:43
+	 */
+	@Override
+	public List<String> getLatestFromuseruidList(String fromuid, EChannel channel, EComment type, ECommentConfig config, int num, int anonymousoid) {
+		Map<String, Object> map = getParamMap(new Pager(num));
+		map.put(MapperDict.fromuid, fromuid);
+		map.put(MapperDict.channel, channel);
+		map.put(MapperDict.type, type);
+		map.put(MapperDict.anonymousoid, anonymousoid);
+		if (config != null) {
+			map.put(MapperDict.config, config);
+		}
+		return dao.getLatestFromuseruidList(map);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.supergenius.xo.user.service.CommentsSO#getCommentsCount(java.lang.
+	 * String)
+	 * 
+	 * @author: ShangJianguo 2014-11-20 下午12:23:02
+	 */
+	@Override
+	public long getCommentsCount(String topicuid) {
+		Rule rule = new CommentCountTopicRule(topicuid);
+		int num = (int) RedisUtil.getIncr(rule);
+		if (num != -1) {
+			return num;
+		}
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.fromuid, topicuid);
+		map.put(MapperDict.type, EComment.comment);
+		map.put(MapperDict.channel, EChannel.topic);
+		num = dao.getCount(map);
+		RedisUtil.set(rule, num);
+		return num;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.supergenius.xo.user.service.CommentsSO#getAboutMeList(java.lang.
+	 * String, java.lang.String, com.genius.model.base.entity.Pager,
+	 * com.supergenius.xo.common.enums.EChannel,
+	 * com.supergenius.xo.common.enums.ECommentType)
+	 * 
+	 * @author: ShangJianguo 2014-11-24 下午2:11:17
+	 */
+	@Override
+	public List<Comments> getAboutMeList(String useruid, String fromuid, Pager pager, EChannel channel, EComment type) {
+		Map<String, Object> map = getParamMap(pager);
+		map.put(MapperDict.useruid, useruid);
+		map.put(MapperDict.fromuid, fromuid);
+		map.put(MapperDict.channel, channel);
+		map.put(MapperDict.type, type);
+		List<Comments> list = dao.getList(map);
+		for (Comments item : list) {
+			if (StringUtils.isNotEmpty(item.getFromuseruid()) && MapperDict.DefaultAnonymousOid != item.getFromuseroid()) {
+				item.setFromUser(userSO.get(item.getFromuseruid()));
+			} else {
+				item.setFromVisitor(VisitorSO.get(item.getFromuseruid()));
+			}
+			if (StringUtils.isNotEmpty(item.getTouseruid()) && MapperDict.DefaultAnonymousOid != item.getTouseroid()) {
+				item.setToUser(userSO.get(item.getTouseruid()));
+			} else {
+				item.setToVisitor(VisitorSO.get(item.getTouseruid()));
+			}
+		}
+		return list;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.supergenius.xo.user.service.CommentsSO#getList(int,
+	 * com.supergenius.xo.common.enums.ECommentType)
+	 */
+	@Override
+	public List<String> getList(int useroid, EComment praise) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.fromuseroid, useroid);
+		map.put(MapperDict.type, praise);
+		return dao.getFromuidList(map);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.supergenius.xo.user.service.CommentsSO#getNewestComments(com.
+	 * supergenius.xo.common.enums.EFinance, com.genius.model.base.entity.Pager)
+	 */
+	@Override
+	public List<Comments> getNewestComments(int config, EChannel channel, EComment commentType, Pager pager) {
+		Map<String, Object> map = getParamMap(pager);
+		map.put(MapperDict.config, config);
+		map.put(MapperDict.channel, channel);
+		map.put(MapperDict.type, commentType);
+		List<Comments> list = dao.getList(map);
+		for (Comments item : list) {
+			if (StringUtils.isNotEmpty(item.getFromuseruid()) && MapperDict.DefaultAnonymousOid != item.getFromuseroid()) {
+				item.setFromUser(userSO.get(item.getFromuseruid()));
+			} else {
+				item.setFromVisitor(VisitorSO.get(item.getFromuseruid()));
+			}
+		}
+		return list;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.supergenius.xo.user.service.CommentsSO#getList(java.lang.String,
+	 * com.supergenius.xo.common.enums.ECommentType,
+	 * com.genius.model.base.entity.Pager)
+	 */
+	@Override
+	public List<Comments> getList(String fromuseruid, String touseruid, EComment type, Pager pager) {
+		Map<String, Object> map = getParamMap(pager);
+		if (fromuseruid != null) {
+			map.put(MapperDict.fromuseruid, fromuseruid);
+		}
+		if (touseruid != null) {
+			map.put(MapperDict.touseruid, touseruid);
+		}
+		if (type != null) {
+			map.put(MapperDict.type, type);
+		}
+		List<Comments> list = dao.getList(map);
+		for (Comments item : list) {
+			if (StringUtils.isNotEmpty(item.getFromuseruid()) && MapperDict.DefaultAnonymousOid != item.getFromuseroid()) {
+				item.setFromUser(userSO.get(item.getFromuseruid()));
+			} else {
+				item.setFromVisitor(VisitorSO.get(item.getFromuseruid()));
+			}
+		}
+		return list;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.supergenius.xo.user.service.CommentsSO#getMyReceivedPrizeCount(java.
+	 * lang.String)
+	 */
+	@Override
+	public int getMyReceivedPrizeCount(String useruid) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.fromuseruid, useruid);
+		return dao.getMyReceivedPrizeCount(map);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.supergenius.xo.user.service.CommentsSO#getMyCommentsCount(java.lang.
+	 * String)
+	 */
+	@Override
+	public int getMyCommentsCount(String fromuseruid) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.fromuseruid, fromuseruid);
+		map.put(MapperDict.type, EComment.comment);
+		return dao.getCount(map);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.supergenius.xo.user.service.CommentsSO#getCommentsCount(java.lang.
+	 * String)
+	 */
+	@Override
+	public int getCommentsCount(String fromuseruid, EComment type, EChannel channel, String fromuid) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.fromuseruid, fromuseruid);
+		map.put(MapperDict.fromuid, fromuid);
+		map.put(MapperDict.type, type);
+		map.put(MapperDict.channel, channel);
+		return dao.getCount(map);
+	}
+
+}

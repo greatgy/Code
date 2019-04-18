@@ -1,0 +1,555 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.manager.dao.UserLevelDao">
+
+    <sql id="userinfotable">GUserDB2.userinfo</sql>
+	<sql id="userinfoon">on userlevel.useruid = userinfo.uid</sql>
+	<sql id="setusername_lk">`name` like CONCAT('%',#{username_lk},'%')</sql>
+	<sql id="setshowname_lk">`showname` like CONCAT('%',#{showname_lk},'%')</sql>
+	<sql id="setcompany_lk">`company` like CONCAT('%',#{company_lk},'%')</sql>
+	<sql id="setjob_lk">`job` like CONCAT('%',#{job_lk},'%')</sql>
+	<sql id="userlevelcolumns">userlevel.`uid`, userlevel.`useruid`, userlevel.`major`, `levelfrom`, `levelto`, userlevel.`type`, `certificateuid`, userlevel.`arguments`, userlevel.`desc`, userlevel.`channel`, userlevel.`status`, userlevel.`createtime` </sql>
+	
+	<sql id="certificatetable">certificate</sql>
+	<sql id="certificateon">on userlevel.certificateuid = certificate.uid</sql>
+	<sql id="setcertificate">certificate.`type` = #{certificate}</sql>
+	
+	<sql id="studenttable">student</sql>
+	<sql id="studenton">on userlevel.useruid = student.uid</sql>
+	<sql id="setstudentsn_lk">student.sn like CONCAT('%',#{studentsn_lk},'%')</sql>
+	
+    <sql id="basecolumns">`uid`, `createtime` </sql>
+    <sql id="othercolumns"><include refid="basecolumns"/>, `useruid`, `major`, `levelfrom`, `levelto`, `type`, `certificateuid`, `arguments`, `desc`, `channel`, `status` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+    <sql id="table">userlevel</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="whereid">where uid = #{uid}</sql>
+    <sql id="allfields"><include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{uid},#{createtime},#{useruid},#{major},#{levelfrom},#{levelto},#{type},#{certificateuid},#{arguments},#{desc},#{channel},#{status}</sql>
+    <sql id="setuseruid">`useruid` = #{useruid}</sql>
+    <sql id="setuid">uid = #{uid}</sql>
+    <sql id="setmajor">userlevel.`major` = #{major}</sql>
+    <sql id="setlevelfrom">`levelfrom` = #{levelfrom}</sql>
+    <sql id="setlevelto">`levelto` = #{levelto}</sql>
+    <sql id="settype">`type` = #{type}</sql>
+    <sql id="setcertificateuid">`certificateuid` = #{certificateuid}</sql>
+    <sql id="setarguments">`arguments` = #{arguments}</sql>
+    <sql id="setdesc">`desc` = #{desc}</sql>
+    <sql id="setchannel">`channel` = #{channel}</sql>
+    <sql id="setstatus">userlevel.`status` = #{status}</sql>
+    <sql id="setuserlevelstatus">userlevel.`status` = #{userlevelstatus}</sql>
+    <sql id="setuserleveltype">userlevel.`type` = #{userleveltype}</sql>
+    <sql id="allsets">set
+            <include refid="setuseruid"/>,
+            <include refid="setmajor"/>,
+            <include refid="setlevelfrom"/>,
+            <include refid="setlevelto"/>,
+            <include refid="settype"/>,
+            <include refid="setcertificateuid"/>,
+            <include refid="setarguments"/>,
+            <include refid="setdesc"/>,
+            <include refid="setchannel"/>,
+            <include refid="setstatus"/>
+    </sql>
+    <sql id="orderby">order by userlevel.createtime</sql>
+
+    <select id="get" parameterType="string" resultType="userlevel">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="userlevel">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="uid != null">
+                and <include refid="setuid"/>
+            </if>         
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="levelfrom != null">
+                and <include refid="setlevelfrom"/>
+            </if>
+            <if test="levelto != null">
+                and <include refid="setlevelto"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="certificateuid != null">
+                and <include refid="setcertificateuid"/>
+            </if>
+            <if test="arguments != null">
+                and <include refid="setarguments"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="channel != null">
+                and <include refid="setchannel"/>
+            </if>
+            <if test="channel_in != null">
+                and `channel` in 
+                 <foreach item="item" index="index" collection="channel_in" open="(" separator="," close=")">  
+                    #{item}
+                </foreach> 
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="levelfrom != null">
+                and <include refid="setlevelfrom"/>
+            </if>
+            <if test="levelto != null">
+                and <include refid="setlevelto"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="certificateuid != null">
+                and <include refid="setcertificateuid"/>
+            </if>
+            <if test="arguments != null">
+                and <include refid="setarguments"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="channel != null">
+                and <include refid="setchannel"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </select>
+
+   <select id="getUserCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        left join
+        <include refid="userinfotable"/>
+        <include refid="userinfoon"/>
+        <where>
+        	 <if test="showname_lk != null">
+              (  <include refid="setshowname_lk"/>
+            </if>
+            <if test="company_lk != null">
+                or <include refid="setcompany_lk"/>
+            </if>
+            <if test="job_lk != null">
+                or <include refid="setjob_lk"/>
+                )
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="levelfrom != null">
+                and <include refid="setlevelfrom"/>
+            </if>
+            <if test="levelto != null">
+                and <include refid="setlevelto"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="certificateuid != null">
+                and <include refid="setcertificateuid"/>
+            </if>
+            <if test="arguments != null">
+                and <include refid="setarguments"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="channel != null">
+                and <include refid="setchannel"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </select>
+    
+    <select id="searchCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        left join
+        <include refid="userinfotable"/>
+        <include refid="userinfoon"/>
+        left join
+        <include refid="certificatetable"/>
+        <include refid="certificateon"/>
+        left join
+        <include refid="studenttable"/>
+        <include refid="studenton"/>
+        <where>
+            <if test="username_lk != null">
+               (<include refid="setusername_lk"/>
+            </if>
+            <if test="studentsn_lk != null">
+               or <include refid="setstudentsn_lk"/>
+               )
+            </if>
+            <if test="certificate != null">
+                and <include refid="setcertificate"/>
+            </if>
+            <if test="userleveltype != null">
+                and <include refid="setuserleveltype"/>
+            </if>
+            <if test="userlevelstatus != null">
+                and <include refid="setuserlevelstatus"/>
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="levelfrom != null">
+                and <include refid="setlevelfrom"/>
+            </if>
+            <if test="levelto != null">
+                and <include refid="setlevelto"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="certificateuid != null">
+                and <include refid="setcertificateuid"/>
+            </if>
+            <if test="arguments != null">
+                and <include refid="setarguments"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="channel != null">
+                and <include refid="setchannel"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </select>
+
+
+    <select id="getList" parameterType="hashMap" resultType="userlevel">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="levelfrom != null">
+                and <include refid="setlevelfrom"/>
+            </if>
+            <if test="levelto != null">
+                and <include refid="setlevelto"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="certificateuid != null">
+                and <include refid="setcertificateuid"/>
+            </if>
+            <if test="arguments != null">
+                and <include refid="setarguments"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="channel != null">
+                and <include refid="setchannel"/>
+            </if>
+            <if test="channel_in != null">
+                and `channel` in 
+                 <foreach item="item" index="index" collection="channel_in" open="(" separator="," close=")">  
+                    #{item}
+                </foreach> 
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+    
+    <select id="search" parameterType="hashMap" resultType="userlevel">
+        select
+        <include refid="userlevelcolumns" />
+        from
+        <include refid="table"/>
+        left join
+        <include refid="userinfotable"/>
+        <include refid="userinfoon"/>
+        left join
+        <include refid="certificatetable"/>
+        <include refid="certificateon"/>
+        left join
+        <include refid="studenttable"/>
+        <include refid="studenton"/>
+        <where>
+            <if test="username_lk != null">
+               (<include refid="setusername_lk"/>
+            </if>
+            <if test="studentsn_lk != null">
+               or <include refid="setstudentsn_lk"/>
+               )
+            </if>
+            <if test="certificate != null">
+                and <include refid="setcertificate"/>
+            </if>
+            <if test="userleveltype != null">
+                and <include refid="setuserleveltype"/>
+            </if>
+            <if test="userlevelstatus != null">
+                and <include refid="setuserlevelstatus"/>
+            </if>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="levelfrom != null">
+                and <include refid="setlevelfrom"/>
+            </if>
+            <if test="levelto != null">
+                and <include refid="setlevelto"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="certificateuid != null">
+                and <include refid="setcertificateuid"/>
+            </if>
+            <if test="arguments != null">
+                and <include refid="setarguments"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="channel != null">
+                and <include refid="setchannel"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+    
+    <select id="getUserList" parameterType="hashMap" resultType="userlevel">
+        select
+        <include refid="userlevelcolumns" />
+        from
+        <include refid="table"/>
+        left join
+        <include refid="userinfotable"/>
+        <include refid="userinfoon"/>
+       <where>
+            <if test="showname_lk != null">
+              (  <include refid="setshowname_lk"/>
+            </if>
+            <if test="company_lk != null">
+                or <include refid="setcompany_lk"/>
+            </if>
+            <if test="job_lk != null">
+                or <include refid="setjob_lk"/>
+                )
+            </if>
+             <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="levelfrom != null">
+                and <include refid="setlevelfrom"/>
+            </if>
+            <if test="levelto != null">
+                and <include refid="setlevelto"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="certificateuid != null">
+                and <include refid="setcertificateuid"/>
+            </if>
+            <if test="arguments != null">
+                and <include refid="setarguments"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="channel != null">
+                and <include refid="setchannel"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+
+    <insert id="insert" parameterType="userlevel">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="userlevel">
+        update
+        <include refid="table"/>
+        <include refid="allsets"/>
+        <include refid="whereid"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="useruid != null">
+                <include refid="setuseruid"/>,
+            </if>
+            <if test="major != null">
+                <include refid="setmajor"/>,
+            </if>
+            <if test="levelfrom != null">
+                <include refid="setlevelfrom"/>,
+            </if>
+            <if test="levelto != null">
+                <include refid="setlevelto"/>,
+            </if>
+            <if test="type != null">
+                <include refid="settype"/>,
+            </if>
+            <if test="certificateuid != null">
+                <include refid="setcertificateuid"/>,
+            </if>
+            <if test="arguments != null">
+                <include refid="setarguments"/>,
+            </if>
+            <if test="desc != null">
+                <include refid="setdesc"/>,
+            </if>
+            <if test="channel != null">
+                <include refid="setchannel"/>,
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>
+            </if>
+        </set>
+        <include refid="whereid"/>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+
+</mapper>
+

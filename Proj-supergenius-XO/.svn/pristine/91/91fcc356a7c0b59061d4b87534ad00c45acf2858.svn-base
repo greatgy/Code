@@ -1,0 +1,53 @@
+package com.supergenius.xo.finance.serviceimpl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.genius.xo.baseadmin.serviceimpl.BaseSOImpl;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.finance.dao.TopicGuestDao;
+import com.supergenius.xo.finance.entity.TopicGuest;
+import com.supergenius.xo.finance.enums.EGuestState;
+import com.supergenius.xo.finance.service.TopicGuestSO;
+import com.supergenius.xo.user.dao.UserDao;
+
+/**
+ * 话题嘉宾SOImpl
+ * 
+ * @author liushaomin
+ */
+@Service
+public class TopicGuestSOImpl extends BaseSOImpl<TopicGuest> implements TopicGuestSO {
+
+	@Autowired
+	private TopicGuestDao dao;
+
+	@Autowired
+	private UserDao userDao;
+
+	@Override
+	protected TopicGuestDao getDao() {
+		return dao;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.supergenius.xo.finance.service.TopicGuestSO#getList(java.lang.String)
+	 */
+	@Override
+	public List<TopicGuest> getList(String topicuid) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.topicuid, topicuid);
+		map.put(MapperDict.state, EGuestState.accept);
+		List<TopicGuest> topicGuests = dao.getList(map);
+		for (TopicGuest topicGuest : topicGuests) {
+			topicGuest.setTopicUser(userDao.get(topicGuest.getUseruid()));
+		}
+		return topicGuests;
+	}
+
+}

@@ -1,0 +1,47 @@
+package com.supergenius.xo.finance.entity;
+
+import com.genius.core.base.annotation.Json;
+import com.supergenius.xo.common.entity.BaseEntity;
+import com.supergenius.xo.finance.enums.EFollow;
+
+/**
+ * 订阅表
+ * 
+ * @author LiJiacheng
+ */
+@Json(value = { "uid", "status", "createtime", "updatetime" }, ignoreTypeStrategy = Json.webStrategy, strategy = Json.webStrategy)
+public class Subscribe extends BaseEntity {
+
+	private static final long serialVersionUID = 6540797569733589527L;
+	@Json(strategy = Json.webStrategy)
+	private String useruid;// 订阅者uid
+	@Json(strategy = Json.webStrategy)
+	private String refuseruid;// 被订阅者uid
+	@Json(strategy = Json.webStrategy)
+	private EFollow follow;// 订阅状态枚举
+	
+	public String getUseruid() {
+		return useruid;
+	}
+
+	public void setUseruid(String useruid) {
+		this.useruid = useruid;
+	}
+
+	public String getRefuseruid() {
+		return refuseruid;
+	}
+
+	public void setRefuseruid(String refuseruid) {
+		this.refuseruid = refuseruid;
+	}
+
+	public EFollow getFollow() {
+		return follow;
+	}
+
+	public void setFollow(EFollow follow) {
+		this.follow = follow;
+	}
+
+}

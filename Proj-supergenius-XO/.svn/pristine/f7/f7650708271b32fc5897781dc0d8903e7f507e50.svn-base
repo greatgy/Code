@@ -1,0 +1,141 @@
+package com.supergenius.xo.life.dao;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.joda.time.DateTime;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.genius.model.base.enums.EStatus;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.life.entity.Content;
+import com.supergenius.xo.life.entity.Subject;
+import com.supergenius.xo.mock.testconstants.TestConst;
+
+/**
+ * 科目測試類
+ * 
+ * @Author:JiaShitao
+ * @Date:2018年5月7日下午7:07:40
+ */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath*:**/applicationContext**.xml" })
+public class SubjectDaoTest {
+	@Autowired
+	private SubjectDao dao;
+	private Subject entity;
+	
+	@Before
+	public void before() {
+		entity = new Subject();
+		entity.setCid(123);
+		entity.setGrade(9);
+		entity.setName(TestConst.name);
+		entity.setData("data");
+		entity.setGrade(9);
+		entity.setStatus(EStatus.enable);
+		entity.setAdminuid(TestConst.uid1);
+		entity.setCreatetime(new DateTime());
+		boolean result = dao.insert(entity);
+		assertTrue(result);
+	}
+
+	@After
+	public void after() {
+		entity = null;
+		boolean result = dao.deleteByCid(123);
+		assertTrue(result);
+	}
+	
+	/**
+	 * Test Get()
+	 */
+	@Test
+	public void testGet() {
+		entity = dao.getByCid(123);
+		assertNotNull(entity);
+		assertEquals(123, entity.getCid());
+	}
+
+	/**
+	 * Test GetOne()
+	 */
+	@Test
+	public void testGetOne() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put(MapperDict.cid, 123);
+		assertNotNull(dao.getOne(map));
+	}
+
+	/**
+	 * Test GetCount()
+	 */
+	@Test
+	public void testCount() {
+		assertTrue(dao.getCount(null) >= 1);
+	}
+
+	/**
+	 * Test GetList()
+	 */
+	@Test
+	public void testGetList() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		assertTrue(dao.getList(map).size() > 0);
+	}
+	
+
+	/**
+	 * Test Insert()
+	 */
+	@Test
+	public void testInsert() {
+		entity = new Subject();
+		entity.setCid(1234);
+		entity.setGrade(9);
+		entity.setName(TestConst.name);
+		entity.setData("data");
+		entity.setGrade(9);
+		entity.setStatus(EStatus.enable);
+		entity.setAdminuid(TestConst.uid1);
+		entity.setCreatetime(new DateTime());	
+		dao.insert(entity);
+		int cid = entity.getCid();
+		assertNotNull(dao.getByCid(cid));
+		dao.deleteByCid(cid);
+		assertNull(dao.getByCid(cid));
+	}
+
+	/**
+	 * Test Update()
+	 */
+	@Test
+	public void testUpdate() {
+		entity = new Subject();
+		entity.setCid(1234);
+		entity.setGrade(9);
+		entity.setName(TestConst.name);
+		entity.setData("data");
+		entity.setGrade(9);
+		entity.setStatus(EStatus.enable);
+		entity.setCreatetime(new DateTime());
+		dao.insert(entity);
+		int cid = entity.getCid();
+		assertNotNull(dao.getByCid(cid));
+		entity.setName("李四李四李四李四李四文章的测试内容");
+		assertTrue(dao.updateByCid(entity));
+		dao.deleteByCid(cid);
+		assertNull(dao.getByCid(cid));
+	}
+}

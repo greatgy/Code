@@ -1,0 +1,1336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.user.dao.UserDao">
+
+	<sql id="studenttable">GManagerDB.student as s</sql>
+	<sql id="studenton">on u.`uid` = s.`uid`</sql>
+	<sql id="setstudentsn">s.sn = #{studentsn}</sql>
+	<sql id="certificatetable">GManagerDB.certificate as c</sql>
+	<sql id="certificateon">on u.`uid` = c.`useruid`</sql>
+	<sql id="setcertificate">c.`type` = #{certificate}</sql>
+	
+    <sql id="judgesn">j.`sn`</sql>
+    <sql id="judgetable">GManagerDB.judge as j</sql>
+    <sql id="judgeon">on u.`uid` = j.`useruid` and j.status = 1</sql>
+    <sql id="setsnlike">j.`sn` like CONCAT('%',#{sn_lk},'%')</sql>
+    <sql id="setjudgemajor">j.`major` = #{major}</sql>
+    <sql id="setjudgementsn">j.sn = #{judgementsn}</sql>
+    
+    <sql id="userleveltable">GManagerDB.userlevel as l</sql>
+    <sql id="userlevelon">on u.`uid` = l.`useruid`</sql>
+    <sql id="setuserlevelstatus">l.`status` = #{userlevelstatus}</sql>
+    <sql id="setuserleveltype">l.`type` = #{userleveltype}</sql>
+    <sql id="setmajor">l.`major` = #{major}</sql>
+    <sql id="setlevelto">l.`levelto` = #{levelto}</sql>
+    <sql id="setusertype">l.type = #{usertype}</sql>
+    <sql id="setuserstatus">u.status = #{status}</sql>
+    <sql id="setjudgestatus">j.status = #{status}</sql>
+    
+    <sql id="setqq">i.qq = #{qq}</sql>
+    <sql id="setwx">i.wx = #{wx}</sql>
+    <sql id="setsina">i.sina = #{sina}</sql>
+    <sql id="setaisle">i.aisle = #{aisle}</sql>
+    <sql id="setothernicks">i.othernicks = #{othernicks}</sql>
+    <sql id="setotheravatar">i.otheravatar = #{otheravatar}</sql>
+    <sql id="setcountry">i.country = #{country}</sql>
+    <sql id="setsoldier">i.soldier = #{soldier}</sql>
+    <sql id="setpassport">i.passport = #{passport}</sql>
+
+    <sql id="usertableas">user as u</sql>
+    <sql id="userinfotableas">userinfo as i</sql>
+    <sql id="userallcolumns"> u.`uid`, u.`oid`, u.`usersn`, u.`email`, u.`newemail`,u.`validcode`, u.`phone`,u.`mobile`,u.`openid`,  u.`password`, u.`paypwd`, u.`resetpwd`, u.`account`, u.`freezeaccount`, u.`totalpay`, u.`totalincome`, u.`type`, u.`channelfrom`, u.`logincount`, u.`lastlogintime`, u.`lastloginip`, u.`data`, u.`status`, u.`createtime`, u.`updatetime`</sql>
+    <sql id="userinfoallcolumns">i.`aisle`,i.`freeze`, i.`name`, i.`nickname`, i.`showname`, i.`identityid`, i.`gender`, i.`birthday`, i.`college`, i.`address`, i.`qq`, i.`wx`, i.`sina`, i.`othernicks`, i.`otheravatar`, i.`country`, i.`soldier`, i.`passport`, i.`freeze`, i.`msn`,  i.`avatarbig`, i.`avatar`, i.`avatarlittle`, i.`original`, i.`summary`, i.`job`, i.`department`, i.`company`, i.`domain`, i.`honor`, i.`education`, i.`work` </sql>
+    <sql id="useron">on u.`uid`=i.`uid`</sql>
+    <sql id="userwhere">where u.`uid` = #{uid}</sql>
+
+    <sql id="basecolumns">`uid`, `createtime` </sql>
+    <sql id="useruids">u.`uid`</sql>
+    <sql id="othercolumns"><include refid="basecolumns"/>, `oid`, `usersn`, `email`, `newemail`, `phone`, `mobile`, `openid`, `validcode`, `password`, `paypwd`, `resetpwd`, `account`, `freezeaccount`, `totalpay`, `totalincome`, `type`, `channelfrom`, `logincount`, `lastlogintime`, `lastloginip`, `data`, `status` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+    <sql id="table">user</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="countdistinct">count(distinct oid)</sql>
+    <sql id="whereid">where uid = #{uid}</sql>
+    <sql id="allfields"><include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{uid},#{createtime},#{oid},#{usersn},#{email},#{newemail},#{phone},#{mobile},#{openid},#{validcode},#{password},#{paypwd},#{resetpwd},#{account},#{freezeaccount},#{totalpay},#{totalincome},#{type},#{channelfrom},#{logincount},#{lastlogintime},#{lastloginip},#{data},#{status}</sql>
+    <sql id="setoid">oid = #{oid}</sql>
+    <sql id="setusersn">usersn = #{usersn}</sql>
+    <sql id="setemail">email = #{email}</sql>
+    <sql id="setnewemail">newemail = #{newemail}</sql>
+    <sql id="setphone">phone = #{phone}</sql>
+    <sql id="setmobile">mobile = #{mobile}</sql>
+    <sql id="setopenid">openid = #{openid}</sql>
+    <sql id="setvalidcode">validcode = #{validcode}</sql>
+    <sql id="setpassword">password = #{password}</sql>
+    <sql id="setpaypwd">paypwd = #{paypwd}</sql>
+    <sql id="setresetpwd">resetpwd = #{resetpwd}</sql>
+    <sql id="setaccount">account = #{account}</sql>
+    <sql id="setfreezeaccount">freezeaccount = #{freezeaccount}</sql>
+    <sql id="settotalpay">totalpay = #{totalpay}</sql>
+    <sql id="settotalincome">totalincome = #{totalincome}</sql>
+    <sql id="settype">type = #{type}</sql>
+    <sql id="wheretype">u.type &amp; #{type}</sql>
+	<sql id="whereno_type">!(type &amp; #{type})</sql>
+    <sql id="setchannelfrom">channelfrom = #{channelfrom}</sql>
+    <sql id="setlogincount">logincount = #{logincount}</sql>
+    <sql id="setlastlogintime">lastlogintime = #{lastlogintime}</sql>
+    <sql id="setlastloginip">lastloginip = #{lastloginip}</sql>
+    <sql id="setdata">data = #{data}</sql>
+    <sql id="setstatus">status = #{status}</sql>
+    <sql id="setno_status">status not in (${no_status})</sql>
+    <sql id="setshowname_lk">showname like CONCAT('%',#{showname_lk},'%')</sql>
+    <sql id="usersets">set
+            u.oid = #{oid},
+            u.usersn = #{usersn},
+            u.email = #{email},
+            u.newemail = #{newemail},
+            u.phone = #{phone},
+            u.mobile = #{mobile},
+            u.openid = #{openid},
+            u.validcode = #{validcode},
+            u.password = #{password},
+            u.paypwd = #{paypwd},
+            u.resetpwd = #{resetpwd},
+            u.account = #{account},
+            u.freezeaccount = #{freezeaccount},
+            u.totalpay = #{totalpay},
+            u.type = #{type},
+            u.totalincome = #{totalincome},
+            u.channelfrom = #{channelfrom},
+            u.logincount = #{logincount},
+            u.lastlogintime = #{lastlogintime},
+            u.lastloginip = #{lastloginip},
+            u.data = #{data},
+            u.status = #{status},
+    </sql>
+    <sql id="userinfosets">
+            i.name = #{name},
+            i.nickname = #{nickname},
+            i.showname = #{showname},
+            i.identityid = #{identityid},
+            i.gender = #{gender},
+            i.college = #{college},
+            i.address = #{address},
+            i.qq = #{qq},
+            i.wx = #{wx},
+            i.sina = #{sina},
+            i.aisle = #{aisle},
+            i.othernicks = #{othernicks},
+            i.otheravatar = #{otheravatar},
+            i.country = #{country},
+            i.soldier = #{soldier},
+            i.passport = #{passport},
+            i.msn = #{msn},
+            i.freeze = #{freeze},
+            i.avatarbig = #{avatarbig},
+            i.avatar = #{avatar},
+            i.avatarlittle = #{avatarlittle},
+            i.original = #{original},
+            i.summary = #{summary},
+            i.job = #{job},
+            i.department = #{department},
+            i.company = #{company},
+            i.domain = #{domain},
+            i.honor = #{honor},
+            i.education = #{education},
+            i.work = #{work}
+    </sql>
+    <sql id="allsets">set
+            <include refid="setoid"/>,
+            <include refid="setusersn"/>,
+            <include refid="setemail"/>,
+            <include refid="setnewemail"/>,
+            <include refid="setphone"/>,
+            <include refid="setmobile"/>,
+            <include refid="setopenid"/>,
+            <include refid="setvalidcode"/>,
+            <include refid="setpassword"/>,
+            <include refid="setpaypwd"/>,
+            <include refid="setresetpwd"/>,
+            <include refid="setaccount"/>,
+            <include refid="setfreezeaccount"/>,
+            <include refid="settotalpay"/>,
+            <include refid="settotalincome"/>,
+            <include refid="settype"/>,
+            <include refid="setchannelfrom"/>,
+            <include refid="setlogincount"/>,
+            <include refid="setlastlogintime"/>,
+            <include refid="setlastloginip"/>,
+            <include refid="setdata"/>,
+            <include refid="setstatus"/>
+    </sql>
+    <sql id="orderby">order by createtime</sql>
+
+   <select id="get" parameterType="string" resultType="user">
+        select
+        <include refid="userallcolumns" />,
+        <include refid="userinfoallcolumns" />
+        from
+        <include refid="usertableas"/>
+        left join
+        <include refid="userinfotableas"/>
+        <include refid="useron"/>
+        <include refid="userwhere"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="user">
+        select
+        <include refid="userallcolumns" />,
+        <include refid="userinfoallcolumns" />
+        from
+        <include refid="usertableas"/>
+        left join
+        <include refid="userinfotableas"/>
+        <include refid="useron"/>
+        <where>
+            <if test="oid != null">
+                and <include refid="setoid"/>
+            </if>
+            <if test="usersn != null">
+                and <include refid="setusersn"/>
+            </if>
+            <if test="email != null">
+                and <include refid="setemail"/>
+            </if>
+            <if test="newemail != null">
+                and <include refid="setnewemail"/>
+            </if>
+            <if test="phone != null">
+                and <include refid="setphone"/>
+            </if>
+            <if test="mobile != null">
+                and <include refid="setmobile"/>
+            </if>
+            <if test="openid != null">
+                and <include refid="setopenid"/>
+            </if>
+            <if test="validcode != null">
+                and <include refid="setvalidcode"/>
+            </if>
+            <if test="password != null">
+                and <include refid="setpassword"/>
+            </if>
+            <if test="paypwd != null">
+                and <include refid="setpaypwd"/>
+            </if>
+            <if test="resetpwd != null">
+                and <include refid="setresetpwd"/>
+            </if>
+            <if test="account != null">
+                and <include refid="setaccount"/>
+            </if>
+            <if test="freezeaccount != null">
+                and <include refid="setfreezeaccount"/>
+            </if>
+            <if test="totalpay != null">
+                and <include refid="settotalpay"/>
+            </if>
+            <if test="totalincome != null">
+                and <include refid="settotalincome"/>
+            </if>
+            <if test="type != null">
+                and <include refid="wheretype"/>
+            </if>
+            <if test="no_type != null">
+                and <include refid="whereno_type"/>
+            </if>
+            <if test="channelfrom != null">
+                and <include refid="setchannelfrom"/>
+            </if>
+            <if test="logincount != null">
+                and <include refid="setlogincount"/>
+            </if>
+            <if test="lastlogintime != null">
+                and <include refid="setlastlogintime"/>
+            </if>
+            <if test="lastloginip != null">
+                and <include refid="setlastloginip"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="no_status != null">
+                and <include refid="setno_status"/>
+            </if>
+            <if test="qq != null">
+                and <include refid="setqq"/>
+            </if>
+            <if test="wx != null">
+                and <include refid="setwx"/>
+            </if>
+            <if test="sina != null">
+                and <include refid="setsina"/>
+            </if>
+            <if test="aisle != null">
+                and <include refid="setaisle"/>
+            </if>
+            <if test="othernicks != null">
+                and <include refid="setothernicks"/>
+            </if>
+            <if test="otheravatar != null">
+                and <include refid="setotheravatar"/>
+            </if>
+            <if test="country != null">
+                and <include refid="setcountry"/>
+            </if>
+            <if test="soldier != null">
+                and <include refid="setsoldier"/>
+            </if>
+            <if test="passport != null">
+                and <include refid="setpassport"/>
+            </if>
+            <if test="statuslist != null">
+				and status in
+				<foreach item="item" index="index" collection="statuslist" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+        </where>
+       <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+         <include refid="usertableas"/>
+        left join
+        <include refid="userinfotableas"/>
+        <include refid="useron"/>
+        <where>
+            <if test="oid != null">
+                and <include refid="setoid"/>
+            </if>
+            <if test="usersn != null">
+                and <include refid="setusersn"/>
+            </if>
+            <if test="usersn_lk != null">
+                and usersn like CONCAT('%',#{usersn_lk},'%')
+            </if>
+            <if test="name != null">
+                and i.name=#{name}
+            </if>
+            <if test="name_lk != null">
+                and i.name like CONCAT('%',#{name_lk},'%')
+            </if>
+            <if test="showname_lk != null">
+				and <include refid="setshowname_lk"/>
+			</if>
+			<if test="job_lk != null">
+                and i.job like CONCAT('%',#{job_lk},'%')
+            </if>
+            <if test="company_lk != null">
+                and i.company like CONCAT('%',#{company_lk},'%')
+            </if>
+            <if test="account_gt != null">
+                and account &gt;= #{account_gt}
+            </if>
+            <if test="account_lt != null">
+                and account &lt;= #{account_lt}
+            </if>
+            <if test="email != null">
+                and <include refid="setemail"/>
+            </if>
+            <if test="email_lk != null">
+                and email like CONCAT('%',#{email_lk},'%')
+            </if>
+            <if test="newemail != null">
+                and <include refid="setnewemail"/>
+            </if>
+            <if test="phone != null">
+                and <include refid="setphone"/>
+            </if>
+            <if test="mobile != null">
+                and <include refid="setmobile"/>
+            </if>
+            <if test="openid != null">
+                and <include refid="setopenid"/>
+            </if>
+            <if test="validcode != null">
+                and <include refid="setvalidcode"/>
+            </if>
+            <if test="password != null">
+                and <include refid="setpassword"/>
+            </if>
+            <if test="paypwd != null">
+                and <include refid="setpaypwd"/>
+            </if>
+            <if test="resetpwd != null">
+                and <include refid="setresetpwd"/>
+            </if>
+            <if test="account != null">
+                and <include refid="setaccount"/>
+            </if>
+            <if test="freezeaccount != null">
+                and <include refid="setfreezeaccount"/>
+            </if>
+            <if test="totalpay != null">
+                and <include refid="settotalpay"/>
+            </if>
+            <if test="totalincome != null">
+                and <include refid="settotalincome"/>
+            </if>
+            <if test="type != null">
+                and <include refid="wheretype"/>
+            </if>
+            <if test="no_type != null">
+                and <include refid="whereno_type"/>
+            </if>
+            <if test="channelfrom != null">
+                and <include refid="setchannelfrom"/>
+            </if>
+            <if test="logincount != null">
+                and <include refid="setlogincount"/>
+            </if>
+            <if test="lastlogintime != null">
+                and <include refid="setlastlogintime"/>
+            </if>
+            <if test="lastloginip != null">
+                and <include refid="setlastloginip"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="qq != null">
+                and <include refid="setqq"/>
+            </if>
+            <if test="wx != null">
+                and <include refid="setwx"/>
+            </if>
+            <if test="sina != null">
+                and <include refid="setsina"/>
+            </if>
+            <if test="aisle != null">
+                and <include refid="setaisle"/>
+            </if>
+            <if test="othernicks != null">
+                and <include refid="setothernicks"/>
+            </if>
+            <if test="otheravatar != null">
+                and <include refid="setotheravatar"/>
+            </if>
+            <if test="country != null">
+                and <include refid="setcountry"/>
+            </if>
+            <if test="soldier != null">
+                and <include refid="setsoldier"/>
+            </if>
+            <if test="passport != null">
+                and <include refid="setpassport"/>
+            </if>
+            <if test="statuslist != null">
+				and status in
+				<foreach item="item" index="index" collection="statuslist" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+        </where>
+    </select>
+
+    <select id="getList" parameterType="hashMap" resultType="user">
+        select
+        <include refid="userallcolumns" />,
+        <include refid="userinfoallcolumns" />
+        from
+        <include refid="usertableas"/>
+        left join
+        <include refid="userinfotableas"/>
+        <include refid="useron"/>
+        <where>
+            <if test="oid != null">
+                and <include refid="setoid"/>
+            </if>
+            <if test="usersn != null">
+                and <include refid="setusersn"/>
+            </if>
+            <if test="usersn_lk != null">
+                and usersn like CONCAT('%',#{usersn_lk},'%')
+            </if>
+            <if test="name != null">
+                and i.name=#{name}
+            </if>
+            <if test="aisle != null">
+                and i.aisle=#{aisle}
+            </if>
+            <if test="name_lk != null">
+                and i.name like CONCAT('%',#{name_lk},'%')
+            </if>
+            <if test="showname_lk != null">
+				and <include refid="setshowname_lk"/>
+			</if>
+            <if test="account_gt != null">
+                and account &gt;= #{account_gt}
+            </if>
+            <if test="account_lt != null">
+                and account &lt;= #{account_lt}
+            </if>
+            <if test="email != null">
+                and <include refid="setemail"/>
+            </if>
+            <if test="email_lk != null">
+                and email like CONCAT('%',#{email_lk},'%')
+            </if>
+            <if test="newemail != null">
+                and <include refid="setnewemail"/>
+            </if>
+            <if test="phone != null">
+                and <include refid="setphone"/>
+            </if>
+            <if test="mobile != null">
+                and <include refid="setmobile"/>
+            </if>
+            <if test="openid != null">
+                and <include refid="setopenid"/>
+            </if>
+            <if test="validcode != null">
+                and <include refid="setvalidcode"/>
+            </if>
+            <if test="password != null">
+                and <include refid="setpassword"/>
+            </if>
+            <if test="paypwd != null">
+                and <include refid="setpaypwd"/>
+            </if>
+            <if test="resetpwd != null">
+                and <include refid="setresetpwd"/>
+            </if>
+            <if test="account != null">
+                and <include refid="setaccount"/>
+            </if>
+            <if test="freezeaccount != null">
+                and <include refid="setfreezeaccount"/>
+            </if>
+            <if test="totalpay != null">
+                and <include refid="settotalpay"/>
+            </if>
+            <if test="totalincome != null">
+                and <include refid="settotalincome"/>
+            </if>
+            <if test="type != null">
+                and <include refid="wheretype"/>
+            </if>
+            <if test="no_type != null">
+                and <include refid="whereno_type"/>
+            </if>
+            <if test="channelfrom != null">
+                and <include refid="setchannelfrom"/>
+            </if>
+            <if test="logincount != null">
+                and <include refid="setlogincount"/>
+            </if>
+            <if test="lastlogintime != null">
+                and <include refid="setlastlogintime"/>
+            </if>
+            <if test="lastloginip != null">
+                and <include refid="setlastloginip"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="qq != null">
+                and <include refid="setqq"/>
+            </if>
+            <if test="wx != null">
+                and <include refid="setwx"/>
+            </if>
+            <if test="sina != null">
+                and <include refid="setsina"/>
+            </if>
+            <if test="aisle != null">
+                and <include refid="setaisle"/>
+            </if>
+            <if test="othernicks != null">
+                and <include refid="setothernicks"/>
+            </if>
+            <if test="otheravatar != null">
+                and <include refid="setotheravatar"/>
+            </if>
+            <if test="country != null">
+                and <include refid="setcountry"/>
+            </if>
+            <if test="soldier != null">
+                and <include refid="setsoldier"/>
+            </if>
+            <if test="passport != null">
+                and <include refid="setpassport"/>
+            </if>
+            <if test="statuslist != null">
+				and status in
+				<foreach item="item" index="index" collection="statuslist" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+    
+    <select id="getUids" parameterType="hashMap" resultType="user">
+        select
+        <include refid="useruids" />,
+        from
+        <include refid="usertableas"/>
+        left join
+        <include refid="userinfotableas"/>
+        <include refid="useron"/>
+        <where>
+            <if test="oid != null">
+                and <include refid="setoid"/>
+            </if>
+            <if test="usersn != null">
+                and <include refid="setusersn"/>
+            </if>
+            <if test="usersn_lk != null">
+                and usersn like CONCAT('%',#{usersn_lk},'%')
+            </if>
+            <if test="name != null">
+                and i.name=#{name}
+            </if>
+            <if test="name_lk != null">
+                and i.name like CONCAT('%',#{name_lk},'%')
+            </if>
+            <if test="showname_lk != null">
+				and <include refid="setshowname_lk"/>
+			</if>
+            <if test="account_gt != null">
+                and account &gt;= #{account_gt}
+            </if>
+            <if test="account_lt != null">
+                and account &lt;= #{account_lt}
+            </if>
+            <if test="email != null">
+                and <include refid="setemail"/>
+            </if>
+            <if test="email_lk != null">
+                and email like CONCAT('%',#{email_lk},'%')
+            </if>
+            <if test="newemail != null">
+                and <include refid="setnewemail"/>
+            </if>
+            <if test="phone != null">
+                and <include refid="setphone"/>
+            </if>
+            <if test="mobile != null">
+                and <include refid="setmobile"/>
+            </if>
+            <if test="openid != null">
+                and <include refid="setopenid"/>
+            </if>
+            <if test="validcode != null">
+                and <include refid="setvalidcode"/>
+            </if>
+            <if test="password != null">
+                and <include refid="setpassword"/>
+            </if>
+            <if test="paypwd != null">
+                and <include refid="setpaypwd"/>
+            </if>
+            <if test="resetpwd != null">
+                and <include refid="setresetpwd"/>
+            </if>
+            <if test="account != null">
+                and <include refid="setaccount"/>
+            </if>
+            <if test="freezeaccount != null">
+                and <include refid="setfreezeaccount"/>
+            </if>
+            <if test="totalpay != null">
+                and <include refid="settotalpay"/>
+            </if>
+            <if test="totalincome != null">
+                and <include refid="settotalincome"/>
+            </if>
+            <if test="type != null">
+                and <include refid="wheretype"/>
+            </if>
+            <if test="no_type != null">
+                and <include refid="whereno_type"/>
+            </if>
+            <if test="channelfrom != null">
+                and <include refid="setchannelfrom"/>
+            </if>
+            <if test="logincount != null">
+                and <include refid="setlogincount"/>
+            </if>
+            <if test="lastlogintime != null">
+                and <include refid="setlastlogintime"/>
+            </if>
+            <if test="lastloginip != null">
+                and <include refid="setlastloginip"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="statuslist != null">
+				and status in
+				<foreach item="item" index="index" collection="statuslist" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+    
+    <select id="searchJudge" parameterType="hashMap" resultType="java.util.HashMap">
+        select
+        <include refid="userallcolumns" />,
+        <include refid="userinfoallcolumns" />,
+        <include refid="judgesn" />
+        from
+        <include refid="usertableas"/>
+        left join
+        <include refid="userinfotableas" />
+        <include refid="useron" />
+        left join
+        <include refid="judgetable" />
+        <include refid="judgeon" />
+        <where>
+            <if test="oid != null">
+                and <include refid="setoid"/>
+            </if>
+            <if test="pkuseruid != null">
+                and u.uid NOT IN (#{pkuseruid}, #{pkuseruid2})
+            </if>
+            <if test="usersn != null">
+                and <include refid="setusersn"/>
+            </if>
+            <if test="usersn_lk != null">
+                and usersn like CONCAT('%',#{usersn_lk},'%')
+            </if>
+            <if test="name != null">
+                and i.name=#{name}
+            </if>
+            <if test="name_lk != null">
+                and i.name like CONCAT('%',#{name_lk},'%')
+            </if>
+            <if test="showname_lk != null">
+                and (<include refid="setshowname_lk"/>
+            </if>
+            <if test="sn_lk != null">
+                or <include refid="setsnlike"/>)
+            </if>
+            <if test="account_gt != null">
+                and account &gt;= #{account_gt}
+            </if>
+            <if test="account_lt != null">
+                and account &lt;= #{account_lt}
+            </if>
+            <if test="email != null">
+                and <include refid="setemail"/>
+            </if>
+            <if test="email_lk != null">
+                and email like CONCAT('%',#{email_lk},'%')
+            </if>
+            <if test="newemail != null">
+                and <include refid="setnewemail"/>
+            </if>
+            <if test="phone != null">
+                and <include refid="setphone"/>
+            </if>
+            <if test="mobile != null">
+                and <include refid="setmobile"/>
+            </if>
+            <if test="openid != null">
+                and <include refid="setopenid"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setjudgemajor"/> 
+            </if>
+            <if test="validcode != null">
+                and <include refid="setvalidcode"/>
+            </if>
+            <if test="password != null">
+                and <include refid="setpassword"/>
+            </if>
+            <if test="paypwd != null">
+                and <include refid="setpaypwd"/>
+            </if>
+            <if test="resetpwd != null">
+                and <include refid="setresetpwd"/>
+            </if>
+            <if test="account != null">
+                and <include refid="setaccount"/>
+            </if>
+            <if test="freezeaccount != null">
+                and <include refid="setfreezeaccount"/>
+            </if>
+            <if test="totalpay != null">
+                and <include refid="settotalpay"/>
+            </if>
+            <if test="totalincome != null">
+                and <include refid="settotalincome"/>
+            </if>
+            <if test="type != null">
+                and <include refid="wheretype"/>
+            </if>
+            <if test="no_type != null">
+                and <include refid="whereno_type"/>
+            </if>
+            <if test="channelfrom != null">
+                and <include refid="setchannelfrom"/>
+            </if>
+            <if test="logincount != null">
+                and <include refid="setlogincount"/>
+            </if>
+            <if test="lastlogintime != null">
+                and <include refid="setlastlogintime"/>
+            </if>
+            <if test="lastloginip != null">
+                and <include refid="setlastloginip"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setuserstatus"/>
+                and <include refid="setjudgestatus"/>
+            </if>
+            <if test="qq != null">
+                and <include refid="setqq"/>
+            </if>
+            <if test="wx != null">
+                and <include refid="setwx"/>
+            </if>
+            <if test="sina != null">
+                and <include refid="setsina"/>
+            </if>
+            <if test="aisle != null">
+                and <include refid="setaisle"/>
+            </if>
+            <if test="othernicks != null">
+                and <include refid="setothernicks"/>
+            </if>
+            <if test="otheravatar != null">
+                and <include refid="setotheravatar"/>
+            </if>
+            <if test="country != null">
+                and <include refid="setcountry"/>
+            </if>
+            <if test="soldier != null">
+                and <include refid="setsoldier"/>
+            </if>
+            <if test="passport != null">
+                and <include refid="setpassport"/>
+            </if>
+            <if test="statuslist != null">
+				and u.status in
+				<foreach item="item" index="index" collection="statuslist" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <select id="searchStudent" parameterType="hashMap" resultType="user">
+        select
+        <include refid="userallcolumns" />,
+        <include refid="userinfoallcolumns" />
+        from
+        <include refid="usertableas"/>
+        left join
+        <include refid="userinfotableas" />
+        <include refid="useron" />
+        left join
+        <include refid="userleveltable" />
+        <include refid="userlevelon" />
+        <where>
+            <if test="oid != null">
+                and <include refid="setoid"/>
+            </if>
+            <if test="usersn != null">
+                and <include refid="setusersn"/>
+            </if>
+            <if test="usersn_lk != null">
+                and usersn like CONCAT('%',#{usersn_lk},'%')
+            </if>
+            <if test="name_lk != null">
+                and i.name like CONCAT('%',#{name_lk},'%')
+            </if>
+            <if test="showname_lk != null">
+                and (<include refid="setshowname_lk"/>
+            </if>
+            <if test="job_lk != null">
+                or `job` like  CONCAT('%',#{job_lk},'%')
+            </if>
+            <if test="company_lk != null">
+                or `company` like  CONCAT('%',#{company_lk},'%'))
+            </if>
+            <if test="name != null">
+                and i.name=#{name}
+            </if>
+            <if test="account_gt != null">
+                and account &gt;= #{account_gt}
+            </if>
+            <if test="account_lt != null">
+                and account &lt;= #{account_lt}
+            </if>
+            <if test="email != null">
+                and <include refid="setemail"/>
+            </if>
+            <if test="email_lk != null">
+                and email like CONCAT('%',#{email_lk},'%')
+            </if>
+            <if test="newemail != null">
+                and <include refid="setnewemail"/>
+            </if>
+            <if test="phone != null">
+                and <include refid="setphone"/>
+            </if>
+            <if test="mobile != null">
+                and <include refid="setmobile"/>
+            </if>
+            <if test="openid != null">
+                and <include refid="setopenid"/>
+            </if>
+            <if test="validcode != null">
+                and <include refid="setvalidcode"/>
+            </if>
+            <if test="password != null">
+                and <include refid="setpassword"/>
+            </if>
+            <if test="paypwd != null">
+                and <include refid="setpaypwd"/>
+            </if>
+            <if test="resetpwd != null">
+                and <include refid="setresetpwd"/>
+            </if>
+            <if test="account != null">
+                and <include refid="setaccount"/>
+            </if>
+            <if test="freezeaccount != null">
+                and <include refid="setfreezeaccount"/>
+            </if>
+            <if test="totalpay != null">
+                and <include refid="settotalpay"/>
+            </if>
+            <if test="totalincome != null">
+                and <include refid="settotalincome"/>
+            </if>
+            <if test="type != null">
+                and <include refid="wheretype"/>
+            </if>
+            <if test="usertype != null">
+                and <include refid="setusertype"/>
+            </if>
+            <if test="userleveltype != null">
+                and <include refid="setuserleveltype"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="levelto != null">
+                and <include refid="setlevelto"/>
+            </if>
+            <if test="no_type != null">
+                and <include refid="whereno_type"/>
+            </if>
+            <if test="channelfrom != null">
+                and <include refid="setchannelfrom"/>
+            </if>
+            <if test="logincount != null">
+                and <include refid="setlogincount"/>
+            </if>
+            <if test="lastlogintime != null">
+                and <include refid="setlastlogintime"/>
+            </if>
+            <if test="lastloginip != null">
+                and <include refid="setlastloginip"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="userlevelstatus != null">
+                and <include refid="setuserlevelstatus"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setuserstatus"/>
+            </if>
+            <if test="qq != null">
+                and <include refid="setqq"/>
+            </if>
+            <if test="wx != null">
+                and <include refid="setwx"/>
+            </if>
+            <if test="sina != null">
+                and <include refid="setsina"/>
+            </if>
+            <if test="aisle != null">
+                and <include refid="setaisle"/>
+            </if>
+            <if test="othernicks != null">
+                and <include refid="setothernicks"/>
+            </if>
+            <if test="otheravatar != null">
+                and <include refid="setotheravatar"/>
+            </if>
+            <if test="country != null">
+                and <include refid="setcountry"/>
+            </if>
+            <if test="soldier != null">
+                and <include refid="setsoldier"/>
+            </if>
+            <if test="passport != null">
+                and <include refid="setpassport"/>
+            </if>
+            <if test="statuslist != null">
+				and u.status in
+				<foreach item="item" index="index" collection="statuslist" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+    
+    <select id="searchCustomer" parameterType="hashMap" resultType="user">
+        select distinct oid,
+        <include refid="userallcolumns" />,
+        <include refid="userinfoallcolumns" />
+        from
+        <include refid="usertableas"/>
+        left join
+        <include refid="userinfotableas" />
+        <include refid="useron" />
+        left join
+        <include refid="judgetable" />
+        <include refid="judgeon" />
+	    left join
+        <include refid="userleveltable" />
+        <include refid="userlevelon" />
+	    left join
+        <include refid="studenttable" />
+        <include refid="studenton" />
+        left join
+        <include refid="certificatetable" />
+        <include refid="certificateon" />
+        <where>
+            <if test="oid != null">
+                and <include refid="setoid"/>
+            </if>
+            <if test="usersn != null">
+                and <include refid="setusersn"/>
+            </if>
+            <if test="showname_lk != null">
+                and <include refid="setshowname_lk"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/> 
+            </if>
+            <if test="type != null">
+                and <include refid="wheretype"/>
+            </if>
+		    <if test="studentsn != null">
+	            and <include refid="setstudentsn"/>
+	        </if>
+		    <if test="judgementsn != null">
+	            and <include refid="setjudgementsn"/>
+	            and <include refid="setuserleveltype"/>
+	            and l.status = "1"
+	        </if>
+	        <if test="userlevel != null">
+	            and <include refid="setlevelto"/>
+	        </if>
+	        <if test="certificate != null">
+	            and <include refid="setcertificate"/>
+	        </if>
+	        <if test="status != null">
+                and u.status = #{status}
+            </if>
+            <if test="statuslist != null">
+				and u.status in
+				<foreach item="item" index="index" collection="statuslist" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+    
+    <select id="searchCount" parameterType="hashMap" resultType="int">
+        select 
+        <include refid="countdistinct" />
+        from
+        <include refid="usertableas"/>
+        left join
+        <include refid="userinfotableas" />
+        <include refid="useron" />
+        left join
+        <include refid="judgetable" />
+        <include refid="judgeon" />
+	    left join
+        <include refid="userleveltable" />
+        <include refid="userlevelon" />
+	    left join
+        <include refid="studenttable" />
+        <include refid="studenton" />
+        left join
+        <include refid="certificatetable" />
+        <include refid="certificateon" />
+        <where>
+            <if test="oid != null">
+                and <include refid="setoid"/>
+            </if>
+            <if test="usersn != null">
+                and <include refid="setusersn"/>
+            </if>
+            <if test="showname_lk != null">
+                and <include refid="setshowname_lk"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/> 
+            </if>
+            <if test="type != null">
+                and <include refid="wheretype"/>
+            </if>
+		    <if test="studentsn != null">
+	            and <include refid="setstudentsn"/>
+	        </if>
+		    <if test="judgementsn != null">
+	            and <include refid="setjudgementsn"/>
+	        </if>
+	        <if test="userlevel != null">
+	            and <include refid="setjudgementsn"/>
+	            and <include refid="setuserleveltype"/>
+	            and l.status = "1"
+	        </if>
+	        <if test="certificate != null">
+	            and <include refid="setcertificate"/>
+	        </if>
+	        <if test="status != null">
+                and u.status = #{status}
+            </if>
+            <if test="statuslist != null">
+				and u.status in
+				<foreach item="item" index="index" collection="statuslist" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+        </where>
+    </select>
+    
+    <insert id="insert" parameterType="user">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="user">
+        update
+        <include refid="usertableas"/>
+        left join
+        <include refid="userinfotableas" />
+        <include refid="useron" />
+        <include refid="usersets"/>
+        <include refid="userinfosets"/>
+        <include refid="userwhere"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="oid != null">
+                <include refid="setoid"/>,
+            </if>
+            <if test="usersn != null">
+                <include refid="setusersn"/>,
+            </if>
+            <if test="email != null">
+                <include refid="setemail"/>,
+            </if>
+            <if test="newemail != null">
+                <include refid="setnewemail"/>,
+            </if>
+            <if test="phone != null">
+                <include refid="setphone"/>,
+            </if>
+            <if test="mobile != null">
+                <include refid="setmobile"/>,
+            </if>
+            <if test="openid != null">
+                <include refid="setopenid"/>,
+            </if>
+            <if test="validcode != null">
+                <include refid="setvalidcode"/>,
+            </if>
+            <if test="password != null">
+                <include refid="setpassword"/>,
+            </if>
+            <if test="paypwd != null">
+                <include refid="setpaypwd"/>,
+            </if>
+            <if test="resetpwd != null">
+                <include refid="setresetpwd"/>,
+            </if>
+            <if test="account != null">
+                <include refid="setaccount"/>,
+            </if>
+            <if test="freezeaccount != null">
+                <include refid="setfreezeaccount"/>,
+            </if>
+            <if test="totalpay != null">
+                <include refid="settotalpay"/>,
+            </if>
+            <if test="totalincome != null">
+                <include refid="settotalincome"/>,
+            </if>
+            <if test="type != null">
+                <include refid="settype"/>,
+            </if>
+            <if test="channelfrom != null">
+                <include refid="setchannelfrom"/>,
+            </if>
+            <if test="logincount != null">
+                <include refid="setlogincount"/>,
+            </if>
+            <if test="lastlogintime != null">
+                <include refid="setlastlogintime"/>,
+            </if>
+            <if test="lastloginip != null">
+                <include refid="setlastloginip"/>,
+            </if>
+            <if test="data != null">
+                <include refid="setdata"/>
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>
+            </if>
+        </set>
+        <include refid="whereid"/>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+
+</mapper>
+

@@ -1,0 +1,202 @@
+﻿﻿# 顾雏军专栏表结构
+# ---------------------------------------
+# Host     : localhost
+# Port     : 3306
+# Database : GGupageDB
+
+drop table if exists `article`;
+/*==============================================================*/
+/* Table: article   文章表                                      */
+/*==============================================================*/
+create table `article`(
+   `oid`	 int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增主键',
+   `uid`         varchar(36) NOT NULL COMMENT '唯一ID',
+   `cid`         smallint(6) NOT NULL COMMENT '模块id',
+   `adminuid`    varchar(36) COMMENT '操作管理员UID',
+   `content`     mediumtext COMMENT '内容',
+   `title`       varchar(500) COMMENT '标题', 
+   `imglittle`   varchar(255) DEFAULT '' COMMENT '小图',
+   `imgmedium`   varchar(255) DEFAULT '' COMMENT '中图',
+   `imgbig`      varchar(255) DEFAULT '' COMMENT '大图',
+   `imgoriginal` varchar(255) DEFAULT '' COMMENT '原图',
+   `summary`     varchar(1000) COMMENT '摘要内容',
+   `kind`        tinyint(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '类型(文章、图片、视频)',
+   `data`        varchar(1000) COMMENT '备用',
+   `status`      tinyint(1) DEFAULT 1 COMMENT '状态(0禁用1启用)',
+   `createtime`  timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '创建时间',
+   `updatetime`  timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+   PRIMARY KEY (`oid`,`uid`),
+   UNIQUE KEY `oid` (`oid`),
+   UNIQUE KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文章表';
+
+drop table if exists `comments`;
+
+/*==============================================================*/
+/* Table: comments    评论表                                    */
+/*==============================================================*/
+CREATE TABLE `comments`(
+   `uid`            varchar(36) NOT NULL COMMENT '唯一ID',
+   `fromuid`        varchar(36) NOT NULL COMMENT '所评论文章的UID',
+   `touid`          varchar(36) COMMENT '回复comment的uid，对应此表的uid',
+   `fromuseruid`    varchar(36) COMMENT '评论人uid',
+   `fromuseroid`    int(11) COMMENT '评论人oid',
+   `fromusername`   varchar(36) COMMENT '评论人name',
+   `touseruid`      varchar(36) COMMENT '评论给谁的uid',
+   `touseroid`      int(11) COMMENT '评论给谁的oid',
+   `tousername`     varchar(36) COMMENT '评论给谁的name',
+   `cataloguename`  varchar(36) COMMENT '评论模块名称',
+   `cid`            varchar(36) COMMENT '评论模块cid',
+   `content`        text COMMENT '评论',
+   `channel`        int(4) UNSIGNED DEFAULT 0 COMMENT '频道',
+   `data`           varchar(255) COMMENT '其他数据json格式',
+   `type`           tinyint(1) UNSIGNED DEFAULT 0 COMMENT '类型，评论或者赞',
+   `adminuid`       varchar(36) COMMENT '操作人UID',
+   `status`         tinyint(1) DEFAULT 1 COMMENT '状态(0禁用1启用)',
+   `createtime`     timestamp NOT NULL DEFAULT '0000-00-00 00:00:00.000' COMMENT '创建时间',
+   `updatetime`  timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+   PRIMARY KEY (uid),
+   UNIQUE KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评论表';
+
+drop table if exists `patent`;
+
+/*==============================================================*/
+/* Table: patent    专利表                                    */
+/*==============================================================*/
+CREATE TABLE `patent`(
+   `uid`            varchar(36) NOT NULL COMMENT '唯一ID',
+   `title`          varchar(500) COMMENT '标题',
+   `filepath`	    varchar(1000) COMMENT '文件路径',
+   `imglittle`      varchar(255) DEFAULT '' COMMENT '小图',
+   `imgmedium`      varchar(255) DEFAULT '' COMMENT '中图',
+   `imgbig`         varchar(255) DEFAULT '' COMMENT '大图',
+   `imgoriginal`    varchar(255) DEFAULT '' COMMENT '原图',
+   `kind`           tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '图片|文件',
+   `data`           varchar(255) COMMENT '其他数据json格式',
+   `type`           tinyint(1) UNSIGNED DEFAULT 0 COMMENT '类型，学术论文或者专利',
+   `adminuid`       varchar(36) COMMENT '操作人UID',
+   `status`         tinyint(1) DEFAULT 1 COMMENT '状态(0禁用1启用)',
+   `createtime`     timestamp NOT NULL DEFAULT '0000-00-00 00:00:00.000' COMMENT '创建时间',
+   `updatetime`  timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+   PRIMARY KEY (uid),
+   UNIQUE KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='专利表';
+
+drop table if exists `photo`;
+
+/*==============================================================*/
+/* Table: photo    图片表                                    */
+/*==============================================================*/
+CREATE TABLE `photo`(
+   `uid`            varchar(36) NOT NULL COMMENT '唯一ID',
+   `summary`        varchar(255) DEFAULT '' COMMENT '图片描述',
+   `imglittle`      varchar(255) DEFAULT '' COMMENT '小图',
+   `imgmedium`      varchar(255) DEFAULT '' COMMENT '中图',
+   `imgbig`         varchar(255) DEFAULT '' COMMENT '大图',
+   `imgoriginal`    varchar(255) DEFAULT '' COMMENT '原图',
+   `data`           varchar(255) COMMENT '其他数据json格式',
+   `istop`          tinyint(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '置顶',
+   `adminuid`       varchar(36) COMMENT '操作人UID',
+   `status`         tinyint(1) DEFAULT 1 COMMENT '状态(0禁用1启用)',
+   `createtime`     timestamp NOT NULL DEFAULT '0000-00-00 00:00:00.000' COMMENT '创建时间',
+   `updatetime`  timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+   PRIMARY KEY (uid),
+   UNIQUE KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='图片表';
+
+drop table if exists `video`;
+
+/*==============================================================*/
+/* Table: video    视频表                                    */
+/*==============================================================*/
+CREATE TABLE `video`(
+   `uid`            varchar(36) NOT NULL COMMENT '唯一ID',
+   `title`          varchar(500) COMMENT '标题',
+   `order`          smallint(6) DEFAULT 0 COMMENT '编号',
+   `content`        text COMMENT '视频代码',
+   `keywords`       varchar(500) COMMENT '视频标签',
+   `summary`        varchar(255) DEFAULT '' COMMENT '视频描述',
+   `imglittle`      varchar(255) DEFAULT '' COMMENT '小图',
+   `imgmedium`      varchar(255) DEFAULT '' COMMENT '中图',
+   `imgbig`         varchar(255) DEFAULT '' COMMENT '大图',
+   `imgoriginal`    varchar(255) DEFAULT '' COMMENT '原图',
+   `data`           varchar(255) COMMENT '其他数据json格式',
+   `istop`          tinyint(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '置顶',
+   `adminuid`       varchar(36) COMMENT '操作人UID',
+   `status`         tinyint(1) DEFAULT 1 COMMENT '状态(0禁用1启用)',
+   `createtime`     timestamp NOT NULL DEFAULT '0000-00-00 00:00:00.000' COMMENT '创建时间',
+   `updatetime`  timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+   PRIMARY KEY (uid),
+   UNIQUE KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='视频表';
+
+drop table if exists `catalogue`;
+
+/*==============================================================*/
+/* Table: catalogue    目录表                                   */
+/*==============================================================*/
+create table `catalogue`(
+  `cid`		 smallint(6) NOT NULL COMMENT '模块id',
+  `name`	 varchar(100) NOT NULL COMMENT '模块名称',
+  `data`	 text DEFAULT NULL COMMENT '相关的其他json数据',
+  `status`	 tinyint(1) DEFAULT 1 COMMENT '状态(0禁用1启用)',
+  `adminuid`	 varchar(36) COMMENT '操作人UID',
+  `createtime`	 timestamp NOT NULL DEFAULT '0000-00-00 00:00:00.000' COMMENT '创建时间',
+  `updatetime`	 timestamp NOT NULL DEFAULT current_timestamp ON UPDATE current_timestamp COMMENT '最后更新时间',
+   PRIMARY KEY (`cid`),
+   UNIQUE KEY `cid` (`cid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='目录表';
+
+drop table if exists `content`;
+
+/*==============================================================*/
+/* Table: content    内容表                                     */
+/*==============================================================*/
+CREATE TABLE `content` (
+  `uid`        varchar(36) NOT NULL COMMENT 'uid',
+  `name`       varchar(1000) DEFAULT NULL COMMENT '名字',
+  `type`       tinyint(1) NOT NULL COMMENT '类型(广告位|其他)',
+  `data`       varchar(1000) DEFAULT NULL COMMENT '以json的方式记录',
+  `summary`    varchar(1000) DEFAULT NULL COMMENT '简介',
+  `content`    mediumtext DEFAULT NULL COMMENT '详情',
+  `originurl`  varchar(255) DEFAULT NULL COMMENT '链接',
+  `status`     tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态(0禁用1启用)',
+  `adminuid`   varchar(36) COMMENT '操作人UID',
+  `createtime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '创建时间',
+  `updatetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+  PRIMARY KEY (`uid`),
+  UNIQUE KEY `uid` (`uid`)
+)COMMENT='内容表' ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='内容表';
+
+drop table if exists `debate`;
+
+/*==============================================================*/
+/* Table: debate   郎顾之争表                                      */
+/*==============================================================*/
+create table `debate`(
+   `oid`	 int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增主键',
+   `uid`         varchar(36) NOT NULL COMMENT '唯一ID',
+   `cid`         smallint(6) NOT NULL COMMENT '模块id',
+   `adminuid`    varchar(36) COMMENT '操作管理员UID',
+   `content`     mediumtext COMMENT '内容',
+   `title`       varchar(500) COMMENT '标题', 
+   `imglittle`   varchar(255) DEFAULT '' COMMENT '小图',
+   `imgmedium`   varchar(255) DEFAULT '' COMMENT '中图',
+   `imgbig`      varchar(255) DEFAULT '' COMMENT '大图',
+   `imgoriginal` varchar(255) DEFAULT '' COMMENT '原图',
+   `summary`     varchar(1000) COMMENT '摘要内容',
+   `kind`        tinyint(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '类型(文章、图片、视频)',
+   `data`        varchar(1000) COMMENT '备用',
+   `status`      tinyint(1) DEFAULT 1 COMMENT '状态(0禁用1启用)',
+   `createtime`  timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '创建时间',
+   `updatetime`  timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+   PRIMARY KEY (`oid`,`uid`),
+   UNIQUE KEY `oid` (`oid`),
+   UNIQUE KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='郎顾之争表';
+
+/*任务分配：后台：个人文章、动态管理、郎顾之争（娄）  专利、学术论文（陈）    图片管理、视频管理（杨）    评论管理、模块管理、banner（雍）
+	  前台： 首页（雍）  动态、郎顾之争、科研成果（娄）  视频、图片（杨）  文章详情页（陈）
+	  导数据：雍雪振
+	  xo|文章、郎顾（陈） 评论 目录（陈） 专利、广告位（娄） 视频、图片（杨） */

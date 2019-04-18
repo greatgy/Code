@@ -1,0 +1,29 @@
+package com.supergenius.xo.gupage.serviceimpl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.genius.xo.base.dao.BaseDao;
+import com.genius.xo.base.serviceimpl.BaseSOImpl;
+import com.supergenius.xo.gupage.dao.PhotoDao;
+import com.supergenius.xo.gupage.entity.Photo;
+import com.supergenius.xo.gupage.service.PhotoSO;
+
+/**
+ * 图片SO实现
+ * 
+ * @author yangguang
+ * @date 2018年1月10日10:51:19
+ */
+@Service("gupagePhotoSOImpl")
+public class PhotoSOImpl extends BaseSOImpl<Photo> implements PhotoSO {
+
+	@Autowired
+	private PhotoDao dao;
+
+	@Override
+	protected BaseDao<Photo> getDao() {
+		return dao;
+	}
+
+}

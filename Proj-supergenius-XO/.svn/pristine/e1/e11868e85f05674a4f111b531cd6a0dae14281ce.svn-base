@@ -1,0 +1,124 @@
+package com.supergenius.xo.life.entity;
+
+import org.joda.time.DateTime;
+
+import com.genius.core.base.annotation.Json;
+import com.genius.core.base.annotation.Maps;
+import com.genius.core.base.annotation.MapsIgnore;
+import com.genius.model.base.entity.BaseEntity;
+
+/**
+ * 问题实体类
+ * 
+ * @author JiaShitao
+ * @date 2018年5月9日14:43:00
+ */
+@Json(value = { "uid", "status", "updatetime", "createtime", "adminuid", "useruid", "username", "content", "title","place",
+		 "istop", "toptime", "adminname"}, ignoreTypeStrategy = { Json.webStrategy, Json.cacheStrategy }, strategy = { Json.webStrategy, Json.cacheStrategy })
+@Maps(strategy = { Maps.searchStrategy })
+@MapsIgnore(strategy = Maps.searchStrategy, value = { "adminname" })
+public class Problem extends BaseEntity {
+	private static final long serialVersionUID = 3525857126789211085L;
+	private int cid;//模块id
+	private String cataloguename;//模块名字
+	private String adminuid;//操作管理员UID
+	private String useruid;//提问者uid
+	private String username;
+	private String content;//内容
+	private String title; // 标题
+	private String place; // 行万里路模块目的地
+	private int istop; // 置顶(设为焦点文章)
+	private DateTime toptime; // 置顶时间
+	
+	//数据库中没有但要用到的字段
+	private String adminname; // 管理员姓名
+
+	public int getCid() {
+		return cid;
+	}
+
+	public void setCid(int cid) {
+		this.cid = cid;
+	}
+
+	public String getCataloguename() {
+		return cataloguename;
+	}
+
+	public void setCataloguename(String cataloguename) {
+		this.cataloguename = cataloguename;
+	}
+
+	public String getUseruid() {
+		return useruid;
+	}
+
+	public void setUseruid(String useruid) {
+		this.useruid = useruid;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getAdminuid() {
+		return adminuid;
+	}
+
+	public void setAdminuid(String adminuid) {
+		this.adminuid = adminuid;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getPlace() {
+		return place;
+	}
+
+	public void setPlace(String place) {
+		this.place = place;
+	}
+
+	public void setIstop(int istop) {
+		this.istop = istop;
+	}
+
+	public DateTime getToptime() {
+		return toptime;
+	}
+
+	public void setToptime(DateTime toptime) {
+		this.toptime = toptime;
+	}
+
+	public int getIstop() {
+		return istop;
+	}
+
+	public String getAdminname() {
+		return adminname;
+	}
+
+	public void setAdminname(String adminname) {
+		this.adminname = adminname;
+	}
+
+}

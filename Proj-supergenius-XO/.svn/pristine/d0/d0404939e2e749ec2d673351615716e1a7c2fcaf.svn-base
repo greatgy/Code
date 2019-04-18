@@ -1,0 +1,51 @@
+package com.supergenius.xo.finance.entity;
+
+import com.supergenius.xo.common.entity.BaseEntity;
+
+/**
+ * 标签实体类
+ * 
+ * @author LouPengYu
+ * @date 2018年1月2日09:41:43
+ */
+public class Label extends BaseEntity {
+
+	private static final long serialVersionUID = 677694943583462047L;
+	private String content; // 内容
+	private int count; // 点击或搜索数量
+	private String refuid; // 关键字uid
+	private String adminuid;// 操作人uid
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+
+	public String getRefuid() {
+		return refuid;
+	}
+
+	public void setRefuid(String refuid) {
+		this.refuid = refuid;
+	}
+
+	public String getAdminuid() {
+		return adminuid;
+	}
+
+	public void setAdminuid(String adminuid) {
+		this.adminuid = adminuid;
+	}
+
+}

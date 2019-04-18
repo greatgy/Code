@@ -1,0 +1,59 @@
+package com.supergenius.xo.career.serviceimpl;
+
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.genius.xo.base.dao.BaseDao;
+import com.genius.xo.base.serviceimpl.BaseSOImpl;
+import com.supergenius.xo.career.dao.NewsDao;
+import com.supergenius.xo.career.entity.News;
+import com.supergenius.xo.career.enums.ECareerMsg;
+import com.supergenius.xo.career.service.NewsSO;
+import com.supergenius.xo.common.constants.MapperDict;
+
+/**
+ * 消息Impl
+ * 
+ * @author ChenQi
+ * @date 2017年11月13日16:50:05
+ */
+@Service("CareerNewsSOImpl")
+public class NewsSOImpl extends BaseSOImpl<News> implements NewsSO {
+
+	
+	@Autowired
+	NewsDao dao;
+	
+	@Override
+	protected BaseDao<News> getDao() {
+		return dao;
+	}
+
+	@Override
+	public Boolean updateByUseruid(Map<String, Object> map) {
+		return dao.updateByUseruid(map);
+	}
+
+	@Override
+	public News add(Map<String, Object> map) {
+		String type = map.get(MapperDict.type).toString();
+		if (type.equals(ECareerMsg.commentsarticle) || type.equals(ECareerMsg.replycomments)) {
+			if (!map.containsKey(MapperDict.content)) {
+				return null;
+			}
+		}
+		News news = new News();
+		news.setTitle(map.get(MapperDict.title).toString());
+		news.setTouid(map.get(MapperDict.touid).toString());
+		news.setContent(map.get(MapperDict.content).toString());
+		news.setType(ECareerMsg.get(Integer.parseInt(type)));
+		news.setFromuid(map.get(MapperDict.fromuseruid).toString());
+		news.setHref(map.get(MapperDict.href).toString());
+		if (dao.insert(news)) {
+			return news;
+		}
+		return null;
+	}
+}

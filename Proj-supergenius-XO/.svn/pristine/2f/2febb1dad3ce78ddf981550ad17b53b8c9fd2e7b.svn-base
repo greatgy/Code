@@ -1,0 +1,138 @@
+package com.supergenius.xo.finance.entity;
+
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.genius.core.base.annotation.Json;
+import com.genius.model.base.entity.BaseEntity;
+import com.supergenius.xo.user.entity.User;
+
+/**
+ * 投稿人表（游客表）
+ * 
+ * @author ShangJianguo
+ */
+@Json(value = {"uid", "oid","status", "createtime", "updatetime"}, ignoreTypeStrategy = Json.webStrategy, strategy = Json.webStrategy)
+@JsonIgnoreProperties(value={"uid"})
+public class Contributor extends BaseEntity {
+
+	private static final long serialVersionUID = 498599806587497697L;
+	@Json(strategy = Json.webStrategy)
+	private String name;
+	@Json(strategy = Json.webStrategy)
+	private String useruid;
+	@Json(strategy = Json.webStrategy)
+	private String email;
+	@Json(strategy = Json.webStrategy)
+	private String qq; // 投稿人QQ号码
+	@Json(strategy = Json.webStrategy)
+	private String phone; // 投稿人联系电话
+	@Json(strategy = Json.webStrategy)
+	private String summary; // 投稿人个人简介
+	@Json(strategy = Json.webStrategy)
+	private String avatarbig;
+	private String avatarmedium;
+	@Json(strategy = Json.webStrategy)
+	private String avatarlittle;
+	private String avataroriginal;
+	private User user;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getUseruid() {
+		return useruid;
+	}
+
+	public void setUseruid(String useruid) {
+		this.useruid = useruid;
+	}
+	
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getQq() {
+		return qq;
+	}
+
+	public void setQq(String qq) {
+		this.qq = qq;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getSummary() {
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+	
+	public String getAvatarbig() {
+		return avatarbig;
+	}
+
+	public void setAvatarbig(String avatarbig) {
+		this.avatarbig = avatarbig;
+	}
+
+	public String getAvatarmedium() {
+		return avatarmedium;
+	}
+
+	public void setAvatarmedium(String avatarmedium) {
+		this.avatarmedium = avatarmedium;
+	}
+
+	public String getAvatarlittle() {
+		return avatarlittle;
+	}
+
+	public void setAvatarlittle(String avatarlittle) {
+		this.avatarlittle = avatarlittle;
+	}
+
+	public String getAvataroriginal() {
+		return avataroriginal;
+	}
+
+	public void setAvataroriginal(String avataroriginal) {
+		this.avataroriginal = avataroriginal;
+	}
+	
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	/**
+	 * @param imgs
+	 * @author liushaomin
+	 */
+	public void set(String[] imgs) {
+		this.avataroriginal = imgs[0];
+		this.avatarbig = imgs[1];
+		this.avatarmedium = imgs[2];
+		this.avatarlittle = imgs[3];
+	}
+
+}

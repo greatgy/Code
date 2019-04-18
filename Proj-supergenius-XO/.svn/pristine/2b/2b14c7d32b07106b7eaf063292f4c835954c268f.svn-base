@@ -1,0 +1,385 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.manager.dao.ConfeMemberDao">
+
+    <sql id="basecolumns">`uid`, `createtime` </sql>
+    <sql id="othercolumns"><include refid="basecolumns"/>, `useruid`, `confuid`, `confsn`, `cid`, `token`, `pkuid`, `pkname`, `type`, `userid`, `username`, `useralias`, `password`, `email`, `phone`, `isjoin`, `args`, `usertype`, `jointimefrom`, `jointimeto`, `status` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+    <sql id="table">confemember</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="whereid">where uid = #{uid}</sql>
+    <sql id="allfields"><include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{uid},#{createtime},#{useruid},#{confuid},#{confsn},#{cid},#{token},#{pkuid},#{pkname},#{type},#{userid},#{username},#{useralias},#{password},#{email},#{phone},#{isjoin},#{args},#{usertype},#{jointimefrom},#{jointimeto},#{status}</sql>
+    <sql id="setuseruid">`useruid` = #{useruid}</sql>
+    <sql id="setconfuid">`confuid` = #{confuid}</sql>
+    <sql id="setconfsn">`confsn` = #{confsn}</sql>
+    <sql id="setcid">`cid` = #{cid}</sql>
+    <sql id="settoken">`token` = #{token}</sql>
+    <sql id="setpkuid">`pkuid` = #{pkuid}</sql>
+    <sql id="setpkname">`pkname` = #{pkname}</sql>
+    <sql id="settype">`type` = #{type}</sql>
+    <sql id="setuserid">`userid` = #{userid}</sql>
+    <sql id="setusername">`username` = #{username}</sql>
+    <sql id="setuseralias">`useralias` = #{useralias}</sql>
+    <sql id="setpassword">`password` = #{password}</sql>
+    <sql id="setemail">`email` = #{email}</sql>
+    <sql id="setphone">`phone` = #{phone}</sql>
+    <sql id="setisjoin">`isjoin` = #{isjoin}</sql>
+    <sql id="setargs">`args` = #{args}</sql>
+    <sql id="setusertype">`usertype` = #{usertype}</sql>
+    <sql id="setjointimefrom">`jointimefrom` = #{jointimefrom}</sql>
+    <sql id="setjointimeto">`jointimeto` = #{jointimeto}</sql>
+    <sql id="setstatus">`status` = #{status}</sql>
+    <sql id="allsets">set
+            <include refid="setuseruid"/>,
+            <include refid="setconfuid"/>,
+            <include refid="setconfsn"/>,
+            <include refid="setcid"/>,
+            <include refid="settoken"/>,
+            <include refid="setpkuid"/>,
+            <include refid="setpkname"/>,
+            <include refid="settype"/>,
+            <include refid="setuserid"/>,
+            <include refid="setusername"/>,
+            <include refid="setuseralias"/>,
+            <include refid="setpassword"/>,
+            <include refid="setemail"/>,
+            <include refid="setphone"/>,
+            <include refid="setisjoin"/>,
+            <include refid="setargs"/>,
+            <include refid="setusertype"/>,
+            <include refid="setjointimefrom"/>,
+            <include refid="setjointimeto"/>,
+            <include refid="setstatus"/>
+    </sql>
+    <sql id="orderby">order by createtime</sql>
+
+    <select id="get" parameterType="string" resultType="confemember">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="confemember">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="confuid != null">
+                and <include refid="setconfuid"/>
+            </if>
+            <if test="confsn != null">
+                and <include refid="setconfsn"/>
+            </if>
+            <if test="cid != null">
+                and <include refid="setcid"/>
+            </if>
+            <if test="token != null">
+                and <include refid="settoken"/>
+            </if>
+            <if test="pkuid != null">
+                and <include refid="setpkuid"/>
+            </if>
+            <if test="pkname != null">
+                and <include refid="setpkname"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="userid != null">
+                and <include refid="setuserid"/>
+            </if>
+            <if test="username != null">
+                and <include refid="setusername"/>
+            </if>
+            <if test="useralias != null">
+                and <include refid="setuseralias"/>
+            </if>
+            <if test="password != null">
+                and <include refid="setpassword"/>
+            </if>
+            <if test="email != null">
+                and <include refid="setemail"/>
+            </if>
+            <if test="phone != null">
+                and <include refid="setphone"/>
+            </if>
+            <if test="isjoin != null">
+                and <include refid="setisjoin"/>
+            </if>
+            <if test="args != null">
+                and <include refid="setargs"/>
+            </if>
+            <if test="usertype != null">
+                and <include refid="setusertype"/>
+            </if>
+            <if test="jointimefrom != null">
+                and <include refid="setjointimefrom"/>
+            </if>
+            <if test="jointimeto != null">
+                and <include refid="setjointimeto"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="confuid != null">
+                and <include refid="setconfuid"/>
+            </if>
+            <if test="confsn != null">
+                and <include refid="setconfsn"/>
+            </if>
+            <if test="cid != null">
+                and <include refid="setcid"/>
+            </if>
+            <if test="token != null">
+                and <include refid="settoken"/>
+            </if>
+            <if test="pkuid != null">
+                and <include refid="setpkuid"/>
+            </if>
+            <if test="pkname != null">
+                and <include refid="setpkname"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="userid != null">
+                and <include refid="setuserid"/>
+            </if>
+            <if test="username != null">
+                and <include refid="setusername"/>
+            </if>
+            <if test="useralias != null">
+                and <include refid="setuseralias"/>
+            </if>
+            <if test="password != null">
+                and <include refid="setpassword"/>
+            </if>
+            <if test="email != null">
+                and <include refid="setemail"/>
+            </if>
+            <if test="phone != null">
+                and <include refid="setphone"/>
+            </if>
+            <if test="isjoin != null">
+                and <include refid="setisjoin"/>
+            </if>
+            <if test="args != null">
+                and <include refid="setargs"/>
+            </if>
+            <if test="usertype != null">
+                and <include refid="setusertype"/>
+            </if>
+            <if test="jointimefrom != null">
+                and <include refid="setjointimefrom"/>
+            </if>
+            <if test="jointimeto != null">
+                and <include refid="setjointimeto"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </select>
+
+    <select id="getList" parameterType="hashMap" resultType="confemember">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="confuid != null">
+                and <include refid="setconfuid"/>
+            </if>
+            <if test="confsn != null">
+                and <include refid="setconfsn"/>
+            </if>
+            <if test="cid != null">
+                and <include refid="setcid"/>
+            </if>
+            <if test="token != null">
+                and <include refid="settoken"/>
+            </if>
+            <if test="pkuid != null">
+                and <include refid="setpkuid"/>
+            </if>
+            <if test="pkname != null">
+                and <include refid="setpkname"/>
+            </if>
+            <if test="type != null">
+                and <include refid="settype"/>
+            </if>
+            <if test="userid != null">
+                and <include refid="setuserid"/>
+            </if>
+            <if test="username != null">
+                and <include refid="setusername"/>
+            </if>
+            <if test="useralias != null">
+                and <include refid="setuseralias"/>
+            </if>
+            <if test="password != null">
+                and <include refid="setpassword"/>
+            </if>
+            <if test="email != null">
+                and <include refid="setemail"/>
+            </if>
+            <if test="phone != null">
+                and <include refid="setphone"/>
+            </if>
+            <if test="isjoin != null">
+                and <include refid="setisjoin"/>
+            </if>
+            <if test="args != null">
+                and <include refid="setargs"/>
+            </if>
+            <if test="usertype != null">
+                and <include refid="setusertype"/>
+            </if>
+            <if test="jointimefrom != null">
+                and <include refid="setjointimefrom"/>
+            </if>
+            <if test="jointimeto != null">
+                and <include refid="setjointimeto"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insert" parameterType="confemember">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="confemember">
+        update
+        <include refid="table"/>
+        <include refid="allsets"/>
+        <include refid="whereid"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="useruid != null">
+                <include refid="setuseruid"/>,
+            </if>
+            <if test="confuid != null">
+                <include refid="setconfuid"/>,
+            </if>
+            <if test="confsn != null">
+                <include refid="setconfsn"/>,
+            </if>
+            <if test="cid != null">
+                <include refid="setcid"/>,
+            </if>
+            <if test="token != null">
+                <include refid="settoken"/>,
+            </if>
+            <if test="pkuid != null">
+                <include refid="setpkuid"/>,
+            </if>
+            <if test="pkname != null">
+                <include refid="setpkname"/>,
+            </if>
+            <if test="type != null">
+                <include refid="settype"/>,
+            </if>
+            <if test="userid != null">
+                <include refid="setuserid"/>,
+            </if>
+            <if test="username != null">
+                <include refid="setusername"/>,
+            </if>
+            <if test="useralias != null">
+                <include refid="setuseralias"/>,
+            </if>
+            <if test="password != null">
+                <include refid="setpassword"/>,
+            </if>
+            <if test="email != null">
+                <include refid="setemail"/>,
+            </if>
+            <if test="phone != null">
+                <include refid="setphone"/>,
+            </if>
+            <if test="isjoin != null">
+                <include refid="setisjoin"/>,
+            </if>
+            <if test="args != null">
+                <include refid="setargs"/>,
+            </if>
+            <if test="usertype != null">
+                <include refid="setusertype"/>,
+            </if>
+            <if test="jointimefrom != null">
+                <include refid="setjointimefrom"/>,
+            </if>
+            <if test="jointimeto != null">
+                <include refid="setjointimeto"/>,
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>
+            </if>
+        </set>
+        <include refid="whereid"/>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+
+</mapper>
+

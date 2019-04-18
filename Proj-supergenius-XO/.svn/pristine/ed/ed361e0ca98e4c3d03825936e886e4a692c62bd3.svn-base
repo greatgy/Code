@@ -1,0 +1,72 @@
+package com.supergenius.xo.finance.service;
+
+import java.util.List;
+
+import com.genius.model.base.entity.Pager;
+import com.genius.xo.base.service.BaseSO;
+import com.supergenius.xo.finance.entity.Inbox;
+import com.supergenius.xo.finance.entity.Message;
+import com.supergenius.xo.finance.enums.EFinanceMsg;
+
+/**
+ * 收件箱SO
+ * 
+ * @author LiJiacheng
+ */
+public interface InboxSO extends BaseSO<Inbox> {
+
+	/**
+	 * 级联获取Inbox中的Message和User
+	 * 
+	 * @param inbox
+	 * @return
+	 * @author LiJiacheng
+	 */
+	Inbox getMessageAndUserByInbox(Inbox inbox);
+
+	/**
+	 * 获取指定useruid的Inbox中的内容
+	 * 
+	 * @return
+	 * @author LiJiacheng
+	 */
+	List<Inbox> getUserInboxs(String useruid, Pager pager, EFinanceMsg[] type);
+
+	/**
+	 * 根据指定的类型，获取未读消息的数量
+	 * 
+	 * @param useruid
+	 * @param type
+	 * @return
+	 * @author LiJiacheng
+	 */
+	List<Inbox> getListByType(String useruid, EFinanceMsg[] type);
+
+	/**
+	 * 发送消息至收件箱,传递message对象
+	 * 
+	 * @param message
+	 * @return
+	 * @author LiJiacheng
+	 */
+	boolean addInbox(Message message);
+
+	/**
+	 * 更新收件箱状态，将已查看的消息置为已读
+	 * 
+	 * @param inboxs
+	 * @return
+	 * @author LiJiacheng
+	 */
+	void updateReadInbox(List<Inbox> inboxs);
+
+	/**
+	 * 获取某人的未读消息数量,有msgs则按类型获取。
+	 * 
+	 * @param useruid
+	 * @return
+	 * @author LiJiacheng
+	 */
+	int getUnReadMsg(String useruid, EFinanceMsg... msgs);
+
+}

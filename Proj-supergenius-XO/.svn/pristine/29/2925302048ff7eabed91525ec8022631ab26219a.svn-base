@@ -1,0 +1,68 @@
+package com.supergenius.xo.finance.service;
+
+import java.util.List;
+
+import com.genius.model.base.entity.Pager;
+import com.genius.xo.baseadmin.service.BaseSO;
+import com.supergenius.xo.finance.entity.Contribute;
+import com.supergenius.xo.finance.enums.EContributeState;
+
+/**
+ * 投稿so
+ * @author liushaomin
+ */
+public interface ContributeSO extends BaseSO<Contribute>{
+	
+	/**
+	 * 更新state
+	 * @param t
+	 * @return
+	 */
+	boolean UpdateState(Contribute t);
+	
+	/**
+	 * 根据用户uid获取分页数据
+	 * @param useruid
+	 * @param pager
+	 * @return
+	 * @author ShangJianguo
+	 */
+	List<Contribute> getList(String useruid, Pager pager);
+	
+	/**
+	 * 根据用户和阶段获取分页数据
+	 * @param useruid
+	 * @param state
+	 * @param pager
+	 * @return
+	 * @author ShangJianguo
+	 */
+	List<Contribute> getList(String useruid, EContributeState state, Pager pager);
+
+	/**
+	 * 根据用户和阶段获取分页数据
+	 * @param useruid
+	 * @param states
+	 * @param pager
+	 * @return
+	 * @author ShangJianguo
+	 */
+	List<Contribute> getList(String useruid, List<EContributeState> states, Pager pager);
+	
+	/**
+	 * 获取某个用户的所有的投稿
+	 * @param useruid
+	 * @return
+	 * @author ShangJianguo
+	 */
+	int getCount(String useruid);
+	
+	/**
+	 * 获取某人的待审核的文章 
+	 * @param useruid
+	 * @param pager
+	 * @return
+	 * @author ShangJianguo
+	 */
+	List<Contribute> getInitList(String useruid, Pager pager);
+}

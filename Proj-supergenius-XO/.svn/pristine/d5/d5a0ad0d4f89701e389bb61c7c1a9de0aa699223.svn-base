@@ -1,0 +1,59 @@
+package com.supergenius.xo.finance.serviceimpl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.genius.xo.baseadmin.serviceimpl.BaseSOImpl;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.finance.dao.DebateArticleDao;
+import com.supergenius.xo.finance.entity.DebateArticle;
+import com.supergenius.xo.finance.service.DebateArticleSO;
+import com.supergenius.xo.finance.service.FinanceSO;
+
+/**
+ * 论战文章SOImpl
+ * @author liushaomin
+ */
+@Service
+public class DebateArticleSOImpl extends BaseSOImpl<DebateArticle> implements DebateArticleSO{
+
+	@Autowired
+	private DebateArticleDao dao;
+	
+	@Autowired
+	private FinanceSO financeSO;
+
+	@Override
+	protected DebateArticleDao getDao() {
+		return dao;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.DebateArticleSO#getList(java.lang.String)
+	 * @author: ShangJianguo
+	 * 2014-11-6 下午4:32:01
+	 */
+	@Override
+	public List<DebateArticle> getList(String debateuid) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.debateuid, debateuid);
+		List<DebateArticle> list = dao.getList(map);
+		for (DebateArticle item : list) {
+			item.setFinance(financeSO.get(item.getFinaceuid()));
+		}
+		return list;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.DebateArticleSO#getByFinanceuid(java.lang.String)
+	 */
+	@Override
+	public DebateArticle getByFinanceuid(String financeuid) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.finaceuid, financeuid);
+		return  dao.getOne(map);
+	}
+}

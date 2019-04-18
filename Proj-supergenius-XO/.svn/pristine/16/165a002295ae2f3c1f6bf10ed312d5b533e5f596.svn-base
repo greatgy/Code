@@ -1,0 +1,43 @@
+package com.supergenius.xo.finance.enums;
+
+import java.util.Locale;
+
+import com.genius.core.base.utils.I18N;
+
+/**
+ *  论战状态枚举
+ * @author liushaomin
+ */
+public enum EDebate {
+
+	begin("0"),//开始
+	end("1");//关闭
+
+	private final String value;
+
+	private EDebate(String v) {
+		this.value = v;
+	}
+
+	public String toString() {
+		return this.value;
+	}
+
+	public static EDebate get(int v) {
+		String str = String.valueOf(v);
+		return get(str);
+	}
+
+	public static EDebate get(String str) {
+		for (EDebate e : values()) {
+			if (e.toString().equals(str)) {
+				return e;
+			}
+		}
+		return null;
+	}
+
+	public static String getName(EDebate e, Locale locale) {
+		return I18N.getEnumName(e, locale);
+	}
+}

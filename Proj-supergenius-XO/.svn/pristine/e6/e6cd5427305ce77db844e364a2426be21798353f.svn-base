@@ -1,0 +1,83 @@
+package com.supergenius.xo.life.entity;
+
+import com.genius.core.base.annotation.Json;
+import com.supergenius.xo.common.entity.BaseEntity;
+
+/**
+ * 内容实体类
+ * 
+ * @Author:JiaShitao
+ * @Data:2018年5月7日下午4:44:48
+ */
+@Json(value = { "status", "createtime", "updatetime", "uid", "name", "type", "data", "summary", "content", "originurl", "adminuid" }, ignoreTypeStrategy = Json.webStrategy, strategy = {
+		Json.webStrategy, Json.cacheStrategy })
+public class Content extends BaseEntity {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1157879021390349587L;
+	private String name;// 名字
+	private int type;// 类型(广告位|应聘指南|其他)
+	private String data;// 以json的方式记录
+	private String summary;// 简介
+	private String content;// 详情
+	private String originurl;// 链接
+	private String adminuid;// 操作人UID
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
+	public String getData() {
+		return data;
+	}
+
+	public void setData(String data) {
+		this.data = data;
+	}
+
+	public String getSummary() {
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getOriginurl() {
+		return originurl;
+	}
+
+	public void setOriginurl(String originurl) {
+		this.originurl = originurl;
+	}
+
+	public String getAdminuid() {
+		return adminuid;
+	}
+
+	public void setAdminuid(String adminuid) {
+		this.adminuid = adminuid;
+	}
+
+}

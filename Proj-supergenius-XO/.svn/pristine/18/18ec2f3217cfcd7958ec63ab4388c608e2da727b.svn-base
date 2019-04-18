@@ -1,0 +1,28 @@
+package com.supergenius.xo.enterpriser.serviceimpl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.genius.xo.base.dao.BaseDao;
+import com.genius.xo.base.serviceimpl.BaseSOImpl;
+import com.supergenius.xo.enterpriser.dao.CommentsDao;
+import com.supergenius.xo.enterpriser.entity.Comments;
+import com.supergenius.xo.enterpriser.service.CommentsSO;
+
+/**
+ * 评论SOImpl
+ * @author loupengyu
+ * @date 2018年1月29日11:35:00
+ */
+@Service("enterpriserCommentsSOImpl")
+public class CommentsSOImpl extends BaseSOImpl<Comments> implements CommentsSO {
+
+	@Autowired
+	private CommentsDao dao;
+	
+	@Override
+	protected BaseDao<Comments> getDao() {
+		return dao;
+	}
+
+
+}

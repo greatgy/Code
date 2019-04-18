@@ -1,0 +1,19 @@
+/*==============================================================*/
+/* DBMS name:      MySQL 5.5                                                                  */
+/* Created on:     19:01 2013/7/14                                                            */
+/*==============================================================*/
+
+/*==============================================================*/
+/*
+DataBase:      GUserDB2
+Author:        chenminchang
+Description:   GUserDB2.0.0.0版本修改的表结构
+ModifyDate:    17:48 2016/9/8 
+*/
+
+/*==============================================================*/
+/*
+`orderuid` varchar(36) NOT NULL COMMENT '订单Uid',
+*/
+
+ALTER TABLE `tradedetail` MODIFY COLUMN `orderuid` varchar(36) DEFAULT NULL COMMENT '订单Uid';

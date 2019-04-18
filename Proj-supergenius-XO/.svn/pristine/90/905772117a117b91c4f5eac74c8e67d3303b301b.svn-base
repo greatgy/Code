@@ -1,0 +1,78 @@
+package com.supergenius.xo.finance.serviceimpl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.genius.core.base.utils.DateUtil;
+import com.genius.xo.base.serviceimpl.BaseSOImpl;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.finance.dao.CountDetailDao;
+import com.supergenius.xo.finance.entity.CountDetail;
+import com.supergenius.xo.finance.enums.ECountType;
+import com.supergenius.xo.finance.enums.EFinance;
+import com.supergenius.xo.finance.service.CountDetailSO;
+
+/**
+ * 点击数SOImpl
+ * @author liushaomin
+ */
+@Service
+public class CountDetailSOImpl extends BaseSOImpl<CountDetail> implements CountDetailSO{
+
+	@Autowired
+	private CountDetailDao dao;
+	
+	@Override
+	protected CountDetailDao getDao() {
+		return dao;
+	}
+	
+	/**
+	 * 排行榜的so实现
+	 * 如果clickday == -1 将不限制点击时间
+	 * 如果publishday == -1 将不限制发布时间
+	 */
+	@Override
+	public List<Map<?, ?>> getCountcurr(EChannel channel, ECountType type, EFinance financetype, int clickday, int publishday, int ranknum, String authoruid) {
+		Map<String, Object> map = getParamMap();
+		if(publishday != -1){
+			DateTime cpublishday = DateTime.now().minusDays(publishday);
+			map.put(MapperDict.publishdayfrom, DateUtil.parseDateTime(cpublishday, DateUtil.FORMAT_DATE_CHINA));
+		}
+		if (clickday != -1) {
+			DateTime cclickday = DateTime.now().minusDays(clickday);
+			map.put(MapperDict.clickdayfrom, DateUtil.parseDateTime(cclickday, DateUtil.FORMAT_DATE_CHINA));
+		}
+		if (financetype != null) {
+			map.put(MapperDict.financetype, financetype);
+		}
+		map.put(MapperDict.type, type);
+		map.put(MapperDict.orderBy, "order by v desc");
+		map.put(MapperDict.channel, EChannel.finance);
+		map.put(MapperDict.ranknum, ranknum);
+		if (StringUtils.isNotEmpty(authoruid)) {
+			map.put(MapperDict.authoruid, authoruid);
+		}
+		return getDao().getCountcurr(map);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.official.service.CountDetailSO#getReadCount(com.supergenius.xo.common.enums.EChannel, com.supergenius.xo.official.enums.ECountType, java.util.List)
+	 * @author: ShangJianguo
+	 * 2014-11-10 下午6:28:46
+	 */
+	@Override
+	public int getReadCount(EChannel channel, ECountType type, List<String> refuidList) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.channel, channel);
+		map.put(MapperDict.type, type);
+		map.put(MapperDict.refuids, refuidList);
+		return dao.getCount(map);
+	}
+}

@@ -1,0 +1,14 @@
+package com.supergenius.xo.gupage.service;
+
+import com.genius.xo.base.service.BaseSO;
+import com.supergenius.xo.gupage.entity.Photo;
+
+/**
+ * 图片so
+ * 
+ * @author 杨光
+ * @date 2018年1月10日10:46:05
+ */
+public interface PhotoSO extends BaseSO<Photo> {
+
+}

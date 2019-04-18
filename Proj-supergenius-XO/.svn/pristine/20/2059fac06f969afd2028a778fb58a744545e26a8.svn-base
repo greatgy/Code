@@ -1,0 +1,1409 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.manager.dao.PkScheduleDao">
+
+	<sql id="ordergoodstable">GUserDB2.ordergoods</sql>
+	<sql id="ordergoodson">on GUserDB2.ordergoods.sn = pkschedule.sn</sql>
+	<sql id="ordergoodsbasecolumns">`ordergoods`.`uid`, `ordergoods`.`createtime`, `ordergoods`.`orderuid`, `ordergoods`.`useruid`, `ordergoods`.`sn`, `ordergoods`.`name`, `ordergoods`.`type`, `ordergoods`.`count`, `ordergoods`.`unitprice`, `ordergoods`.`totalprice`, `ordergoods`.`status`, `ordergoods`.`updatetime`</sql>
+	
+	<sql id="userinfotable">GUserDB2.userinfo</sql>
+	<sql id="setshowname_lk">`u1`.`showname` like CONCAT('%',#{search},'%') or `u2`.`showname` like CONCAT('%',#{search},'%') or `u3`.`showname` like CONCAT('%',#{search},'%') or `u4`.`showname` like CONCAT('%',#{search},'%') or `u5`.`showname` like CONCAT('%',#{search},'%')</sql>
+	<sql id="setsn_lk">`pkschedule`.`sn` like CONCAT('%',#{search},'%')</sql>
+	
+    <sql id="basecolumns">pkschedule.`uid`, pkschedule.`createtime` </sql>
+    <sql id="othercolumns"><include refid="basecolumns"/>, pkschedule.`sn`, `confeuid`, `confesn`, pkschedule.`name`, `major`, `level`, `isonline`, `pkuseruid`, `pkuserlevel`, `judgementuid`, `judgementsn`, `pkdates`, `judgmentfee`, `userscore`, `isallowpkuser`, `isallowjudgement`, `pkuseruid2`, `pkuserlevel2`, `judgementuid2`, `judgementsn2`, `pkdates2`, `judgmentfee2`, `userscore2`, `isallowpkuser2`, `isallowjudgement2`, `judgementchairuid`, `judgementchairsn`, `pktime`, `pktimeend`, `pkprice`, `judgementchairfee`, `ticketprice`, `file`, `istop`, `stage`, `ticketstatus`, `ticketcount`, `ticketsalecount`, `desc`,`qqgroup`, pkschedule.`data`, pkschedule.`status` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, pkschedule.`updatetime`</sql>
+    <sql id="table">pkschedule</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="whereid">where uid = #{uid}</sql>
+    <sql id="allfields"><include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{uid},#{createtime},#{sn},#{confeuid},#{confesn},#{name},#{major},#{level},#{isonline},#{pkuseruid},#{pkuserlevel},#{judgementuid},#{judgementsn},#{pkdates},#{judgmentfee},#{userscore},#{isallowpkuser},#{isallowjudgement},#{pkuseruid2},#{pkuserlevel2},#{judgementuid2},#{judgementsn2},#{pkdates2},#{judgmentfee2},#{userscore2},#{isallowpkuser2},#{isallowjudgement2}, #{judgementchairuid}, #{judgementchairsn},#{pktime},#{pktimeend},#{pkprice},#{judgementchairfee},#{ticketprice},#{file},#{istop},#{stage},#{ticketstatus},#{ticketcount},#{ticketsalecount},#{desc},#{qqgroup},#{data},#{status}</sql>
+    <sql id="setsn">`sn` = #{sn}</sql>
+    <sql id="setconfeuid">`confeuid` = #{confeuid}</sql>
+    <sql id="setuid">uid = #{uid}</sql>
+    <sql id="setconfesn">`confesn` = #{confesn}</sql>
+    <sql id="setname">`name` = #{name}</sql>
+    <sql id="setmajor">`major` = #{major}</sql>
+    <sql id="setlevel">`level` = #{level}</sql>
+    <sql id="setisonline">`isonline` = #{isonline}</sql>
+    <sql id="setpkuseruid">`pkuseruid` = #{pkuseruid}</sql>
+    <sql id="setpkuseruid_or">`pkuseruid` = #{pkuseruid_or}</sql>
+    <sql id="setpkuserlevel">`pkuserlevel` = #{pkuserlevel}</sql>
+    <sql id="setjudgementuid">`judgementuid` = #{judgementuid}</sql>
+    <sql id="setjudgementuid_or">`judgementuid` = #{judgementuid_all}</sql>
+    <sql id="setjudgementsn">`judgementsn` = #{judgementsn}</sql>
+    <sql id="setpkdates">`pkdates` = #{pkdates}</sql>
+    <sql id="setjudgmentfee">`judgmentfee` = #{judgmentfee}</sql>
+    <sql id="setuserscore">`userscore` = #{userscore}</sql>
+    <sql id="setisallowpkuser">`isallowpkuser` = #{isallowpkuser}</sql>
+    <sql id="setisallowjudgement">`isallowjudgement` = #{isallowjudgement}</sql>
+    <sql id="setpkuseruid2">`pkuseruid2` = #{pkuseruid2}</sql>
+    <sql id="setpkuseruid2_or">`pkuseruid2` = #{pkuseruid2_or}</sql>
+    <sql id="setpkuserlevel2">`pkuserlevel2` = #{pkuserlevel2}</sql>
+    <sql id="setjudgementuid2">`judgementuid2` = #{judgementuid2}</sql>
+    <sql id="setjudgementuid2_or">`judgementuid2` = #{judgementuid_all}</sql>
+    <sql id="setjudgementsn2">`judgementsn2` = #{judgementsn2}</sql>
+    <sql id="setpkdates2">`pkdates2` = #{pkdates2}</sql>
+    <sql id="setjudgmentfee2">`judgmentfee2` = #{judgmentfee2}</sql>
+    <sql id="setuserscore2">`userscore2` = #{userscore2}</sql>
+    <sql id="setisallowpkuser2">`isallowpkuser2` = #{isallowpkuser2}</sql>
+    <sql id="setisallowjudgement2">`isallowjudgement2` = #{isallowjudgement2}</sql>
+    <sql id="setjudgementchairuid">`judgementchairuid` = #{judgementchairuid}</sql>
+    <sql id="setjudgementchairuid_or">`judgementchairuid` = #{judgementuid_all}</sql>
+    <sql id="setjudgementchairsn">`judgementchairsn` = #{judgementchairsn}</sql>
+    <sql id="setpktime">`pktime` = #{pktime}</sql>
+    <sql id="setpktimeend">`pktimeend` = #{pktimeend}</sql>
+    <sql id="setpkprice">`pkprice` = #{pkprice}</sql>
+    <sql id="setjudgementchairfee">`judgementchairfee` = #{judgementchairfee}</sql>
+    <sql id="setticketprice">`ticketprice` = #{ticketprice}</sql>
+    <sql id="setdesc">`desc` = #{desc}</sql>
+    <sql id="setqqgroup">`qqgroup` = #{qqgroup}</sql>
+    <sql id="setdata">`data` = #{data}</sql>
+    <sql id="setfile">`file` = #{file}</sql>
+    <sql id="setistop">`istop` = #{istop}</sql>
+    <sql id="setstage">`stage` = #{stage}</sql>
+    <sql id="setticketstatus">`ticketstatus` = #{ticketstatus}</sql>
+    <sql id="setticketcount">`ticketcount` = #{ticketcount}</sql>
+    <sql id="setticketsalecount">`ticketsalecount` = #{ticketsalecount}</sql>
+    <sql id="setstatus">pkschedule.`status` = #{status}</sql>
+    <sql id="createtime_ge">pkschedule.`createtime` &gt;= #{createtime_ge}</sql>
+    <sql id="onuseruid">`ordergoods`.`useruid` = #{useruid}</sql>
+    <sql id="ontype">`ordergoods`.`type` = #{type}</sql>
+    <sql id="allsets">set
+            <include refid="setsn"/>,
+            <include refid="setconfeuid"/>,
+            <include refid="setconfesn"/>,
+            <include refid="setname"/>,
+            <include refid="setmajor"/>,
+            <include refid="setlevel"/>,
+            <include refid="setisonline"/>,
+            <include refid="setpkuseruid"/>,
+            <include refid="setpkuserlevel"/>,
+            <include refid="setjudgementuid"/>,
+            <include refid="setjudgementsn"/>,
+            <include refid="setpkdates"/>,
+            <include refid="setjudgmentfee"/>,
+            <include refid="setuserscore"/>,
+            <include refid="setisallowpkuser"/>,
+            <include refid="setisallowjudgement"/>,
+            <include refid="setpkuseruid2"/>,
+            <include refid="setpkuserlevel2"/>,
+            <include refid="setjudgementuid2"/>,
+            <include refid="setjudgementsn2"/>,
+            <include refid="setpkdates2"/>,
+            <include refid="setjudgmentfee2"/>,
+            <include refid="setuserscore2"/>,
+            <include refid="setisallowpkuser2"/>,
+            <include refid="setisallowjudgement2"/>,
+            <include refid="setjudgementchairuid"/>,
+            <include refid="setjudgementchairsn"/>,
+            <include refid="setpktime"/>,
+            <include refid="setpktimeend"/>,
+            <include refid="setpkprice"/>,
+            <include refid="setjudgementchairfee"/>,
+            <include refid="setticketprice"/>,
+            <include refid="setfile"/>,
+            <include refid="setistop"/>,
+            <include refid="setstage"/>,
+            <include refid="setticketstatus"/>,
+            <include refid="setticketcount"/>,
+            <include refid="setticketsalecount"/>,
+            <include refid="setdesc"/>,
+            <include refid="setqqgroup"/>,
+            <include refid="setdata"/>,
+            <include refid="setstatus"/>
+    </sql>
+    <sql id="orderby">order by pkschedule.createtime</sql>
+
+    <select id="get" parameterType="string" resultType="pkschedule">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="pkschedule">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="uid != null">
+                and <include refid="setuid"/>
+            </if>         
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="confeuid != null">
+                and <include refid="setconfeuid"/>
+            </if>
+            <if test="confesn != null">
+                and <include refid="setconfesn"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="level != null">
+                and <include refid="setlevel"/>
+            </if>
+            <if test="isonline != null">
+                and <include refid="setisonline"/>
+            </if>
+            <if test="pkuseruid != null">
+                and <include refid="setpkuseruid"/>
+            </if>
+            <if test="pkuserlevel != null">
+                and <include refid="setpkuserlevel"/>
+            </if>
+            <if test="judgementuid != null">
+                and <include refid="setjudgementuid"/>
+            </if>
+            <if test="judgementsn != null">
+                and <include refid="setjudgementsn"/>
+            </if>
+            <if test="pkdates != null">
+                and <include refid="setpkdates"/>
+            </if>
+            <if test="judgmentfee != null">
+                and <include refid="setjudgmentfee"/>
+            </if>
+            <if test="userscore != null">
+                and <include refid="setuserscore"/>
+            </if>
+            <if test="isallowpkuser != null">
+                and <include refid="setisallowpkuser"/>
+            </if>
+            <if test="isallowjudgement != null">
+                and <include refid="setisallowjudgement"/>
+            </if>
+            <if test="pkuseruid2 != null">
+                and <include refid="setpkuseruid2"/>
+            </if>
+            <if test="pkuserlevel2 != null">
+                and <include refid="setpkuserlevel2"/>
+            </if>
+            <if test="judgementuid2 != null">
+                and <include refid="setjudgementuid2"/>
+            </if>
+            <if test="judgementsn2 != null">
+                and <include refid="setjudgementsn2"/>
+            </if>
+            <if test="pkdates2 != null">
+                and <include refid="setpkdates2"/>
+            </if>
+            <if test="judgmentfee2 != null">
+                and <include refid="setjudgmentfee2"/>
+            </if>
+            <if test="userscore2 != null">
+                and <include refid="setuserscore2"/>
+            </if>
+            <if test="isallowpkuser2 != null">
+                and <include refid="setisallowpkuser2"/>
+            </if>
+            <if test="isallowjudgement2 != null">
+                and <include refid="setisallowjudgement2"/>
+            </if>
+            <if test="judgementchairuid != null">
+                and <include refid="setjudgementchairuid"/>
+            </if>
+            <if test="judgementchairsn != null">
+                and <include refid="setjudgementchairsn"/>
+            </if>
+            <if test="pktime != null">
+                and <include refid="setpktime"/>
+            </if>
+            <if test="pktimeend != null">
+                and <include refid="setpktimeend"/>
+            </if>
+            <if test="pkprice != null">
+                and <include refid="setpkprice"/>
+            </if>
+            <if test="judgementchairfee != null">
+                and <include refid="setjudgementchairfee"/>
+            </if>
+            <if test="ticketprice != null">
+                and <include refid="setticketprice"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="istop != null">
+                and <include refid="setistop"/>
+            </if>
+            <if test="stage != null">
+                and <include refid="setstage"/>
+            </if>
+            <if test="ticketstatus != null">
+                and <include refid="setticketstatus"/>
+            </if>
+            <if test="ticketcount != null">
+                and <include refid="setticketcount"/>
+            </if>
+            <if test="ticketsalecount != null">
+                and <include refid="setticketsalecount"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="qqgroup != null">
+                and <include refid="setqqgroup"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="confeuid != null">
+                and <include refid="setconfeuid"/>
+            </if>
+            <if test="confesn != null">
+                and <include refid="setconfesn"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="level != null">
+                and <include refid="setlevel"/>
+            </if>
+            <if test="isonline != null">
+                and <include refid="setisonline"/>
+            </if>
+            <if test="pkuseruid != null">
+                and <include refid="setpkuseruid"/>
+            </if>
+            <if test="pkuserlevel != null">
+                and <include refid="setpkuserlevel"/>
+            </if>
+            <if test="judgementuid != null">
+                and <include refid="setjudgementuid"/>
+            </if>
+            <if test="judgementsn != null">
+                and <include refid="setjudgementsn"/>
+            </if>
+            <if test="pkdates != null">
+                and <include refid="setpkdates"/>
+            </if>
+            <if test="judgmentfee != null">
+                and <include refid="setjudgmentfee"/>
+            </if>
+            <if test="userscore != null">
+                and <include refid="setuserscore"/>
+            </if>
+            <if test="isallowpkuser != null">
+                and <include refid="setisallowpkuser"/>
+            </if>
+            <if test="isallowjudgement != null">
+                and <include refid="setisallowjudgement"/>
+            </if>
+            <if test="pkuseruid2 != null">
+                and <include refid="setpkuseruid2"/>
+            </if>
+            <if test="pkuserlevel2 != null">
+                and <include refid="setpkuserlevel2"/>
+            </if>
+            <if test="judgementuid2 != null">
+                and <include refid="setjudgementuid2"/>
+            </if>
+            <if test="judgementsn2 != null">
+                and <include refid="setjudgementsn2"/>
+            </if>
+            <if test="pkdates2 != null">
+                and <include refid="setpkdates2"/>
+            </if>
+            <if test="judgmentfee2 != null">
+                and <include refid="setjudgmentfee2"/>
+            </if>
+            <if test="userscore2 != null">
+                and <include refid="setuserscore2"/>
+            </if>
+            <if test="isallowpkuser2 != null">
+                and <include refid="setisallowpkuser2"/>
+            </if>
+            <if test="isallowjudgement2 != null">
+                and <include refid="setisallowjudgement2"/>
+            </if>
+            <if test="judgementchairuid != null">
+                and <include refid="setjudgementchairuid"/>
+            </if>
+            <if test="judgementchairsn != null">
+                and <include refid="setjudgementchairsn"/>
+            </if>
+            <if test="pktime != null">
+                and <include refid="setpktime"/>
+            </if>
+            <if test="pktimeend != null">
+                and <include refid="setpktimeend"/>
+            </if>
+            <if test="pkprice != null">
+                and <include refid="setpkprice"/>
+            </if>
+            <if test="judgementchairfee != null">
+                and <include refid="setjudgementchairfee"/>
+            </if>
+            <if test="ticketprice != null">
+                and <include refid="setticketprice"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="istop != null">
+                and <include refid="setistop"/>
+            </if>
+            <if test="stage != null">
+                and <include refid="setstage"/>
+            </if>
+            <if test="stage_in != null">
+                and `stage` in 
+                 <foreach item="item" index="index" collection="stage_in" open="(" separator="," close=")">  
+                    #{item}
+                </foreach> 
+            </if>
+            <if test="ticketstatus != null">
+                and <include refid="setticketstatus"/>
+            </if>
+            <if test="ticketcount != null">
+                and <include refid="setticketcount"/>
+            </if>
+            <if test="ticketsalecount != null">
+                and <include refid="setticketsalecount"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+             <if test="qqgroup != null">
+                and <include refid="setqqgroup"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </select>
+    
+    <select id="getCountByOrderGoods" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        inner join 
+        <include refid="ordergoodstable"/>
+        <include refid="ordergoodson"/>
+        <if test="useruid != null">
+        	and <include refid="onuseruid"/>
+        </if>
+        <if test="type != null">
+        	and <include refid="ontype"/>
+        </if>
+        <where>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="confeuid != null">
+                and <include refid="setconfeuid"/>
+            </if>
+            <if test="confesn != null">
+                and <include refid="setconfesn"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="level != null">
+                and <include refid="setlevel"/>
+            </if>
+            <if test="isonline != null">
+                and <include refid="setisonline"/>
+            </if>
+            <if test="pkuseruid != null">
+                and <include refid="setpkuseruid"/>
+            </if>
+            <if test="pkuserlevel != null">
+                and <include refid="setpkuserlevel"/>
+            </if>
+            <if test="judgementuid != null">
+                and <include refid="setjudgementuid"/>
+            </if>
+            <if test="judgementsn != null">
+                and <include refid="setjudgementsn"/>
+            </if>
+            <if test="pkdates != null">
+                and <include refid="setpkdates"/>
+            </if>
+            <if test="judgmentfee != null">
+                and <include refid="setjudgmentfee"/>
+            </if>
+            <if test="userscore != null">
+                and <include refid="setuserscore"/>
+            </if>
+            <if test="isallowpkuser != null">
+                and <include refid="setisallowpkuser"/>
+            </if>
+            <if test="isallowjudgement != null">
+                and <include refid="setisallowjudgement"/>
+            </if>
+            <if test="pkuseruid2 != null">
+                and <include refid="setpkuseruid2"/>
+            </if>
+            <if test="pkuserlevel2 != null">
+                and <include refid="setpkuserlevel2"/>
+            </if>
+            <if test="judgementuid2 != null">
+                and <include refid="setjudgementuid2"/>
+            </if>
+            <if test="judgementsn2 != null">
+                and <include refid="setjudgementsn2"/>
+            </if>
+            <if test="pkdates2 != null">
+                and <include refid="setpkdates2"/>
+            </if>
+            <if test="judgmentfee2 != null">
+                and <include refid="setjudgmentfee2"/>
+            </if>
+            <if test="userscore2 != null">
+                and <include refid="setuserscore2"/>
+            </if>
+            <if test="isallowpkuser2 != null">
+                and <include refid="setisallowpkuser2"/>
+            </if>
+            <if test="isallowjudgement2 != null">
+                and <include refid="setisallowjudgement2"/>
+            </if>
+            <if test="judgementchairuid != null">
+                and <include refid="setjudgementchairuid"/>
+            </if>
+            <if test="judgementchairsn != null">
+                and <include refid="setjudgementchairsn"/>
+            </if>
+            <if test="pktime != null">
+                and <include refid="setpktime"/>
+            </if>
+            <if test="pktimeend != null">
+                and <include refid="setpktimeend"/>
+            </if>
+            <if test="pkprice != null">
+                and <include refid="setpkprice"/>
+            </if>
+            <if test="judgementchairfee != null">
+                and <include refid="setjudgementchairfee"/>
+            </if>
+            <if test="ticketprice != null">
+                and <include refid="setticketprice"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="istop != null">
+                and <include refid="setistop"/>
+            </if>
+            <if test="stage != null">
+                and <include refid="setstage"/>
+            </if>
+            <if test="stage_in != null">
+                and `stage` in 
+                 <foreach item="item" index="index" collection="stage_in" open="(" separator="," close=")">  
+                    #{item}
+                </foreach> 
+            </if>
+            <if test="ticketstatus != null">
+                and <include refid="setticketstatus"/>
+            </if>
+            <if test="ticketcount != null">
+                and <include refid="setticketcount"/>
+            </if>
+            <if test="ticketsalecount != null">
+                and <include refid="setticketsalecount"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+             <if test="qqgroup != null">
+                and <include refid="setqqgroup"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </select>
+
+    <select id="getListByOrderGoods" parameterType="hashMap" resultType="pkschedule">
+        select
+         <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        inner join 
+        <include refid="ordergoodstable"/>
+        <include refid="ordergoodson"/>
+        <if test="useruid != null">
+        	and <include refid="onuseruid"/>
+        </if>
+        <if test="type != null">
+        	and <include refid="ontype"/>
+        </if>
+        <where>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="confeuid != null">
+                and <include refid="setconfeuid"/>
+            </if>
+            <if test="confesn != null">
+                and <include refid="setconfesn"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="level != null">
+                and <include refid="setlevel"/>
+            </if>
+            <if test="isonline != null">
+                and <include refid="setisonline"/>
+            </if>
+            <if test="pkuseruid != null">
+                and <include refid="setpkuseruid"/>
+            </if>
+            <if test="pkuserlevel != null">
+                and <include refid="setpkuserlevel"/>
+            </if>
+            <if test="judgementuid != null">
+                and <include refid="setjudgementuid"/>
+            </if>
+            <if test="judgementsn != null">
+                and <include refid="setjudgementsn"/>
+            </if>
+            <if test="pkdates != null">
+                and <include refid="setpkdates"/>
+            </if>
+            <if test="judgmentfee != null">
+                and <include refid="setjudgmentfee"/>
+            </if>
+            <if test="userscore != null">
+                and <include refid="setuserscore"/>
+            </if>
+            <if test="isallowpkuser != null">
+                and <include refid="setisallowpkuser"/>
+            </if>
+            <if test="isallowjudgement != null">
+                and <include refid="setisallowjudgement"/>
+            </if>
+            <if test="pkuseruid2 != null">
+                and <include refid="setpkuseruid2"/>
+            </if>
+            <if test="pkuserlevel2 != null">
+                and <include refid="setpkuserlevel2"/>
+            </if>
+            <if test="judgementuid2 != null">
+                and <include refid="setjudgementuid2"/>
+            </if>
+            <if test="judgementsn2 != null">
+                and <include refid="setjudgementsn2"/>
+            </if>
+            <if test="pkdates2 != null">
+                and <include refid="setpkdates2"/>
+            </if>
+            <if test="judgmentfee2 != null">
+                and <include refid="setjudgmentfee2"/>
+            </if>
+            <if test="userscore2 != null">
+                and <include refid="setuserscore2"/>
+            </if>
+            <if test="isallowpkuser2 != null">
+                and <include refid="setisallowpkuser2"/>
+            </if>
+            <if test="isallowjudgement2 != null">
+                and <include refid="setisallowjudgement2"/>
+            </if>
+            <if test="judgementchairuid != null">
+                and <include refid="setjudgementchairuid"/>
+            </if>
+            <if test="judgementchairsn != null">
+                and <include refid="setjudgementchairsn"/>
+            </if>
+            <if test="pktime != null">
+                and <include refid="setpktime"/>
+            </if>
+            <if test="pktimeend != null">
+                and <include refid="setpktimeend"/>
+            </if>
+            <if test="pkprice != null">
+                and <include refid="setpkprice"/>
+            </if>
+            <if test="judgementchairfee != null">
+                and <include refid="setjudgementchairfee"/>
+            </if>
+            <if test="ticketprice != null">
+                and <include refid="setticketprice"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="istop != null">
+                and <include refid="setistop"/>
+            </if>
+            <if test="stage != null">
+                and <include refid="setstage"/>
+            </if>
+            <if test="stage_in != null">
+                and `stage` in 
+                 <foreach item="item" index="index" collection="stage_in" open="(" separator="," close=")">  
+                    #{item}
+                </foreach> 
+            </if>
+            <if test="ticketstatus != null">
+                and <include refid="setticketstatus"/>
+            </if>
+            <if test="ticketcount != null">
+                and <include refid="setticketcount"/>
+            </if>
+            <if test="ticketsalecount != null">
+                and <include refid="setticketsalecount"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+             <if test="qqgroup != null">
+                and <include refid="setqqgroup"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <select id="getCountBySearch" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        left join 
+        <include refid="userinfotable" /> as u1 
+        on `pkschedule`.`pkuseruid` = u1.uid 
+        left join 
+        <include refid="userinfotable" /> as u2 
+        on `pkschedule`.`pkuseruid2` = u2.uid 
+        left join 
+        <include refid="userinfotable" /> as u3 
+        on `pkschedule`.`judgementuid` = u3.uid 
+        left join 
+        <include refid="userinfotable" /> as u4 
+        on `pkschedule`.`judgementuid2` = u4.uid 
+        left join 
+        <include refid="userinfotable" /> as u5 
+        on `pkschedule`.`judgementchairuid` = u5.uid 
+        <where>
+        	 <if test="search != null">
+        		( <include refid="setshowname_lk" />
+        		  or <include refid="setsn_lk"/> )
+            </if>
+        	<if test="uid != null">
+                and <include refid="setuid"/>
+            </if>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="confeuid != null">
+                and <include refid="setconfeuid"/>
+            </if>
+            <if test="confesn != null">
+                and <include refid="setconfesn"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="level != null">
+                and <include refid="setlevel"/>
+            </if>
+            <if test="isonline != null">
+                and <include refid="setisonline"/>
+            </if>
+            <if test="pkuseruid != null">
+                and <include refid="setpkuseruid"/>
+            </if>
+            <if test="pkuserlevel != null">
+                and <include refid="setpkuserlevel"/>
+            </if>
+            <if test="judgementuid != null">
+                and <include refid="setjudgementuid"/>
+            </if>
+            <if test="judgementsn != null">
+                and <include refid="setjudgementsn"/>
+            </if>
+            <if test="pkdates != null">
+                and <include refid="setpkdates"/>
+            </if>
+            <if test="judgmentfee != null">
+                and <include refid="setjudgmentfee"/>
+            </if>
+            <if test="userscore != null">
+                and <include refid="setuserscore"/>
+            </if>
+            <if test="isallowpkuser != null">
+                and <include refid="setisallowpkuser"/>
+            </if>
+            <if test="isallowjudgement != null">
+                and <include refid="setisallowjudgement"/>
+            </if>
+            <if test="pkuseruid2 != null">
+                and <include refid="setpkuseruid2"/>
+            </if>
+            <if test="pkuserlevel2 != null">
+                and <include refid="setpkuserlevel2"/>
+            </if>
+            <if test="judgementuid2 != null">
+                and <include refid="setjudgementuid2"/>
+            </if>
+            <if test="judgementsn2 != null">
+                and <include refid="setjudgementsn2"/>
+            </if>
+            <if test="pkdates2 != null">
+                and <include refid="setpkdates2"/>
+            </if>
+            <if test="judgmentfee2 != null">
+                and <include refid="setjudgmentfee2"/>
+            </if>
+            <if test="userscore2 != null">
+                and <include refid="setuserscore2"/>
+            </if>
+            <if test="isallowpkuser2 != null">
+                and <include refid="setisallowpkuser2"/>
+            </if>
+            <if test="isallowjudgement2 != null">
+                and <include refid="setisallowjudgement2"/>
+            </if>
+            <if test="judgementchairuid != null">
+                and <include refid="setjudgementchairuid"/>
+            </if>
+            <if test="judgementchairsn != null">
+                and <include refid="setjudgementchairsn"/>
+            </if>
+            <if test="pktime != null">
+                and <include refid="setpktime"/>
+            </if>
+            <if test="pktimeend != null">
+                and <include refid="setpktimeend"/>
+            </if>
+            <if test="pkprice != null">
+                and <include refid="setpkprice"/>
+            </if>
+            <if test="judgementchairfee != null">
+                and <include refid="setjudgementchairfee"/>
+            </if>
+            <if test="ticketprice != null">
+                and <include refid="setticketprice"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="istop != null">
+                and <include refid="setistop"/>
+            </if>
+            <if test="stage != null">
+                and <include refid="setstage"/>
+            </if>
+            <if test="stage_in != null">
+                and `stage` in 
+                 <foreach item="item" index="index" collection="stage_in" open="(" separator="," close=")">  
+                    #{item}
+                </foreach> 
+            </if>
+            <if test="ticketstatus != null">
+                and <include refid="setticketstatus"/>
+            </if>
+            <if test="ticketcount != null">
+                and <include refid="setticketcount"/>
+            </if>
+            <if test="ticketsalecount != null">
+                and <include refid="setticketsalecount"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+             <if test="qqgroup != null">
+                and <include refid="setqqgroup"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </select>
+
+    <select id="getListBySearch" parameterType="hashMap" resultType="pkschedule">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        left join 
+        <include refid="userinfotable" /> as u1 
+        on `pkschedule`.`pkuseruid` = u1.uid 
+        left join 
+        <include refid="userinfotable" /> as u2 
+        on `pkschedule`.`pkuseruid2` = u2.uid 
+        left join 
+        <include refid="userinfotable" /> as u3 
+        on `pkschedule`.`judgementuid` = u3.uid 
+        left join 
+        <include refid="userinfotable" /> as u4 
+        on `pkschedule`.`judgementuid2` = u4.uid 
+        left join 
+        <include refid="userinfotable" /> as u5 
+        on `pkschedule`.`judgementchairuid` = u5.uid 
+        <where>
+        	<if test="search != null">
+        	(<include refid="setshowname_lk" />
+        		or <include refid="setsn_lk"/> )
+            </if>
+        	<if test="uid != null">
+                and <include refid="setuid"/>
+            </if>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="confeuid != null">
+                and <include refid="setconfeuid"/>
+            </if>
+            <if test="confesn != null">
+                and <include refid="setconfesn"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="level != null">
+                and <include refid="setlevel"/>
+            </if>
+            <if test="isonline != null">
+                and <include refid="setisonline"/>
+            </if>
+            <if test="pkuseruid != null">
+                and <include refid="setpkuseruid"/>
+            </if>
+            <if test="pkuserlevel != null">
+                and <include refid="setpkuserlevel"/>
+            </if>
+            <if test="judgementuid != null">
+                and <include refid="setjudgementuid"/>
+            </if>
+            <if test="judgementsn != null">
+                and <include refid="setjudgementsn"/>
+            </if>
+            <if test="pkdates != null">
+                and <include refid="setpkdates"/>
+            </if>
+            <if test="judgmentfee != null">
+                and <include refid="setjudgmentfee"/>
+            </if>
+            <if test="userscore != null">
+                and <include refid="setuserscore"/>
+            </if>
+            <if test="isallowpkuser != null">
+                and <include refid="setisallowpkuser"/>
+            </if>
+            <if test="isallowjudgement != null">
+                and <include refid="setisallowjudgement"/>
+            </if>
+            <if test="pkuseruid2 != null">
+                and <include refid="setpkuseruid2"/>
+            </if>
+            <if test="pkuserlevel2 != null">
+                and <include refid="setpkuserlevel2"/>
+            </if>
+            <if test="judgementuid2 != null">
+                and <include refid="setjudgementuid2"/>
+            </if>
+            <if test="judgementsn2 != null">
+                and <include refid="setjudgementsn2"/>
+            </if>
+            <if test="pkdates2 != null">
+                and <include refid="setpkdates2"/>
+            </if>
+            <if test="judgmentfee2 != null">
+                and <include refid="setjudgmentfee2"/>
+            </if>
+            <if test="userscore2 != null">
+                and <include refid="setuserscore2"/>
+            </if>
+            <if test="isallowpkuser2 != null">
+                and <include refid="setisallowpkuser2"/>
+            </if>
+            <if test="isallowjudgement2 != null">
+                and <include refid="setisallowjudgement2"/>
+            </if>
+            <if test="judgementchairuid != null">
+                and <include refid="setjudgementchairuid"/>
+            </if>
+            <if test="judgementchairsn != null">
+                and <include refid="setjudgementchairsn"/>
+            </if>
+            <if test="pktime != null">
+                and <include refid="setpktime"/>
+            </if>
+            <if test="pktimeend != null">
+                and <include refid="setpktimeend"/>
+            </if>
+            <if test="pkprice != null">
+                and <include refid="setpkprice"/>
+            </if>
+            <if test="judgementchairfee != null">
+                and <include refid="setjudgementchairfee"/>
+            </if>
+            <if test="ticketprice != null">
+                and <include refid="setticketprice"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="istop != null">
+                and <include refid="setistop"/>
+            </if>
+            <if test="stage != null">
+                and <include refid="setstage"/>
+            </if>
+            <if test="stage_in != null">
+                and `stage` in 
+                 <foreach item="item" index="index" collection="stage_in" open="(" separator="," close=")">  
+                    #{item}
+                </foreach> 
+            </if>
+            <if test="ticketstatus != null">
+                and <include refid="setticketstatus"/>
+            </if>
+            <if test="ticketcount != null">
+                and <include refid="setticketcount"/>
+            </if>
+            <if test="ticketsalecount != null">
+                and <include refid="setticketsalecount"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+             <if test="qqgroup != null">
+                and <include refid="setqqgroup"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <select id="getList" parameterType="hashMap" resultType="pkschedule">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+        	<if test="pkuseruid_or != null">
+        		( <include refid="setpkuseruid_or"/>
+        	</if>
+        	<if test="pkuseruid2_or != null">
+        		or <include refid="setpkuseruid2_or"/>
+        		)
+        	</if>
+        	<if test="judgementuid_all != null">
+               ( <include refid="setjudgementuid_or"/>
+                or <include refid="setjudgementuid2_or"/>
+                or <include refid="setjudgementchairuid_or"/>
+                )
+            </if>
+            <if test="sn != null">
+                and <include refid="setsn"/>
+            </if>
+            <if test="confeuid != null">
+                and <include refid="setconfeuid"/>
+            </if>
+            <if test="confesn != null">
+                and <include refid="setconfesn"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="major != null">
+                and <include refid="setmajor"/>
+            </if>
+            <if test="level != null">
+                and <include refid="setlevel"/>
+            </if>
+            <if test="isonline != null">
+                and <include refid="setisonline"/>
+            </if>
+            <if test="pkuseruid != null">
+                and <include refid="setpkuseruid"/>
+            </if>
+            <if test="pkuserlevel != null">
+                and <include refid="setpkuserlevel"/>
+            </if>
+            <if test="judgementuid != null">
+                and <include refid="setjudgementuid"/>
+            </if>
+            <if test="judgementsn != null">
+                and <include refid="setjudgementsn"/>
+            </if>
+            <if test="pkdates != null">
+                and <include refid="setpkdates"/>
+            </if>
+            <if test="judgmentfee != null">
+                and <include refid="setjudgmentfee"/>
+            </if>
+            <if test="userscore != null">
+                and <include refid="setuserscore"/>
+            </if>
+            <if test="isallowpkuser != null">
+                and <include refid="setisallowpkuser"/>
+            </if>
+            <if test="isallowjudgement != null">
+                and <include refid="setisallowjudgement"/>
+            </if>
+            <if test="pkuseruid2 != null">
+                and <include refid="setpkuseruid2"/>
+            </if>
+            <if test="pkuserlevel2 != null">
+                and <include refid="setpkuserlevel2"/>
+            </if>
+            <if test="judgementuid2 != null">
+                and <include refid="setjudgementuid2"/>
+            </if>
+            <if test="judgementsn2 != null">
+                and <include refid="setjudgementsn2"/>
+            </if>
+            <if test="pkdates2 != null">
+                and <include refid="setpkdates2"/>
+            </if>
+            <if test="judgmentfee2 != null">
+                and <include refid="setjudgmentfee2"/>
+            </if>
+            <if test="userscore2 != null">
+                and <include refid="setuserscore2"/>
+            </if>
+            <if test="isallowpkuser2 != null">
+                and <include refid="setisallowpkuser2"/>
+            </if>
+            <if test="isallowjudgement2 != null">
+                and <include refid="setisallowjudgement2"/>
+            </if>
+            <if test="judgementchairuid != null">
+                and <include refid="setjudgementchairuid"/>
+            </if>
+            <if test="judgementchairsn != null">
+                and <include refid="setjudgementchairsn"/>
+            </if>
+            <if test="pktime != null">
+                and <include refid="setpktime"/>
+            </if>
+            <if test="pktimeend != null">
+                and <include refid="setpktimeend"/>
+            </if>
+            <if test="pkprice != null">
+                and <include refid="setpkprice"/>
+            </if>
+            <if test="judgementchairfee != null">
+                and <include refid="setjudgementchairfee"/>
+            </if>
+            <if test="ticketprice != null">
+                and <include refid="setticketprice"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="istop != null">
+                and <include refid="setistop"/>
+            </if>
+            <if test="stage != null">
+                and <include refid="setstage"/>
+            </if>
+            <if test="stage_in != null">
+                and `stage` in 
+                 <foreach item="item" index="index" collection="stage_in" open="(" separator="," close=")">  
+                    #{item}
+                </foreach> 
+            </if>
+            <if test="ticketstatus != null">
+                and <include refid="setticketstatus"/>
+            </if>
+            <if test="ticketcount != null">
+                and <include refid="setticketcount"/>
+            </if>
+            <if test="ticketsalecount != null">
+                and <include refid="setticketsalecount"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+             <if test="qqgroup != null">
+                and <include refid="setqqgroup"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="createtime_ge != null">
+                and <include refid="createtime_ge"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insert" parameterType="pkschedule">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="pkschedule">
+        update
+        <include refid="table"/>
+        <include refid="allsets"/>
+        <include refid="whereid"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="sn != null">
+                <include refid="setsn"/>,
+            </if>
+            <if test="confeuid != null">
+                <include refid="setconfeuid"/>,
+            </if>
+            <if test="confesn != null">
+                <include refid="setconfesn"/>,
+            </if>
+            <if test="name != null">
+                <include refid="setname"/>,
+            </if>
+            <if test="major != null">
+                <include refid="setmajor"/>,
+            </if>
+            <if test="level != null">
+                <include refid="setlevel"/>,
+            </if>
+            <if test="isonline != null">
+                <include refid="setisonline"/>,
+            </if>
+            <if test="pkuseruid != null">
+                <include refid="setpkuseruid"/>,
+            </if>
+            <if test="pkuserlevel != null">
+                <include refid="setpkuserlevel"/>,
+            </if>
+            <if test="judgementuid != null">
+                <include refid="setjudgementuid"/>,
+            </if>
+            <if test="judgementsn != null">
+                <include refid="setjudgementsn"/>,
+            </if>
+            <if test="pkdates != null">
+                <include refid="setpkdates"/>,
+            </if>
+            <if test="judgmentfee != null">
+                <include refid="setjudgmentfee"/>,
+            </if>
+            <if test="userscore != null">
+                <include refid="setuserscore"/>,
+            </if>
+            <if test="isallowpkuser != null">
+                <include refid="setisallowpkuser"/>,
+            </if>
+            <if test="isallowjudgement != null">
+                <include refid="setisallowjudgement"/>,
+            </if>
+            <if test="pkuseruid2 != null">
+                <include refid="setpkuseruid2"/>,
+            </if>
+            <if test="pkuserlevel2 != null">
+                <include refid="setpkuserlevel2"/>,
+            </if>
+            <if test="judgementuid2 != null">
+                <include refid="setjudgementuid2"/>,
+            </if>
+            <if test="judgementsn2 != null">
+                <include refid="setjudgementsn2"/>,
+            </if>
+            <if test="pkdates2 != null">
+                <include refid="setpkdates2"/>,
+            </if>
+            <if test="judgmentfee2 != null">
+                <include refid="setjudgmentfee2"/>,
+            </if>
+            <if test="userscore2 != null">
+                <include refid="setuserscore2"/>,
+            </if>
+            <if test="isallowpkuser2 != null">
+                <include refid="setisallowpkuser2"/>,
+            </if>
+            <if test="isallowjudgement2 != null">
+                <include refid="setisallowjudgement2"/>,
+            </if>
+            <if test="judgementchairuid != null">
+                and <include refid="setjudgementchairuid"/>
+            </if>
+            <if test="judgementchairsn != null">
+                <include refid="setjudgementchairsn"/>,
+            </if>
+            <if test="pktime != null">
+                <include refid="setpktime"/>,
+            </if>
+            <if test="pktimeend != null">
+                <include refid="setpktimeend"/>,
+            </if>
+            <if test="pkprice != null">
+                <include refid="setpkprice"/>,
+            </if>
+            <if test="judgementchairfee != null">
+                <include refid="setjudgementchairfee"/>,
+            </if>
+            <if test="ticketprice != null">
+                <include refid="setticketprice"/>,
+            </if>
+            <if test="file != null">
+                <include refid="setfile"/>,
+            </if>
+            <if test="istop != null">
+                <include refid="setistop"/>,
+            </if>
+            <if test="stage != null">
+                <include refid="setstage"/>,
+            </if>
+            <if test="ticketstatus != null">
+                <include refid="setticketstatus"/>,
+            </if>
+            <if test="ticketcount != null">
+                <include refid="setticketcount"/>,
+            </if>
+            <if test="ticketsalecount != null">
+                <include refid="setticketsalecount"/>,
+            </if>
+            <if test="desc != null">
+                <include refid="setdesc"/>
+            </if>
+             <if test="qqgroup != null">
+                and <include refid="setqqgroup"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>
+            </if>
+        </set>
+        <include refid="whereid"/>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+
+</mapper>
+

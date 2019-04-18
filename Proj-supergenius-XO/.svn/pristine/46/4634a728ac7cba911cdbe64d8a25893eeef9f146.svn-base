@@ -1,0 +1,110 @@
+package com.supergenius.xo.life.entity;
+
+import com.genius.core.base.annotation.Json;
+import com.supergenius.xo.common.entity.BaseEntity;
+
+/**
+ * 课程实体类
+ * 
+ * @Author:JiaShitao
+ * @Data:2018年5月7日下午4:24:30
+ */
+@Json(value = { "uid", "createtime", "updatetime", "cid", "grade", "name", "data", "imglittle", "imgmedium", "imgbig", "imgoriginal", "press", "status",
+		"adminuid" }, ignoreTypeStrategy = Json.webStrategy, strategy = { Json.webStrategy, Json.cacheStrategy })
+public class Courses extends BaseEntity {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1912398019761174560L;
+	private int cid;// 所属科目id
+	private int grade;// 所属年级
+	private String name;// 课程名称
+	private String imglittle;// 小图
+	private String imgmedium;// 中图
+	private String imgbig;// 大图
+	private String imgoriginal;// 原图
+	private String data;// 相关的其他json数据
+	private String press;// 出版社
+	private String adminuid;// 操作人UID
+
+	public int getCid() {
+		return cid;
+	}
+
+	public void setCid(int cid) {
+		this.cid = cid;
+	}
+
+	public int getGrade() {
+		return grade;
+	}
+
+	public void setGrade(int grade) {
+		this.grade = grade;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getImglittle() {
+		return imglittle;
+	}
+
+	public void setImglittle(String imglittle) {
+		this.imglittle = imglittle;
+	}
+
+	public String getImgmedium() {
+		return imgmedium;
+	}
+
+	public void setImgmedium(String imgmedium) {
+		this.imgmedium = imgmedium;
+	}
+
+	public String getImgbig() {
+		return imgbig;
+	}
+
+	public void setImgbig(String imgbig) {
+		this.imgbig = imgbig;
+	}
+
+	public String getImgoriginal() {
+		return imgoriginal;
+	}
+
+	public void setImgoriginal(String imgoriginal) {
+		this.imgoriginal = imgoriginal;
+	}
+
+	public String getData() {
+		return data;
+	}
+
+	public void setData(String data) {
+		this.data = data;
+	}
+
+	public String getPress() {
+		return press;
+	}
+
+	public void setPress(String press) {
+		this.press = press;
+	}
+
+	public String getAdminuid() {
+		return adminuid;
+	}
+
+	public void setAdminuid(String adminuid) {
+		this.adminuid = adminuid;
+	}
+
+}

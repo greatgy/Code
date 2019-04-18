@@ -1,0 +1,13 @@
+package com.supergenius.xo.finance.dao;
+
+import com.genius.xo.base.dao.BaseDao;
+import com.supergenius.xo.finance.entity.Contributor;
+
+/**
+ * 投稿人（游客）Dao
+ *
+ * @author ShangJianguo
+ */
+public interface ContributorDao extends BaseDao<Contributor>{
+	
+}

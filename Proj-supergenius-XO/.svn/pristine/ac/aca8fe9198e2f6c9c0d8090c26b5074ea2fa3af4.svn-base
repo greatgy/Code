@@ -1,0 +1,35 @@
+package com.supergenius.xo.finance.enums;
+
+/**
+ * 动态类别枚举
+ * @author YuYingJie
+ */
+public enum EDynamic {
+	
+	system("0"),//系统
+	user("1");//用户
+	
+	private final String value;
+
+	private EDynamic(String v) {
+		this.value = v;
+	}
+
+	public String toString() {
+		return this.value;
+	}
+
+	public static EDynamic get(int v) {
+		String str = String.valueOf(v);
+		return get(str);
+	}
+
+	public static EDynamic get(String str) {
+		for (EDynamic e : values()) {
+			if (e.toString().equals(str)) {
+				return e;
+			}
+		}
+		return null;
+	}
+}

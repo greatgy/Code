@@ -1,0 +1,32 @@
+﻿/*==============================================================*/
+/* DBMS name:      MySQL 5.5                                                                  */
+/* Created on:     19:01 2013/7/14                                                            */
+/*==============================================================*/
+
+/*==============================================================*/
+/*
+DataBase: WebDB
+Author:        architect.bian
+Description:    GWebDB1.0版本修改的表结构
+CreatedDate:   19:01 2013/7/14
+ModifyDate:    19:01 2013/7/14
+*/
+
+/*==============================================================*/
+/*
+ALTER TABLE table_name ADD column_name column-definition;
+ALTER TABLE `workorder`
+ADD `discount` tinyint DEFAULT NULL after saleorder_id,
+ADD `note` varchar(254) DEFAULT NULL after discount;
+*/
+
+/*==============================================================*/
+/* Table: Contributor                            		            */
+/*==============================================================*/
+
+alter table contributor add column avatarbig  varchar(255) default '' comment '大头像' after summary;
+alter table contributor add column avatarmedium  varchar(255) default '' comment '中头像' after avatarbig;
+alter table contributor add column avatarlittle  varchar(255) default '' comment '小头像' after avatarmedium;
+alter table contributor add column avataroriginal  varchar(255) default '' comment '原头像' after avatarlittle;
+alter table contributor add column useruid   char(32) comment '会员uid' after name;
+

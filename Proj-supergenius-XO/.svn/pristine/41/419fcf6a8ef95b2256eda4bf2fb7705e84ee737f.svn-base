@@ -1,0 +1,83 @@
+package com.supergenius.xo.finance.entity;
+
+import com.supergenius.xo.common.entity.BaseEntity;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.finance.enums.ECountType;
+
+/**
+ * 计数明细表
+ *
+ * @author ShangJianguo
+ */
+public class CountDetail extends BaseEntity{
+
+	private static final long serialVersionUID = -2782016574291711842L;
+	
+	private String useruid;//用户uid
+	private String refuid;//对应的UID
+	private EChannel channel;// 频道
+	private ECountType type;//类别（点赞、阅读）
+	private String data;//其他数据json格式
+	private int count;//点击几次，默认为1
+	private long countcurr;//当前点击数，点击后的计数
+	
+	public String getUseruid() {
+		return useruid;
+	}
+
+	public void setUseruid(String useruid) {
+		this.useruid = useruid;
+	}
+
+	public String getRefuid() {
+		return refuid;
+	}
+
+	public void setRefuid(String refuid) {
+		this.refuid = refuid;
+	}
+
+	public EChannel getChannel() {
+		return channel;
+	}
+
+	public void setChannel(EChannel channel) {
+		this.channel = channel;
+	}
+
+	public ECountType getType() {
+		return type;
+	}
+
+	public void setType(ECountType type) {
+		this.type = type;
+	}
+
+	public String getData() {
+		return data;
+	}
+
+	public void setData(String data) {
+		this.data = data;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+
+	public long getCountcurr() {
+		return countcurr;
+	}
+
+	public void setCountcurr(long countcurr) {
+		this.countcurr = countcurr;
+	}
+	
+	public void plusCountcurr() {
+		this.countcurr = countcurr + 1;
+	}
+}

@@ -1,0 +1,29 @@
+package com.supergenius.xo.enterpriser.rule;
+
+import com.genius.core.cache.rule.BaseRule;
+
+public class EnterpriserArticleRule extends BaseRule{
+	protected static String p = "enterpriser/article";
+	
+	public EnterpriserArticleRule() {
+		this("", 0);
+	}
+	
+	/**
+	 * @param k
+	 */
+	public EnterpriserArticleRule(String k) {
+		this(k, 0);
+	}
+
+	/**
+	 * 
+	 * @param k
+	 * @param exp seconds
+	 */
+	public EnterpriserArticleRule(String k, int exp) {
+		super(k, exp);
+		super.path += p;
+		refreshConfKey();
+	}
+}

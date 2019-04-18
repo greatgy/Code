@@ -1,0 +1,26 @@
+package com.supergenius.global.conf.message;
+
+import java.util.Properties;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+/**
+ * 
+ * @author LiJiacheng
+ */
+@Component
+public class MessageConf {
+
+	public static String MsgTmplPath;
+	public static String MsgContentTmpl;
+	public static String MsgTitleTmpl;
+
+	@Value("#{sys}")
+	public void setSysConf(Properties sys) {
+		MessageConf.MsgTmplPath = sys.getProperty("MsgTmplPath");
+		MessageConf.MsgContentTmpl = sys.getProperty("MsgContentTmpl");
+		MessageConf.MsgTitleTmpl = sys.getProperty("MsgTitleTmpl");
+	}
+
+}

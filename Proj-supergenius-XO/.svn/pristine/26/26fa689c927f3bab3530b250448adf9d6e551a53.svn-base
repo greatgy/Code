@@ -1,0 +1,23 @@
+package com.supergenius.xo.finance.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import com.genius.xo.base.dao.BaseDao;
+import com.supergenius.xo.finance.entity.Contribute;
+
+/**
+ * 投稿Dao
+ *
+ * @author ShangJianguo
+ */
+public interface ContributeDao extends BaseDao<Contribute>{
+	
+	/**
+	 * 获取用户未审核的投稿（文章）
+	 * @param map
+	 * @return
+	 * @author ShangJianguo
+	 */
+	List<Contribute> getInitList(Map<String, Object> map);
+}

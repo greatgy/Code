@@ -1,0 +1,25 @@
+
+package com.supergenius.xo.finance.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import com.genius.xo.base.dao.BaseDao;
+import com.supergenius.xo.finance.entity.CountDetail;
+
+/**
+ * 计数明细DAO
+ *
+ * @author ShangJianguo
+ */
+public interface CountDetailDao extends BaseDao<CountDetail>{
+	
+	/**
+	 * 获取计数明细排行列表
+	 * @param map
+	 * @return
+	 * @author ShangJianguo
+	 */
+	List<Map<?, ?>> getCountcurr(Map<String, Object> map);
+
+}

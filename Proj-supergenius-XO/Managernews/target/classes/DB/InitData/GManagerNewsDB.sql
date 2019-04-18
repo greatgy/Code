@@ -1,0 +1,30 @@
+﻿/*==============================================================*/
+/* DBMS name:      MySQL 5.5                                                                 */
+/* Created on:     2018年7月5日16:16:02                                                  */
+/*==============================================================*/
+
+/*==============================================================*/
+/*
+DataBase:       GManagernewsDB
+Author:		    JiaShitao
+Description:	GManagernewsDB初始化数据
+CreatedDate:	2018年7月5日16:16:02
+ModifyDate:		2018年7月5日16:16:02
+*/
+
+/**
+ * 模块表初始化数据
+ * @author : JiaShitao
+ * @date : 2018年7月5日16:16:02
+ */
+INSERT INTO `catalogue` (`cid`, `name`, `data`, `adminuid`, `status`, `createtime`, `updatetime`) VALUES 
+ (1, '首页', null, null, 1, '2017-11-13 16:07:20', '2017-11-13 16:07:33'),
+ (256, '资讯', null, null, 1, '2017-11-13 16:07:20', '2017-11-13 16:07:33'),
+ (2, '视野与格局', null, null, 1, '2017-11-13 16:07:20', '2017-11-13 16:07:33'),
+ (4, '管理与谋划', null, null, 1, '2017-11-13 16:07:20', '2017-11-13 16:07:33'),
+ (8, '薪酬与激励', null, null, 1, '2017-11-13 16:07:20', '2017-11-13 16:07:33'),
+ (16, '升迁与跳槽', null, null, 1, '2017-11-13 16:07:20', '2017-11-13 16:07:33'),
+ (32, '时尚生活', null, null, 1, '2017-11-13 16:07:20', '2017-11-13 16:07:33'),
+ (64, '职业经理人培训', null, null, 1, '2017-11-13 16:07:20', '2017-11-13 16:07:33'),
+ (128,'会员通道','<html>\r\n<head>\r\n	<meta charset=\"UTF-8\">\r\n	<title>职业经理人培训--会员通道</title>\r\n	<meta name=\"Keywords\" content=\"职业经理人培训,会员通道\" />\r\n	<meta name=\"Description\" content=\"职业经理人培训,会员通道\" />\r\n	<link rel=\"stylesheet\" href=\"${basecss}/css/default/index.css\">\r\n</head>\r\n<body>	\r\n        <div class=\"member1\">\r\n	<h2>会员须知</h2>\r\n		 职业经理人培训是超天才网的子网站之一。我们秉承顾雏军先生的管理理念组建超天才职业经理人培训学院，立志于打造一支万人最纯洁职业经理人培训是超天才网的子网站之一。我们秉承顾雏军先生的管理理念组建超天才职业经理人培训学院，立志于打造一支万人最纯洁职业经理人培训是超天才网的子网站之一。我们秉承顾雏军先生的管理理念组建超天才职业经理人培训学院，立志于打造一支万人最纯洁职业经理人培训是超天才网的子网站之一。我们秉承顾雏军先生的管理理念组建超天才职业经理人培训学院，立志于打造一支万人最纯洁\r\n		</div>\r\n	 <div class=\"memDetail\">\r\n	 <img src=\"${basecss}/imgs/default/member1.png\" alt=\"\" class=\"col-xs-4 col-ms-4 col-md-4\" />\r\n	 <img src=\"${basecss}/imgs/default/member2.png\" alt=\"\" class=\"col-xs-4 col-ms-4 col-md-4\" />\r\n	 <img src=\"${basecss}/imgs/default/member3.png\" alt=\"\" class=\"col-xs-4 col-ms-4 col-md-4\" />\r\n	 <ul class=\"detailList\">\r\n		 <li>\r\n			 <span class=\"squre\">1</span>\r\n			所有超天才会员可以通过申请免费成为超天才职业经理人培训学员，资深学员可以获得顾雏军先生亲自指导。\r\n		</li>\r\n		 <li>\r\n			<span class=\"squre\">2</span>\r\n			所有超天才会员可以优先获得职业经理人培训网站不定期举办的公开高端论坛活动席位，职业经理人培训学员可以参加内部课程\r\n		</li>\r\n		<li>\r\n			<span class=\"squre\">3</span>\r\n			所有超天才会员在职业经理人培训网站享有1个月的免费广告宣传特权，免费时段之后可以享受7折优惠。\r\n		</li>\r\n	</ul>\r\n	</div>\r\n		<a href=\"http://user.supergenius.cn/register\" class=\"nowin\">立即加入</a>\r\n	</div>\r\n</body>\r\n</html>',NULL,'1','2017-11-13 16:07:20','2018-07-23 11:15:19');
+

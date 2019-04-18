@@ -1,0 +1,297 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.life.dao.CourseDao">
+
+    <sql id="basecolumns">`uid`, `createtime` </sql>
+    <sql id="othercolumns">`grade`, `sid`, `name`, `imglittle`, `imgmedium`, `imgbig`, `imgoriginal`, `data`, `press`, `publishtime`, `useadress`, `status`, `adminuid` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+    <sql id="table">course</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="whereid">where uid = #{uid}</sql>
+    <sql id="allfields"><include refid="basecolumns"/>, <include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{uid},#{createtime},#{grade},#{sid},#{name},#{imglittle},#{imgmedium},#{imgbig},#{imgoriginal},#{data},#{press},#{publishtime},#{useadress},#{status},#{adminuid}</sql>
+    <sql id="setgrade">`grade` = #{grade}</sql>
+    <sql id="setsid">`sid` = #{sid}</sql>
+    <sql id="setname">`name` = #{name}</sql>
+    <sql id="setimglittle">`imglittle` = #{imglittle}</sql>
+    <sql id="setimgmedium">`imgmedium` = #{imgmedium}</sql>
+    <sql id="setimgbig">`imgbig` = #{imgbig}</sql>
+    <sql id="setimgoriginal">`imgoriginal` = #{imgoriginal}</sql>
+    <sql id="setdata">`data` = #{data}</sql>
+    <sql id="setpress">`press` = #{press}</sql>
+    <sql id="setpublishtime">`publishtime` = #{publishtime}</sql>
+    <sql id="setuseadress">`useadress` = #{useadress}</sql>
+    <sql id="setstatus">`status` = #{status}</sql>
+    <sql id="setadminuid">`adminuid` = #{adminuid}</sql>
+    <sql id="setname_lk">`name` like CONCAT('%',#{name_lk},'%') </sql>
+    <sql id="allsets">set
+            <include refid="setgrade"/>,
+            <include refid="setsid"/>,
+            <include refid="setname"/>,
+            <include refid="setimglittle"/>,
+            <include refid="setimgmedium"/>,
+            <include refid="setimgbig"/>,
+            <include refid="setimgoriginal"/>,
+            <include refid="setdata"/>,
+            <include refid="setpress"/>,
+            <include refid="setpublishtime"/>,
+            <include refid="setuseadress"/>,
+            <include refid="setstatus"/>,
+            <include refid="setadminuid"/>
+    </sql>
+    <sql id="orderby">order by createtime</sql>
+
+    <select id="get" parameterType="string" resultType="course">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="course">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="grade != null">
+                and <include refid="setgrade"/>
+            </if>
+            <if test="sid != null">
+                and <include refid="setsid"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="imglittle != null">
+                and <include refid="setimglittle"/>
+            </if>
+            <if test="imgmedium != null">
+                and <include refid="setimgmedium"/>
+            </if>
+            <if test="imgbig != null">
+                and <include refid="setimgbig"/>
+            </if>
+            <if test="imgoriginal != null">
+                and <include refid="setimgoriginal"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="press != null">
+                and <include refid="setpress"/>
+            </if>
+            <if test="publishtime != null">
+                and <include refid="setpublishtime"/>
+            </if>
+            <if test="useadress != null">
+                and <include refid="setuseadress"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="adminuid != null">
+                and <include refid="setadminuid"/>
+            </if>
+            <if test="name_lk != null">
+                and <include refid="setname_lk"/>
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="grade != null">
+                and <include refid="setgrade"/>
+            </if>
+            <if test="sid != null">
+                and <include refid="setsid"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="imglittle != null">
+                and <include refid="setimglittle"/>
+            </if>
+            <if test="imgmedium != null">
+                and <include refid="setimgmedium"/>
+            </if>
+            <if test="imgbig != null">
+                and <include refid="setimgbig"/>
+            </if>
+            <if test="imgoriginal != null">
+                and <include refid="setimgoriginal"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="press != null">
+                and <include refid="setpress"/>
+            </if>
+             <if test="publishtime != null">
+                and <include refid="setpublishtime"/>
+            </if>
+            <if test="useadress != null">
+                and <include refid="setuseadress"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="adminuid != null">
+                and <include refid="setadminuid"/>
+            </if>
+            <if test="name_lk != null">
+                and <include refid="setname_lk"/>
+            </if>
+        </where>
+    </select>
+
+    <select id="getList" parameterType="hashMap" resultType="course">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="grade != null">
+                and <include refid="setgrade"/>
+            </if>
+            <if test="sid != null">
+                and <include refid="setsid"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="imglittle != null">
+                and <include refid="setimglittle"/>
+            </if>
+            <if test="imgmedium != null">
+                and <include refid="setimgmedium"/>
+            </if>
+            <if test="imgbig != null">
+                and <include refid="setimgbig"/>
+            </if>
+            <if test="imgoriginal != null">
+                and <include refid="setimgoriginal"/>
+            </if>
+            <if test="data != null">
+                and <include refid="setdata"/>
+            </if>
+            <if test="press != null">
+                and <include refid="setpress"/>
+            </if>
+             <if test="publishtime != null">
+                and <include refid="setpublishtime"/>
+            </if>
+            <if test="useadress != null">
+                and <include refid="setuseadress"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+            <if test="adminuid != null">
+                and <include refid="setadminuid"/>
+            </if>
+            <if test="name_lk != null">
+                and <include refid="setname_lk"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insert" parameterType="course">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="course">
+        update
+        <include refid="table"/>
+        <include refid="allsets"/>
+        <include refid="whereid"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="grade != null">
+                <include refid="setgrade"/>,
+            </if>
+            <if test="sid != null">
+                <include refid="setsid"/>,
+            </if>
+            <if test="name != null">
+                <include refid="setname"/>,
+            </if>
+            <if test="imglittle != null">
+                <include refid="setimglittle"/>,
+            </if>
+            <if test="imgmedium != null">
+                <include refid="setimgmedium"/>,
+            </if>
+            <if test="imgbig != null">
+                <include refid="setimgbig"/>,
+            </if>
+            <if test="imgoriginal != null">
+                <include refid="setimgoriginal"/>,
+            </if>
+            <if test="data != null">
+                <include refid="setdata"/>,
+            </if>
+            <if test="press != null">
+                <include refid="setpress"/>,
+            </if>
+             <if test="publishtime != null">
+                <include refid="setpublishtime"/>
+            </if>
+            <if test="useadress != null">
+                <include refid="setuseadress"/>
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>,
+            </if>
+            <if test="adminuid != null">
+                <include refid="setadminuid"/>
+            </if>
+        </set>
+        <include refid="whereid"/>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+
+</mapper>
+

@@ -1,0 +1,291 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.manager.dao.AppReplyDetailDao">
+
+    <sql id="basecolumns">`uid`, `createtime` </sql>
+    <sql id="othercolumns"><include refid="basecolumns"/>, `useruid`, `adminuid`, `appreplyuid`, `applicationuid`, `confuid`, `name`, `file`, `desc`, `time`, `isvideo`, `replystagefrom`, `replystageto`, `status` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+    <sql id="table">appreplydetail</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="whereid">where uid = #{uid}</sql>
+    <sql id="allfields"><include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{uid},#{createtime},#{useruid},#{adminuid},#{appreplyuid},#{applicationuid},#{confuid},#{name},#{file},#{desc},#{time},#{isvideo},#{replystagefrom},#{replystageto},#{status}</sql>
+    <sql id="setuseruid">`useruid` = #{useruid}</sql>
+    <sql id="setadminuid">`adminuid` = #{adminuid}</sql>
+    <sql id="setappreplyuid">`appreplyuid` = #{appreplyuid}</sql>
+    <sql id="setapplicationuid">`applicationuid` = #{applicationuid}</sql>
+    <sql id="setconfuid">`confuid` = #{confuid}</sql>
+    <sql id="setuid">uid = #{uid}</sql>
+    <sql id="setname">`name` = #{name}</sql>
+    <sql id="setfile">`file` = #{file}</sql>
+    <sql id="setdesc">`desc` = #{desc}</sql>
+    <sql id="settime">`time` = #{time}</sql>
+    <sql id="setisvideo">`isvideo` = #{isvideo}</sql>
+    <sql id="setreplystagefrom">`replystagefrom` = #{replystagefrom}</sql>
+    <sql id="setreplystageto">`replystageto` = #{replystageto}</sql>
+    <sql id="setstatus">`status` = #{status}</sql>
+    <sql id="allsets">set
+            <include refid="setuseruid"/>,
+            <include refid="setadminuid"/>,
+            <include refid="setappreplyuid"/>,
+            <include refid="setapplicationuid"/>,
+            <include refid="setconfuid"/>,
+            <include refid="setname"/>,
+            <include refid="setfile"/>,
+            <include refid="setdesc"/>,
+            <include refid="settime"/>,
+            <include refid="setisvideo"/>,
+            <include refid="setreplystagefrom"/>,
+            <include refid="setreplystageto"/>,
+            <include refid="setstatus"/>
+    </sql>
+    <sql id="orderby">order by createtime</sql>
+
+    <select id="get" parameterType="string" resultType="appreplyDetail">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="appreplyDetail">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="uid != null">
+                and <include refid="setuid"/>
+            </if>         
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="adminuid != null">
+                and <include refid="setadminuid"/>
+            </if>
+            <if test="appreplyuid != null">
+                and <include refid="setappreplyuid"/>
+            </if>
+            <if test="applicationuid != null">
+                and <include refid="setapplicationuid"/>
+            </if>
+            <if test="confuid != null">
+                and <include refid="setconfuid"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="time != null">
+                and <include refid="settime"/>
+            </if>
+            <if test="isvideo != null">
+                and <include refid="setisvideo"/>
+            </if>
+            <if test="replystagefrom != null">
+                and <include refid="setreplystagefrom"/>
+            </if>
+            <if test="replystageto != null">
+                and <include refid="setreplystageto"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="adminuid != null">
+                and <include refid="setadminuid"/>
+            </if>
+            <if test="appreplyuid != null">
+                and <include refid="setappreplyuid"/>
+            </if>
+            <if test="applicationuid != null">
+                and <include refid="setapplicationuid"/>
+            </if>
+            <if test="confuid != null">
+                and <include refid="setconfuid"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="time != null">
+                and <include refid="settime"/>
+            </if>
+            <if test="isvideo != null">
+                and <include refid="setisvideo"/>
+            </if>
+            <if test="replystagefrom != null">
+                and <include refid="setreplystagefrom"/>
+            </if>
+            <if test="replystageto != null">
+                and <include refid="setreplystageto"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </select>
+
+    <select id="getList" parameterType="hashMap" resultType="appreplyDetail">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="useruid != null">
+                and <include refid="setuseruid"/>
+            </if>
+            <if test="adminuid != null">
+                and <include refid="setadminuid"/>
+            </if>
+            <if test="appreplyuid != null">
+                and <include refid="setappreplyuid"/>
+            </if>
+            <if test="applicationuid != null">
+                and <include refid="setapplicationuid"/>
+            </if>
+            <if test="confuid != null">
+                and <include refid="setconfuid"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="file != null">
+                and <include refid="setfile"/>
+            </if>
+            <if test="desc != null">
+                and <include refid="setdesc"/>
+            </if>
+            <if test="time != null">
+                and <include refid="settime"/>
+            </if>
+            <if test="isvideo != null">
+                and <include refid="setisvideo"/>
+            </if>
+            <if test="replystagefrom != null">
+                and <include refid="setreplystagefrom"/>
+            </if>
+            <if test="replystageto != null">
+                and <include refid="setreplystageto"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insert" parameterType="appreplyDetail">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="appreplyDetail">
+        update
+        <include refid="table"/>
+        <include refid="allsets"/>
+        <include refid="whereid"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="useruid != null">
+                <include refid="setuseruid"/>,
+            </if>
+            <if test="adminuid != null">
+                <include refid="setadminuid"/>,
+            </if>
+            <if test="appreplyuid != null">
+                <include refid="setappreplyuid"/>,
+            </if>
+            <if test="applicationuid != null">
+                <include refid="setapplicationuid"/>,
+            </if>
+            <if test="confuid != null">
+                <include refid="setconfuid"/>,
+            </if>
+            <if test="name != null">
+                <include refid="setname"/>,
+            </if>
+            <if test="file != null">
+                <include refid="setfile"/>,
+            </if>
+            <if test="desc != null">
+                <include refid="setdesc"/>,
+            </if>
+            <if test="time != null">
+                <include refid="settime"/>,
+            </if>
+            <if test="isvideo != null">
+                <include refid="setisvideo"/>,
+            </if>
+            <if test="replystagefrom != null">
+                <include refid="setreplystagefrom"/>,
+            </if>
+            <if test="replystageto != null">
+                <include refid="setreplystageto"/>,
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>
+            </if>
+        </set>
+        <include refid="whereid"/>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+
+</mapper>
+

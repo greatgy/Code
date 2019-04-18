@@ -1,0 +1,21 @@
+/*==============================================================*/
+/* DBMS name:      MySQL 5.5                                                                  */
+/* Created on:     19:01 2013/7/14                                                            */
+/*==============================================================*/
+
+/*==============================================================*/
+/*
+DataBase:      GUserDB2
+Author:        liubin
+Description:   GUserDB2.0.0.0版本修改的表结构
+ModifyDate:    11:01 2016/9/19 
+*/
+
+/*==============================================================*/
+/*
+ALTER TABLE `ordergoods` ADD COLUMN `refuid` varchar(36)  NOT NULL COMMENT '商品的uid';
+`site` tinyint(1) NOT NULL COMMENT '交易来源的平台',
+*/
+
+ALTER TABLE `ordergoods` MODIFY COLUMN `refuid` varchar(36) DEFAULT NULL COMMENT '商品的uid';
+ALTER TABLE `tradedetail` MODIFY COLUMN `site` tinyint(1) DEFAULT NULL COMMENT '交易来源的平台';

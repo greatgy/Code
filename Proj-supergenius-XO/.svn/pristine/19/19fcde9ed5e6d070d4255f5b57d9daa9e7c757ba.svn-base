@@ -1,0 +1,23 @@
+package com.supergenius.xo.finance.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import com.genius.xo.base.dao.BaseDao;
+import com.supergenius.xo.finance.entity.Subscribe;
+
+/**
+ * 订阅Dao
+ * 
+ * @author LiJiacheng
+ */
+public interface SubscribeDao extends BaseDao<Subscribe> {
+
+	/**
+	 * 获取我的收藏
+	 * @param map
+	 * @return
+	 * @author YuYingJie
+	 */
+	List<Subscribe> getMySubscribes(Map<String, Object> map);
+}

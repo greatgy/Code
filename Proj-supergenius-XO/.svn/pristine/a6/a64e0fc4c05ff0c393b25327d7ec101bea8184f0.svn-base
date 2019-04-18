@@ -1,0 +1,12 @@
+package com.supergenius.xo.sudokuapi.service;
+
+import com.genius.xo.base.service.BaseSO;
+import com.supergenius.xo.sudokuapi.entity.Messages;
+
+/**
+ * 站内消息SO
+ * @author YuYingJie
+ */
+public interface MessagesSO extends BaseSO<Messages> {
+
+}

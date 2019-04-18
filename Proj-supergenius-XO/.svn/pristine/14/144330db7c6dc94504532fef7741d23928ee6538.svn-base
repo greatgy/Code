@@ -1,0 +1,33 @@
+package com.supergenius.xo.enterpriser.service;
+
+import com.genius.model.base.enums.EStatus;
+import com.genius.xo.base.service.BaseSO;
+import com.supergenius.xo.enterpriser.entity.Catalogue;
+
+/**
+ * CatalogueSO
+ * @author loupengyu
+ * @date 2018年1月29日11:10:48
+ */
+public interface CatalogueSO extends BaseSO<Catalogue>{
+	
+	/**
+	 * 设置是否冻结
+	 * 
+	 * @param isStatus
+	 * @return
+	 * @author loupengyu
+	 * @date 2018年1月30日17:13:05
+	 */
+	boolean update(int cid, EStatus status);
+	
+	/**
+	 * 根据cid获取一个分类板块
+	 * 
+	 * @param cid
+	 * @return
+	 * @author loupengyu
+	 * @date 2018年1月30日17:13:05
+	 */
+	Catalogue get(int cid);
+}

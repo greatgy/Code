@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.finance.dao.CountDetailDao">
+	 
+	<sql id="basecolumns">`uid`,`createtime`</sql> 
+	<sql id="othercolumns">`useruid`,`refuid`,`channel`,`type`, `data`, `count`,`countcurr`</sql>
+	<sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/></sql>
+	<sql id="table">countdetail</sql>
+	<sql id="whereid">where uid = #{uid}</sql>
+	<sql id="allfields"><include refid="basecolumns"/>, <include refid="othercolumns"/></sql>
+	<sql id="allparams">#{uid},#{createtime},#{useruid},#{refuid}, #{channel},#{type},#{data},#{count},#{countcurr}</sql>
+	<sql id="count">count(*)</sql>
+	<sql id="setuid">uid = #{uid}</sql>
+	<sql id="setuseruid">useruid = #{useruid}</sql>
+	<sql id="setrefuid">refuid = #{refuid}</sql>
+	<sql id="setchannel">channel = #{channel}</sql>
+	<sql id="settype">type = #{type}</sql>
+	<sql id="setdata">data = #{data}</sql>
+	<sql id="setcount">count = #{count}</sql>
+	<sql id="setcountcurr">countcurr = #{countcurr}</sql>
+	<sql id="setclickdayfrom">#{clickdayfrom} &lt;= createtime</sql>
+	<sql id="allsets">set <include refid="setuid"/>,<include refid="setuseruid"/>, <include refid="setrefuid"/>, <include refid="setdata"/>,<include refid="setcount"/>,<include refid="setcountcurr"/>,<include refid="setchannel"/>, <include refid="settype"/></sql>
+	<sql id="orderby">order by createtime</sql>
+	
+	<select id="get" parameterType="string" resultType="countDetail">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<include refid="whereid"/>
+	</select>
+	
+	<select id="getOne" parameterType="hashMap" resultType="countDetail">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="useruid != null">
+				<include refid="setuseruid"/>
+			</if>
+			<if test="refuid != null">
+				and <include refid="setrefuid"/>
+			</if>
+			<if test="data != null">
+				and <include refid="setdata"/>
+			</if>
+			<if test="count != null">
+				and <include refid="setcount"/>
+			</if>
+			<if test="countcurr != null">
+				and <include refid="setcountcurr"/>
+			</if>
+			<if test="channel!= null">
+				and <include refid="setchannel"/>
+			</if>
+			<if test="type != null">
+				and <include refid="settype"/>
+			</if>
+		</where>
+		LIMIT 0,1
+	</select>
+	
+	<select id="getCount" parameterType="hashMap" resultType="int">
+		select
+		<include refid="count" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="channel!= null">
+				and <include refid="setchannel"/>
+			</if>
+			<if test="type != null">
+				and <include refid="settype"/>
+			</if>
+			<if test="refuids != null">
+				and refuid in
+				<foreach item="item" index="index" collection="refuids" 
+                 	 open="(" separator="," close=")">
+                 	 #{item}
+            	</foreach>
+			</if>
+		</where>
+	</select>
+	
+	<select id="getList" parameterType="hashMap" resultType="countDetail">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="useruid != null">
+				<include refid="setuseruid"/>
+			</if>
+			<if test="refuid != null">
+				and <include refid="setrefuid"/>
+			</if>
+			<if test="data != null">
+				and <include refid="setdata"/>
+			</if>
+			<if test="count != null">
+				and <include refid="setcount"/>
+			</if>
+			<if test="countcurr != null">
+				and <include refid="setcountcurr"/>
+			</if>
+			<if test="channel!= null">
+				and <include refid="setchannel"/>
+			</if>
+			<if test="type != null">
+				and <include refid="settype"/>
+			</if>
+		</where>
+		<!-- 处理orderby语句 -->
+		<choose>
+			<when test="orderBy != null">
+				${orderBy}
+			</when>
+			<otherwise>
+				<include refid="orderby"/>
+				<if test="ascDesc != null">
+					${ascDesc}
+				</if>
+			</otherwise>
+		</choose>
+		<!-- 处理limit语句 -->
+		<trim prefix="LIMIT" prefixOverrides=",">
+			<if test="startIndex != null and pageSize != null">
+				${startIndex}
+			</if>
+			<if test="pageSize != null">
+			 , ${pageSize}
+			 </if>
+		</trim>
+	</select>
+	
+	<insert id="insert" parameterType="countdetail">
+		<selectKey resultType="int" keyProperty="oid">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into
+		<include refid="table"/>
+		(<include refid="allfields"/>)
+		values (
+			<include refid="allparams"/>
+		)
+	</insert>
+	
+	<update id="update" parameterType="countdetail">
+		update
+		<include refid="table"/>
+		<include refid="allsets"/>
+		<include refid="whereid"/>
+	</update>
+	
+	<update id="updateFields" parameterType="hashMap">
+		update
+		<include refid="table"/>
+		<set>
+			<if test="useruid != null">
+				<include refid="setuseruid"/>,
+			</if>
+			<if test="refuid != null">
+				<include refid="setrefuid"/>,
+			</if>
+			<if test="data != null">
+				<include refid="setdata"/>,
+			</if>
+			<if test="count != null">
+				<include refid="setcount"/>,
+			</if>
+			<if test="countcurr != null">
+				<include refid="setcountcurr"/>,
+			</if>
+			<if test="channel!= null">
+				<include refid="setchannel"/>,
+			</if>
+			<if test="type != null">
+				<include refid="settype"/>
+			</if>
+		</set>
+		<where>
+			<if test="uid != null">
+				<include refid="setuid"/>
+			</if>
+		</where>
+	</update>
+		
+	<delete id="delete" parameterType="string">
+		delete from 
+		<include refid="table"/>
+		<include refid="whereid"/>
+	</delete>
+	
+	<delete id="deleteByMap" parameterType="hashMap">
+		delete from
+		<include refid="table"/>
+		<where>
+			<if test="useruid != null">
+				<include refid="setuseruid"/>
+			</if>
+			<if test="refuid != null">
+				and <include refid="setrefuid"/>
+			</if>
+			<if test="data != null">
+				and <include refid="setdata"/>
+			</if>
+			<if test="count != null">
+				and <include refid="setcount"/>
+			</if>
+			<if test="countcurr != null">
+				and <include refid="setcountcurr"/>
+			</if>
+			<if test="channel!= null">
+				and <include refid="setchannel"/>
+			</if>
+			<if test="type != null">
+				and <include refid="settype"/>
+			</if>
+		</where>
+	</delete>
+	
+	<select id="getCountcurr" parameterType="hashMap" resultType="map">
+		select refuid, count(*) as v 
+		from 
+		<include refid="table"/>
+		<where>
+			<if test="type != null">
+				and <include refid="settype"/>
+			</if>
+			<if test="clickdayfrom != null">
+				and <include refid="setclickdayfrom"/>
+			</if>
+			<if test="channel != null">
+				and <include refid="setchannel"/>
+			</if>
+			and refuid in (
+				select f.uid from GFinanceDB.finance f where 
+				<if test="financetype != null">
+					f.type &amp; #{financetype} and
+				</if>
+				<if test="publishdayfrom != null">
+					#{publishdayfrom} &lt;= f.createtime and
+				</if>
+				 f.status=1 
+				<if test="authoruid != null">
+					 and f.authoruid = #{authoruid}
+				</if> 
+			)
+		</where>
+			group by (refuid)
+		<choose>
+			<when test="orderBy != null">
+				${orderBy}
+			</when>
+			<otherwise>
+				<if test="ascDesc != null">
+					${ascDesc} 
+				</if>
+			</otherwise>
+		</choose>
+		limit 0,${ranknum}
+	</select>
+	
+</mapper>

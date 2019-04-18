@@ -1,0 +1,49 @@
+/*==============================================================*/
+/* DBMS name:      MySQL 5.5                                                                  */
+/* Created on:     13:54 2016/7/18                                                            */
+/*==============================================================*/
+
+/*==============================================================*/
+/*
+DataBase:      GUserDB2
+Author:        liubin
+Description:   GUserDB1.0.0.0版本修改的表结构
+ModifyDate:    13:54 2016/7/18
+*/
+
+/*==============================================================*/
+
+drop table if exists `score`;
+drop table if exists `scoredetail`;
+
+#
+# Structure for the `score` table : 积分表
+#
+CREATE TABLE IF NOT EXISTS `score` (
+  `uid` varchar(36) NOT NULL COMMENT '唯一ID',
+  `useruid` varchar(36) NOT NULL COMMENT '用户uid',
+  `total` int(11) DEFAULT NULL COMMENT '总积分(某个类型的总积分)',
+  `type` tinyint(1) NOT NULL COMMENT '分数类型（写文章获得，转载文章获得，积分晋级） 取用 in',
+  `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态(0禁用1启用)',
+  `createtime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '创建时间',
+  `updatetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+ PRIMARY KEY (`uid`),
+ UNIQUE KEY `uid` (`uid`)
+)COMMENT='动态表' ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#
+# Structure for the `scoredetail` table : 积分明细
+#
+CREATE TABLE IF NOT EXISTS `scoredetail` (
+  `uid` varchar(36) NOT NULL COMMENT '唯一ID',
+  `useruid` varchar(36) NOT NULL COMMENT '用户uid',
+  `score` int(11) NOT NULL COMMENT '变动积分',
+  `site` tinyint(1) NOT NULL COMMENT '变动的站点，对应ESite枚举',
+  `refuid` varchar(255) DEFAULT NULL COMMENT '获得积分与消费积分事件uid',
+  `type` tinyint(1) DEFAULT NULL COMMENT '分数类型（写文章获得，转载文章获得，积分晋级）',
+  `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态(0原创1非原创)',
+  `createtime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '创建时间',
+  `updatetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+ PRIMARY KEY (`uid`),
+ UNIQUE KEY `uid` (`uid`)
+)COMMENT='动态表' ENGINE=InnoDB DEFAULT CHARSET=utf8;

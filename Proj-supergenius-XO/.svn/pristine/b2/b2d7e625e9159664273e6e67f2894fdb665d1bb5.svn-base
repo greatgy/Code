@@ -1,0 +1,27 @@
+package com.supergenius.xo.finance.service;
+
+import java.util.List;
+
+import com.genius.xo.baseadmin.service.BaseSO;
+import com.supergenius.xo.finance.entity.DebateArticle;
+
+/**
+ * 论战文章SO
+ * @author liushaomin
+ */
+public interface DebateArticleSO extends BaseSO<DebateArticle>{
+	
+	/**
+	 * 根据论战uid获取其对应的文章
+	 * @param debateuid
+	 * @return
+	 * @author ShangJianguo
+	 */
+	List<DebateArticle> getList(String debateuid);
+
+	/**
+	 * @param financeuid
+	 * @return
+	 */
+	DebateArticle getByFinanceuid(String financeuid);
+}

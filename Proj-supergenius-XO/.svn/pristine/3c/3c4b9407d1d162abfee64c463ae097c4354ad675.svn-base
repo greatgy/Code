@@ -1,0 +1,15 @@
+#the enterpriser mysql
+EnterpriserDB2.jdbc.driverClassName=com.mysql.jdbc.Driver
+EnterpriserDB2.jdbc.url=jdbc:mysql://localhost:3306/GEnterpriserDB2?zeroDateTimeBehavior=convertToNull
+EnterpriserDB2.jdbc.username=root
+EnterpriserDB2.jdbc.password=123456
+EnterpriserDB2.min=30
+EnterpriserDB2.max=100
+
+#the user mysql
+UserDB.jdbc.driverClassName=com.mysql.jdbc.Driver
+UserDB.jdbc.url=jdbc:mysql://localhost:3306/GUserDB2
+UserDB.jdbc.username=root
+UserDB.jdbc.password=123456
+UserDB.min=30
+UserDB.max=100

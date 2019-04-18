@@ -1,0 +1,539 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.user.dao.UserInfoDao">
+
+    <sql id="basecolumns">`uid`, `createtime` </sql>
+    <sql id="othercolumns"><include refid="basecolumns"/>, `name`, `nickname`, `showname`, `identityid`, `gender`, `birthday`, `college`, `address`, `qq`, `wx`, `sina`, `aisle`, `othernicks`, `otheravatar`, `country`, `soldier`, `passport`,`msn`,`freeze`, `avatarbig`, `avatar`, `avatarlittle`, `original`, `summary`, `job`, `department`, `company`, `domain`, `honor`, `education`, `work` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+    <sql id="table">userinfo</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="whereid">where uid = #{uid}</sql>
+    <sql id="allfields"><include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{uid},#{createtime},#{name},#{nickname},#{showname},#{identityid},#{gender},#{birthday},#{college},#{address},#{qq},#{wx},#{sina},#{aisle},#{othernicks},#{otheravatar},#{country},#{soldier},#{passport},#{msn},#{freeze},#{avatarbig},#{avatar},#{avatarlittle},#{original},#{summary},#{job},#{department},#{company},#{domain},#{honor},#{education},#{work}</sql>
+    <sql id="setname">name = #{name}</sql>
+    <sql id="setnickname">nickname = #{nickname}</sql>
+    <sql id="setshowname">showname = #{showname}</sql>
+    <sql id="setidentityid">identityid = #{identityid}</sql>
+    <sql id="setgender">gender = #{gender}</sql>
+    <sql id="setbirthday">birthday = #{birthday}</sql>
+    <sql id="setcollege">college = #{college}</sql>
+    <sql id="setaddress">address = #{address}</sql>
+    <sql id="setqq">qq = #{qq}</sql>
+    <sql id="setwx">wx = #{wx}</sql>
+    <sql id="setsina">sina = #{sina}</sql>
+    <sql id="setaisle">aisle = #{aisle}</sql>
+    <sql id="setothernicks">othernicks = #{othernicks}</sql>
+    <sql id="setotheravatar">otheravatar = #{otheravatar}</sql>
+    <sql id="setcountry">country = #{country}</sql>
+    <sql id="setsoldier">soldier = #{soldier}</sql>
+    <sql id="setpassport">passport = #{passport}</sql>
+    <sql id="setmsn">msn = #{msn}</sql>
+    <sql id="setfreeze">freeze = #{freeze}</sql>
+    <sql id="setavatarbig">avatarbig = #{avatarbig}</sql>
+    <sql id="setavatar">avatar = #{avatar}</sql>
+    <sql id="setavatarlittle">avatarlittle = #{avatarlittle}</sql>
+    <sql id="setoriginal">original = #{original}</sql>
+    <sql id="setsummary">summary = #{summary}</sql>
+    <sql id="setjob">job = #{job}</sql>
+    <sql id="setdepartment">department = #{department}</sql>
+    <sql id="setcompany">company = #{company}</sql>
+    <sql id="setdomain">domain = #{domain}</sql>
+    <sql id="sethonor">honor = #{honor}</sql>
+    <sql id="seteducation">education = #{education}</sql>
+    <sql id="setwork">work = #{work}</sql>
+    <sql id="allsets">set
+            <include refid="setname"/>,
+            <include refid="setnickname"/>,
+            <include refid="setshowname"/>,
+            <include refid="setidentityid"/>,
+            <include refid="setgender"/>,
+            <include refid="setbirthday"/>,
+            <include refid="setcollege"/>,
+            <include refid="setaddress"/>,
+            <include refid="setqq"/>,
+            <include refid="setwx"/>,
+            <include refid="setsina"/>,
+            <include refid="setaisle"/>,
+            <include refid="setothernicks"/>,
+            <include refid="setotheravatar"/>,
+            <include refid="setcountry"/>,
+            <include refid="setsoldier"/>,
+            <include refid="setpassport"/>,
+            <include refid="setmsn"/>,
+            <include refid="setfreeze"/>,
+            <include refid="setavatarbig"/>,
+            <include refid="setavatar"/>,
+            <include refid="setavatarlittle"/>,
+            <include refid="setoriginal"/>,
+            <include refid="setsummary"/>,
+            <include refid="setjob"/>,
+            <include refid="setdepartment"/>,
+            <include refid="setcompany"/>,
+            <include refid="setdomain"/>,
+            <include refid="sethonor"/>,
+            <include refid="seteducation"/>,
+            <include refid="setwork"/>
+    </sql>
+    <sql id="orderby">order by createtime</sql>
+
+    <select id="get" parameterType="string" resultType="userinfo">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="userinfo">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="nickname != null">
+                and <include refid="setnickname"/>
+            </if>
+            <if test="showname != null">
+                and <include refid="setshowname"/>
+            </if>
+            <if test="identityid != null">
+                and <include refid="setidentityid"/>
+            </if>
+            <if test="gender != null">
+                and <include refid="setgender"/>
+            </if>
+            <if test="birthday != null">
+                and <include refid="setbirthday"/>
+            </if>
+            <if test="college != null">
+                and <include refid="setcollege"/>
+            </if>
+            <if test="address != null">
+                and <include refid="setaddress"/>
+            </if>
+            <if test="qq != null">
+                and <include refid="setqq"/>
+            </if>
+            <if test="wx != null">
+                and <include refid="setwx"/>
+            </if>
+            <if test="sina != null">
+                and <include refid="setsina"/>
+            </if>
+            <if test="aisle != null">
+                and <include refid="setaisle"/>
+            </if>
+            <if test="othernicks != null">
+                and <include refid="setothernicks"/>
+            </if>
+            <if test="otheravatar != null">
+                and <include refid="setotheravatar"/>
+            </if>
+            <if test="country != null">
+                and <include refid="setcountry"/>
+            </if>
+            <if test="soldier != null">
+                and <include refid="setsoldier"/>
+            </if>
+            <if test="passport != null">
+                and <include refid="setpassport"/>
+            </if>
+            <if test="msn != null">
+                and <include refid="setmsn"/>
+            </if>
+            <if test="freeze != null">
+                and <include refid="setfreeze"/>
+            </if>
+            <if test="avatarbig != null">
+                and <include refid="setavatarbig"/>
+            </if>
+            <if test="avatar != null">
+                and <include refid="setavatar"/>
+            </if>
+            <if test="avatarlittle != null">
+                and <include refid="setavatarlittle"/>
+            </if>
+            <if test="original != null">
+                and <include refid="setoriginal"/>
+            </if>
+            <if test="summary != null">
+                and <include refid="setsummary"/>
+            </if>
+            <if test="job != null">
+                and <include refid="setjob"/>
+            </if>
+            <if test="department != null">
+                and <include refid="setdepartment"/>
+            </if>
+            <if test="company != null">
+                and <include refid="setcompany"/>
+            </if>
+            <if test="domain != null">
+                and <include refid="setdomain"/>
+            </if>
+            <if test="honor != null">
+                and <include refid="sethonor"/>
+            </if>
+            <if test="education != null">
+                and <include refid="seteducation"/>
+            </if>
+            <if test="work != null">
+                and <include refid="setwork"/>
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="nickname != null">
+                and <include refid="setnickname"/>
+            </if>
+            <if test="showname != null">
+                and <include refid="setshowname"/>
+            </if>
+            <if test="identityid != null">
+                and <include refid="setidentityid"/>
+            </if>
+            <if test="gender != null">
+                and <include refid="setgender"/>
+            </if>
+            <if test="birthday != null">
+                and <include refid="setbirthday"/>
+            </if>
+            <if test="college != null">
+                and <include refid="setcollege"/>
+            </if>
+            <if test="address != null">
+                and <include refid="setaddress"/>
+            </if>
+            <if test="qq != null">
+                and <include refid="setqq"/>
+            </if>
+            <if test="wx != null">
+                and <include refid="setwx"/>
+            </if>
+            <if test="sina != null">
+                and <include refid="setsina"/>
+            </if>
+            <if test="aisle != null">
+                and <include refid="setaisle"/>
+            </if>
+            <if test="othernicks != null">
+                and <include refid="setothernicks"/>
+            </if>
+            <if test="otheravatar != null">
+                and <include refid="setotheravatar"/>
+            </if>
+            <if test="country != null">
+                and <include refid="setcountry"/>
+            </if>
+            <if test="soldier != null">
+                and <include refid="setsoldier"/>
+            </if>
+            <if test="passport != null">
+                and <include refid="setpassport"/>
+            </if>
+            <if test="msn != null">
+                and <include refid="setmsn"/>
+            </if>
+            <if test="freeze != null">
+                and <include refid="setfreeze"/>
+            </if>
+            <if test="avatarbig != null">
+                and <include refid="setavatarbig"/>
+            </if>
+            <if test="avatar != null">
+                and <include refid="setavatar"/>
+            </if>
+            <if test="avatarlittle != null">
+                and <include refid="setavatarlittle"/>
+            </if>
+            <if test="original != null">
+                and <include refid="setoriginal"/>
+            </if>
+            <if test="summary != null">
+                and <include refid="setsummary"/>
+            </if>
+            <if test="job != null">
+                and <include refid="setjob"/>
+            </if>
+            <if test="department != null">
+                and <include refid="setdepartment"/>
+            </if>
+            <if test="company != null">
+                and <include refid="setcompany"/>
+            </if>
+            <if test="domain != null">
+                and <include refid="setdomain"/>
+            </if>
+            <if test="honor != null">
+                and <include refid="sethonor"/>
+            </if>
+            <if test="education != null">
+                and <include refid="seteducation"/>
+            </if>
+            <if test="work != null">
+                and <include refid="setwork"/>
+            </if>
+        </where>
+    </select>
+
+    <select id="getList" parameterType="hashMap" resultType="userinfo">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="nickname != null">
+                and <include refid="setnickname"/>
+            </if>
+            <if test="showname != null">
+                and <include refid="setshowname"/>
+            </if>
+            <if test="identityid != null">
+                and <include refid="setidentityid"/>
+            </if>
+            <if test="gender != null">
+                and <include refid="setgender"/>
+            </if>
+            <if test="birthday != null">
+                and <include refid="setbirthday"/>
+            </if>
+            <if test="college != null">
+                and <include refid="setcollege"/>
+            </if>
+            <if test="address != null">
+                and <include refid="setaddress"/>
+            </if>
+            <if test="qq != null">
+                and <include refid="setqq"/>
+            </if>
+            <if test="wx != null">
+                and <include refid="setwx"/>
+            </if>
+            <if test="sina != null">
+                and <include refid="setsina"/>
+            </if>
+            <if test="aisle != null">
+                and <include refid="setaisle"/>
+            </if>
+            <if test="othernicks != null">
+                and <include refid="setothernicks"/>
+            </if>
+            <if test="otheravatar != null">
+                and <include refid="setotheravatar"/>
+            </if>
+            <if test="country != null">
+                and <include refid="setcountry"/>
+            </if>
+            <if test="soldier != null">
+                and <include refid="setsoldier"/>
+            </if>
+            <if test="passport != null">
+                and <include refid="setpassport"/>
+            </if>
+            <if test="msn != null">
+                and <include refid="setmsn"/>
+            </if>
+            <if test="freeze != null">
+                and <include refid="setfreeze"/>
+            </if>
+            <if test="avatarbig != null">
+                and <include refid="setavatarbig"/>
+            </if>
+            <if test="avatar != null">
+                and <include refid="setavatar"/>
+            </if>
+            <if test="avatarlittle != null">
+                and <include refid="setavatarlittle"/>
+            </if>
+            <if test="original != null">
+                and <include refid="setoriginal"/>
+            </if>
+            <if test="summary != null">
+                and <include refid="setsummary"/>
+            </if>
+            <if test="job != null">
+                and <include refid="setjob"/>
+            </if>
+            <if test="department != null">
+                and <include refid="setdepartment"/>
+            </if>
+            <if test="company != null">
+                and <include refid="setcompany"/>
+            </if>
+            <if test="domain != null">
+                and <include refid="setdomain"/>
+            </if>
+            <if test="honor != null">
+                and <include refid="sethonor"/>
+            </if>
+            <if test="education != null">
+                and <include refid="seteducation"/>
+            </if>
+            <if test="work != null">
+                and <include refid="setwork"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insert" parameterType="userinfo">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="userinfo">
+        update
+        <include refid="table"/>
+        <include refid="allsets"/>
+        <include refid="whereid"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="name != null">
+                <include refid="setname"/>,
+            </if>
+            <if test="nickname != null">
+                <include refid="setnickname"/>,
+            </if>
+            <if test="showname != null">
+                <include refid="setshowname"/>,
+            </if>
+            <if test="identityid != null">
+                <include refid="setidentityid"/>,
+            </if>
+            <if test="gender != null">
+                <include refid="setgender"/>,
+            </if>
+            <if test="birthday != null">
+                <include refid="setbirthday"/>,
+            </if>
+            <if test="college != null">
+                <include refid="setcollege"/>,
+            </if>
+            <if test="address != null">
+                <include refid="setaddress"/>,
+            </if>
+            <if test="qq != null">
+                <include refid="setqq"/>,
+            </if>
+            <if test="wx != null">
+                <include refid="setwx"/>
+            </if>
+            <if test="sina != null">
+                <include refid="setsina"/>
+            </if>
+            <if test="aisle != null">
+                <include refid="setaisle"/>
+            </if>
+            <if test="othernicks != null">
+                <include refid="setothernicks"/>
+            </if>
+            <if test="otheravatar != null">
+                <include refid="setotheravatar"/>
+            </if>
+            <if test="country != null">
+                <include refid="setcountry"/>
+            </if>
+            <if test="soldier != null">
+                <include refid="setsoldier"/>
+            </if>
+            <if test="passport != null">
+                <include refid="setpassport"/>
+            </if>
+            <if test="msn != null">
+                <include refid="setmsn"/>,
+            </if>
+            <if test="freeze != null">
+                <include refid="setfreeze"/>,
+            </if>
+            <if test="avatarbig != null">
+                <include refid="setavatarbig"/>,
+            </if>
+            <if test="avatar != null">
+                <include refid="setavatar"/>,
+            </if>
+            <if test="avatarlittle != null">
+                <include refid="setavatarlittle"/>,
+            </if>
+            <if test="original != null">
+                <include refid="setoriginal"/>,
+            </if>
+            <if test="summary != null">
+                <include refid="setsummary"/>,
+            </if>
+            <if test="job != null">
+                <include refid="setjob"/>,
+            </if>
+            <if test="department != null">
+                <include refid="setdepartment"/>,
+            </if>
+            <if test="company != null">
+                <include refid="setcompany"/>,
+            </if>
+            <if test="domain != null">
+                <include refid="setdomain"/>,
+            </if>
+            <if test="honor != null">
+                <include refid="sethonor"/>,
+            </if>
+            <if test="education != null">
+                <include refid="seteducation"/>,
+            </if>
+            <if test="work != null">
+                <include refid="setwork"/>
+            </if>
+        </set>
+        <include refid="whereid"/>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+
+</mapper>
+

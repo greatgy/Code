@@ -1,0 +1,18 @@
+﻿/*==============================================================*/
+/* DBMS name:      MySQL 5.5                                                                  */
+/* Created on:     2017年12月29日10:15:01                                                           */
+/*==============================================================*/
+
+/*==============================================================*/
+/*
+DataBase: GFinanceDB2
+Author:        ChenQi
+Description:    GFinanceDB2 1.0版本修改的表结构
+CreatedDate:   2017年12月29日10:14:54
+ModifyDate:    2017年12月29日10:14:57
+*/
+
+/*==============================================================*/
+
+ALTER TABLE `article` ADD COLUMN `isoriginal` tinyint(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '类型(0 非原创   1 原创)' after kind;
+ALTER TABLE `content` modify COLUMN `type` int(11);

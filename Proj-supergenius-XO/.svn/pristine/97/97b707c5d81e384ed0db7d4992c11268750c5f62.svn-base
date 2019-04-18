@@ -1,0 +1,18 @@
+package com.supergenius.xo.finance.service;
+
+import com.genius.xo.baseadmin.service.BaseSO;
+import com.supergenius.xo.finance.entity.Contributor;
+
+/**
+ * 投稿人SO
+ * @author liushaomin
+ */
+public interface ContributorSO extends BaseSO<Contributor>{
+
+	/**
+	 * 更新作者简介
+	 * @param contributor
+	 */
+	boolean updateSummary(Contributor contributor);
+
+}

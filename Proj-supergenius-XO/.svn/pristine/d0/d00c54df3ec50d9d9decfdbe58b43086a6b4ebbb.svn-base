@@ -1,0 +1,101 @@
+package com.supergenius.xo.finance.service;
+
+import java.util.List;
+
+import com.genius.model.base.entity.Pager;
+import com.genius.model.base.enums.EStatus;
+import com.genius.xo.baseadmin.service.BaseSO;
+import com.supergenius.xo.finance.entity.Topic;
+import com.supergenius.xo.finance.enums.ETopicState;
+
+/**
+ * 话题SO
+ * @author liushaomin
+ */
+public interface TopicSO extends BaseSO<Topic>{
+
+	/**
+	 * 删除 并删除相关评论
+	 * @param ids
+	 */
+	boolean deleteByUids(String[] ids);
+
+	/**
+	 * 设置是否置顶
+	 * @param oid
+	 * @param istop
+	 * @return
+	 * @author liushaomin
+	 */
+	boolean setTop(String[] ids, boolean istop);
+	
+	/**
+	 * 设置是否推荐
+	 * @param ids
+	 * @param isrecommend
+	 * @return
+	 */
+	boolean setRecommend(String[] ids, boolean isrecommend);
+
+	/**
+	 * @param model
+	 * @param oid
+	 * @return
+	 */
+	Topic get(int oid);
+
+	/**
+	 * 获取用户全部状态的话题列表，如果状态为disable，用户页面显示为已撤销
+	 * @param useruid
+	 */
+	List<Topic> getList(String useruid);
+	
+	/**
+	 * 获取不同state的话题
+	 * @param useruid
+	 * @param etopicstate
+	 * @return
+	 */
+	List<Topic> getList(String useruid, ETopicState etopicstate, Pager pager);
+	
+	/**
+	 * 获取不同status的话题
+	 * @param useruid
+	 * @param estatus
+	 * @return
+	 */
+	List<Topic> getList(String useruid, EStatus estatus, Pager pager);
+	
+	/**
+	 * 随机获取一条数据的oid
+	 */
+	int getRandomOid();
+
+	/**
+	 * @param topicuids
+	 */
+	List<Topic> getList(List<String> topicuids);
+
+	/**
+	 * 得到某人的话题列表
+	 * @param useruid
+	 * @param pager 分页
+	 * @return
+	 */
+	List<Topic> getList(String useruid, Pager pager);
+
+	/**
+	 * 获取会员发起的话题
+	 * @param useruid
+	 * @return
+	 */
+	int getAuthorTopicCount(String useruid);
+
+	/**
+	 * @param pager
+	 * @param state
+	 * @return
+	 */
+	List<Topic> getList(Pager pager, ETopicState state);
+
+}

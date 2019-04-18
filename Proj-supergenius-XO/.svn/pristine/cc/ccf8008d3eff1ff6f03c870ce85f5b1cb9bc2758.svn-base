@@ -1,0 +1,248 @@
+package com.supergenius.xo.user.service;
+
+import java.util.List;
+import java.util.Map;
+
+import com.genius.model.base.entity.Pager;
+import com.genius.xo.baseadmin.service.BaseSO;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.user.entity.Comments;
+import com.supergenius.xo.user.enums.EComment;
+import com.supergenius.xo.user.enums.ECommentConfig;
+
+/**
+ * 评论SO
+ * @author liushaomin
+ */
+public interface CommentsSO extends BaseSO<Comments>{
+
+	/**
+	 * 删除
+	 * @param ids
+	 */
+	boolean deleteByUids(String[] ids);
+	
+	/**
+	 * 话题、我的话题、论战 排行榜
+	 * 根据类别、频道、时间和评论数查询
+	 * @param useruid 用户uid
+	 * @param channel （论战或话题）
+	 * @param type 类型（评论）
+	 * @param commentday 30天之内评论的， 如果commentday == -1 将不限制评论的时间
+	 * @param publishday 最近90天发表的，如果publishday == -1 将不限制话题或论战的发布时间
+	 * @param ranknum
+	 * @return
+	 * @author liushaomin
+	 */
+	List<Map<?, ?>> getListByCountcurrType(String useruid, EChannel channel, EComment type, int commentday, int publishday, int ranknum);
+	
+	/**
+	 * 获取发言用户排行榜
+	 * @param channel 评论的频道
+	 * @param type 评论或者赞
+	 * @param commentday commentday天之内的评论数 
+	 * @param ranknum 获取排行版的条数
+	 * @param anonymousuid
+	 * @return List<Map<fromuseruid,count>> 评论人的uid以及其评论数的map数组
+	 * @author ShangJianguo
+	 */
+	List<Map<?, ?>> getRankUser(EChannel channel, EComment type, int commentday, int ranknum, int anonymousoid);
+
+	/**
+	 * 根据fromuid和type获取所有的类别
+	 * @param fromuid
+	 * @param type
+	 * @param pager 如果为空，则不分页，查询所有的
+	 * @param order 排序方式
+	 * @return
+	 * @author ShangJianguo
+	 */
+	List<Comments> getList(String fromuid, EComment type, Pager pager, String order);
+	
+	/**
+	 * 根据touid获取评论的子评论
+	 * @param touid
+	 * @param pager
+	 * @return
+	 */
+	List<Comments> getList(String touid, Pager pager);
+	
+	/**
+	 * 获取某篇文章（话题）所对应的最新评论的N个用户
+	 * @param channel 渠道
+	 * @param comment 赞或评论
+	 * @param fromuid 所评论的UID
+	 * @param usernum 得到最新用户的个数
+	 * @param config 如果为空则不设置
+	 * @return List<Comments>
+	 * @author liu
+	 */
+	List<Comments> getList(EChannel channel, EComment type, String fromuid,  int usernum, ECommentConfig config);
+	
+	/**
+	 * 根据fromuid 和 touseruid 进行或者查询
+	 * @param touid
+	 * @param pager
+	 * @return
+	 */
+	List<Comments> searchList(List<String> fromuid, Boolean touid_isnull, String touseruid, Pager pager);
+
+	/**
+	 * 是否已点赞
+	 * @param fromuid
+	 * @param fromuseruid
+	 * @param channel
+	 * @return
+	 */
+	boolean isNotPrized(String fromuid, String fromuseruid, EChannel channel);
+	
+	/**
+	 * 根据论战和用户查询评论
+	 * @param debateuid
+	 * @param useruid
+	 * @param hour
+	 * @return
+	 * @author ShangJianguo
+	 */
+	Comments get(String debateuid, String useruid, int hour);
+
+	/**
+	 * 得到FromuidList
+	 * @param fromuseruid
+	 * @param channel
+	 * @param type
+	 * @param pager
+	 * @return
+	 */
+	List<String> getFromuidList(String fromuseruid, EChannel channel, EComment comment, Pager pager);
+	
+	
+	/**
+	 * 得到FromuidList
+	 * @param useruid
+	 * @param topic
+	 * @param comment
+	 */
+	List<String> getFromuidList(String useruid, EChannel topic, EComment comment);
+
+	/**
+	 * 删除游客的赞
+	 * @param fromuseroid
+	 * @param fromuid
+	 * @param channel
+	 */
+	boolean deleteByPraise(int fromuseroid, String fromuid, EChannel channel);
+
+	/**
+	 * 获取与我相关的话题评论(仅用于话题中 与我相关的评论)
+	 * @param useruid
+	 * @param topicuid
+	 * @param pager
+	 * @return
+	 */
+	List<Comments> getList(String useruid, String topic, Pager pager);
+
+	/**
+	 * 获取在一段时间内赞数最多N条话题
+	 * @param channel
+	 * @param type
+	 * @param Praisehour
+	 * @param ListNum
+	 * @param nofromuids 排除这些fromuid
+	 * @return
+	 */
+	List<Map<?, ?>> getPraisecurr(EChannel channel, EComment type, int Praisehour, int ListNum, List<String> nofromuids);
+
+	/**
+	 * 根据赞数 获取精彩发言（赞数最多的num条评论）
+	 * @param fromuid
+	 * @param channel
+	 * @param type
+	 * @param ranknum
+	 * @return
+	 */
+	List<Map<?, ?>> getCommentsFromPraise(String fromuid, EChannel channel, EComment type, int ranknum);
+	
+	/**
+	 * 获取最新参与的用户uid
+	 * @param fromuid
+	 * @param channel
+	 * @param type
+	 * @param config
+	 * @param num 获取的数目
+	 * @return List<String> 最新参与用户的uid的List
+	 * @author ShangJianguo
+	 */
+	List<String> getLatestFromuseruidList(String fromuid, EChannel channel, EComment type, ECommentConfig config, int num, int anonymousoid);
+	
+	/**
+	 * 获取话题的评论数
+	 * @param topicuid
+	 * @return
+	 * @author ShangJianguo
+	 */
+	long getCommentsCount(String topicuid);
+	
+	/**
+	 * 获取与我相关的评论
+	 * @param useruid
+	 * @param fromuid
+	 * @param pager
+	 * @param channel
+	 * @param type
+	 * @return
+	 * @author ShangJianguo
+	 */
+	List<Comments> getAboutMeList(String useruid, String fromuid, Pager pager, EChannel channel, EComment type);
+
+	/**
+	 * 获取某个会员的全部赞
+	 * @param oid
+	 * @param praise
+	 * @return
+	 */
+	List<String> getList(int useroid, EComment praise);
+
+	/**
+	 * 获取最新评论
+	 * @param financeType
+	 * @param pager
+	 * @return
+	 * @author YuYingJie
+	 */
+	List<Comments> getNewestComments(int config, EChannel channel, EComment commentType, Pager pager);
+
+	/**
+	 * 获取我发表的评论
+	 * @param fromuseruid
+	 * @param pager
+	 * @param type
+	 * @return
+	 * @author YuYingJie
+	 */
+	List<Comments> getList(String fromuseruid, String touseruid, EComment type, Pager pager);
+	
+	/**
+	 * 我收到的赞的数量(评论)
+	 * @param useruid
+	 * @return
+	 * @author YuYingJie
+	 */
+	int getMyReceivedPrizeCount(String useruid);
+
+	/**
+	 * 我发表的品论的数量
+	 * @param fromuseruid
+	 * @return
+	 * @author YuYingJie
+	 */
+	int getMyCommentsCount(String fromuseruid);
+	
+	/**
+	 * 根据条件获取评论数量
+	 * @param fromuseruid
+	 * @return
+	 * @author YuYingJie
+	 */
+	int getCommentsCount(String fromuseruid, EComment type, EChannel channel, String fromuid );
+}

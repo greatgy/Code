@@ -1,0 +1,63 @@
+package com.supergenius.xo.finance.serviceimpl;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.genius.xo.baseadmin.serviceimpl.BaseSOImpl;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.finance.dao.ContributorDao;
+import com.supergenius.xo.finance.entity.Contributor;
+import com.supergenius.xo.finance.service.ContributorSO;
+import com.supergenius.xo.user.entity.User;
+import com.supergenius.xo.user.service.UserSO;
+
+/**
+ * @author liushaomin
+ *
+ */
+@Service
+public class ContributorSOImpl extends BaseSOImpl<Contributor> implements ContributorSO{
+	
+	@Autowired
+	private ContributorDao dao;
+
+	@Override
+	protected ContributorDao getDao() {
+		return dao;
+	}
+	
+	@Autowired
+	private UserSO userSO;
+
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.ContributorSO#updateSummary(com.supergenius.xo.finance.entity.Contributor)
+	 */
+	@Override
+	public boolean updateSummary(Contributor t) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put(MapperDict.uid, t.getUid());
+		map.put(MapperDict.summary, t.getSummary());
+		dao.updateFields(map);
+		return true;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.genius.xo.base.serviceimpl.BaseSOImpl#get(java.lang.String)
+	 */
+	@Override
+	public Contributor get(String id) {
+		Contributor contributor = dao.get(id);
+		if (contributor != null) {
+			User user = userSO.get(id);
+			if (user == null) {
+				user = new User();
+			}
+			contributor.setUser(user);
+		}
+		return contributor;
+	}
+
+}

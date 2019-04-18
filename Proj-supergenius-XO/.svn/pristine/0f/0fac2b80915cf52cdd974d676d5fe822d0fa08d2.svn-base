@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.finance.dao.TopicDao">
+	
+	
+	<sql id="basecolumns">`oid`,`uid`,`createtime`</sql>
+	<sql id="othercolumns">`useruid`, `title`, `author`, `content`, `imglittle`, `imgmedium`, `imgbig`, `imgoriginal`, `istop`, `isrecommend`, `ispublic`, `config`, `state`, `publishtime`, `status`</sql>
+	<sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+	<sql id="table">topic</sql>
+	<sql id="whereid">where uid = #{uid}</sql>
+	<sql id="allfields"><include refid="basecolumns"/>, <include refid="othercolumns"/></sql>
+	<sql id="allparams">#{oid},#{uid},#{createtime},#{useruid},#{title},#{author},#{content},#{imglittle},#{imgmedium},#{imgbig},#{imgoriginal},#{istop},#{isrecommend},#{ispublic},#{config},#{state},#{publishtime},#{status}</sql>
+	<sql id="count">count(*)</sql>
+	<sql id="setoid">oid = #{oid}</sql>
+	<sql id="setuid">uid = #{uid}</sql>
+	<sql id="setuseruid">useruid = #{useruid}</sql>
+	<sql id="settitle">title = #{title}</sql>
+	<sql id="settitle_lk">title like CONCAT('%',#{title_lk},'%')</sql>
+	<sql id="setauthor">author = #{author}</sql>
+	<sql id="setauthor_lk">author like CONCAT('%',#{author_lk},'%')</sql>
+	<sql id="setcontent">content = #{content}</sql>
+	<sql id="setcontent_lk">content like CONCAT('%',#{content_lk},'%')</sql>
+	<sql id="setimglittle">imglittle = #{imglittle}</sql>
+	<sql id="setimgmedium">imgmedium = #{imgmedium}</sql>
+	<sql id="setimgoriginal">imgoriginal = #{imgoriginal}</sql>
+	<sql id="setimgbig">imgbig = #{imgbig}</sql>
+	<sql id="setistop">istop = #{istop}</sql>
+	<sql id="setisrecommend">isrecommend = #{isrecommend}</sql>
+	<sql id="setispublic">ispublic = #{ispublic}</sql>
+	<sql id="setconfig">config = #{config}</sql>
+	<sql id="setstate">state = #{state}</sql>
+	<sql id="setpublishtime">publishtime = #{publishtime}</sql>
+	<sql id="setstatus">status = #{status}</sql>
+	<sql id="setcreatetimestart">createtime &gt;= #{createtimestart}</sql>
+	<sql id="setcreatetimeend">createtime &lt;= #{createtimeend}</sql>
+	<sql id="allsets">set 
+	<include refid="setoid"/>,
+    <include refid="setuid"/>,
+	<include refid="setuseruid"/>,
+	<include refid="settitle"/>,
+	<include refid="setauthor"/>,
+	<include refid="setcontent"/>,
+	<include refid="setimglittle"/>,
+	<include refid="setimgmedium"/>,
+	<include refid="setimgoriginal"/>,
+	<include refid="setimgbig"/>,
+	<include refid="setistop"/>,
+	<include refid="setisrecommend"/>,
+	<include refid="setispublic"/>,
+	<include refid="setconfig"/>,
+	<include refid="setstate"/>,
+	<include refid="setpublishtime"/>,
+	<include refid="setstatus"/></sql>
+	<sql id="orderby">order by createtime</sql>
+	
+	<select id="get" parameterType="string" resultType="topic">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<include refid="whereid"/>
+	</select>
+	
+	<select id="getOne" parameterType="hashMap" resultType="topic">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="oid != null">
+				and <include refid="setoid"/>
+			</if>
+			<if test="uid != null">
+				and <include refid="setuid"/>
+			</if>
+		</where>
+		LIMIT 0,1
+	</select>
+	
+	<select id="getCount" parameterType="hashMap" resultType="int">
+		select
+		<include refid="count" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="oid != null">
+				and <include refid="setoid"/>
+			</if>
+			<if test="uid != null">
+				and <include refid="setuid"/>
+			</if>
+			<if test="useruid != null">
+				and <include refid="setuseruid"/>
+			</if>
+			<if test="author != null">
+				and <include refid="setauthor"/>
+			</if>
+			<if test="author_lk != null">
+				and <include refid="setauthor_lk"/>
+			</if>
+			<if test="title != null">
+				and <include refid="settitle"/>
+			</if>
+			<if test="title_lk != null">
+				and <include refid="settitle_lk"/>
+			</if>
+			<if test="istop != null">
+				and <include refid="setistop"/>
+			</if>
+			<if test="isrecommend != null">
+				and <include refid="setisrecommend"/>
+			</if>
+			<if test="ispublic != null">
+				and <include refid="setispublic"/>
+			</if>
+			<if test="publishtime != null">
+				and <include refid="setpublishtime" />
+			</if>
+			<if test="state != null">
+				and <include refid="setstate"/>
+			</if>
+			<if test="createtimestart != null">
+				and <include refid="setcreatetimestart" />
+			</if>
+			<if test="createtimeend != null">
+				and <include refid="setcreatetimeend" />
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+		</where>
+	</select>
+	
+	<select id="getList" parameterType="hashMap" resultType="topic">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="oid != null">
+				and <include refid="setoid"/>
+			</if>
+			<if test="uid != null">
+				and <include refid="setuid"/>
+			</if>
+			<if test="useruid != null">
+				and <include refid="setuseruid"/>
+			</if>
+			<if test="author != null">
+				and <include refid="setauthor"/>
+			</if>
+			<if test="author_lk != null">
+				and <include refid="setauthor_lk"/>
+			</if>
+			<if test="title != null">
+				and <include refid="settitle"/>
+			</if>
+			<if test="title_lk != null">
+				and <include refid="settitle_lk"/>
+			</if>
+			<if test="content_lk != null">
+				and <include refid="setcontent_lk"/>
+			</if>
+			<if test="istop != null">
+				and <include refid="setistop"/>
+			</if>
+			<if test="isrecommend != null">
+				and <include refid="setisrecommend"/>
+			</if>
+			<if test="ispublic != null">
+				and <include refid="setispublic"/>
+			</if>
+			<if test="publishtime != null">
+				and <include refid="setpublishtime" />
+			</if>
+			<if test="state != null">
+				and <include refid="setstate"/>
+			</if>
+			<if test="createtimestart != null">
+				and <include refid="setcreatetimestart" />
+			</if>
+			<if test="createtimeend != null">
+				and <include refid="setcreatetimeend" />
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+			<if test="uids != null">
+				and uid in 
+				<foreach item="item" index="index" collection="uids" open="(" separator="," close=")">
+                 	 #{item}
+            	</foreach>
+			</if>
+		</where>
+		<!-- 处理orderby语句 -->
+		<choose>
+			<when test="orderBy != null">
+				${orderBy}
+			</when>
+			<otherwise>
+				<include refid="orderby"/>
+				<if test="ascDesc != null">
+					${ascDesc}
+				</if>
+			</otherwise>
+		</choose>
+		<!-- 处理limit语句 -->
+		<trim prefix="LIMIT" prefixOverrides=",">
+			<if test="startIndex != null and pageSize != null">
+				${startIndex}
+			</if>
+			<if test="pageSize != null">
+			 , ${pageSize}
+			 </if>
+		</trim>
+	</select>
+	
+	<insert id="insert" parameterType="topic">
+		<selectKey resultType="int" keyProperty="oid">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into
+		<include refid="table"/>
+		(<include refid="allfields"/>)
+		values (
+			<include refid="allparams"/>
+		)
+	</insert>
+	
+	<update id="update" parameterType="topic">
+		update
+		<include refid="table"/>
+		<include refid="allsets"/>
+		<include refid="whereid"/>
+	</update>
+
+	<update id="updateFields" parameterType="hashMap">
+		update
+		<include refid="table"/>
+		<set>
+			<if test="title != null">
+				 <include refid="settitle"/>,
+			</if>
+			<if test="istop != null">
+				 <include refid="setistop"/>,
+			</if>
+			<if test="isrecommend != null">
+				 <include refid="setisrecommend"/>,
+			</if>
+			<if test="ispublic != null">
+				 <include refid="setispublic"/>,
+			</if>
+			<if test="publishtime != null">
+				 <include refid="setpublishtime" />,
+			</if>
+			<if test="state != null">
+				 <include refid="setstate"/>,
+			</if>
+			<if test="status != null">
+				 <include refid="setstatus"/>,
+			</if>
+		</set>
+			<if test="uid != null">
+				<include refid="whereid"/>
+			</if>
+	</update>
+	
+	<delete id="delete" parameterType="string">
+		delete from
+		<include refid="table"/>
+		<include refid="whereid"/>
+	</delete>
+	
+	<delete id="deleteByMap" parameterType="hashMap">
+		delete from
+		<include refid="table"/>
+		<where>
+			<if test="oid != null">
+				and <include refid="setoid"/>
+			</if>
+			<if test="uid != null">
+				and <include refid="setuid"/>
+			</if>
+			<if test="useruid != null">
+				and <include refid="setuseruid"/>
+			</if>
+			<if test="author != null">
+				and <include refid="setauthor"/>
+			</if>
+			<if test="title != null">
+				and <include refid="settitle"/>
+			</if>
+			<if test="istop != null">
+				and <include refid="setistop"/>
+			</if>
+			<if test="isrecommend != null">
+				and <include refid="setisrecommend"/>
+			</if>
+			<if test="ispublic != null">
+				and <include refid="setispublic"/>
+			</if>
+			<if test="publishtime != null">
+				and <include refid="setpublishtime" />
+			</if>
+			<if test="state != null">
+				and <include refid="setstate"/>
+			</if>
+			<if test="createtimestart != null">
+				and <include refid="setcreatetimestart" />
+			</if>
+			<if test="createtimeend != null">
+				and <include refid="setcreatetimeend" />
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+			<if test="uids != null">
+				and uid in 
+				<foreach item="item" index="index" collection="uids" 
+                 	 open="(" separator="," close=")">
+                 	 #{item}
+            	</foreach>
+			</if>
+		</where>
+	</delete>
+	
+	<select id="getRandomOid" parameterType="hashMap" resultType="int">
+		select t1.oid from
+		<include refid="table"/>
+		AS t1 JOIN (SELECT ROUND(
+			RAND() *(
+				(SELECT MAX(oid) FROM <include refid="table"/>)
+				-
+				(SELECT MIN(oid) FROM <include refid="table"/>)
+			)
+			+(SELECT MIN(oid) FROM <include refid="table"/>)
+		)AS oid)AS t2 
+		WHERE t1.oid >= t2.oid LIMIT 0,1
+	</select>
+	
+</mapper>

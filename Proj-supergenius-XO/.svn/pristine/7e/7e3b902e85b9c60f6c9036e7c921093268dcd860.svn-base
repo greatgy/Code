@@ -1,0 +1,167 @@
+package com.supergenius.xo.finance.dao;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.genius.core.base.constant.BaseMapperDict;
+import com.genius.core.base.utils.GlobalUtil;
+import com.genius.model.base.enums.EStatus;
+import com.supergenius.xo.finance.entity.Finance;
+import com.supergenius.xo.finance.enums.EFinance;
+import com.supergenius.xo.mock.testconstants.TestConst;
+
+
+/**
+ * @author liushaomin
+ *
+ */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath*:**/applicationContext**.xml" })
+public class FinanceDaoTest {
+	
+	@Autowired
+	FinanceDao dao;
+	
+	Finance entity;
+
+	@Test
+	public void testGet() {
+		entity = dao.get(TestConst.uid);
+		assertNotNull(entity);
+		assertEquals(TestConst.uid, entity.getAdminuid());
+	}
+
+	@Test
+	public void testGetOne() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put(BaseMapperDict.uid, TestConst.uid);
+		assertNotNull(dao.getOne(map));
+	}
+
+	/**
+	 * Test GetList()
+	 */
+	@Test
+	public void testGetList() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put(BaseMapperDict.uid, TestConst.uid);
+		assertTrue(dao.getList(map).size() > 0);
+	}
+
+	/**
+	 * Test Insert()
+	 */
+	@Test
+	public void testInsert() {
+		entity = new Finance();
+		String adminuid = GlobalUtil.getUUID();
+		entity.setAdminuid(adminuid);
+		entity.setTitle("测试");
+		dao.insert(entity);
+		String uid = entity.getUid();
+		assertNotNull(dao.get(uid));
+		dao.delete(uid);
+		assertNull(dao.get(uid));
+	}
+
+	/**
+	 * Test Update()
+	 */
+	@Test
+	public void testUpdate() {
+		entity = dao.get(TestConst.uid);
+		entity.setStatus(EStatus.disable);
+		dao.update(entity);
+		assertEquals(EStatus.disable, dao.get(TestConst.uid).getStatus());
+	}
+
+	/**
+	 * Test UpdateFields()
+	 */
+	@Test
+	public void testUpdateFields() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put(BaseMapperDict.uid, TestConst.uid);
+		map.put(BaseMapperDict.status, EStatus.enable);
+		dao.updateFields(map);
+		assertEquals(EStatus.enable, dao.get(TestConst.uid).getStatus());
+	}
+
+	/**
+	 * Test DeleteByMap()
+	 */
+	@Test
+	public void testDeleteByMap() {
+		String uid = GlobalUtil.getUUID();
+		for (int i = 0; i < 3; i++) {
+			entity = new Finance();
+			entity.setAdminuid(uid);
+			entity.setTitle("测试");
+			entity.setStatus(EStatus.enable);
+			dao.insert(entity);
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put(BaseMapperDict.adminuid, uid);
+		map.put(BaseMapperDict.status, EStatus.enable);
+		assertTrue(dao.getList(map).size() == 3);
+		dao.deleteByMap(map);
+		assertTrue(dao.getList(map).size() == 0);
+	}
+	
+	/**
+	 * 将多个同一种Enum类型的数据保存到某一个字段中
+	 * 测试方法
+	 * geniusfocus:1073741824
+	 * industries:536870912
+	 * corporations:268435456
+	 * mergerandacquisition:134217728
+	 * careerexecutives:67108864
+	 * officecafe:33554432
+	 * dabate:16777216
+	 */
+	@Test
+    public void testType() {
+        for (EFinance e : EFinance.values()) {
+            System.out.println(e.name() + ":" + e);
+        }
+        int type = 0;
+        System.out.println();
+        assertNull(EFinance.get(type));
+        type |= Integer.valueOf(EFinance.geniusfocus.toString());
+        System.out.println(type);
+        assertEquals(EFinance.geniusfocus, EFinance.get(type));
+        type |= Integer.valueOf(EFinance.industries.toString());
+        System.out.println(type);
+        assertEquals(EFinance.geniusfocus, EFinance.get(type));
+        type |= Integer.valueOf(EFinance.corporations.toString());
+        System.out.println(type);
+        assertEquals(EFinance.geniusfocus, EFinance.get(type));
+        type |= Integer.valueOf(EFinance.mergerandacquisition.toString());
+        System.out.println(type);
+        assertEquals(EFinance.geniusfocus, EFinance.get(type));
+        type |= Integer.valueOf(EFinance.careerexecutives.toString());
+        System.out.println(type);
+        assertEquals(EFinance.geniusfocus, EFinance.get(type));
+        type |= Integer.valueOf(EFinance.legalandeconomic.toString());
+        System.out.println(type);
+        assertEquals(EFinance.geniusfocus, EFinance.get(type));
+        type |= Integer.valueOf(EFinance.officecafe.toString());
+        System.out.println(type);
+        assertEquals(EFinance.geniusfocus, EFinance.get(type));
+        type |= Integer.valueOf(EFinance.debate.toString());
+        System.out.println(type);
+        assertTrue(EFinance.debate.ismatch(type));
+    }
+	
+}

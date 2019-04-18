@@ -1,0 +1,12 @@
+package com.supergenius.xo.finance.dao;
+
+import com.genius.xo.base.dao.BaseDao;
+import com.supergenius.xo.finance.entity.Dynamic;
+
+/**
+ * 动态Dao
+ * @author YuYingJie
+ */
+public interface DynamicDao extends BaseDao<Dynamic> {
+
+}

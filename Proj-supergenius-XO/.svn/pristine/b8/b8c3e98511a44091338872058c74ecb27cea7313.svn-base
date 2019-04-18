@@ -1,0 +1,16 @@
+package com.supergenius.xo.finance.dao;
+
+import org.springframework.stereotype.Component;
+
+import com.genius.xo.base.dao.BaseDao;
+import com.supergenius.xo.finance.entity.Message;
+
+/**
+ * 消息Dao
+ * 
+ * @author LiJiacheng
+ */
+@Component("FinanceMessageDao")
+public interface MessageDao extends BaseDao<Message> {
+
+}

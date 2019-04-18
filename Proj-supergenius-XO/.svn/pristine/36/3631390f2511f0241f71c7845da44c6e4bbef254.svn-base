@@ -1,0 +1,117 @@
+package com.supergenius.xo.life.entity;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.genius.core.base.annotation.Json;
+import com.genius.model.base.entity.BaseEntity;
+import com.supergenius.xo.life.enums.EComplaint;
+import com.supergenius.xo.user.entity.User;
+
+/**
+ * 投诉举报实体类
+ * @author YangGuang
+ * @date 2018年5月9日16:39:36
+ */
+@Json(value = {"uid", "oid","status", "createtime", "updatetime"}, ignoreTypeStrategy = Json.webStrategy, strategy = Json.webStrategy)
+@JsonIgnoreProperties(value={"uid"})
+public class Complaint extends BaseEntity {
+
+	private static final long serialVersionUID = 2668822950623984585L;
+	@Json(strategy = Json.webStrategy)
+	private String fromuseruid;//举报人uid
+	@Json(strategy = Json.webStrategy)
+	private String refuid;//相关uid
+	@Json(strategy = Json.webStrategy)
+	private String refname;//相关事件名称
+	private EComplaint type;//类型（受贿、偏袒、徇私舞弊）
+	@Json(strategy = Json.webStrategy)
+	private String desc;//详细说明
+	@Json(strategy = Json.webStrategy)
+	private String file;//上传凭证
+	@Json(strategy = Json.webStrategy)
+	private String result;//处理结果
+	private User fromuser; // 举报人
+	private String refurl;//当是pk时，需要链接到pk详情页，不存入数据库
+	
+	public Complaint() {
+		super();
+	}
+
+	public String getFromuseruid() {
+		return fromuseruid;
+	}
+	
+	public void setFromuseruid(String fromuseruid) {
+		this.fromuseruid = fromuseruid;
+	}
+	
+	@Json(strategy = Json.webStrategy)
+	public User getFromuser() {
+		return fromuser;
+	}
+
+	public void setFromuser(User fromuser) {
+		this.fromuser = fromuser;
+	}
+
+	public String getRefuid() {
+		return refuid;
+	}
+	
+	public void setRefuid(String refuid) {
+		this.refuid = refuid;
+	}
+	
+	public String getRefname() {
+		return refname;
+	}
+
+	public void setRefname(String refname) {
+		this.refname = refname;
+	}
+	
+	public EComplaint getType() {
+		return type;
+	}
+	
+	@Json(strategy = Json.webStrategy)
+	public String getTypeName() {
+		return this.type.getName();
+	}
+	
+	public void setType(EComplaint type) {
+		this.type = type;
+	}
+	
+	public String getDesc() {
+		return desc;
+	}
+	
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
+	
+	public String getFile() {
+		return file;
+	}
+	
+	public void setFile(String file) {
+		this.file = file;
+	}
+	public String getResult() {
+		return result;
+	}
+	
+	public void setResult(String result) {
+		this.result = result;
+	}
+	
+	@Json(strategy = Json.webStrategy)
+	public String getRefurl() {
+		return refurl;
+	}
+
+	public void setRefurl(String refurl) {
+		this.refurl = refurl;
+	}
+	
+}

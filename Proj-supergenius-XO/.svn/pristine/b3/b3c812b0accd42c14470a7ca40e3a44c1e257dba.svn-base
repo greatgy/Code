@@ -1,0 +1,28 @@
+package com.supergenius.xo.managernews.dao;
+
+import java.util.Date;
+import java.util.Map;
+
+import org.springframework.stereotype.Component;
+
+import com.genius.xo.base.dao.BaseDao;
+import com.supergenius.xo.managernews.entity.Article;
+
+/**
+ * 文章Dao
+ * @author JiaShitao
+ * @date 2018年7月3日09:47:55
+ */
+@Component("managernewsArticleDao")
+public interface ArticleDao extends BaseDao<Article> {
+
+	Date getCacheTime(Map<String, Object> map);
+	
+	/**
+	 * 获得我的收藏
+	 * 
+	 * @author JiaShitao
+	 * @data 2018年7月3日18:21:08
+	 */
+	//List<Article> getCollectList(Map<String, Object> map);
+}

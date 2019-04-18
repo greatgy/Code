@@ -1,0 +1,137 @@
+package com.supergenius.xo.base.enums;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import com.genius.core.base.utils.I18N;
+
+/**
+ * @author wuhongyan
+ * 
+ */
+public enum EUser {
+	// TODO 重新考虑字段
+	all(Integer.valueOf("0000000000000000000000000000001", 2)), // 所有人1
+	user(Integer.valueOf("1000000000000000000000000000000", 2)), // 会员1073741824
+	student(Integer.valueOf("0100000000000000000000000000000", 2)), // 职业经理人学员536870912
+	judgement(Integer.valueOf("0010000000000000000000000000000", 2)), // 职业经理人裁判268435456
+	expert(Integer.valueOf("0001000000000000000000000000000", 2)), // 职业经理人专家134217728
+	studentMoral(Integer.valueOf("0000100000000000000000000000000", 2)),// 职业道德学员67108864 TODO 需要修改职业道德培训成为学院后修改类型
+	enterpriser(Integer.valueOf("0000010000000000000000000000000", 2));// 企业家培训学员‭33554432‬
+	
+	private final int value;
+
+	private EUser(int v) {
+		this.value = v;
+	}
+
+	public String toString() {
+		return String.valueOf(value);
+	}
+
+	public static EUser get(int v) {
+		String str = String.valueOf(v);
+		return get(str);
+	}
+
+	public static EUser get(String str) {
+		for (EUser e : values()) {
+			int var = Integer.valueOf(e.toString());
+			if (var == (var & Integer.valueOf(str))) {
+				return e;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 根据name得到values
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public static EUser getByValues(String name) {
+		for (EUser e : values()) {
+			if (e.name().equals(name)) {
+				return e;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 根据values得到name
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static String getByName(String str) {
+		for (EUser e : values()) {
+			int var = Integer.valueOf(e.toString());
+			if (var == (var & Integer.valueOf(str))) {
+				return e.name();
+			}
+		}
+		return null;
+	}
+
+	public String getTypeName() {
+		return EUser.getName(EUser.get(value), Locale.CHINA);
+	}
+
+	public static String getName(EUser e, Locale locale) {
+		return I18N.getEnumName(e, locale);
+	}
+
+	/**
+	 * 判断此类型是否与值匹配
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public boolean ismatch(int type) {
+		return value == (value & type);
+	}
+
+	/**
+	 * 判断此类型是否与值匹配
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public static boolean ismatch(int v, EUser type) {
+		return v == (v | Integer.valueOf(type.toString()));
+	}
+
+	/**
+	 * @param education2
+	 * @return
+	 */
+	public Integer plus(EUser e) {
+		return value | Integer.valueOf(e.toString());
+	}
+
+	/**
+	 * @param education2
+	 * @return
+	 */
+	public int minus(EUser e) {
+		return value ^ Integer.valueOf(e.toString());
+	}
+
+	/**
+	 * 得到包含的所有类型
+	 * 
+	 * @param type
+	 */
+	public static List<EUser> getMatch(int type) {
+		List<EUser> list = new ArrayList<>();
+		for (EUser item : EUser.values()) {
+			if (item.ismatch(type)) {
+				list.add(item);
+			}
+		}
+		return list;
+	}
+}

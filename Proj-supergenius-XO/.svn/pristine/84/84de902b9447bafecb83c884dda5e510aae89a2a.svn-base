@@ -1,0 +1,30 @@
+package com.supergenius.xo.managernews.serviceimpl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.genius.xo.base.dao.BaseDao;
+import com.genius.xo.base.serviceimpl.BaseSOImpl;
+import com.supergenius.xo.managernews.dao.CommentsDao;
+import com.supergenius.xo.managernews.entity.Comments;
+import com.supergenius.xo.managernews.service.CommentsSO;
+
+/**
+ * 评论SO实现
+ * 
+ * @author XueZhenYong
+ * @date 2017年12月29日下午3:35:03
+ */
+@Service("managernewsCommentsSOImpl")
+public class CommentsSOImpl extends BaseSOImpl<Comments> implements CommentsSO {
+
+	@Autowired
+	private CommentsDao dao;
+
+	@Override
+	protected BaseDao<Comments> getDao() {
+		return dao;
+	}
+	
+	
+}

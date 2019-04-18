@@ -1,0 +1,106 @@
+package com.supergenius.xo.finance.serviceimpl;
+
+import java.io.IOException;
+import java.util.Map;
+
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.genius.core.base.utils.FreemarkerUtil;
+import com.genius.core.base.utils.GlobalUtil;
+import com.genius.xo.base.serviceimpl.BaseSOImpl;
+import com.supergenius.global.conf.message.MessageConf;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.finance.dao.MessageDao;
+import com.supergenius.xo.finance.entity.Message;
+import com.supergenius.xo.finance.enums.EFinanceMsg;
+import com.supergenius.xo.finance.service.MessageSO;
+import com.supergenius.xo.user.entity.User;
+
+/**
+ * 消息SO实现
+ * 
+ * @author LiJiacheng
+ */
+@Service("FinanceMessageSOImpl")
+public class MessageSOImpl extends BaseSOImpl<Message> implements MessageSO {
+
+	@Autowired
+	private MessageDao messageDao;
+
+	@Override
+	protected MessageDao getDao() {
+		return messageDao;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.supergenius.xo.finance.service.MessageSO#addMsg(java.util.Map)
+	 * 
+	 * @author: LiJiacheng 2015-12-2 下午6:37:18
+	 */
+	@Override
+	public Message addMsg(Map<String, Object> map) {
+		if (map.containsKey(MapperDict.title) && map.containsKey(MapperDict.type) && map.containsKey(MapperDict.href)) {
+			String type = map.get(MapperDict.type).toString();
+			if (type.equals(EFinanceMsg.commentarticle) || type.equals(EFinanceMsg.commenttopic) || type.equals(EFinanceMsg.replycomment)) {
+				if (!map.containsKey(MapperDict.content)) {
+					return null;
+				}
+			}
+			Message message = new Message();
+			message.setUid(GlobalUtil.getUUID());
+			if (map.containsKey(MapperDict.adminuid)) {
+				message.setSenderuid(map.get(MapperDict.adminuid).toString());
+			} else if (map.containsKey(MapperDict.sender)) {
+				message.setSenderuid(((User) map.get(MapperDict.sender)).getUid().toString());
+			} else {
+				return null;
+			}
+			message.setTitle(getTitle(map));
+			message.setContent(getContent(map));
+			message.setType(EFinanceMsg.get(Integer.parseInt(type)));
+			message.setDeleted(true);
+			message.setCreatetime(DateTime.now());
+			if (messageDao.insert(message)) {
+				return message;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 得到消息的题目，将map中的href和title进行匹配，将a链接作为String返回
+	 * 
+	 * @param map
+	 * @return
+	 * @author LiJiacheng
+	 */
+	private String getTitle(Map<String, Object> map) {
+		try {
+			return FreemarkerUtil.process(MessageConf.MsgTmplPath, MessageConf.MsgTitleTmpl, map);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * 得到消息的内容，将通知类型的消息，根据type转换为String返回
+	 * 
+	 * @param map
+	 * @return
+	 * @author LiJiacheng
+	 */
+	private String getContent(Map<String, Object> map) {
+		try {
+			return FreemarkerUtil.process(MessageConf.MsgTmplPath, MessageConf.MsgContentTmpl, map);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+}

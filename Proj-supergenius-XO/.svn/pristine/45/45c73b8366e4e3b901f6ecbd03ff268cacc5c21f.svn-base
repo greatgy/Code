@@ -1,0 +1,113 @@
+package com.supergenius.xo.finance.serviceimpl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.genius.model.base.enums.EStatus;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.finance.dao.DebateDao;
+import com.supergenius.xo.finance.dao.FinanceDao;
+import com.supergenius.xo.finance.dao.TopicDao;
+import com.supergenius.xo.finance.entity.Debate;
+import com.supergenius.xo.finance.entity.Finance;
+import com.supergenius.xo.finance.entity.SearchResult;
+import com.supergenius.xo.finance.entity.Topic;
+import com.supergenius.xo.finance.service.SearchSO;
+
+/**
+ * 搜索SO实现 
+ * 
+ * @author ShangJianguo
+ */
+@Service
+public class SearchSOImpl implements SearchSO{
+
+	@Autowired
+	FinanceDao financeDao;
+	
+	@Autowired
+	DebateDao debateDao;
+	
+	@Autowired 
+	TopicDao topicDao;
+	
+	
+	/* (non-Javadoc)
+	 * @see com.supergenius.xo.finance.service.SearchSO#search(java.lang.String)
+	 * @author: ShangJianguo
+	 * 2014-11-27 上午10:34:37
+	 */
+	@Override
+	public List<SearchResult> search(String keyword, String channel) {
+		Map<String, Object> map = new HashMap<>();
+		List<SearchResult> list = new ArrayList<>();
+		SearchResult sResult = null;
+		EChannel channel2 = EChannel.get(channel);
+		if (channel2 != null) {
+			map.put(MapperDict.status, EStatus.enable);
+			if (channel2 == EChannel.finance) {
+				if (StringUtils.isNotEmpty(keyword)) {
+//					map.put(MapperDict.content + MapperDict.suffix_like_key, keyword);
+					map.put(MapperDict.title + MapperDict.suffix_like_key, keyword);
+				}
+				List<Finance> finances = financeDao.getList(map);
+				if (finances != null && finances.size() > 0) {
+					for (Finance item : finances) {
+						sResult = new SearchResult(String.valueOf(item.getOid()), item.getTitle(), channel2, item.getCreatetime());
+						sResult.setFinancetype(item.getFirstTypeName());
+						list.add(sResult);
+					}
+				}
+			}
+			
+			if (channel2 == EChannel.debate) {
+				if (StringUtils.isNotEmpty(keyword)) {
+					map.put(MapperDict.title + MapperDict.suffix_like_key, keyword);
+				}
+				List<Debate> debates = debateDao.getList(map);
+				if (debates != null && debates.size() > 0) {
+					for (Debate item : debates) {
+						sResult = new SearchResult(String.valueOf(item.getOid()), item.getTitle(), channel2, item.getCreatetime());
+						list.add(sResult);
+					}
+				}
+			}
+
+			if (channel2 == EChannel.topic) {
+				if (StringUtils.isNotEmpty(keyword)) {
+					map.put(MapperDict.title + MapperDict.suffix_like_key, keyword);
+//					map.put(MapperDict.content + MapperDict.suffix_like_key, keyword);
+				}
+				List<Topic> topics = topicDao.getList(map);
+				if (topics != null && topics.size() > 0) {
+					for (Topic item : topics) {
+						sResult = new SearchResult(String.valueOf(item.getOid()), item.getTitle(), channel2, item.getCreatetime());
+						list.add(sResult);
+					}
+				}
+			}
+		}else {
+			if ("author".equals(channel)) {
+				map.put(MapperDict.author + MapperDict.suffix_like_key, keyword);
+				List<Finance> finances = financeDao.getList(map);
+				if (finances != null && finances.size() > 0) {
+					for (Finance item : finances) {
+						sResult = new SearchResult(String.valueOf(item.getOid()), item.getTitle(), channel2, item.getCreatetime());
+						sResult.setChannel(EChannel.finance);
+						sResult.setFinancetype(item.getFirstTypeName());
+						list.add(sResult);
+					}
+				}
+			}
+		}
+		
+		return list;
+	}
+}

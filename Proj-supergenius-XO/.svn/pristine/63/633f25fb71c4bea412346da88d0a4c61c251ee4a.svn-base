@@ -1,0 +1,147 @@
+package com.supergenius.xo.finance.service;
+
+import java.util.List;
+import java.util.Map;
+import com.genius.model.base.entity.Pager;
+import com.genius.model.base.enums.EStatus;
+import com.genius.xo.baseadmin.service.BaseSO;
+import com.supergenius.xo.finance.entity.Finance;
+import com.supergenius.xo.finance.enums.EFinance;
+
+/**
+ * 天财评论SO
+ * @author liushaomin
+ */
+	
+public interface FinanceSO extends BaseSO<Finance>{
+	/**
+	 * 批量删除
+	 * @param ids
+	 * @return
+	 */
+	boolean deleteByUids(String[] ids);
+	
+	/**
+	 * 设置是否置顶
+	 * @param oid
+	 * @param istop
+	 * @return
+	 * @author liushaomin
+	 */
+	boolean setTop(String[] ids, boolean istop);
+
+	/**
+	 * 设置是否公开
+	 * @param ids
+	 * @param ispublic
+	 * @return
+	 */
+	boolean setPublic(String[] ids, boolean ispublic);
+
+	/**
+	 * 设置是否推荐
+	 * @param ids
+	 * @param isrecommend
+	 * @return
+	 */
+	boolean setRecommend(String[] ids, boolean isrecommend);
+
+	/**
+	 * 根据类别获取分页数据
+	 * @param type
+	 * @param pager
+	 * @return
+	 * @author ShangJianguo
+	 */
+	List<Finance> getList(EFinance type, Pager pager);
+
+	/**
+	 * 根据类别获取置顶数据并分页
+	 * @param type
+	 * @param istop
+	 * @param pager
+	 * @return
+	 * @author ShangJianguo
+	 */
+	List<Finance> getList(boolean istop, Pager pager);
+	
+	/**
+	 * 获取推荐数据
+	 * @param isrecommend
+	 * @return
+	 * @author ShangJianguo
+	 */
+	List<Finance> getList(boolean isrecommend);
+	
+	/**
+	 * 根据oid获取对象
+	 * @param oid
+	 * @return
+	 * @author ShangJianguo
+	 */
+	Finance get(int oid);
+	
+	/**
+	 * 根据类型获取最新的一篇文章
+	 * @param type
+	 * @return
+	 * @author chenminchang
+	 */
+	Finance getOneByType(EFinance type);
+	
+	/**
+	 * 根据作者uid以及状态获取分页数据
+	 * @param type
+	 * @param pager
+	 * @return
+	 * @author ShangJianguo
+	 */
+	List<Finance> getList(String authoruid, EStatus status, Pager pager);
+
+	/**
+	 * 根据作者，状态，并且限制投稿的uid来分页查询数据
+	 * @param authoruid
+	 * @param status
+	 * @param contributeUids
+	 * @param pager
+	 * @return
+	 * @author ShangJianguo
+	 */
+	List<Finance> getList(String authoruid, EStatus status, List<String> contributeUids, Pager pager);
+	
+	/**
+	 * 获取作者的文章数量
+	 * @param authoruid
+	 * @return
+	 * @author ShangJianguo
+	 */
+	int getAuthorArticleCount(String authoruid);
+	
+	/**
+	 * 通过类型获取文章数量
+	 * @param type
+	 * @return
+	 * @author xuzhixiang   2017年4月28日   14:12:10
+	 * 
+	 */
+	int getCount(EFinance type);
+	
+	/**
+	 * 获取上一篇下一篇
+	 * @param finance
+	 * @param type
+	 * @return
+	 * @author ShangJianguo
+	 */
+	Map<String, Object> getLastNext(Finance finance, EFinance type);
+
+	/**
+	 * 根据作者uid以及状态获取分页数据
+	 * @param authoruids
+	 * @param status
+	 * @param pager
+	 * @return
+	 * @author ShangJianguo
+	 */
+	List<Finance> getList(List<String> authoruids, EStatus status, Pager pager);
+}

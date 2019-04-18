@@ -1,0 +1,27 @@
+package com.supergenius.xo.finance.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Component;
+
+import com.genius.xo.base.dao.BaseDao;
+import com.supergenius.xo.finance.entity.Article;
+
+/**
+ * 文章Dao
+ * @author XueZhenYong
+ * @date 2017年12月29日下午2:56:26
+ */
+@Component("financeArticleDao")
+public interface ArticleDao extends BaseDao<Article>{
+	
+	/**
+	 * 获得我的收藏
+	 * 
+	 * @author ChenQi
+	 * @data 2018年1月4日15:24:41
+	 */
+	List<Article> getCollectList(Map<String, Object> map);
+
+}

@@ -1,0 +1,15 @@
+package com.supergenius.xo.enterpriser.service;
+
+import com.genius.xo.base.service.BaseSO;
+import com.supergenius.xo.enterpriser.entity.Comments;
+
+/**
+ * commentsSO
+ * @author loupengyu
+ * @date 2018年1月29日11:10:48
+ */
+public interface CommentsSO extends BaseSO<Comments>{
+
+	
+	
+}

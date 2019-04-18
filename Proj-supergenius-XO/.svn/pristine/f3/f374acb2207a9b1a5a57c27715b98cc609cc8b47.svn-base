@@ -1,0 +1,12 @@
+package com.supergenius.xo.finance.dao;
+
+import com.genius.xo.base.dao.BaseDao;
+import com.supergenius.xo.finance.entity.Finance;
+
+/**
+ * 天财评论文章Dao
+ * @author liushaomin
+ */
+public interface FinanceDao extends BaseDao<Finance>{
+	
+}

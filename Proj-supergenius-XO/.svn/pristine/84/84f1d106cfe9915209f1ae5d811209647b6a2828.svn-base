@@ -1,0 +1,649 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.user.dao.CommentsDao">
+	<sql id="basecolumns">comments.`uid`,comments.`createtime`</sql>
+	<sql id="othercolumns">comments.`fromuid`, comments.`touid`, comments.`fromuseruid`, comments.`fromuseroid`, comments.`fromusername`, comments.`touseruid`, comments.`touseroid`, comments.`tousername`, comments.`content`, comments.`type`, comments.`channel`, comments.`data`, comments.`config`, comments.`status`</sql>
+	<sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/></sql>
+	<sql id="table">comments</sql>
+	<sql id="left_join_table">comments left join GFinanceDB.finance as a on comments.fromuid = a.authoruid</sql>
+	<sql id="whereid">where uid = #{uid}</sql>
+	<sql id="allfields"><include refid="basecolumns"/>, <include refid="othercolumns"/></sql>
+	<sql id="allparams">#{uid},#{createtime},#{fromuid},#{touid},#{fromuseruid},#{fromuseroid},#{fromusername},#{touseruid},#{touseroid},#{tousername},#{content},#{type},#{channel},#{data},#{config},#{status}</sql>
+	<sql id="count">count(*)</sql>
+	<sql id="setuid">uid = #{uid}</sql>
+	<sql id="setfromuid">fromuid = #{fromuid}</sql>
+	<sql id="settouid">touid = #{touid}</sql>
+	<sql id="setfromuseruid">fromuseruid = #{fromuseruid}</sql>
+	<sql id="setfromuseroid">fromuseroid = #{fromuseroid}</sql>
+	<sql id="setfromusername">fromusername = #{fromusername}</sql>
+	<sql id="setfromusername_lk">fromusername like CONCAT('%',#{fromusername_lk},'%')</sql>
+	<sql id="settouseruid">touseruid = #{touseruid}</sql>
+	<sql id="settouseroid">touseroid = #{touseroid}</sql>
+	<sql id="settousername">tousername = #{tousername}</sql>
+	<sql id="setcontent">content = #{content}</sql>
+	<sql id="setcontent_lk">content like CONCAT('%',#{content_lk},'%')</sql>
+	<sql id="settype">type = #{type}</sql>
+	<sql id="setchannel">channel = #{channel}</sql>
+	<sql id="setdata">data = #{data}</sql>
+	<sql id="setconfig">config = #{config}</sql>
+	<sql id="whereconfig">config &amp; #{config}</sql>
+	<sql id="setstatus">status = #{status}</sql>
+	<sql id="setbefore">DATE_SUB(CURDATE(), INTERVAL #{before} day) &lt;= createtime</sql>
+	<sql id="setcommentdayfrom">#{commentdayfrom} &lt;= createtime</sql>
+	<sql id="setcreatetimestart">createtime &gt;= '${createtimestart}'</sql>
+	<sql id="setanonymousoid">fromuseroid != #{anonymousoid}</sql>
+	<sql id="setuseruid">(fromuseruid = #{useruid} or touseruid = #{useruid})</sql>
+	<sql id="setpraisday">#{praisday} &lt;= createtime</sql>
+	<sql id="allsets">set 
+	<include refid="setuid"/>,
+	<include refid="setfromuid"/>,
+	<include refid="settouid"/>,
+	<include refid="setfromuseruid"/>,
+	<include refid="setfromuseroid"/>,
+	<include refid="setfromusername"/>,
+	<include refid="settouseruid"/>,
+	<include refid="settouseroid"/>,
+	<include refid="settousername"/>,
+	<include refid="setcontent"/>,
+	<include refid="settype"/>,
+	<include refid="setchannel"/>,
+	<include refid="setdata"/>,
+	<include refid="setconfig"/>,
+	<include refid="setstatus"/></sql>
+	<sql id="orderby">order by comments.createtime</sql>
+	<sql id="touid_isnull">comments.touid is null</sql>
+	
+	<select id="get" parameterType="string" resultType="comments">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<include refid="whereid"/>
+	</select>
+	
+	<select id="getOne" parameterType="hashMap" resultType="comments">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="uid != null">
+				and <include refid="setuid"/>
+			</if>
+			<if test="fromuid != null">
+				and <include refid="setfromuid"/>
+			</if>
+			<if test="fromuseruid != null">
+				and <include refid="setfromuseruid"/>
+			</if>
+			<if test="type != null">
+				and <include refid="settype"/>
+			</if>
+			<if test="channel != null">
+				and <include refid="setchannel"/>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+			<if test="createtimestart">
+				and <include refid="setcreatetimestart" />
+			</if>
+		</where>
+		LIMIT 0,1
+	</select>
+	
+	<select id="getCount" parameterType="hashMap" resultType="int">
+		select
+		<include refid="count" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="uid != null">
+				and <include refid="setuid"/>
+			</if>
+			<if test="fromuid != null">
+				and <include refid="setfromuid"/>
+			</if>
+			<if test="touid != null">
+				and <include refid="settouid"/>
+			</if>
+			<if test="fromuseruid != null">
+				and <include refid="setfromuseruid"/>
+			</if>
+			<if test="fromuseroid != null">
+				and <include refid="setfromuseroid"/>
+			</if>
+			<if test="fromusername != null">
+				and <include refid="setfromusername"/>
+			</if>
+			<if test="fromusername_lk != null">
+				and <include refid="setfromusername_lk"/>
+			</if>
+			<if test="touseruid != null">
+				and <include refid="settouseruid"/>
+			</if>
+			<if test="touseroid != null">
+				and <include refid="settouseroid"/>
+			</if>
+			<if test="tousername != null">
+				and <include refid="settousername"/>
+			</if>
+			<if test="content != null">
+				and <include refid="setcontent"/>
+			</if>
+			<if test="content_lk != null">
+				and <include refid="setcontent_lk"/>
+			</if>
+			<if test="type != null">
+				and <include refid="settype"/>
+			</if>
+			<if test="channel != null">
+				and <include refid="setchannel"/>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+			<if test="config != null">
+				and <include refid="whereconfig"/> 
+			</if>
+		</where>
+	</select>
+	
+	<select id="getList" parameterType="hashMap" resultType="comments">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="uid != null">
+				and <include refid="setuid"/>
+			</if>
+			<if test="fromuid != null">
+				and <include refid="setfromuid"/>
+			</if>
+			<if test="touid != null">
+				and <include refid="settouid"/>
+			</if>
+			<if test="useruid != null">
+				and <include refid="setuseruid"/>
+			</if>
+			<if test="fromuseruid != null">
+				and <include refid="setfromuseruid"/>
+			</if>
+			<if test="fromuseroid != null">
+				and <include refid="setfromuseroid"/>
+			</if>
+			<if test="fromusername != null">
+				and <include refid="setfromusername"/>
+			</if>
+			<if test="fromusername_lk != null">
+				and <include refid="setfromusername_lk"/>
+			</if>
+			<if test="touseruid != null">
+				and <include refid="settouseruid"/>
+			</if>
+			<if test="touseroid != null">
+				and <include refid="settouseroid"/>
+			</if>
+			<if test="tousername != null">
+				and <include refid="settousername"/>
+			</if>
+			<if test="content != null">
+				and <include refid="setcontent"/>
+			</if>
+			<if test="content_lk != null">
+				and <include refid="setcontent_lk"/>
+			</if>
+			<if test="type != null">
+				and <include refid="settype"/>
+			</if>
+			<if test="channel != null">
+				and <include refid="setchannel"/>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+		</where>
+		<!-- 处理orderby语句 -->
+		<choose>
+			<when test="orderBy != null">
+				${orderBy}
+			</when>
+			<otherwise>
+				<include refid="orderby"/>
+				<if test="ascDesc != null">
+					${ascDesc}
+				</if>
+			</otherwise>
+		</choose>
+		<!-- 处理limit语句 -->
+		<trim prefix="LIMIT" prefixOverrides=",">
+			<if test="startIndex != null and pageSize != null">
+				${startIndex}
+			</if>
+			<if test="pageSize != null">
+			 , ${pageSize}
+			 </if>
+		</trim>
+	</select>
+	
+	<select id="searchList" parameterType="hashMap" resultType="comments">
+		select
+			<include refid="allcolumns" />
+		from
+			<include refid="left_join_table" />
+		<where>
+			<if test="fromuid != null">
+			  comments.fromuid in
+				<foreach item="item" index="index" collection="fromuid" 
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="touid_isnull != null">
+				and 
+					<include refid="touid_isnull"/>
+			</if>
+			<if test="touseruid != null">
+				or 
+					<include refid="settouseruid"/>
+			</if>
+		</where>
+		<!-- 处理orderby语句 -->
+		<choose>
+			<when test="orderBy != null">
+				${orderBy}
+			</when>
+			<otherwise>
+				<include refid="orderby"/>
+				<if test="ascDesc != null">
+					${ascDesc}
+				</if>
+			</otherwise>
+		</choose>
+		<!-- 处理limit语句 -->
+		<trim prefix="LIMIT" prefixOverrides=",">
+			<if test="startIndex != null and pageSize != null">
+				${startIndex}
+			</if>
+			<if test="pageSize != null">
+			 , ${pageSize}
+			 </if>
+		</trim>
+	</select>
+	
+	<insert id="insert" parameterType="comments">
+		<selectKey resultType="int" keyProperty="oid">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into
+		<include refid="table"/>
+		(<include refid="allfields"/>)
+		values (
+			<include refid="allparams"/>
+		)
+	</insert>
+	
+	<update id="update" parameterType="comments">
+		update
+		<include refid="table"/>
+		<include refid="allsets"/>
+		<include refid="whereid"/>
+	</update>
+
+	<update id="updateFields" parameterType="hashMap">
+		update
+		<include refid="table"/>
+		<set>
+			<if test="status != null">
+				 <include refid="setstatus"/>,
+			</if>
+		</set>
+			<if test="uid != null">
+				<include refid="whereid"/>
+			</if>
+	</update>
+	
+	<delete id="delete" parameterType="string">
+		delete from
+		<include refid="table"/>
+		<include refid="whereid"/>
+	</delete>
+	
+	<delete id="deleteByMap" parameterType="hashMap">
+		delete from
+		<include refid="table"/>
+		<where>
+			<if test="uid != null">
+				and <include refid="setuid"/>
+			</if>
+			<if test="fromuid != null">
+				and <include refid="setfromuid"/>
+			</if>
+			<if test="touid != null">
+				and <include refid="settouid"/>
+			</if>
+			<if test="fromuseruid != null">
+				and <include refid="setfromuseruid"/>
+			</if>
+			<if test="fromuseroid != null">
+				and <include refid="setfromuseroid"/>
+			</if>
+			<if test="fromusername != null">
+				and <include refid="setfromusername"/>
+			</if>
+			<if test="touseruid != null">
+				and <include refid="settouseruid"/>
+			</if>
+			<if test="touseroid != null">
+				and <include refid="settouseroid"/>
+			</if>
+			<if test="tousername != null">
+				and <include refid="settousername"/>
+			</if>
+			<if test="type != null">
+				and <include refid="settype"/>
+			</if>
+			<if test="channel != null">
+				and <include refid="setchannel"/>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+			<if test="uids != null">
+				and uid in 
+				<foreach item="item" index="index" collection="uids" 
+                 	 open="(" separator="," close=")">
+                 	 #{item}
+            	</foreach>
+			</if>
+			<if test="fromuids != null">
+				and fromuid in 
+				<foreach item="item" index="index" collection="fromuids" 
+                 	 open="(" separator="," close=")">
+                 	 #{item}
+            	</foreach>
+			</if>
+		</where>
+	</delete>
+	
+	<select id="getCommentcurr" parameterType="hashMap" resultType="map">
+		select fromuid, count(*) as v 
+		from 
+		<include refid="table"/>
+		<where>
+			<if test="before != null">
+				and <include refid="setbefore"/>
+			</if>
+			<if test="type != null">
+				and <include refid="settype"/>
+			</if>
+			<if test="channel != null">
+				and <include refid="setchannel"/>
+			</if>
+			<!-- 修改查询方法，改为时间可控制（时间范围可有可无）
+				<if test="topicpublishday != null">
+					and fromuid in (select t.uid from GFinanceDB.topic t where DATE_SUB(CURDATE(), INTERVAL #{topicpublishday} day) &lt;= t.publishtime and t.status = 1 and t.state = 1)
+				</if>
+				<if test="debatepublishday != null">
+					and fromuid in (select t.uid from GFinanceDB.debate t where t.status = 1)
+				</if>
+			-->
+			<if test="istopic != null">
+				and fromuid in (
+					select t.uid from GFinanceDB.topic t where 
+					<if test="topicpublishday != null">
+						DATE_SUB(CURDATE(), INTERVAL #{topicpublishday} day) &lt;= t.publishtime and
+					</if>
+					t.status = 1 and t.state = 1
+					<if test="useruid != null">
+						and t.useruid = #{useruid}
+					</if>
+				)
+			</if>
+			<if test="isdebate != null">
+				and fromuid in (
+					select t.uid from GFinanceDB.debate t where t.status = 1 
+					<if test="debatepublishday != null">
+						and DATE_SUB(CURDATE(), INTERVAL #{debatepublishday} day) &lt;= t.createtime
+					</if>
+				)
+			</if>
+		</where>
+			group by (fromuid)
+		<choose>
+			<when test="orderBy != null">
+				${orderBy}
+			</when>
+			<otherwise>
+				<if test="ascDesc != null">
+					${ascDesc} 
+				</if>
+			</otherwise>
+		</choose>
+		limit 0,${ranknum}
+	</select>
+
+	<select id="getRankUser" parameterType="hashMap" resultType="map">
+		select fromuseruid, count(*) as count 
+		from 
+		<include refid="table"/>
+		<where>
+			<if test="type != null">
+				and <include refid="settype"/>
+			</if>
+			<if test="channel != null">
+				and <include refid="setchannel"/>
+			</if>
+			<if test="commentdayfrom != null">
+				and <include refid="setcommentdayfrom"/>
+			</if>
+			and <include refid="setanonymousoid"/>
+		</where>
+			group by (fromuseruid)
+		<choose>
+			<when test="orderBy != null">
+				${orderBy}
+			</when>
+			<otherwise>
+				<if test="ascDesc != null">
+					${ascDesc} 
+				</if>
+			</otherwise>
+		</choose>
+		limit 0,${ranknum}
+	</select>
+	
+	<select id="getFromuidList" parameterType="hashMap" resultType="String">
+		select DISTINCT(fromuid) from
+		<include refid="table"/>
+		<where>
+			<if test="fromuseruid != null">
+				and <include refid="setfromuseruid"/>
+			</if>
+			<if test="type != null">
+				and <include refid="settype"/>
+			</if>
+			<if test="fromuseroid != null">
+				and <include refid="setfromuseroid"/>
+			</if>
+			<if test="channel != null">
+				and <include refid="setchannel"/>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+		</where>
+		<!-- 处理orderby语句 -->
+		<choose>
+			<when test="orderBy != null">
+				${orderBy}
+			</when>
+			<otherwise>
+				<include refid="orderby"/>
+				<if test="ascDesc != null">
+					${ascDesc}
+				</if>
+			</otherwise>
+		</choose>
+		<!-- 处理limit语句 -->
+		<trim prefix="LIMIT" prefixOverrides=",">
+			<if test="startIndex != null and pageSize != null">
+				${startIndex}
+			</if>
+			<if test="pageSize != null">
+			 , ${pageSize}
+			 </if>
+		</trim>
+	</select>
+	
+	<!-- 删除子查询,删除赞-->
+	<delete id="deleteByPraise" parameterType="hashMap">
+		delete from
+		<include refid="table"/>
+		<where>
+			<if test="type != null">
+				and <include refid="settype"/>
+			</if>
+			<if test="channel != null">
+				and <include refid="setchannel"/>
+			</if>
+			<if test="fromuseroid != null">
+				and uid = (
+					select c2.uid from(
+						(
+						select c2.uid from <include refid="table"/> as c2 where c2.type = ${type} and c2.fromuseroid = ${fromuseroid} and c2.fromuid = ${fromuid} limit 0,1
+						) c2
+					)
+				)
+			</if>
+		</where>
+	</delete>
+	
+	<select id="getCountcurr" parameterType="hashMap" resultType="map">
+		select fromuid, count(*) as v 
+		from 
+		<include refid="table"/>
+		<where>
+			<if test="type != null">
+				and <include refid="settype"/>
+			</if>
+			<if test="channel != null">
+				and <include refid="setchannel"/>
+			</if>
+			<if test="praisday != null">
+				and <include refid="setpraisday"/>
+			</if>
+			<if test="praisdayfromtopic != null">
+				and fromuid in (
+					select t.uid from GFinanceDB.topic t where t.status=1 and t.state=1 
+					<if test="nofromuids != null">
+						 and t.uid not in 
+						<foreach item="item" index="index" collection="nofromuids" 
+		                 	 open="(" separator="," close=")">
+		                 	 #{item}
+		            	</foreach>
+					</if>
+				)
+			</if>
+			<if test="praisdayfromfinance != null">
+				and fromuid in (
+					select f.uid from GFinanceDB.finance f where f.status=1
+				)
+			</if>
+		</where>
+			group by (fromuid)
+		<choose>
+			<when test="orderBy != null">
+				${orderBy}
+			</when>
+			<otherwise>
+				<if test="ascDesc != null">
+					${ascDesc} 
+				</if>
+			</otherwise>
+		</choose>
+		limit 0,${ranknum}
+	</select>
+	
+	<select id="getCommentsFromPraise" parameterType="hashMap" resultType="map">
+		select fromuid, count(*) as v from 
+		<include refid="table"/>
+		<where>
+			channel = 6 and type = 1 and status = 1 
+			<if test="fromuid != null">
+				and fromuid in (
+					select c.uid from `comments` as c where c.fromuid = #{fromuid} and c.channel = #{channel} and c.type = #{type} and c.status = #{status}
+				)
+			</if>
+		</where>
+			group by (fromuid)
+		<choose>
+			<when test="orderBy != null">
+				${orderBy}
+			</when>
+			<otherwise>
+				<if test="ascDesc != null">
+					${ascDesc} 
+				</if>
+			</otherwise>
+		</choose>
+		limit 0,${ranknum}
+	</select>
+	
+	<select id="getLatestFromuseruidList" parameterType="hashMap" resultType="String">
+		select DISTINCT(fromuseruid) from
+		<include refid="table"/>
+		<where>
+			<if test="channel != null">
+				and <include refid="setchannel"/>
+			</if>
+			<if test="fromuid != null">
+				and <include refid="setfromuid"/>
+			</if>
+			<if test="type != null">
+				and <include refid="settype"/>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+			<if test="config != null">
+				and <include refid="whereconfig"/> 
+			</if>
+			and <include refid="setanonymousoid"/>
+		</where>
+		<!-- 处理orderby语句 -->
+		<choose>
+			<when test="orderBy != null">
+				${orderBy}
+			</when>
+			<otherwise>
+				<include refid="orderby"/>
+				<if test="ascDesc != null">
+					${ascDesc}
+				</if>
+			</otherwise>
+		</choose>
+		<!-- 处理limit语句 -->
+		<trim prefix="LIMIT" prefixOverrides=",">
+			<if test="startIndex != null and pageSize != null">
+				${startIndex}
+			</if>
+			<if test="pageSize != null">
+			 , ${pageSize}
+			 </if>
+		</trim>
+	</select>
+	
+	<select id="getMyReceivedPrizeCount" parameterType="hashMap" resultType="int">
+		select count(*) from 
+		<include refid="table"/>
+		<where>
+			channel = 6 and type = 1 and status = 1 
+			and fromuid in (
+				select c.uid from `comments` as c where c.fromuseruid = #{fromuseruid} and c.type = 0  and c.status = #{status}
+			)
+		</where>
+	</select>
+	
+</mapper>

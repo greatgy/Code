@@ -1,0 +1,172 @@
+package com.supergenius.xo.finance.entity;
+
+import com.genius.core.base.annotation.Json;
+import com.supergenius.xo.common.entity.BaseEntity;
+import com.supergenius.xo.user.entity.User;
+
+/**
+ * 用户统计实体
+ * @author YuYingJie
+ */
+public class UserStatistics extends BaseEntity {
+
+	private static final long serialVersionUID = -5802072102113650277L;
+	private String useruid;//会员uid
+	private int articlecount;//文章数量
+	private int topiccount;//话题数量
+	private int score;//积分
+	private int clickcount;//文章总浏览量
+	private int subscribecount;//订阅的数量
+	private int besubscribecount;//被订阅的数量
+	private int collectarticlecount;//收藏文章的数量
+	private int collecttopiccount;//收藏话题的数量
+	private int collectdebatecount;//收藏论战的数量
+	private int mycommentcount;//我发表的评论的数量
+	private int tomeprizecount;//我收到的赞的数量(对发表的评论)
+	@Json(strategy = Json.webStrategy)
+	private User user;
+	@Json(strategy = Json.webStrategy)
+	private Finance finance;
+	@Json(strategy = Json.webStrategy)
+	private Topic topic;
+	
+	public UserStatistics() {
+	}
+	
+	public UserStatistics(String uid, String useruid) {
+		this.uid = uid;
+		this.useruid = useruid;
+		this.articlecount = 0;
+		this.topiccount = 0;
+		this.score = 0;
+		this.clickcount = 0;
+		this.subscribecount = 0;
+		this.besubscribecount = 0;
+		this.collectarticlecount = 0;
+		this.collecttopiccount = 0;
+		this.collectdebatecount = 0;
+		this.mycommentcount = 0;
+		this.tomeprizecount = 0;
+	}
+	
+	public String getUseruid() {
+		return useruid;
+	}
+	
+	public void setUseruid(String useruid) {
+		this.useruid = useruid;
+	}
+	
+	public int getArticlecount() {
+		return articlecount;
+	}
+	
+	public void setArticlecount(int articlecount) {
+		this.articlecount = articlecount;
+	}
+	
+	public int getTopiccount() {
+		return topiccount;
+	}
+	
+	public void setTopiccount(int topiccount) {
+		this.topiccount = topiccount;
+	}
+	
+	public int getScore() {
+		return score;
+	}
+	
+	public void setScore(int score) {
+		this.score = score;
+	}
+	
+	public int getClickcount() {
+		return clickcount;
+	}
+	
+	public void setClickcount(int clickcount) {
+		this.clickcount = clickcount;
+	}
+	
+	public int getSubscribecount() {
+		return subscribecount;
+	}
+	
+	public void setSubscribecount(int subscribecount) {
+		this.subscribecount = subscribecount;
+	}
+	
+	public int getBesubscribecount() {
+		return besubscribecount;
+	}
+	
+	public void setBesubscribecount(int besubscribecount) {
+		this.besubscribecount = besubscribecount;
+	}
+	
+	public int getCollectarticlecount() {
+		return collectarticlecount;
+	}
+	
+	public void setCollectarticlecount(int collectarticlecount) {
+		this.collectarticlecount = collectarticlecount;
+	}
+	
+	public int getCollecttopiccount() {
+		return collecttopiccount;
+	}
+	
+	public void setCollecttopiccount(int collecttopiccount) {
+		this.collecttopiccount = collecttopiccount;
+	}
+	
+	public int getCollectdebatecount() {
+		return collectdebatecount;
+	}
+	
+	public void setCollectdebatecount(int collectdebatecount) {
+		this.collectdebatecount = collectdebatecount;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Finance getFinance() {
+		return finance;
+	}
+
+	public void setFinance(Finance finance) {
+		this.finance = finance;
+	}
+
+	public Topic getTopic() {
+		return topic;
+	}
+
+	public void setTopic(Topic topic) {
+		this.topic = topic;
+	}
+
+	public int getMycommentcount() {
+		return mycommentcount;
+	}
+
+	public void setMycommentcount(int mycommentcount) {
+		this.mycommentcount = mycommentcount;
+	}
+
+	public int getTomeprizecount() {
+		return tomeprizecount;
+	}
+
+	public void setTomeprizecount(int tomeprizecount) {
+		this.tomeprizecount = tomeprizecount;
+	}
+
+}

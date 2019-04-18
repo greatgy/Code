@@ -1,0 +1,46 @@
+package com.supergenius.xo.enterpriser.serviceimpl;
+
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.genius.xo.base.dao.BaseDao;
+import com.genius.xo.base.serviceimpl.BaseSOImpl;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.enterpriser.dao.ContentDao;
+import com.supergenius.xo.enterpriser.entity.Content;
+import com.supergenius.xo.enterpriser.enums.EContent;
+import com.supergenius.xo.enterpriser.service.ContentSO;
+
+/**
+ * 内容SOImpl
+ * @author XieMing
+ * @date 2016-10-24 下午4:45:49
+ */
+@Service("enterpriserContentSOImpl")
+public class ContentSOImpl extends BaseSOImpl<Content> implements ContentSO {
+
+	@Autowired
+	private ContentDao dao;
+	
+	@Override
+	protected BaseDao<Content> getDao() {
+		return dao;
+	}
+
+	@Override
+	public Content getOneByType(EContent type) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.type, type);
+		return dao.getOne(map);
+	}
+
+	@Override
+	public int getCount(EContent type) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.type, type);
+		return dao.getCount(map);
+	}
+
+}

@@ -1,0 +1,233 @@
+package com.supergenius.xo.sudokuapi.entity;
+
+import java.util.Date;
+import java.util.Locale;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import com.genius.core.base.annotation.Json;
+import com.genius.core.base.annotation.Maps;
+import com.genius.core.base.annotation.MapsIgnore;
+import com.supergenius.xo.base.BaseEntity;
+import com.supergenius.xo.sudokuapi.enums.EGrade;
+import com.supergenius.xo.sudokuapi.enums.ERecharge;
+
+/**
+ * 用户实体类
+ * 
+ * @author LiJiacheng
+ */
+@Json(value = { "uid", "status", "createtime", "updatetime" }, ignoreTypeStrategy = {Json.webStrategy, Json.appStrategy}, strategy = {Json.webStrategy, Json.appStrategy})
+@Maps(strategy = Maps.dbStrategy)
+public class Users extends BaseEntity {
+
+	private static final long serialVersionUID = 7033387149933261607L;
+	@Json(strategy = Json.appStrategy, alias="accountName")
+	private String account;// 账号
+	@Json(strategy = Json.appStrategy, alias="nickname")
+	private String name;// 用户名
+	@Json(strategy = Json.appStrategy)
+	private String password;// 密码
+	@Json(strategy = Json.appStrategy)
+	private String username;
+	@Json(strategy = Json.appStrategy)
+	private String token;
+	@Json(strategy = Json.appStrategy)
+	private String channelid;
+	@Json(strategy = Json.appStrategy)
+	private String channeluseruid;
+	@Json(strategy = Json.appStrategy)
+	private String email;// 邮箱
+	@Json(strategy = Json.appStrategy)
+	private String create_ip;// 创建IP
+	@Json(strategy = Json.appStrategy)
+	private Date logintime;// 上次登录时间
+	@Json(strategy = Json.appStrategy)
+	private String login_ip;// 上次登录IP
+	@Json(strategy = Json.appStrategy)
+	private String icon;// 头像
+	@Json(strategy = Json.appStrategy, alias="grade")
+	private EGrade grade;// 段位级别
+	@Json(strategy = Json.appStrategy)
+	private boolean recharge;// 是否充值
+	@Json(strategy = Json.appStrategy, alias="credit")
+	private int points;// 积分
+	@Json(strategy = Json.appStrategy)
+	private int rounds;// 总局数
+	@Json(strategy = Json.appStrategy)
+	private int wintimes;// 赢的局数
+	@Json(strategy = Json.appStrategy, alias="coin")
+	private int money;// 天才币
+
+	public String getAccount() {
+		return account;
+	}
+
+	public void setAccount(String account) {
+		this.account = account;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public void initPassword(String pwd) {
+		this.password = DigestUtils.md5Hex(pwd);
+	}
+	
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getCreate_ip() {
+		return create_ip;
+	}
+
+	public void setCreate_ip(String create_ip) {
+		this.create_ip = create_ip;
+	}
+
+	public Date getLogintime() {
+		return logintime;
+	}
+
+	public void setLogintime(Date logintime) {
+		this.logintime = logintime;
+	}
+
+	public String getLogin_ip() {
+		return login_ip;
+	}
+
+	public void setLogin_ip(String login_ip) {
+		this.login_ip = login_ip;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
+	public EGrade getGrade() {
+		return grade;
+	}
+
+	public void setGrade(EGrade grade) {
+		this.grade = grade;
+	}
+	
+	public boolean checkPwd(String pwd) {
+		if (StringUtils.isEmpty(pwd)) {
+			return false;
+		}
+		return DigestUtils.md5Hex(pwd).equals(this.getPassword());
+	}
+
+	@MapsIgnore(strategy = Maps.dbStrategy)
+	@Json(strategy = Json.webStrategy)
+	public String getGradeName() {
+		return EGrade.getName(grade, Locale.CHINA);
+	}
+
+	public boolean isRecharge() {
+		return recharge;
+	}
+
+	public void setRecharge(boolean recharge) {
+		this.recharge = recharge;
+	}
+	
+	@MapsIgnore(strategy = Maps.dbStrategy)
+	@Json(strategy = Json.webStrategy)
+	public String getRechargeName() {
+		if (recharge) {
+			return ERecharge.getName(ERecharge.is, Locale.CHINA);
+		} else {
+			return ERecharge.getName(ERecharge.no, Locale.CHINA);
+		}
+	}
+
+	public int getPoints() {
+		return points;
+	}
+
+	public void setPoints(int points) {
+		this.points = points;
+	}
+
+	public int getRounds() {
+		return rounds;
+	}
+
+	public void setRounds(int rounds) {
+		this.rounds = rounds;
+	}
+
+	public int getWintimes() {
+		return wintimes;
+	}
+
+	public void setWintimes(int wintimes) {
+		this.wintimes = wintimes;
+	}
+
+	public int getMoney() {
+		return money;
+	}
+
+	public void setMoney(int money) {
+		this.money = money;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public String getChannelid() {
+		return channelid;
+	}
+
+	public void setChannelid(String channelid) {
+		this.channelid = channelid;
+	}
+
+	public String getChanneluseruid() {
+		return channeluseruid;
+	}
+
+	public void setChanneluseruid(String channeluseruid) {
+		this.channeluseruid = channeluseruid;
+	}
+}

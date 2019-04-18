@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.genius.xo.baseadmin.dao.AuthorityDao">
+	
+	<sql id="basecolumns">`uid`,`createtime`</sql>
+	<sql id="othercolumns">`roleuid`, `roleid`,`url`, `name`, `desc`</sql>
+	<sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+	<sql id="table">`adminauthority`</sql>
+	<sql id="whereid">where uid = #{uid}</sql>
+	<sql id="allfields"><include refid="basecolumns"/>, <include refid="othercolumns"/></sql>
+	<sql id="allparams">#{uid},#{createtime},#{roleuid},#{roleid},#{url},#{name},#{desc}</sql>
+	<sql id="allitemparams">#{item.uid},#{item.createtime},#{item.roleuid},#{item.roleid},#{item.url},#{item.name},#{item.desc}</sql>
+	<sql id="count">count(*)</sql>
+	<sql id="setuid">uid = #{uid}</sql>
+	<sql id="setroleuid">roleuid = #{roleuid}</sql>
+	<sql id="setroleid">roleid = #{roleid}</sql>
+	<sql id="seturl">url = #{url}</sql>
+	<sql id="seturlregx">#{urlregx} REGEXP url</sql>
+	<sql id="setname">name = #{name}</sql>
+	<sql id="setdesc">`desc` = #{desc}</sql>
+	<sql id="allsets">set <include refid="setroleuid"/>,<include refid="setroleid"/>,<include refid="seturl"/>, <include refid="setname"/>,<include refid="setdesc"/>
+	 </sql>
+	<sql id="orderby">order by createtime</sql>
+	
+	<select id="get" parameterType="string" resultType="authority">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<include refid="whereid"/>
+	</select>
+	
+	<select id="getOne" parameterType="hashMap" resultType="authority">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="roleuid != null">
+				and <include refid="setroleuid"/>
+			</if>
+			<if test="roleid != null">
+				and <include refid="setroleid"/>
+			</if>
+			<if test="url != null">
+				and <include refid="seturl"/>
+			</if>
+			<if test="name != null">
+				and <include refid="setname"/>
+			</if>
+			<if test="desc != null">
+				and <include refid="setdesc"/>
+			</if>
+		</where>
+		LIMIT 0,1
+	</select>
+	
+	<select id="getCount" parameterType="hashMap" resultType="int">
+		select
+		<include refid="count" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="roleuid != null">
+				and <include refid="setroleuid"/>
+			</if>
+			<if test="roleid != null">
+				and <include refid="setroleid"/>
+			</if>
+			<if test="url != null">
+				and <include refid="seturl"/>
+			</if>
+			<if test="name != null">
+				and <include refid="setname"/>
+			</if>
+			<if test="desc != null">
+				and <include refid="setdesc"/>
+			</if>
+		</where>
+	</select>
+	
+	<select id="getAuthorities" parameterType="hashMap" resultType="string">
+		select `roleid` from
+		<include refid="table"/>
+		<where>
+			<if test="roleuid != null">
+				and <include refid="setroleuid"/>
+			</if>
+			<if test="roleid != null">
+				and <include refid="setroleid"/>
+			</if>
+			<if test="urlregx != null">
+				and <include refid="seturlregx"/>
+			</if>
+		</where>
+	</select>
+	
+	<select id="getList" parameterType="hashMap" resultType="authority">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="roleuid != null">
+				and <include refid="setroleuid"/>
+			</if>
+			<if test="roleid != null">
+				and <include refid="setroleid"/>
+			</if>
+			<if test="url != null">
+				and <include refid="seturl"/>
+			</if>
+			<if test="name != null">
+				and <include refid="setname"/>
+			</if>
+			<if test="desc != null">
+				and <include refid="setdesc"/>
+			</if>
+		</where>
+		<!-- 处理orderby语句 -->
+		<choose>
+			<when test="orderBy != null">
+				${orderBy}
+			</when>
+			<otherwise>
+				<include refid="orderby"/>
+				<if test="ascDesc != null">
+					${ascDesc}
+				</if>
+			</otherwise>
+		</choose>
+		<!-- 处理limit语句 -->
+		<trim prefix="LIMIT" prefixOverrides=",">
+			<if test="startIndex != null and pageSize != null">
+				${startIndex}
+			</if>
+			<if test="pageSize != null">
+			 , ${pageSize}
+			 </if>
+		</trim>
+	</select>
+	
+	<insert id="insert" parameterType="authority">
+		insert into
+		<include refid="table"/>
+		(<include refid="allfields"/>)
+		values (
+			<include refid="allparams"/>
+		)
+	</insert>
+	
+	<insert id="insertList" parameterType="list">
+		insert into
+		<include refid="table"/>
+		(<include refid="allfields"/>)
+		values
+		<foreach item="item" index="index" collection="list" separator=",">
+			(<include refid="allitemparams"/>)
+  		</foreach>
+	</insert>
+	
+	<update id="update" parameterType="authority">
+		update
+		<include refid="table"/>
+		<include refid="allsets"/>
+		<include refid="whereid"/>
+	</update>
+
+	<update id="updateFields" parameterType="hashMap">
+		update
+		<include refid="table"/>
+		<set>
+			<if test="roleuid != null">
+				 <include refid="setroleuid"/>
+			</if>
+			<if test="roleid != null">
+				<include refid="setroleid"/>
+			</if>
+			<if test="url != null">
+				 <include refid="seturl"/>
+			</if>
+			<if test="name != null">
+				<include refid="setname"/>
+			</if>
+			<if test="desc != null">
+				<include refid="setdesc"/>
+			</if>
+		</set>
+		<where>
+			<if test="uid != null">
+				<include refid="setuid"/>
+			</if>
+		</where>
+	</update>
+	
+	<delete id="delete" parameterType="string">
+		delete from
+		<include refid="table"/>
+		<include refid="whereid"/>
+	</delete>
+	
+	<delete id="deleteByMap" parameterType="hashMap">
+		delete from
+		<include refid="table"/>
+		<where>
+			<if test="roleuid != null">
+				and <include refid="setroleuid"/>
+			</if>
+			<if test="roleid != null">
+				and <include refid="setroleid"/>
+			</if>
+			<if test="url != null">
+				and <include refid="seturl"/>
+			</if>
+			<if test="name != null">
+				and <include refid="setname"/>
+			</if>
+			<if test="desc != null">
+				and <include refid="setdesc"/>
+			</if>
+		</where>
+	</delete>
+	
+</mapper>

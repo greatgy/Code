@@ -1,0 +1,39 @@
+package com.supergenius.xo.finance.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import com.genius.xo.base.dao.BaseDao;
+import com.supergenius.xo.finance.entity.Inbox;
+
+/**
+ * 收件箱Dao
+ * @author LiJiacheng
+ */
+public interface InboxDao extends BaseDao<Inbox> {
+
+	/**
+	 * 将未读的信息更新为已读的信息
+	 * @param map
+	 * @return
+	 * @author LiJiacheng
+	 */
+	boolean updateUnRead(Map<String, Object> map);
+
+	/**
+	 * 根据消息类型获取列表
+	 * @param map
+	 * @return
+	 * @author LiJiacheng
+	 */
+	List<Inbox> getListByType(Map<String, Object> map);
+
+	/**
+	 * 根据类型获取未读消息的数量
+	 * @param map
+	 * @return
+	 * @author LiJiacheng
+	 */
+	int getUnReadByType(Map<String, Object> map);
+
+}

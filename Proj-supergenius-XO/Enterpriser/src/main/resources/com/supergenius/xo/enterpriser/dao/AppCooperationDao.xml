@@ -1,0 +1,234 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.xo.enterpriser.dao.AppCooperationDao">
+
+    <sql id="basecolumns">`uid`, `createtime` </sql>
+    <sql id="othercolumns">`participateuid`, `name`, `mobile`, `email`, `semester`, `address`, `company`, `job`, `status` </sql>
+    <sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+    <sql id="table">appcooperation</sql>
+    <sql id="count">count(*)</sql>
+    <sql id="whereid">where uid = #{uid}</sql>
+    <sql id="allfields"><include refid="basecolumns"/>, <include refid="othercolumns"/> </sql>
+    <sql id="allparams">#{uid},#{createtime},#{participateuid},#{name},#{mobile},#{email},#{semester},#{address},#{company},#{job},#{status}</sql>
+    <sql id="setparticipateuid">`participateuid` = #{participateuid}</sql>
+    <sql id="setname">`name` = #{name}</sql>
+    <sql id="setmobile">`mobile` = #{mobile}</sql>
+    <sql id="setemail">`email` = #{email}</sql>
+    <sql id="setsemester">`semester` = #{semester}</sql>
+    <sql id="setaddress">`address` = #{address}</sql>
+    <sql id="setcompany">`company` = #{company}</sql>
+    <sql id="setjob">`job` = #{job}</sql>
+    <sql id="setstatus">`status` = #{status}</sql>
+    <sql id="allsets">set
+            <include refid="setparticipateuid"/>,
+            <include refid="setname"/>,
+            <include refid="setmobile"/>,
+            <include refid="setemail"/>,
+            <include refid="setsemester"/>,
+            <include refid="setaddress"/>,
+            <include refid="setcompany"/>,
+            <include refid="setjob"/>,
+            <include refid="setstatus"/>
+    </sql>
+    <sql id="orderby">order by createtime</sql>
+
+    <select id="get" parameterType="string" resultType="appcooperation">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </select>
+
+    <select id="getOne" parameterType="hashMap" resultType="appcooperation">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="participateuid != null">
+                and <include refid="setparticipateuid"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="mobile != null">
+                and <include refid="setmobile"/>
+            </if>
+            <if test="email != null">
+                and <include refid="setemail"/>
+            </if>
+            <if test="semester != null">
+                and <include refid="setsemester"/>
+            </if>
+            <if test="address != null">
+                and <include refid="setaddress"/>
+            </if>
+            <if test="company != null">
+                and <include refid="setcompany"/>
+            </if>
+            <if test="job != null">
+                and <include refid="setjob"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        LIMIT 0,1
+    </select>
+
+    <select id="getCount" parameterType="hashMap" resultType="int">
+        select
+        <include refid="count" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="participateuid != null">
+                and <include refid="setparticipateuid"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="mobile != null">
+                and <include refid="setmobile"/>
+            </if>
+            <if test="email != null">
+                and <include refid="setemail"/>
+            </if>
+            <if test="semester != null">
+                and <include refid="setsemester"/>
+            </if>
+            <if test="address != null">
+                and <include refid="setaddress"/>
+            </if>
+            <if test="company != null">
+                and <include refid="setcompany"/>
+            </if>
+            <if test="job != null">
+                and <include refid="setjob"/>
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+    </select>
+
+    <select id="getList" parameterType="hashMap" resultType="appcooperation">
+        select
+        <include refid="allcolumns" />
+        from
+        <include refid="table"/>
+        <where>
+            <if test="participateuid != null">
+                and <include refid="setparticipateuid"/>
+            </if>
+            <if test="name != null">
+                and <include refid="setname"/>
+            </if>
+            <if test="mobile != null">
+                and <include refid="setmobile"/>
+            </if>
+            <if test="email != null">
+                and <include refid="setemail"/>
+            </if>
+            <if test="semester != null">
+                and <include refid="setsemester"/>
+            </if>
+            <if test="address != null">
+                and <include refid="setaddress"/>
+            </if>
+            <if test="company != null">
+                and <include refid="setcompany"/>
+            </if>
+            <if test="job != null">
+                and <include refid="setjob"/>
+            </if>
+            <if test="keyword != null">
+                and (`name` like CONCAT('%',#{keyword},'%') or `mobile` like CONCAT('%',#{keyword},'%') or `email` like CONCAT('%',#{keyword},'%'))
+            </if>
+            <if test="status != null">
+                and <include refid="setstatus"/>
+            </if>
+        </where>
+        <!-- 处理orderby语句 -->
+        <choose>
+            <when test="orderBy != null">
+                ${orderBy}
+            </when>
+            <otherwise>
+                <include refid="orderby"/>
+                <if test="ascDesc != null">
+                    ${ascDesc}
+                </if>
+            </otherwise>
+        </choose>
+        <!-- 处理limit语句 -->
+        <trim prefix="LIMIT" prefixOverrides=",">
+            <if test="startIndex != null and pageSize != null">
+                ${startIndex}
+            </if>
+            <if test="pageSize != null">
+                , ${pageSize}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insert" parameterType="appcooperation">
+        insert into
+        <include refid="table"/>
+        (<include refid="allfields"/>)
+        values (
+        <include refid="allparams"/>
+        )
+    </insert>
+
+    <update id="update" parameterType="appcooperation">
+        update
+        <include refid="table"/>
+        <include refid="allsets"/>
+        <include refid="whereid"/>
+    </update>
+
+    <update id="updateFields" parameterType="hashMap">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="participateuid != null">
+                <include refid="setparticipateuid"/>,
+            </if>
+            <if test="name != null">
+                <include refid="setname"/>,
+            </if>
+            <if test="mobile != null">
+                <include refid="setmobile"/>,
+            </if>
+            <if test="email != null">
+                <include refid="setemail"/>,
+            </if>
+            <if test="semester != null">
+                <include refid="setsemester"/>,
+            </if>
+            <if test="address != null">
+                <include refid="setaddress"/>,
+            </if>
+            <if test="company != null">
+                <include refid="setcompany"/>,
+            </if>
+            <if test="job != null">
+                <include refid="setjob"/>,
+            </if>
+            <if test="status != null">
+                <include refid="setstatus"/>
+            </if>
+        </set>
+        <include refid="whereid"/>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from
+        <include refid="table"/>
+        <include refid="whereid"/>
+    </delete>
+
+</mapper>
+

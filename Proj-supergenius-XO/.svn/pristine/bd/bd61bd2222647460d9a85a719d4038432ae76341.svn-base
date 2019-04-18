@@ -1,0 +1,76 @@
+package com.supergenius.xo.finance.entity;
+
+import java.util.Locale;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.genius.core.base.annotation.Json;
+import com.supergenius.xo.common.entity.BaseEntity;
+import com.supergenius.xo.finance.enums.EGuestState;
+import com.supergenius.xo.user.entity.User;
+
+/**
+ * 话题嘉宾实体
+ * 
+ * @author liushaomin
+ */
+@Json(value = { "uid", "oid", "status", "createtime", "updatetime" }, ignoreTypeStrategy = Json.webStrategy, strategy = Json.webStrategy)
+@JsonIgnoreProperties(value = { "uid" })
+public class TopicGuest extends BaseEntity {
+
+	private static final long serialVersionUID = -6867297355249633088L;
+	@Json(strategy = Json.webStrategy)
+	private String useruid;// 嘉宾uid
+	@Json(strategy = Json.webStrategy)
+	private String topicuid;// 话题uid
+	@Json(strategy = Json.webStrategy)
+	private String name;// 嘉宾名字
+	@Json(strategy = Json.webStrategy)
+	private EGuestState state; // 嘉宾状态（初始 接受 拒绝）
+	private User topicUser;// 嘉宾
+
+	public String getUseruid() {
+		return useruid;
+	}
+
+	public void setUseruid(String useruid) {
+		this.useruid = useruid;
+	}
+
+	public String getTopicuid() {
+		return topicuid;
+	}
+
+	public void setTopicuid(String topicuid) {
+		this.topicuid = topicuid;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public EGuestState getState() {
+		return state;
+	}
+
+	public void setState(EGuestState state) {
+		this.state = state;
+	}
+
+	@Json(strategy = Json.webStrategy)
+	public String getGuestStateName() {
+		return EGuestState.getName(state, Locale.CHINA);
+	}
+
+	public User getTopicUser() {
+		return topicUser;
+	}
+
+	public void setTopicUser(User topicUser) {
+		this.topicUser = topicUser;
+	}
+
+}

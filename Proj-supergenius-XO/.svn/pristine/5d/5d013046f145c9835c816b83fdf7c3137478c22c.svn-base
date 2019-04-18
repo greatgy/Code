@@ -1,0 +1,41 @@
+package com.supergenius.xo.finance.service;
+
+import java.util.List;
+import java.util.Map;
+
+import com.genius.xo.base.service.BaseSO;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.finance.entity.CountDetail;
+import com.supergenius.xo.finance.enums.ECountType;
+import com.supergenius.xo.finance.enums.EFinance;
+
+/**
+ * 点击数SO
+ * @author liushaomin
+ */
+public interface CountDetailSO extends BaseSO<CountDetail>{
+	
+	/**
+	 * 获取文章的点击排行
+	 * @param channel 类别
+	 * @param type 点击
+	 * @param financetype 文章的类型
+ 	 * @param clickday int天之内点击的，如果clickday == -1 将不限制点击时间
+	 * @param publishday int天只能发布的，如果publishday == -1 将不限制发布时间
+	 * @param ranknum 获取的数量
+	 * @param authoruid 作者的uid
+	 * @return
+	 * @author liushaomin
+	 */
+	List<Map<?, ?>> getCountcurr(EChannel channel, ECountType type, EFinance financetype, int clickday, int publishday, int ranknum, String authoruid);
+
+	/**
+	 * 计算总数量
+	 * @param channel
+	 * @param type
+	 * @param refuidList
+	 * @return
+	 * @author ShangJianguo
+	 */
+	int getReadCount(EChannel channel, ECountType type, List<String> refuidList);
+}

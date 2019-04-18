@@ -1,0 +1,15 @@
+package com.supergenius.xo.finance.dao;
+
+import org.springframework.stereotype.Repository;
+
+import com.genius.xo.base.dao.BaseDao;
+import com.supergenius.xo.finance.entity.DebateArticle;
+
+/**
+ * 论战文章Dao
+ * @author liushaomin
+ */
+@Repository
+public interface DebateArticleDao extends BaseDao<DebateArticle>{
+
+}

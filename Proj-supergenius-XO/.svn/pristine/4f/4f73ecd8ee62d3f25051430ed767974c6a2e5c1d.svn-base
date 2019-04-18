@@ -1,0 +1,157 @@
+package com.supergenius.xo.user.dao;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.genius.core.base.constant.BaseMapperDict;
+import com.genius.core.base.utils.GlobalUtil;
+import com.genius.model.base.enums.EStatus;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.mock.testconstants.TestConst;
+import com.supergenius.xo.user.entity.Comments;
+import com.supergenius.xo.user.service.UserSO;
+
+/**
+ * 评论的单元测试
+ * @author liushaomin
+ */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath*:**/applicationContext**.xml" })
+public class CommentsDaoTest {
+
+	@Autowired
+	CommentsDao dao;
+	@Autowired
+	private UserSO userSO;
+	
+	Comments entity;
+	
+	/**
+	 * Test Get()
+	 */
+	@Test
+	public void testGet() {
+		entity = dao.get(TestConst.uid);
+		assertNotNull(entity);
+		assertEquals(TestConst.uid, entity.getUid());
+	}
+
+	/**
+	 * Test GetOne()
+	 */
+	@Test
+	public void testGetOne() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put(BaseMapperDict.uid, TestConst.uid);
+		assertNotNull(dao.getOne(map));
+	}
+
+	/**
+	 * Test GetList()
+	 */
+	@Test
+	public void testGetList() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put(BaseMapperDict.uid, TestConst.uid);
+		assertTrue(dao.getList(map).size() > 0);
+	}
+
+	/**
+	 * Test Insert()
+	 */
+	@Test
+	public void testInsert() {
+		entity = new Comments();
+		String fromuid = GlobalUtil.getUUID();
+		entity.setFromuid(fromuid);
+		entity.setContent("测试");
+		dao.insert(entity);
+		String uid = entity.getUid();
+		assertNotNull(dao.get(uid));
+		dao.delete(uid);
+		assertNull(dao.get(uid));
+	}
+
+	/**
+	 * Test Update()
+	 */
+	@Test
+	public void testUpdate() {
+		entity = dao.get(TestConst.uid);
+		entity.setStatus(EStatus.disable);
+		dao.update(entity);
+		assertEquals(EStatus.disable, dao.get(TestConst.uid).getStatus());
+	}
+
+	/**
+	 * Test UpdateFields()
+	 */
+	@Test
+	public void testUpdateFields() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put(BaseMapperDict.uid, TestConst.uid);
+		map.put(BaseMapperDict.status, EStatus.enable);
+		dao.updateFields(map);
+		assertEquals(EStatus.enable, dao.get(TestConst.uid).getStatus());
+	}
+
+	/**
+	 * Test DeleteByMap()
+	 */
+	@Test
+	public void testDeleteByMap() {
+		String fromuid = GlobalUtil.getUUID();
+		for (int i = 0; i < 3; i++) {
+			entity = new Comments();
+			entity.setFromuid(fromuid);
+			entity.setStatus(EStatus.enable);
+			dao.insert(entity);
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put(BaseMapperDict.fromuid, fromuid);
+		map.put(BaseMapperDict.status, EStatus.enable);
+		assertTrue(dao.getList(map).size() == 3);
+		dao.deleteByMap(map);
+		assertTrue(dao.getList(map).size() == 0);
+	}
+	
+	/**
+	 * Test testSearchList
+	 */
+	@Test
+	public void testSearchList() {
+
+		List<String> fromuidList = new ArrayList<String>();
+		fromuidList.add(TestConst.uid);
+		fromuidList.add(TestConst.uid3);
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.fromuid, fromuidList);
+		map.put(MapperDict.touseruid, TestConst.uid);
+		List<Comments> list = dao.searchList(map);
+		for (Comments item : list) {
+			if (StringUtils.isNotEmpty(item.getFromuseruid()) && MapperDict.DefaultAnonymousOid != item.getFromuseroid()) {
+				item.setFromUser(userSO.get(item.getFromuseruid()));
+			}
+			if (StringUtils.isNotEmpty(item.getTouseruid()) && MapperDict.DefaultAnonymousOid != item.getTouseroid()) {
+				item.setToUser(userSO.get(item.getTouseruid()));
+			}
+		}
+		for(Comments comment : list){
+			System.out.println(comment.getUid());
+		}		
+	}
+}

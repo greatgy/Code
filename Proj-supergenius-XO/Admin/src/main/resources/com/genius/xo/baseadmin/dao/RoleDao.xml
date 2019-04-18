@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.genius.xo.baseadmin.dao.RoleDao">
+	
+	<sql id="basecolumns">`uid`, `createtime`</sql>
+	<sql id="othercolumns">`adminuid`, `adminid`, `roleid`, `rolename`, `desc`, `status`</sql>
+	<sql id="allcolumns"><include refid="basecolumns"/>, <include refid="othercolumns"/>, `updatetime`</sql>
+	<sql id="table">adminrole</sql>
+	<sql id="whereid">where uid = #{uid}</sql>
+	<sql id="allfields"><include refid="basecolumns"/>, <include refid="othercolumns"/></sql>
+	<sql id="allparams">#{uid},#{createtime},#{adminuid},#{adminid},#{roleid},#{rolename},#{desc},#{status}</sql>
+	<sql id="allitemparams">#{item.uid},#{item.createtime},#{item.adminuid},#{item.adminid},#{item.roleid},#{item.rolename},#{item.desc},#{item.status}</sql>
+	<sql id="count">count(*)</sql>
+	<sql id="setadminuid">adminuid = #{adminuid}</sql>
+	<sql id="setadminid">adminid = #{adminid}</sql>
+	<sql id="setadminuid_isnull">adminuid is null</sql>
+	<sql id="setuid">uid = #{uid}</sql>
+	<sql id="setroleid">roleid = #{roleid}</sql>
+	<sql id="setno_roleid">roleid != #{no_roleid}</sql>
+	<sql id="setrolename">rolename = #{rolename}</sql>
+	<sql id="setrolename_lk">rolename like CONCAT('%',#{rolename_lk},'%')</sql>
+	<sql id="setdesc">`desc` = #{desc}</sql>
+	<sql id="setstatus">status = #{status}</sql>
+	<sql id="allsets">set <include refid="setadminuid"/>,<include refid="setadminid"/>,<include refid="setroleid"/>,<include refid="setrolename"/>,<include refid="setdesc"/>,<include refid="setstatus"/></sql>
+	<sql id="orderby">order by createtime</sql>
+	
+	<select id="get" parameterType="string" resultType="role">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<include refid="whereid"/>
+	</select>
+	
+	<select id="getOne" parameterType="hashMap" resultType="role">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="adminuid != null">
+				<include refid="setadminuid"/>
+			</if>
+			<if test="adminid != null">
+				<include refid="setadminid"/>
+			</if>
+			<if test="roleid != null">
+				and <include refid="setroleid"/>
+			</if>
+			<if test="no_roleid != null">
+				and <include refid="setno_roleid"/>
+			</if>
+			<if test="rolename_lk != null">
+				and <include refid="setrolename_lk"/>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+		</where>
+		LIMIT 0,1
+	</select>
+	
+	<select id="getList" parameterType="hashMap" resultType="role">
+		select
+		<include refid="allcolumns" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="adminuid != null">
+				and <include refid="setadminuid"/>
+			</if>
+			<if test="adminid != null">
+				and <include refid="setadminid"/>
+			</if>
+			<if test="adminuid_isnull != null">
+				and <include refid="setadminuid_isnull"/>
+			</if>
+			<if test="roleid != null">
+				and <include refid="setroleid"/>
+			</if>
+			<if test="no_roleid != null">
+				and <include refid="setno_roleid"/>
+			</if>
+			<if test="rolename_lk != null">
+				and <include refid="setrolename_lk"/>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+		</where>
+		<!-- 处理orderby语句 -->
+		<choose>
+			<when test="orderBy != null">
+				${orderBy}
+			</when>
+			<otherwise>
+				<include refid="orderby"/>
+				<if test="ascDesc != null">
+					${ascDesc}
+				</if>
+			</otherwise>
+		</choose>
+		<!-- 处理limit语句 -->
+		<trim prefix="LIMIT" prefixOverrides=",">
+			<if test="startIndex != null and pageSize != null">
+				${startIndex}
+			</if>
+			<if test="pageSize != null">
+			 , ${pageSize}
+			 </if>
+		</trim>
+	</select>
+	
+	<select id="getCount" parameterType="hashMap" resultType="int">
+		select
+		<include refid="count" />
+		from
+		<include refid="table"/>
+		<where>
+			<if test="adminuid != null">
+				and <include refid="setadminuid"/>
+			</if>
+			<if test="adminid != null">
+				and <include refid="setadminid"/>
+			</if>
+			<if test="adminuid_isnull != null">
+				and <include refid="setadminuid_isnull"/>
+			</if>
+			<if test="roleid != null">
+				and <include refid="setroleid"/>
+			</if>
+			<if test="no_roleid != null">
+				and <include refid="setno_roleid"/>
+			</if>
+			<if test="rolename_lk != null">
+				and <include refid="setrolename_lk"/>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+		</where>
+	</select>
+	
+	<insert id="insert" parameterType="role">
+		insert into
+		<include refid="table"/>
+		(<include refid="allfields"/>)
+		values (
+			<include refid="allparams"/>
+		)
+	</insert>
+	
+	<insert id="insertList" parameterType="list">
+		insert into
+		<include refid="table"/>
+		(<include refid="allfields"/>)
+		values
+		<foreach item="item" index="index" collection="list" separator=",">
+			(<include refid="allitemparams"/>)
+  		</foreach>
+	</insert>
+	
+	<update id="update" parameterType="role">
+		update
+		<include refid="table"/>
+		<include refid="allsets"/>
+		<include refid="whereid"/>
+	</update>
+
+	<update id="updateFields" parameterType="hashMap">
+		update
+		<include refid="table"/>
+		<set>
+			<if test="adminuid != null">
+				<include refid="setadminuid"/>,
+			</if>
+			<if test="adminid != null">
+				<include refid="setadminid"/>,
+			</if>
+			<if test="roleid != null">
+				<include refid="setroleid"/>,
+			</if>
+			<if test="rolename != null">
+				<include refid="setrolename"/>,
+			</if>
+			<if test="desc != null">
+				<include refid="setdesc"/>,
+			</if>
+			<if test="status != null">
+				<include refid="setstatus"/>,
+			</if>
+		</set>
+		<where>
+			<if test="uid != null">
+				<include refid="setuid"/>
+			</if>
+		</where>
+	</update>
+	
+	<delete id="delete" parameterType="string">
+		delete from
+		<include refid="table"/>
+		<include refid="whereid"/>
+	</delete>
+	
+	<delete id="deleteByMap" parameterType="hashMap">
+		delete from
+		<include refid="table"/>
+		<where>
+			<if test="adminuid != null">
+				and <include refid="setadminuid"/>
+			</if>
+			<if test="adminid != null">
+				and <include refid="setadminid"/>
+			</if>
+			<if test="status != null">
+				and <include refid="setstatus"/>
+			</if>
+		</where>
+	</delete>
+	
+</mapper>
