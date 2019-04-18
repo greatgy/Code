@@ -1,0 +1,61 @@
+package com.supergenius.test.constants;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.genius.model.base.entity.Pager;
+import com.supergenius.web.finance.helper.FinanceHP;
+import com.supergenius.xo.finance.entity.Finance;
+import com.supergenius.xo.finance.enums.EFinance;
+import com.supergenius.xo.finance.service.ContributeSO;
+import com.supergenius.xo.finance.service.FinanceSO;
+
+/**
+ * @author Architect.bian
+ * 
+ */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath*:**/applicationContext**.xml" })
+public class TestConst {
+
+	@Autowired
+	private FinanceSO so;
+	
+	public static final String name = "zhangsan";
+	
+	public static final String _123456 = "123456";
+
+	public static final String pwd_123456 = DigestUtils.md5Hex(_123456);
+
+	public static final String userId = "greathill";
+
+	public static final String uid = "uid00000000000000000000000000000";
+
+	public static final String uid1 = "uid11111111111111111111111111111";
+
+	public static final String uid2 = "uid22222222222222222222222222222";
+
+	public static final int oid = 1;
+	
+	public static final String adminid = "test";
+	
+	@Test
+	public void testLoadMoreByTypeInterface(){
+		
+		System.out.println("我进来测试了");
+		Pager pager = Pager.getNewInstance(1, 5);
+		List<Finance> finances = so.getList(EFinance.industries, pager);
+		for(Finance f:finances){
+			System.out.println(f.getTitle()+"----------------");
+		}
+	}
+
+}

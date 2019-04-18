@@ -1,0 +1,517 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>热门话题</title>
+<link rel="stylesheet" href="${basecss}/css/default/pages/mytopic.css"/>
+<script type="text/javascript">
+	var TOPIC_PAGE = [
+		{
+			tab:"all",
+			pagenum:1,
+			url:"${base}/ajax/mytopic/all/${me.oid!0}",
+			isfirst:false
+		},
+		{
+			tab:"publish",
+			pagenum:1,
+			url:"${base}/ajax/mytopic/state/1",
+			isfirst:true
+		},
+		{
+			tab:"refuse",
+			pagenum:1,
+			url:"${base}/ajax/mytopic/state/2",
+			isfirst:true
+		},
+		{
+			tab:"init",
+			pagenum:1,
+			url:"${base}/ajax/mytopic/state/0",
+			isfirst:true
+		},
+		{
+			tab:"disable",
+			pagenum:1,
+			url:"${base}/ajax/mytopic/status/0",
+			isfirst:true
+		},
+		{
+			tab:"join",
+			pagenum:1,
+			url:"${base}/ajax/mytopic/join/${me.oid!0}",
+			isfirst:true
+		}
+	];
+	$(function($) {
+		// 注册事件
+		$(".tab_bottom").click(loadmore);
+		$(".tab").click(setStateTab);
+	});
+</script>
+<script type="text/javascript">
+// 切换tab菜单
+function setStateTab(){
+	var tab = $(this).data("tab");
+	$(".t06_w680_tabs .current").removeClass("current");
+	$(this).addClass("current");
+	$(".content").addClass("hd");
+	$("#topic_" + tab).removeClass("hd");
+	var url = "";
+	var isfirst = false;
+	for(var i=0;i<TOPIC_PAGE.length;i++){
+		if(TOPIC_PAGE[i].tab == tab){
+			url = TOPIC_PAGE[i].url;
+			isfirst = TOPIC_PAGE[i].isfirst;
+			TOPIC_PAGE[i].isfirst = false;
+			break;
+		}
+	}
+	if(isfirst){
+		loadData(1, url, tab, isfirst);
+	}
+}
+// 加载更多事件处理
+function loadmore() {
+	var tab = $(this).data("tab");
+	var pagenum = -1;
+	var url = "";
+	for(var i=0;i<TOPIC_PAGE.length;i++){
+		if(TOPIC_PAGE[i].tab == tab){
+			TOPIC_PAGE[i].pagenum += 1;
+			pagenum = TOPIC_PAGE[i].pagenum;
+			url = TOPIC_PAGE[i].url;
+			break;
+		}
+	}
+	loadData(pagenum, url, tab, false);
+}
+// 从后台加载数据
+function loadData(pagenum, url, tab, isfirst){
+		$.get(url, {pagenum:pagenum}, function(data){
+		if(data.trim() == ""){
+			if(isfirst){
+				$("#topic_"+tab+" .notopic").removeClass("hd");
+				$(".more_"+tab).addClass("hd");
+			}else{
+				alert("没有更多话题");
+			}
+			return;
+		}
+		$("#topic_"+ tab + " .tab_more").append(data);
+	});
+}
+</script>
+</head>
+<body>
+<div class="topic_07_box">
+	<div class="tp_07_left">
+		<div class="tp_07_one">
+			<div class="tp_07_imgs">
+				<a href="#">
+					<img [#if "${me.avatar}" == ""]src="${baseimg}/imgs/web/noavatar132x130.png"[#else]src="${userimg}${(me.avatar)}"[/#if]/>
+				</a>
+			</div>
+			<div class="one_r">
+			<h1><a href="#">${me.showname}</a></h1>
+			<p>${me.summary}</p>
+			</div>
+			<div class="onr_rr">
+				<p><a href="#">${count}</a><br><span><a href="">我发起</a></span></p>
+				<p class="rrtb"></p>
+				<p><a href="#">${count2}</a><br><span><a href="">我参与</a></span></p>
+			</div>
+		</div>
+		<!--tab-->
+		<div class="comment">
+			<p class="com_title"><span id="one1" class="current" onclick="setTab('one',1,2)">我发起</span><span id="one2" data-topic="first" onclick="setTab('one',2,2)">我参与</span></p>
+			<div class="com_all" id="list_one_1">
+				<div class="t06_w680_tabs">
+					<a href="" class="tab" data-tab="all current">全部</a>
+					<a href="" class="tab" data-tab="publish">已发布</a>
+					<a href="" class="tab" data-tab="refuse">未通过</a>
+					<a href="" class="tab" data-tab="init">审核中</a>
+					<a href="" class="tab" data-tab="disable" >已撤销</a>
+				</div>
+				<div id="topic_all" class="content">
+					[#if list?size == 0]
+						<div><img src="${baseimg}/imgs/default/prompt.png" width="481px" heigth="211px"/></div>
+					[#else]
+					<div class="tab_more">
+						[#list list as item]
+							<div class="tab_one">
+								[#if item.isTopicStateSucceed && item.isEnable]
+									<a href="${base}/topic/${item.oid}" target="_blank"><img src="${webimg}${item.imglittle}" style="width:212px;height:140px;display:block;"></a>
+				                [#else]
+				                	<img src="${webimg}${item.imglittle}" style="width:212px;height:140px;">
+				                [/#if]
+								<p class="t06_w680_fix">
+									[#if item.isDisable]
+										<img src="${baseimg}/imgs/default/topic04_check04.png">
+									[#elseif item.isTopicStateInit]
+										<img src="${baseimg}/imgs/default/topic04_check01.png">
+									[#elseif item.isTopicStateSucceed]
+										<img src="${baseimg}/imgs/default/topic04_check03.png">
+									[#elseif item.isTopicStateFailed]
+										<img src="${baseimg}/imgs/default/topic04_check02.png">
+									[/#if]
+								</p>
+								<div class="tab_one_r">
+									[#--[#if item.isTopicStateSucceed]<div class="yaoqing">邀请嘉宾</div>[/#if]--]
+									<h3>
+										[#if item.isTopicStateSucceed && item.isEnable]
+											<a href="${base}/topic/${item.oid}" target="_blank">${item.title}</a>
+						                [#else]
+						                	${item.title}
+						                [/#if]
+									</h3>
+									<p>发布于 ${item.publishtime.toString("YYYY-MM-dd")}<br>
+										[@f.TrimSubstring content="${item.content!''}" mylength=70 /]
+										[#if item.isTopicStateSucceed]<a href="${base}/topic/${item.oid}" target="_blank">[详情]</a>[/#if]
+									</p>
+								</div>
+								<div class="tab_one_bt">
+									<img src="${baseimg}/imgs/default/heart_02.png">${item.prizecount!0}&nbsp;&nbsp;|&nbsp;&nbsp;评论 ${item.commentcount!0}
+								</div>
+							</div>
+						[/#list]
+						</div>
+						<div class="tab_bottom more_all" data-tab="all">加载更多</div>
+					[/#if]
+				</div>
+				
+				<div id="topic_publish" class="hd content" >
+					<div class="notopic hd"><img src="${baseimg}/imgs/default/prompt.png" width="481px" heigth="211px"/></div>
+					<div class="tab_more">
+					</div>
+					<div class="clear"></div>
+					<div class="tab_bottom more_publish"  data-tab="publish">加载更多</div>
+				</div>
+				
+				<div id="topic_refuse" class="hd content">
+					<div class="notopic hd"><img src="${baseimg}/imgs/default/prompt.png" width="481px" heigth="211px"/></div>
+					<div class="tab_more">
+					</div>
+					<div class="clear"></div>
+					<div class="tab_bottom more_refuse"  data-tab="refuse">加载更多</div>
+				</div>
+				
+				<div id="topic_init" class="hd content">
+					<div class="notopic hd"><img src="${baseimg}/imgs/default/prompt.png" width="481px" heigth="211px"/></div>
+					<div class="tab_more">
+					</div>
+					<div class="clear"></div>
+					<div class="tab_bottom more_init"  data-tab="init">加载更多</div>
+				</div>
+				
+				<div id="topic_disable" class="hd content">
+					<div class="notopic hd"><img src="${baseimg}/imgs/default/prompt.png" width="481px" heigth="211px"/></div>			
+					<div class="tab_more">
+					</div>
+					<div class="clear"></div>
+					<div class="tab_bottom more_disable"  data-tab="disable">加载更多</div>
+				</div>
+			
+			</div>
+			
+			<div class="com_all" id="list_one_2" style="display:none">
+				<div id="topic_join" class="hd content">
+					<div class="notopic hd"><img src="${baseimg}/imgs/default/prompt.png" width="481px" heigth="211px"/></div>			
+					<div class="tab_more">
+					</div>
+					<div class="clear"></div>
+					<div class="tab_bottom more_join"  data-tab="join">加载更多</div>
+				</div>
+			</div>
+		</div>
+		
+		<!--tab end-->
+	</div>
+	<!--右侧 开始-->
+	<div class="tp_07_right">
+		<a class="tp_07_onel" href="${base}/topic/apply">发起话题</a><a class="tp_07_oner" href="${base}/topic/random">随机穿越</a>
+		<div class="clear"></div>
+		[@f.TopicRank topicrank /]
+	</div>
+</div>
+[#--
+<div class="topic_invite">弹出框
+		<h1 class="invite_close"><img src="${baseimg}/imgs/temp/close.png"></h1>
+		<div class="invite_lt left">
+			<h2 class="invite_title"><a href="" id="two1" class="current">君子汇好友</a><a href="#" id="two2"  >全站君子汇</a></h2>
+			<div class="invite_all " id="invite_two_1">
+				<ul>
+					<li>
+						<div class="invite_all_peos">
+							<img src="${baseimg}/imgs/temp/topic02_11.png" alt="刘晓宇" />
+							<p class="invite_peos_name">刘晓宇</p>
+							<p class="invite_invited">已邀请过</p>
+							<p class="invite_check"><input type="checkbox"></p>
+						</div>
+					</li>
+					<li>
+						<div class="invite_all_peos">
+							<img src="${baseimg}/imgs/temp/topic02_13.png" alt="刘晓宇"/>
+							<p class="invite_peos_name">刘晓宇</p>
+							
+							<p class="invite_check"><input type="checkbox"></p>
+						</div>
+					</li>
+					<li>
+						<div class="invite_all_peos">
+							<img src="${baseimg}/imgs/temp/topic02_15.png" alt="刘晓宇"/>
+							<p class="invite_peos_name">刘晓宇</p>
+							
+							<p class="invite_check"><input type="checkbox"></p>
+						</div>
+					</li>
+					<li>
+						<div class="invite_all_peos">
+							<img src="${baseimg}/imgs/temp/topic02_20.png" alt="刘晓宇"/>
+							<p class="invite_peos_name">刘晓宇</p>
+							
+							<p class="invite_check"><input type="checkbox"></p>
+						</div>
+					</li>
+					<li>
+						<div class="invite_all_peos">
+							<img src="${baseimg}/imgs/temp/topic02_21.png" alt="刘晓宇"/>
+							<p class="invite_peos_name">刘晓宇</p>
+							
+							<p class="invite_check"><input type="checkbox"></p>
+						</div>
+					</li>
+					<li>
+						<div class="invite_all_peos">
+							<img src="${baseimg}/imgs/temp/topic02_11.png" alt="刘晓宇"/>
+							<p class="invite_peos_name">刘晓宇</p>
+							
+							<p class="invite_check"><input type="checkbox"></p>
+						</div>
+					</li>
+					<li>
+						<div class="invite_all_peos">
+							<img src="${baseimg}/imgs/temp/topic02_13.png" alt="刘晓宇"/>
+							<p class="invite_peos_name">刘晓宇</p>
+							
+							<p class="invite_check"><input type="checkbox"></p>
+						</div>
+					</li>
+					<li>
+						<div class="invite_all_peos">
+							<img src="${baseimg}/imgs/temp/topic02_20.png" alt="刘晓宇"/>
+							<p class="invite_peos_name">刘晓宇</p>
+							
+							<p class="invite_check"><input type="checkbox"></p>
+						</div>
+					</li>
+					<li>
+						<div class="invite_all_peos">
+							<img src="${baseimg}/imgs/temp/topic02_15.png" alt="刘晓宇"/>
+							<p class="invite_peos_name">刘晓宇</p>
+							<p class="invite_invited">已邀请过</p>
+							<p class="invite_check"><input type="checkbox"></p>
+						</div>
+					</li>
+					<li>
+						<div class="invite_all_peos">
+							<img src="${baseimg}/imgs/temp/topic02_13.png" alt="刘晓宇"/>
+							<p class="invite_peos_name">刘晓宇</p>
+							
+							<p class="invite_check"><input type="checkbox"></p>
+						</div>
+					</li>
+					<li>
+						<div class="invite_all_peos">
+							<img src="${baseimg}/imgs/temp/topic02_20.png" alt="刘晓宇"/>
+							<p class="invite_peos_name">刘晓宇</p>
+							
+							<p class="invite_check"><input type="checkbox"></p>
+						</div>
+					</li>
+					<li>
+						<div class="invite_all_peos">
+							<img src="${baseimg}/imgs/temp/topic02_21.png" alt="刘晓宇"/>
+							<p class="invite_peos_name">刘晓宇</p>
+							
+							<p class="invite_check"><input type="checkbox"></p>
+						</div>
+					</li>
+					<li>
+						<div class="invite_all_peos">
+							<img src="${baseimg}/imgs/temp/topic02_11.png" alt="刘晓宇"/>
+							<p class="invite_peos_name">刘晓宇</p>
+							
+							<p class="invite_check"><input type="checkbox"></p>
+						</div>
+					</li>
+					<li>
+						<div class="invite_all_peos">
+							<img src="${baseimg}/imgs/temp/topic02_13.png" alt="刘晓宇"/>
+							<p class="invite_peos_name">刘晓宇</p>
+							
+							<p class="invite_check"><input type="checkbox"></p>
+						</div>
+					</li>
+					<li>
+						<div class="invite_all_peos">
+							<img src="${baseimg}/imgs/temp/topic02_15.png" alt="刘晓宇"/>
+							<p class="invite_peos_name">刘晓宇</p>
+							
+							<p class="invite_check"><input type="checkbox"></p>
+						</div>
+					</li>
+					<li>
+						<div class="invite_all_peos">
+							<img src="${baseimg}/imgs/temp/topic02_20.png" alt="刘晓宇"/>
+							<p class="invite_peos_name">刘晓宇</p>
+							
+							<p class="invite_check"><input type="checkbox"></p>
+						</div>
+					</li>
+
+				</ul>
+			</div>
+			<div class="invite_all invite_all_special" id="invite_two_2" style="display:none">
+				<p class="invite_all_friends">邀请全站非好友嘉宾:</p>
+				<p class="invite_all_fm">
+					<input type="text" value="请输入会员号或者姓名进行搜索" class="invite_all_input"/><input type="button" value="搜索" class="invite_all_but">
+				</p>
+				<p class="invite_all_result">搜索结果：<br/>
+非常抱歉，没有检索到您想找的君子，请确认会员号和姓名之后，重新搜索。
+				</p>
+				<ul>
+					<li>
+						<div class="invite_all_peos">
+							<img src="${baseimg}/imgs/temp/topic02_15.png" alt="title"/>
+							<p class="invite_peos_name">刘晓宇</p>
+							<p class="invite_invited">已邀请过</p>
+							<p class="invite_check"><input type="checkbox"></p>
+						</div>
+					</li>
+					<li>
+						<div class="invite_all_peos">
+							<img src="${baseimg}/imgs/temp/topic02_13.png" alt="title"/>
+							<p class="invite_peos_name">刘晓宇</p>
+							
+							<p class="invite_check"><input type="checkbox"></p>
+						</div>
+					</li>
+					<li>
+						<div class="invite_all_peos">
+							<img src="${baseimg}/imgs/temp/topic02_20.png" alt="title"/>
+							<p class="invite_peos_name">刘晓宇</p>
+							
+							<p class="invite_check"><input type="checkbox"></p>
+						</div>
+					</li>
+					<li>
+						<div class="invite_all_peos">
+							<img src="${baseimg}/imgs/temp/topic02_21.png" alt="title"/>
+							<p class="invite_peos_name">刘晓宇</p>
+							
+							<p class="invite_check"><input type="checkbox"></p>
+						</div>
+					</li>
+					<li>
+						<div class="invite_all_peos">
+							<img src="${baseimg}/imgs/temp/topic02_11.png" alt="title"/>
+							<p class="invite_peos_name">刘晓宇</p>
+							
+							<p class="invite_check"><input type="checkbox"></p>
+						</div>
+					</li>
+					<li>
+						<div class="invite_all_peos">
+							<img src="${baseimg}/imgs/temp/topic02_13.png" alt="title"/>
+							<p class="invite_peos_name">刘晓宇</p>
+							
+							<p class="invite_check"><input type="checkbox"></p>
+						</div>
+					</li>
+					<li>
+						<div class="invite_all_peos">
+							<img src="${baseimg}/imgs/temp/topic02_15.png" alt="title"/>
+							<p class="invite_peos_name">刘晓宇</p>
+							
+							<p class="invite_check"><input type="checkbox"></p>
+						</div>
+					</li>
+					<li>
+						<div class="invite_all_peos">
+							<img src="${baseimg}/imgs/temp/topic02_20.png" alt="title"/>
+							<p class="invite_peos_name">刘晓宇</p>
+							
+							<p class="invite_check"><input type="checkbox"></p>
+						</div>
+					</li>
+
+				</ul>
+
+			</div>
+
+		</div>
+		<div class="invite_rt right" id="cheng" style="display:none">
+			<p class="invite_rt_ok">邀请成功</p>
+			<p class="invite_rt_info">您的邀请通知已发送到嘉宾的消息中心。对方同意后将自动成为嘉宾，拒绝后将不再自动提醒您，您可以邀请其他嘉宾。</p>
+			<p class="invite_rt_but" id="jixu"><a href="#">继续邀请</a></p>
+		</div>
+		<div class="invite_rt right" id="wei">
+			<p class="invite_rt_access">当前已有0人接受了你的邀请，0人尚未处理，你还有6个邀请名额。</p>
+			<p>已选择了5位，还可以选择1位</p>
+			<ul>
+				<li>
+					<div class="invite_all_peos">
+						<img src="${baseimg}/imgs/temp/topic02_15.png" alt="title"/>
+						<p class="invite_peos_name">刘晓宇</p>					
+					</div>
+				</li>
+				<li>
+					<div class="invite_all_peos">
+						<img src="${baseimg}/imgs/temp/topic02_11.png" alt="title"/>
+						<p class="invite_peos_name">刘晓宇</p>					
+					</div>
+				</li>
+				<li>
+					<div class="invite_all_peos">
+						<img src="${baseimg}/imgs/temp/topic02_20.png" alt="title"/>
+						<p class="invite_peos_name">刘晓宇</p>					
+					</div>
+				</li>
+				<li>
+					<div class="invite_all_peos">
+						<img src="${baseimg}/imgs/temp/topic02_13.png" alt="title"/>
+						<p class="invite_peos_name">刘晓宇</p>					
+					</div>
+				</li>
+			<div class="clear"></div>
+			</ul>
+
+			<p class="invite_rt_but"><a href="#">发送邀请</a></p>
+		</div>
+		<div class="clear"></div>
+	</div>
+--]
+<div class="clear"></div>
+<script src="${basejs}/js/pages/mytopic.js"></script>
+<script>
+function setTab(name,cursel,n){
+	for(i=1;i<=n;i++){	  
+		var menu=document.getElementById(name+i);
+		var con=document.getElementById("list_"+name+"_"+i);
+		menu.className=i==cursel?"current":"";
+		con.style.display=i==cursel?"block":"none";
+	}
+	var topic = $("#" + name + cursel).data("topic");
+	if(cursel == 2){
+		if(topic == "first"){
+			$("#topic_join").removeClass("hd");
+			loadData(1, "${base}/ajax/mytopic/join/${me.oid!0}", "join", true);
+		}
+		$("#" + name + cursel).data("topic","");
+	}
+}
+</script>
+</body>
+</html>

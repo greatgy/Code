@@ -1,0 +1,128 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+<!DOCTYPE html >
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>他的文章</title>
+	<link href="${basecss}/css/default/pages/hisarticle.css" type="text/css" rel="stylesheet"/>
+	<style type="text/css">
+		.t06_w680_img{width:212px; height:141px;float:left;overflow:hidden;}
+		.t06_w680_img img{width:236px; height:159px;}
+	</style>
+	<script type="text/javascript">
+	<!--
+		var FINANCE_PAGE =
+			{
+				pagenum:1,
+				url:"${base}/ajax/article/${useruid}_{0}"
+			};
+			
+		$(function($) {
+			// 注册事件
+			$(".load_more").bind("click", loadmore);
+		});
+		
+		// 加载更多事件处理
+		function loadmore() {
+			var pagenum = FINANCE_PAGE.pagenum +　1;
+			var url = FINANCE_PAGE.url;
+			$.get(url.format(pagenum),  function(data){
+				if(data.trim() == ""){// 没有更多内容
+					$(".load_more a").html("没有更多文章");
+					$(".load_more").unbind("click");
+					return;
+				}
+				FINANCE_PAGE.pagenum += 1;
+				$(".content").append(data);
+			});
+		}
+	//-->
+	</script>
+</head>
+<body>
+
+<div class="hisarticle">
+	<div class="t06_banner_box">
+		<div class="t06_banner">
+			<div class="t06_banner_head left">
+			   <div class="t06_banner_imgs">
+					<a href="#">
+						<img 
+							[#if "${author.user.avatar}" == ""]
+								src="${baseimg}/imgs/web/noavatar132x130.png"
+							[#else]
+								src="${userimg}${(author.user.avatar)}"
+							[/#if]
+						/>
+					</a>
+				</div>
+			</div>
+			<div class="t06_banner_con left">
+				<a href="#" style="color:#fff"><h1>${list[0].author}</h1></a>
+				<p>作者简介：${author.summary!"暂无作者简介"} </p>
+			</div>				
+			<div class="t06_banner_home right">
+				<a href="">
+					<p class="t06_banner_num">
+						<span title="文章数量">${count}<br/>文章</span>
+						<span class="t06_banner_border">&nbsp;</span>
+						<span title="文章浏览总数">${count2}<br/>浏览</span>
+					</p>
+				</a>
+				<a href=""><p class="t06_banner_but"><a href="#"><img src="${baseimg}/imgs/default/user_but.png"/></a></p></a>
+			</div>
+		</div>
+	</div>
+	<div class="t06_con">
+		<div class="t06_con_w680 left">
+			<h1 class="t06_w680_title">TA的文章列表</h1>
+			<div class="zhude">
+				<div class="content">
+				[#if list?size > 0]
+					[#list list as item]
+					<div class="t06_w680_info">
+						<div class="t06_w680_time left" style="position:relative;top:16px">
+							<span style="position:relative;bottom:13px">${item.createtime.toString("yyyy年MM月dd日")}</span>
+							<img src="${baseimg}/imgs/default/circle.png" class="t06_w680_circle" style="" />
+						</div>
+						<div class="t06_w680_con right">
+							<div class="t06_w680_img left">
+								<img src="${webimg}${item.imgbig}" />
+							</div>
+							<div class="t06_w680_word right" style="padding-top:0px">
+								[#assign link=""]
+								[#if "${item.firstTypeName}" == "debate"]
+									[#assign link="${base}/debate/article/${item.uid}"]
+								[#else]
+									[#assign link="${base}/${item.firstTypeName}/${item.oid}"]
+								[/#if]
+								<a href="${link}" target="_blank"><h2>${item.title}</h2></a>
+								<p>[@f.TrimSubstring content="${item.content}" /]<a href="${link}" target="_blank">[详情]</a></p>
+								<p class="t06_w680_detail">
+									<span>阅读(${item.clickcount!0})</span>
+									<span>
+										<img  src="${baseimg}/imgs/default/heart_02.png"/>(${item.prizecount!0})
+									</span>
+									<a href="${link}#db_discuss">评论(${item.commentcount!0})</a>
+								</p>
+							</div>
+						</div>
+					</div>
+					[/#list]
+				</div>
+				<div class="clear"></div>
+				<div class="t06_w680_more load_more"><a href="">加载更多</a></div>
+				[#else]
+					<div class="t06_fix"><img src="${baseimg}/imgs/default/prompt.png" /></div>
+				[/#if]
+			</div>
+		</div>
+		<div class="t06_con_w290 right">
+			[#-- 热门文章排行榜 --]
+			[@f.ArticleRank list2 /]	
+		</div>
+		<div class="clear"></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,60 @@
+package com.supergenius.server.finance.helper;
+
+import java.util.List;
+
+import com.genius.core.cache.rule.Rule;
+import com.genius.core.cache.utils.MemcacheUtil;
+import com.genius.server.base.helper.BaseHP;
+import com.supergenius.core.rule.DebateCurRlue;
+import com.supergenius.xo.finance.entity.Debate;
+import com.supergenius.xo.finance.entity.DebateArticle;
+import com.supergenius.xo.finance.service.DebateArticleSO;
+
+/**
+ * 论战HP，提供前后台都是用的方法
+ *
+ * @author ShangJianguo
+ */
+public class BaseDebateHP extends BaseHP{
+	
+	private static DebateArticleSO debateArticleSO;
+
+	public static DebateArticleSO getDebateArticleSO() {
+		if (debateArticleSO == null) {
+			debateArticleSO = (DebateArticleSO) spring.getBean(DebateArticleSO.class);
+		}
+		return debateArticleSO;
+	}
+	
+	/**
+	 * 为论战设置论战文章
+	 * 
+	 * @param debate
+	 * @return
+	 * @author ShangJianguo
+	 */
+	public static Debate setArticles(Debate debate) {
+		if (debate != null) {
+			List<DebateArticle> articles = getDebateArticleSO().getList(debate.getUid());
+			for (DebateArticle item : articles) {
+				if (item.isIsred()) {
+					debate.getRedArticles().add(item);
+				} else {
+					debate.getBlueArticles().add(item);
+				}
+			}
+		}
+		return debate;
+	}
+	
+	/**
+	 * 清空当前期论战缓存
+	 * 
+	 * @author YuYingJie
+	 */
+	public static void removeCurDebateCache(){
+		Rule rule = new DebateCurRlue();
+		MemcacheUtil.remove(rule);
+	}
+	
+}

@@ -1,0 +1,158 @@
+[#ftl strip_whitespace=true]
+[#--
+ * FinanceRank.ftl
+ * 天财评论提供页面的排行类库
+ * @liushaomin
+ * @since 1.0
+ --]
+[#macro TopicRank ranklist]
+	<div class="tp_07_right">
+		<style type="text/css">
+			.tp_07_right .tp_07_two{border: 1px solid #ddd; margin-top:20px; overflow: hidden;}
+			.tp_07_right .tp_07_two .twobt{height:40px; border-bottom:1px solid #51aded;}
+			.tp_07_right .tp_07_two .bt{width:140px; height:40px; float:left; line-height:40px;font-weight:bold; background-color:#51aded; color:#fff;font-size:16px;}
+			.tp_07_right .tp_07_two .twomain{width: 278px; position:relative; margin:20px auto;}
+			.tp_07_right .tp_07_two .twomain h2.main_act a{color:#1d71b6;}
+			.tp_07_right .tp_07_two .twomain a{ color:#777; display:inline;}
+		</style>
+		<div class="tp_07_two">
+			<div class="twobt">
+				<p class="bt">热门话题排行榜</p>
+			</div>
+			[#list ranklist as item]
+			<div class="twomain">
+                <h2 ><a href="${base}/topic/${item.oid}" target="_blank" title="${item.title}">[@TrimSubstring content="${item.title}" mylength=14 /]</a></h2>
+                <p>发起人：<em><a href="">${item.author}</em></a></p>
+                <div class="dhk">${item.commentcount!'0'}</div>
+            </div>
+			[/#list]
+		</div>
+	</div>
+[/#macro]
+
+[#--
+ * 文章排行宏
+ * @ranklist 要排行的列表	
+ * @typename 类别名（英文，枚举的name值）	
+ * @typechinaname 中文类别名	
+ * @listname 列表的展示名称	
+ * @shangjianguo
+ * @since 1.0
+ --]
+[#macro ArticleRank ranklist typename typechinaname listname]
+	<div class="t06_con_w290 right">
+		[#if listname??]
+			<h4><span>${listname}</span></h4>
+		[#else]
+			[#if typename??]
+				<h4><span>${typechinaname}文章排行榜</span></h4>
+			[#else]
+				<h4><span>热门文章排行榜</span></h4>
+			[/#if]
+		[/#if]
+		<ul>
+			[#list ranklist as item]
+			[#if typename==""]
+				[#assign typename="${item.firstTypeName}"]
+			[/#if]
+			<li>
+				[#if typechinaname??]
+				<div class="t06_w290_list">
+					<h5 class="t06_w290_title">
+				[#else]
+				<div class="t06_w291_list">
+					<h5 class="t06_w290_title">
+				[/#if]
+						<span class="">${(item_index + 1)?string("00")}</span>
+						<a href="${base}/${typename}/${item.oid}" title="${item.title}" target="_blank">[@TrimSubstring content="${item.title}" mylength=13 /]</a>
+					</h5>
+				[#if item_index == 0]
+					<p class="list_hide" style="display:block;">
+				[#else]
+					<p class="list_hide">
+				[/#if]
+					[@TrimSubstring content="${item.content}" mylength=40 /]<span><a href="${base}/${typename}/${item.oid}" target="_blank">[详情]</a></span></p>
+				</div>
+			</li>
+			[/#list]
+		</ul>
+	</div>
+[/#macro]
+
+[#--
+ * 字符串清空html并截取一定的字数
+ * @content 要处理的文字	
+ * @length 要截取的长度	
+ * @shangjianguo
+ * @since 1.0
+ --]
+[#macro TrimSubstring content mylength]
+	[#if mylength<=0]
+		[#local mylength=100]
+	[/#if]
+	[#local con=content?replace("<[^>]*>", "", "r")]
+	[#local con=con?replace("&nbsp;", "", "r")]
+	[#local apostrophe=true /]
+	[#if (con?length)<='${mylength}'?number]
+		[#local mylength='${con?length}']
+		[#local apostrophe=false /]
+	[/#if]
+	[#local con=con?substring(0,'${mylength}'?number)]
+	[#local con=con?replace("(&[a-z]*$)", "", "r")]
+	${con}[#if apostrophe]...[/#if]
+[/#macro]
+
+[#--
+ * 论战排行榜
+ * ranklist 排行的列表
+ * @shangjianguo
+ * @since 1.0
+ --]
+[#macro DebateRank ranklist]
+	<div class="t06_con_w290">
+	<h4><span>论战排行榜</span></h4>
+	<ul>
+		[#list ranklist as item]
+	    <li>
+	        <div class="t06_w290_list">
+	            <h5 class="t06_w290_title">
+	            <span class="">${(item_index + 1)?string("00")}</span>
+	            <a href="${base}/debate/${item.oid}" title="${item.title}" target="_blank">[@TrimSubstring content="${item.title}" mylength=16 /]</a></h5>
+	        </div>
+	    </li>
+	    [/#list]
+	</ul>
+	</div>
+[/#macro]
+
+[#--
+ * 论战发言榜
+ * ranklist 排行的列表
+ * @shangjianguo
+ * @since 1.0
+ --]
+[#macro DebateRankUser ranklist]
+	<div class="tp_07_two">
+		<style type="text/css">
+		.tp_07_right .tp_07_two .twomain img{width:35px; height:35px; float:left; margin:0 10px 5px 15px;}
+		</style>
+        <div class="twobt">
+            <p class="bt">论战发言榜</p>
+        </div>
+        [#list ranklist as item]
+        [#local users=item?keys /]
+        [#local counts=item?values /]
+        [#list users as user]
+        <div class="twomain">
+        	[#if user.avatar??]
+            <img width="35px" height="35px" src="${userimg}${user.avatar!''}" />
+            [#else]
+            <img width="35px" height="35px" src="${baseimg}/imgs/web/noavatar.png" />
+            [/#if]
+        	<a href="" clas="user-a">${user.showname}</a>
+            <div class="dhk">${counts[user_index]}</div>
+        </div>
+        [/#list]
+        [/#list]
+	</div>
+[/#macro]

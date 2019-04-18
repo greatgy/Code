@@ -1,0 +1,12 @@
+[#ftl]
+[#list list as item]
+	<li>
+		<a href="${baseTpiPath}/project/${item.uid}" target="_blank"><img src="${webimg}${item.img}" alt="${item.name}"/></a>
+		<a class="cover" href="${baseTpiPath}/project/${item.uid}">${item.name}</a>
+		<div class="midli_bottom">
+			<span class="left"><img src="${baseOfficialImg}/imgs/default/star.png" alt="${item.name}" />${item.channelName}</span>
+			<span class="right"><img src="${baseOfficialImg}/imgs/default/v_trangle.png" alt="${item.name}" />${item.typeName!}</span>
+		</div>
+	</li>
+[/#list]
+

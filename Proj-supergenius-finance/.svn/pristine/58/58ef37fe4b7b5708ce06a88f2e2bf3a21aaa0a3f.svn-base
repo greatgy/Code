@@ -1,0 +1,22 @@
+@charset "utf-8";
+/* CSS Document 
+ * 各种排行榜的样式单独提取出来
+ */
+
+/*话题排行榜样式*/
+.tp_07_two{border: 1px solid #ddd; margin-top:20px; overflow: hidden;}
+.tp_07_two .twobt{height:40px; width:286px;border-bottom:1px solid #51aded;}
+.tp_07_two .bt{width:140px; height:40px; float:left; line-height:40px;font-weight:bold; background-color:#51aded; color:#fff;font-size:16px;}
+.twosf{height:130px; width:286px;position:relative;border: 1px solid #ddd;margin-top:20px; overflow: hidden;}
+.twosf h1{font-size:16px;font-weight: bold; color:#344353; text-align:left; margin-left:160px; line-height: 30px; margin-top: 30px;}
+.twosf img{float: left;}
+.twosf .onr_rr{position:absolute;right:34px; top:70px;}
+.twosf .onr_rr p{float:left; margin-left: 5px; font-weight:bold;font-size: 18px; color: #81c6ea;}
+.twosf .onr_rr p span{font-weight:bold;font-size: 14px; color: #81c6ea;}
+.twosf .onr_rr .rrtb{width:1px; height:33px; background-color:#ccc; margin-top:10px;}
+.tp_07_two .twomain{width: 286px; position:relative; margin:20px auto;}
+.tp_07_two .twomain h2.main_act{color:#1d71b6;}
+.tp_07_two .twomain h2{ color:#344353; font-size:14px;text-align: left; margin-left: 20px;}
+.tp_07_two .twomain p{color:#777; margin-left: 20px;font-family:"宋体"; margin-top: 7px; font-size:12px;text-align: left; display: block; }
+.tp_07_two .twomain .dhk{position: absolute; right: 20px;top:7px;width:36px; height: 32px;line-height: 28px; color:#fff;font-size:12px; background:url(../../../imgs/default/msg_icon01.png) top left no-repeat; }
+

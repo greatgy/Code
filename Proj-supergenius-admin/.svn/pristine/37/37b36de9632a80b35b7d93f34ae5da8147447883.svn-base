@@ -1,0 +1,351 @@
+package com.supergenius.web.admin.gupage.controller;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.genius.core.base.annotation.Json;
+import com.genius.core.base.annotation.Maps;
+import com.genius.core.base.utils.MapsUtil;
+import com.genius.core.base.utils.StrUtil;
+import com.genius.core.base.utils.WebUtil;
+import com.genius.core.search.constant.MapperSearchDict;
+import com.genius.model.base.enums.EStatus;
+import com.genius.model.baseadmin.entity.AdminLog;
+import com.genius.server.base.controller.BaseController;
+import com.genius.server.baseadmin.helper.AdminHP;
+import com.genius.xo.baseadmin.service.AdminLogSO;
+import com.supergenius.global.conf.SysConf;
+import com.supergenius.global.conf.UriConf;
+import com.supergenius.server.common.constants.MsgKeyDict;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.web.admin.gupage.helper.GupageArticleHP;
+import com.supergenius.web.admin.startup.helper.StartupArticleHP;
+import com.supergenius.xo.admin.enums.EAdminLog;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.common.enums.ESite;
+import com.supergenius.xo.gupage.entity.Article;
+import com.supergenius.xo.gupage.service.ArticleSO;
+
+/**
+ * 顾雏军专栏文章管理
+ * 
+ * @author ChenQi
+ * @date 2018年1月5日09:57:20
+ */
+@Controller
+@RequestMapping(value = UriConf.baseAdminPath)
+public class GupageArticleAdminer extends BaseController{
+	
+	@Autowired
+	private ArticleSO so;
+
+	@Autowired
+	private AdminLogSO adminLogSO;
+
+	/**
+	 * 应聘指南页面
+	 * 
+	 * @author 杨光
+	 * @date 2017年11月14日12:21:35
+	 * @return String
+	 */
+	@RequestMapping(value = "/gupage/gupagearticle", method = RequestMethod.GET)
+	public String article(Map<String, Object> model, HttpServletRequest request) {
+		model.put(ViewKeyDict.channel, EChannel.gupagearticle.name());
+		model.put(ViewKeyDict.channelname, EChannel.getName(EChannel.gupagearticle, Locale.CHINA));
+		model.put(ViewKeyDict.site, ESite.gupage.name());
+		Map<String, Object> map = new HashMap<>();
+		List<EStatus> liststatus = new ArrayList<>();
+		liststatus.add(EStatus.enable);
+		liststatus.add(EStatus.disable);
+		map.put(MapperDict.statuslist, liststatus);
+		model.put(MapperDict.count, so.getCount(map));
+		model.put(ViewKeyDict.photopath, SysConf.GupagePhotoPath);
+		return "dogupagearticle";
+	}
+
+	/**
+	 * 显示列表
+	 * 
+	 * @author 杨光
+	 * @date 2017年9月19日11:50:19
+	 * @return String
+	 */
+	@RequestMapping(value = "/gupage/ajax/gupagearticle/list", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> article_list(Map<String, Object> model, HttpServletRequest request) {
+		cloneParamsToModel(model, request);
+		Map<String, Object> searchMap = GupageArticleHP.query(model);
+		return json(searchMap, Json.webStrategy);
+	}
+	
+	/**
+	 * 添加文章
+	 * 
+	 * @param title
+	 * @param imgdata
+	 * @param author
+	 * @param origin
+	 * @param origin_radio
+	 * @param type_radio
+	 * @param cataloguetype
+	 * @param summary
+	 * @param content
+	 * @return
+	 * @author 许志翔
+	 * @date 2017年8月25日09:33:31
+	 */
+	@RequestMapping(value = "/gupage/ajax/gupagearticle/add", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> article_add(String title, String[] imgdata, String author, String origin_radio, String origin, String type_radio, String summary, String content) {
+		System.out.println("123");
+		Article article = new Article();
+		String adminUid = AdminHP.getAdminUid();
+		if (StrUtil.isNotEmpty(title) && StrUtil.isNotEmpty(content) && StrUtil.isNotEmpty(origin_radio) && StrUtil.isNotEmpty(type_radio)) {
+			article.setTitle(title);
+			article.setKind(Integer.parseInt(type_radio));
+			article.setContent(content);
+		} else {
+			return result(MsgKeyDict.addFailed);
+		}
+		article.setSummary(summary);
+		article.setCreatetime(new DateTime());
+		if (StrUtil.isNotEmpty(imgdata)) {
+			article.setImgoriginal(imgdata[0]);
+			article.setImgbig(imgdata[1]);
+			article.setImgmedium(imgdata[2]);
+			article.setImglittle(imgdata[3]);
+		}
+		if (StrUtil.isNotEmpty(adminUid)) {
+			article.setAdminuid(adminUid);
+			article.setUpdatetime(new DateTime(DateTimeZone.forOffsetHours(8)));
+		}
+		if (so.add(article)) {
+			GupageArticleHP.handleCache(article.getCid());
+			Article newArticle = so.get(article.getUid());// 获取更新后的文章，因为oid是存入数据库自动生成的
+			newArticle.setContent(WebUtil.clearHtmlTag(newArticle.getContent()).toString());// 清除格式
+			Map<String, Object> map = MapsUtil.toMap(newArticle, Maps.searchStrategy);// 增加索引
+			map.put(MapperSearchDict.table, ESite.gupage.name());
+			GupageArticleHP.getEngine().add(map);
+			// 删除序列化文件
+			return success();
+		}
+		return result(MsgKeyDict.addFailed);
+	}
+
+	
+	/**
+	 * 删除文章
+	 * 
+	 * @param ids
+	 * @return
+	 * @author 杨光
+	 * @data 2017年9月19日12:30:21
+	 */
+	@RequestMapping(value = "/gupage/ajax/gupagearticle/delete", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> article_delete(String[] ids) {
+		for (String id : ids) {
+			Article article = so.get(id);
+			if (article != null) {
+				AdminLog adminLog = new AdminLog();
+				adminLog.setAdminuid(AdminHP.getAdminUid());
+				adminLog.setChannel(EChannel.gupagearticle.toInt());
+				adminLog.setOperation(EAdminLog.deleteAiArticle.getName());
+				adminLog.setData(EAdminLog.deleteAiArticle.getName());
+				adminLog.setDesc(EAdminLog.deleteAiArticle.getName());
+				adminLog.setDataid(ids[0]);
+				adminLogSO.add(adminLog);
+				article.setStatus(EStatus.deleted);
+				if (so.update(article)) {
+					GupageArticleHP.handleCache(article.getCid());
+				//清空文章序列化文件 
+					Map<String, Object> map = new HashMap<>();
+					map.put(MapperDict.uid, article.getUid());
+					GupageArticleHP.getEngine().delete(map);
+					return success();
+				}
+			}
+		}
+		return result(MsgKeyDict.deleteFailed);
+	}
+	
+	/**
+	 * 冻结解冻
+	 * 
+	 * @param ids
+	 * @return
+	 * @author 杨光
+	 * @data 2017年11月14日12:35:14
+	 */
+	@RequestMapping(value = "/gupage/ajax/gupagearticle/status/{status:\\d+}", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> article_delete(String uid, @PathVariable int status) {
+			Article article = so.get(uid);
+			String adminuid = AdminHP.getAdminUid();
+			if (article != null) {
+				AdminLog adminLog = new AdminLog();
+				adminLog.setAdminuid(adminuid);
+				adminLog.setChannel(EChannel.gupagearticle.toInt());
+				adminLog.setOperation(EAdminLog.deleteAiArticle.getName());
+				adminLog.setData(EAdminLog.deleteAiArticle.getName());
+				adminLog.setDesc(EAdminLog.deleteAiArticle.getName());
+				adminLog.setDataid(uid);
+				adminLogSO.add(adminLog);
+				article.setStatus(EStatus.get(status));
+				article.setAdminuid(adminuid);
+				article.setUpdatetime(new DateTime(DateTimeZone.forOffsetHours(8)));
+				if (so.update(article)) {
+					GupageArticleHP.handleCache(article.getCid());
+					if (EStatus.get(status) == EStatus.disable) {
+						GupageArticleHP.getEngine().deleteByID(article.getUid());
+					}else if (EStatus.get(status) == EStatus.enable) {
+						Map<String, Object> map = MapsUtil.toMap(article, Maps.searchStrategy);
+						map.put(MapperSearchDict.table, ESite.startup.name());
+						GupageArticleHP.getEngine().add(map);
+					}
+					Map<String, Object> map = new HashMap<>();
+					map.put(MapperDict.uid, article.getUid());
+					StartupArticleHP.getEngine().delete(map);
+					return success();
+				}
+			}
+		return result(MsgKeyDict.deleteFailed);
+	}
+	
+	/**
+	 * 文章编辑
+	 * 
+	 * @param uid
+	 * @param imgdata
+	 * @param title
+	 * @param author
+	 * @param origin
+	 * @param origin_radio
+	 * @param type_radio
+	 * @param cataloguetype
+	 * @param summary
+	 * @param content
+	 * @return
+	 * @author 杨光
+	 * @date 2017年9月19日12:40:05
+	 */
+	@RequestMapping(value = "/gupage/ajax/gupagearticle/edit", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> article_edit(String uid, String[] imgdata, String title, String username, String origin_radio, String author, String origin, String type_radio, String add_cataloguetype, String summary,
+			String content, String contact) {
+		Article article = so.get(uid);
+		String adminUid = AdminHP.getAdminUid();
+		if (article != null) {
+			article.setTitle(title);
+			article.setKind(Integer.parseInt(type_radio));
+			article.setCid(Integer.parseInt(add_cataloguetype));
+			article.setSummary(summary);
+			article.setContent(content);
+			if (StrUtil.isNotEmpty(imgdata)) {
+				article.setImgoriginal(imgdata[0]);
+				article.setImgbig(imgdata[1]);
+				article.setImgmedium(imgdata[2]);
+				article.setImglittle(imgdata[3]);
+			}
+			AdminLog adminLog = new AdminLog();
+			adminLog.setAdminuid(AdminHP.getAdminUid());
+			adminLog.setChannel(EChannel.gupagearticle.toInt());
+			adminLog.setDataid(article.getUid());
+			adminLog.setDesc(EAdminLog.updateGupageArticle.getName());
+			adminLog.setData(EAdminLog.updateGupageArticle.getName());
+			adminLog.setOperation(EAdminLog.updateGupageArticle.getName());
+			if (StrUtil.isNotEmpty(adminUid)) {
+				article.setAdminuid(adminUid);
+				article.setUpdatetime(new DateTime(DateTimeZone.forOffsetHours(8)));
+			}
+			if (so.update(article)) {
+				GupageArticleHP.handleCache(article.getCid());
+				if (article.getStatus().equals(EStatus.enable)) {//删除索引后在添加索引
+					GupageArticleHP.getEngine().deleteByID(article.getUid());
+					article.setContent(WebUtil.clearHtmlTag(article.getContent()).toString());//清除格式
+					Map<String, Object> map = MapsUtil.toMap(article, Maps.searchStrategy);
+					map.put(MapperSearchDict.table, ESite.gupage.name());
+					GupageArticleHP.getEngine().add(map);
+				} else {
+					GupageArticleHP.getEngine().deleteByID(article.getUid());
+				}
+				return success();
+			}
+		}
+		return result(MsgKeyDict.updateFailed);
+	}
+
+	/**
+	 * 设置置顶
+	 * 
+	 * @param id
+	 * @return
+	 * @author 杨光
+	 * @date 2017年9月19日13:53:03
+	 */
+	@RequestMapping(value = "/gupage/ajax/gupagearticle/enable", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> article_top(String[] ids) {
+		Article article;
+		for(String uid : ids){
+			article = so.get(uid);
+			GupageArticleHP.handleCache(article.getCid());
+		}
+		/*if (so.update(ids, true)) {
+			return success();
+		}*/
+		return result(MsgKeyDict.updateFailed);
+	}
+
+	/**
+	 * 取消置顶
+	 * 
+	 * @param id
+	 * @return
+	 * @author 杨光
+	 * @date 2017年9月19日13:57:23
+	 */
+	@RequestMapping(value = "/gupage/ajax/gupagearticle/disable", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> finance_untop(String[] ids) {
+		Article article;
+		for(String uid : ids){
+			article = so.get(uid);
+			GupageArticleHP.handleCache(article.getCid());
+		}
+		/*if (so.update(ids, false)) {
+			return success();
+		}*/
+		return result(MsgKeyDict.updateFailed);
+	}
+	
+	/**
+	 * 获取置顶的个数
+	 * 
+	 * @author yangguang
+	 * @date 2017年11月14日12:38:14
+	 */
+	@RequestMapping(value = "/gupage/ajax/gupagearticle/topcount", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> article_topcount(Map<String, Object> model, HttpServletRequest request) {
+		model.put(MapperDict.count, GupageArticleHP.getTopArticleCount());
+		return json(model, Json.webStrategy);
+	}
+}

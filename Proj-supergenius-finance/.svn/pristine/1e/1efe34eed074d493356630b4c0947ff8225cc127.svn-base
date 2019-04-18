@@ -1,0 +1,25 @@
+package com.supergenius.web.finance.helper;
+
+import com.genius.server.base.helper.BaseHP;
+import com.supergenius.global.conf.SysConf;
+import com.supergenius.server.common.helper.BaseQuotesHP;
+import com.supergenius.xo.common.entity.Quotes;
+import com.supergenius.xo.common.enums.EQuotes;
+
+/** 
+ * 天财评论名人名言hp
+ * @author chenminchang
+ * @date 2016-8-12 下午3:27:19 
+ */
+public class QuotesHP extends BaseHP {
+	
+	/**
+	 * 获取最新的一条finance名言
+	 * @return
+	 * @author chenminchang
+	 */
+	public static Quotes getNewestQuote() {
+		String path = SysConf.SerialBasePath + SysConf.QuotesPath + SysConf.Separator_Directory +  SysConf.Quotes;
+		return BaseQuotesHP.getOneByUpdateTime(path, EQuotes.finance);
+	}
+}

@@ -1,0 +1,449 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/Admin.ftl" as a]
+<html>
+<head>
+<title>论战管理</title>
+<script type="text/javascript">
+<!--
+	var isred = true;
+	var isedit = false;
+	// 点击添加文章	
+	function addArticle(pisred, pisedit){
+		isred = pisred;
+		isedit = pisedit;
+		$("#articlewin").window("open");
+		$("#dgarticle").datagrid("load"); 
+	}
+	
+	// 删除行
+	function deleterow(dg, isedit) {
+		var rows = getSelections(dg);
+		if(rows.length == 0) {
+			warn("请选择文章");
+			return;
+		}
+		$.messager.confirm('确认','您确认想要删除记录吗？',function(r){
+		    if (r){    
+		        var ids = [];
+				for(var i=0;i<rows.length;i++){
+					ids.push(rows[i].uid);		
+				}
+				if(isedit) {
+					$.post("${base}${baseAdminPath}/ajax/debatearticle/delete", { 'ids': ids.toString() },function(data){
+						if(data.success){
+							ok("删除成功");
+						}else{
+							ok("添加失败");
+							return;
+						}
+				   	});		
+				}
+				var index = -1;
+				for(var i=0; i<rows.length; i++){
+					index = $(dg).datagrid("getRowIndex", rows[i]);
+					$(dg).datagrid("deleteRow", index);
+				}  
+		    }    
+		});  
+	}
+	
+	// 选择文章确定
+	function articleok(){
+		var edit = "";
+		if(isedit) {
+			edit = "edit";			
+		}
+		var rows = getSelections("#dgarticle");
+		if(rows.length == 0){
+			warn("请选择文章");
+			return;
+		}
+		if(checkExist(rows)){
+			return;
+		}
+		if(isred) {
+			appendRow("#dgred" + edit, rows);
+		}else{
+			appendRow("#dgblue" + edit, rows);
+		}
+		if(isedit) {// 添加時不提交，编辑才提交
+			submitArticle(rows);
+		}
+		cancelarticlewin();
+	}
+	
+	// 校验是否已经有了该文章
+	function checkExist(rows){
+		var existrows = getRows("#dgred");
+		var titles = "";
+		for(var i=0; i<existrows.length; i++){
+			for(var j=0; j<rows.length; j++) {
+				if(existrows[i].financeuid == rows[j].uid ){
+					titles += (rows[j].title + "  ")
+				}
+			}
+		}
+		var existrows2 = getRows("#dgblue");
+		for(var i=0; i<existrows2.length; i++){
+			for(var j=0; j<rows.length; j++) {
+				if(existrows2[i].financeuid == rows[j].uid ){
+					titles += (rows[j].title + "  ")
+				}
+			}
+		}
+
+		if(titles == ""){
+			return false;
+		}else{
+			alert("\"" + titles + "\" 只能够使用一次");
+			return true;
+		}
+	}
+	
+	// 提交添加的文章到后台
+	function submitArticle(rows){
+        var debateuid = $("input[name=uid]").val();
+        var article = "";
+        for(var i=0;i<rows.length;i++) {
+        	article += rows[i].uid + "/" + rows[i].title + "/" + isred + "/" + rows[i].authoruid;
+        	if(i != (rows.length -1)){
+        		article += ",";
+        	}	
+        }
+		$.post("${base}${baseAdminPath}/ajax/debatearticle/add",{ "articles":article,"debateuid":debateuid },function(data){
+			if(data.success){
+				ok("添加成功");
+		    	$(dg).datagrid("reload");
+			}else{
+				ok("添加失败");
+			}
+	   	});
+	}
+	
+	// 在dg中追加row
+	function appendRow(dg, rows){
+		for(var i=0; i<rows.length; i++){
+			$(dg).datagrid('appendRow',{
+					title: rows[i].title,
+					financeuid:rows[i].uid,
+					authoruid:rows[i].authoruid
+			});
+		}
+	}
+	
+	// 取消选择文章
+	function cancelarticlewin(){
+		$("#articlewin").window("close");
+	}
+	
+	// 修改状态	
+	function editState(dg, state){
+		var rows = getSelections(dg);
+		if(rows.length == 0) {
+			warn("请选择论战");
+			return;
+		}
+		for(var i=0; i<rows.length; i++) {
+			if(rows[i].state == state){
+				if(state == 0) {
+					warn("已开始");
+				}
+				if(state == 1) {
+					warn("已结束");
+				}
+				return;
+			}
+		}
+		var ids = [];
+		for(var i=0;i<rows.length;i++){
+			ids.push(rows[i].uid);		
+		}
+		$.post("${base}${baseAdminPath}/ajax/debate/state/" + state, { "ids": ids.toString() }, function(data){
+			if(data.editSuccess){
+				ok("修改成功");
+		    	$(dg).datagrid("reload");
+			}else{
+				ok("修改失败");
+			}
+	   	});
+	}
+	
+	//点击提交添加表单
+	function mySubmitHandler(dg){
+		var redrows = getRows("#dgred");
+		var bluerows = getRows("#dgblue");
+		if(redrows.length == 0 || bluerows.length == 0){
+			ok("红蓝双方必须都有文章");
+			return;
+		}
+		insertArticles(redrows, true);
+		insertArticles(bluerows, false);
+		submitHandler(dg);
+		afterSubmit();
+	}
+	
+	// 添加页面把添加的文章放到input隐藏域中
+	function insertArticles(rows, isred){
+		var inputhtml;
+		for(var i=0; i<rows.length; i++){
+			var avalue = rows[i].financeuid + "/" + rows[i].title + "/" + isred + "/" + rows[i].authoruid;
+			var inputhtml = "<input name='articles' type='hidden' value='" +avalue+ "'/>";
+			$("#articles").append(inputhtml);
+		}
+	}
+	
+	// 提交表单后清空添加页面的列表等
+	function afterSubmit() {
+		$("#articles").html("");// 清空暂存域
+		clearDataGrid("#dgred");
+		clearDataGrid("#dgblue");
+	}
+	
+	// 清空数据表格
+	function clearDataGrid(dg){
+		var length = getRows(dg).length;
+		for(var i=0;i<length;i++) {
+			$(dg).datagrid("deleteRow", i);
+		}
+	}
+	
+	function getFreshRowUrls(dg) {
+		var row = getSelected(dg);
+		var urls = new Array();
+		urls.push("${base}${baseAdminPath}/ajax/debatearticle/list?isred=1&debateuid={0}".format(row.uid));
+		urls.push("${base}${baseAdminPath}/ajax/debatearticle/list?isred=0&debateuid={0}".format(row.uid));
+		if(row != null) {
+			return urls;
+		} else {
+			return null;
+		}
+	}
+	
+	function freshRow(row, data, i) {
+		switch(i){
+			case 0:
+				row.redrows = data.rows;
+				break;
+			case 1:
+				row.bluerows = data.rows;
+				break;
+		}
+	}
+
+	function initFormData(form, data) {
+		form.form('load', data);
+		form.set(data);
+		if(data.redrows && data.bluerows){
+			$("#dgrededit").datagrid("loadData", data.redrows);
+			$("#dgblueedit").datagrid("loadData", data.bluerows);
+			$("#dgredview").datagrid("loadData", data.redrows);
+			$("#dgblueview").datagrid("loadData", data.bluerows);
+		}
+	}
+	function mytoolbarStateHandler(event, j) {
+	    var list = getSelections(j.dg);
+        var row = list[0];
+        if(row != null) {
+            if(row.stateName == "开始") {
+                $("#statebtnclose").linkbutton("enable");
+                $("#statebtnopen").linkbutton("disable");
+            } else {
+                $("#statebtnclose").linkbutton("disable");
+                $("#statebtnopen").linkbutton("enable");
+            }
+        }
+	}
+//-->
+</script>
+</head>
+<body>
+	<section>
+		[@a.search]
+	        <tr>
+	            <td><label for="sname">标题</label></td>
+	            <td><input id="sdebatename" type="text" name="title" /></td>
+	            <td><label for="sstate">状态</label></td>
+	            <td><input id="sstate" type="text" name="state" /></td>
+	        </tr>
+	        <tr>
+				<td>起始发布时间</td>
+				<td><input id="timestart" name="createtimestart" type="text" data-options="editable:false" class="easyui-datebox" /></td>
+				<td>结束发布时间</td>
+				<td><input id="timeend" name="createtimeend" type="text" data-options="editable:false" class="easyui-datebox" /></td>
+		 	</tr>
+		[/@a.search]
+		
+		[@a.datagrid]
+			<th data-options="field:'uid',hidden:true"></th>
+			<th data-options="field:'title',width:20">标题</th>
+			<th data-options="field:'periods',width:20">期数</th>
+			<th data-options="field:'statusName',width:20">状态</th>
+			<th data-options="field:'stateName',width:20">进度</th>
+			<th data-options="field:'createtimeStr',width:20">发布时间</th>
+			<th data-options="field:'imglittle',hidden:true"></th>
+        [/@a.datagrid]
+        
+        [@a.toolbar]
+        	[@a.status /]
+        	<a id="statebtnopen" href="" onclick="editState('#dg', 0)" class="easyui-linkbutton">开始</a>
+		    <a id="statebtnclose" href="" onclick="editState('#dg', 1)" class="easyui-linkbutton">关闭</a>
+	    [/@a.toolbar]
+	    
+	    [@a.tools /]
+	</section>
+	
+	[@a.addsection onclicksubmit="mySubmitHandler(this)"]
+    	<tr>
+            <td>标题：</td>
+            <td colspan="3"><input class="easyui-validatebox" type="text" name="title" data-options="required:true" /></td>
+        </tr>
+    	<tr>
+            <td>期数：</td>
+            <td colspan="3"><input class="easyui-validatebox" type="text" name="periods" data-options="required:true" /></td>
+        </tr>
+    	<tr>
+            <td>论战图片：</td>
+            <td colspan="3">[@a.imgupload multiple=false size="1000,500-690,242-340,170" imgpath="/imgs/webdata/finance/debate" /]</td>
+        </tr>
+        <tr>
+            <td>红方观点：</td>
+            <td><input class="easyui-validatebox" type="text" name="titlered" data-options="required:true" /></td>
+            <td>蓝方观点：</td>
+            <td><input class="easyui-validatebox" type="text" name="titleblue" data-options="required:true" /></td>
+        </tr>
+        <tr>
+        	<td id="articles">
+        	</td>
+        </tr>
+        <tr>
+            <td colspan="2" style="padding-top:0;">
+            	[@a.datagrid id="dgred" title="红方文章" toolbar="#redtoolbar" options="width:420,fitColumns:true,resizeHandle:'right',singleSelect:true,method:'get'"]
+					<th data-options="field:'title',width:20">标题</th>
+					<th data-options="field:'financeuid',hidden:true"></th>
+					<th data-options="field:'authoruid',hidden:true"></th>
+				[/@a.datagrid]
+		        [@a.toolbar id="redtoolbar" canadd=false candel=false canedit=false canview=false]
+		        	<a id="redaddbtn" href="" onclick="addArticle(true, false)" class="easyui-linkbutton" data-options="iconCls:'icon-add'">添加</a>
+		        	<a id="redaddbtn" href="" onclick="deleterow('#dgred', false)" class="easyui-linkbutton" data-options="iconCls:'icon-remove'">删除</a>
+		        	[@a.updown /]
+				[/@a.toolbar]
+			</td>
+            <td colspan="2" style="padding-top:0%;">
+                [@a.datagrid id="dgblue" title="蓝方文章" toolbar="#bluetoolbar" options="width:420,fitColumns:true,resizeHandle:'right',singleSelect:true,method:'get'"]
+					<th data-options="field:'title',width:20">标题</th>
+					<th data-options="field:'financeuid',hidden:true"></th>
+					<th data-options="field:'authoruid',hidden:true"></th>
+				[/@a.datagrid]
+		        [@a.toolbar id="bluetoolbar" canadd=false candel=false canedit=false canview=false]
+		        	<a id="blueaddbtn" href="" onclick="addArticle(false, false)" class="easyui-linkbutton" data-options="iconCls:'icon-add'">添加</a>
+		        	<a id="blueaddbtn" href="" onclick="deleterow('#dgblue', false)" class="easyui-linkbutton" data-options="iconCls:'icon-remove'">删除</a>
+		        	[#-- [@a.updown /] --]
+				[/@a.toolbar]
+            </td>
+        </tr>
+    [/@a.addsection]
+    
+    <div id="articlewin" class="easyui-window" title="添加论战文章" style="width:600px;height:400px"   
+        data-options="iconCls:'icon-add',modal:true,closed:true">   
+	    [@a.datagrid url="${base}${baseAdminPath}/ajax/finance/list?type=16777216&debate=true" id="dgarticle" toolbar="#articletoolbar" title=""  options="width:480,fitColumns:true,
+	    		pagination:true,resizeHandle:'right',method:'get'"]
+			<th data-options="field:'title',width:20">标题</th>
+			<th data-options="field:'uid',hidden:true"></th>
+		[/@a.datagrid]
+	    [@a.toolbar id="articletoolbar" canadd=false candel=false canedit=false canview=false]
+	    	<a id="articleaddbtn" href="#" onclick="articleok()" class="easyui-linkbutton" data-options="iconCls:'icon-add'">添加</a>
+        	<a id="blueaddbtn" href="" onclick="cancelarticlewin()" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">取消</a>
+		[/@a.toolbar]
+	</div>  
+	    
+	[@a.editsection]
+		<tr>
+            <td><input type="hidden" name="uid" /></td>
+            <td><input type="hidden" name="adminuid" /></td>
+        </tr>
+        <tr>
+            <td>标题：</td>
+            <td><input class="easyui-validatebox" type="text" name="title" data-options="required:true" /></td>
+        </tr>
+        <tr>
+            <td>期数：</td>
+            <td><input class="easyui-validatebox" type="text" name="periods" data-options="required:true" /></td>
+        </tr>
+        <tr>
+           <td>论战图片：</td>
+           <td>
+           		<img style="width:200px; height:200px" src="" set-format="${webimg}{0}" set-key="imglittle"/>
+           		[@a.imgupload multiple=false imgpath="/imgs/webdata/finance/debate" /]
+           </td>
+        </tr>
+        <tr>
+            <td>红方观点：</td>
+            <td><input class="easyui-validatebox" type="text" name="titlered" data-options="required:true" /></td>
+            <td>蓝方观点：</td>
+            <td><input class="easyui-validatebox" type="text" name="titleblue" data-options="required:true" /></td>
+        </tr>
+        <tr>
+            <td colspan="2" style="padding-top:0;">
+            	[@a.datagrid id="dgrededit" title="红方文章" toolbar="#redtoolbaredit" options="width:420,fitColumns:true,resizeHandle:'right',singleSelect:true,method:'get'"]
+					<th data-options="field:'uid',hidden:true"></th>
+					<th data-options="field:'title',width:20">标题</th>
+				[/@a.datagrid]
+		        [@a.toolbar id="redtoolbaredit" canadd=false candel=false canedit=false canview=false]
+		        	<a id="redaddbtn" href="" onclick="addArticle(true, true)" class="easyui-linkbutton" data-options="iconCls:'icon-add'">添加</a>
+		        	<a id="redaddbtn" href="" onclick="deleterow('#dgrededit', true)" class="easyui-linkbutton" data-options="iconCls:'icon-remove'">删除</a>
+		        	[#--[@a.updown /]--]
+				[/@a.toolbar]
+			</td>
+            <td colspan="2" style="padding-top:0%;">
+                [@a.datagrid id="dgblueedit" title="蓝方文章" toolbar="#bluetoolbaredit" options="width:420,fitColumns:true,resizeHandle:'right',singleSelect:true,method:'get'"]
+					<th data-options="field:'uid',hidden:true"></th>
+					<th data-options="field:'title',width:20">标题</th>
+				[/@a.datagrid]
+		        [@a.toolbar id="bluetoolbaredit" canadd=false candel=false canedit=false canview=false]
+		        	<a id="blueaddbtn" href="" onclick="addArticle(false, true)" class="easyui-linkbutton" data-options="iconCls:'icon-add'">添加</a>
+		        	<a id="blueaddbtn" href="" onclick="deleterow('#dgblueedit', true)" class="easyui-linkbutton" data-options="iconCls:'icon-remove'">删除</a>
+		        	[#-- [@a.updown /] --]
+				[/@a.toolbar]
+            </td>
+        </tr>
+	[/@a.editsection]
+	
+	[@a.viewsection]
+        <tr colspan="2">
+            <td>标题：</td>
+            <td><span set-key="title"></span></td>
+        </tr>
+        <tr colspan="2">
+            <td>期数：</td>
+            <td><span set-key="periods"></span></td>
+        </tr>
+        <tr>
+           <td>论战图片：</td>
+           <td>
+           		<img style="width:200px; height:200px" src="" set-format="${webimg}{0}" set-key="imglittle"/>
+           </td>
+        </tr>
+        <tr>
+            <td>红方观点：</td>
+            <td><span set-key="titlered"></span></td>
+            <td>蓝方观点：</td>
+            <td><span set-key="titleblue"></span></td>
+        </tr>
+        <tr>
+            <td colspan="2" style="padding-top:0;">
+            	[@a.datagrid id="dgredview" title="红方文章" options="width:420,fitColumns:true,resizeHandle:'right',singleSelect:true,method:'get'"]
+					<th data-options="field:'uid',hidden:true"></th>
+					<th data-options="field:'title',width:20">标题</th>
+				[/@a.datagrid]
+			</td>
+            <td colspan="2" style="padding-top:0%;">
+                [@a.datagrid id="dgblueview" title="蓝方文章" options="width:420,fitColumns:true,resizeHandle:'right',singleSelect:true,method:'get'"]
+					<th data-options="field:'uid',hidden:true"></th>
+					<th data-options="field:'title',width:20">标题</th>
+				[/@a.datagrid]
+            </td>
+        </tr>
+	[/@a.viewsection]
+	
+</body>
+</html>

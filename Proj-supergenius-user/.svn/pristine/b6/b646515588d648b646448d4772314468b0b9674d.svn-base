@@ -1,0 +1,92 @@
+[#ftl]]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>会员注册第二步--验证注册邮箱，成功的返回页</title>
+	<meta name="Keywords" content="会员中心，会员注册第二步，验证注册邮箱" />
+	<meta name="Description" content="会员中心，会员注册第二步，验证注册邮箱" />
+	<link rel="stylesheet" type="text/css" href="${basecss}/css/default/register.css">
+	<script>
+		$(function() {
+			$(".changemail").click(function(){
+				$(".changebox").toggle();
+			});
+		});
+	</script>
+</head>
+<body>
+		<div class="container">
+			<div class="main">
+				<div class="topcommon">
+					<img src="${baseimg}/imgs/default/findpw01.png" alt="" />
+					<h2>从这里，找到更好的自己！</h2>
+				</div>
+				<div class="midcommon">
+					<div class="logotop">
+						<img src="${baseimg}/imgs/default/login_logo.png" alt="" />
+						会员注册
+					</div>
+					<div class="registercontainer">
+						<div class="steps">
+							<div class="stepitem curstepitem">
+								<span class="rectbg">1</span>
+								<span>填写账户信息</span>
+							</div>
+							<div class="linebg redlinebg"></div>
+							<div class="stepitem curstepitem">
+								<span class="rectbg">2</span>
+								<span>验证注册邮箱</span>
+							</div>
+							<div class="linebg"></div>
+							<div class="stepitem">
+								<span class="rectbg">3</span>
+								<span>基本信息</span>
+							</div>
+							<div class="linebg"></div>
+							<div class="stepitem">
+								<span class="rectbg">4</span>
+								<span>支付会员费</span>
+							</div>
+						</div>
+						<div class="registercontmiddle">
+						[#if err.err_register_verify??]
+        	              <div class="goemail">
+								<div class="mailtip">
+									<img src="${baseimg}/imgs/default/waring.png" alt="" />
+									对不起，该用户不存在，无法激活！
+								</div>
+							</div>
+                        [#elseif err.err_timeout]
+                       <div class="goemail">
+								<div class="mailtip">
+									<img src="${baseimg}/imgs/default/waring.png" alt="" />
+									对不起，此邮件已被激活，请不要重复激活！
+								</div>
+							</div>
+        	           [#else]
+							<div class="goemail">
+								<div class="mailtip">
+									<img src="${baseimg}/imgs/default/yes.png" alt="" />
+									邮箱认证成功！
+									<p>完善您的个人信息并缴纳学费，即可成为超天才正式会员！</p>
+								</div>
+								<a href="${base}/register_improve/${user.uid}" class="toemail submit">下一步</a>
+							</div>
+							<div class="moretest">
+								<h2>成为正式会员，您将享受到以下服务：</h2>
+								<ul class="questionlist">
+									<li>1.注册的账号可以畅行超天才产品，如天财评论、并购平台、职业经理人培训......</li>
+									<li>2.获得职业经理人学员申请资格</li>
+									<li>3.在人间仙境体验全部社交功能，与企业大咖直接交流</li>
+								</ul>
+								
+							</div>
+					   [/#if]
+						</div>
+					</div>
+				</div>
+			</div>
+	</div>
+</body>
+</html>

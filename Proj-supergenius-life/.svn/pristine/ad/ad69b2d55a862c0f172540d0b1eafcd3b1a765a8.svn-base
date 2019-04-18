@@ -1,0 +1,333 @@
+package com.supergenius.web.front.life.helper;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.joda.time.DateTime;
+
+import com.genius.core.base.annotation.Json;
+import com.genius.core.base.utils.JsonUtil;
+import com.genius.core.base.utils.NetUtil;
+import com.genius.core.base.utils.StrUtil;
+import com.genius.core.search.engine.SearchEngine;
+import com.genius.core.serial.utils.SerialUtil;
+import com.genius.model.base.entity.Pager;
+import com.genius.server.base.helper.BaseHP;
+import com.supergenius.global.conf.SysConf;
+import com.supergenius.global.constants.ViewKeyDict;
+import com.supergenius.server.user.helper.BaseUserHP;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.life.entity.Problem;
+import com.supergenius.xo.life.enums.ECatalogue;
+import com.supergenius.xo.life.service.AnswerSO;
+import com.supergenius.xo.life.service.ProblemSO;
+import com.supergenius.xo.user.entity.User;
+import com.supergenius.xo.user.entity.Visitor;
+import com.supergenius.xo.user.service.UserSO;
+import com.supergenius.xo.user.service.VisitorSO;
+
+/**
+ * 问题HP
+ * 
+ * @author ChenQi
+ * @date 2018年5月16日15:35:25
+ */
+public class ProblemHP extends BaseHP {
+
+	private static ProblemSO so;
+
+	private static AnswerSO answerSO;
+
+	private static UserSO userSO;
+
+	private static VisitorSO visitorSO;
+
+	private static SearchEngine engine;
+
+	public static ProblemSO getSO() {
+		if (so == null) {
+			so = (ProblemSO) spring.getBean(ProblemSO.class);
+		}
+		return so;
+	}
+
+	public static AnswerSO getAnswerSO() {
+		if (answerSO == null) {
+			answerSO = (AnswerSO) spring.getBean(AnswerSO.class);
+		}
+		return answerSO;
+	}
+
+	public static UserSO getUserSO() {
+		if (userSO == null) {
+			userSO = (UserSO) spring.getBean(UserSO.class);
+		}
+		return userSO;
+	}
+
+	private static VisitorSO getVisitorSO() {
+		if (visitorSO == null) {
+			visitorSO = (VisitorSO) spring.getBean(VisitorSO.class);
+		}
+		return visitorSO;
+	}
+
+	public static SearchEngine getEngine() {
+		if (engine == null) {
+			engine = (SearchEngine) spring.getBean("lifeEngine");
+		}
+		return engine;
+	}
+
+	/**
+	 * 通过oid获取问题
+	 * 
+	 * @param oid
+	 * @return
+	 * @author ChenQi
+	 * @date 2017年12月7日15:09:40
+	 */
+	public static Problem getProblem(int oid) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.oid, oid);
+		return getSO().getOne(map);
+	}
+
+	/**
+	 * 获得问题
+	 * 
+	 * @param id
+	 * @return
+	 * @author ChenQi
+	 * @date 2017年12月6日18:32:05
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<Problem> getProblemList(int pagerNum, int pagerSize, int cid, int ismember) {
+		Pager pager = Pager.getNewInstance(pagerNum, pagerSize);
+		Map<String, Object> map = getParamMap(pager);
+		map.put(MapperDict.cid, cid);
+		if (ismember != 0) {
+			map.put(MapperDict.ismember, ismember);
+		}
+		List<Problem> list = getSO().getList(map);
+		for (Problem problem : list) {
+			organizedUser(problem);
+		}
+		// 行万里路
+		if (ECatalogue.get(cid) == ECatalogue.travel) {
+			for (Problem problem : list) {
+				String json = problem.getPlace();
+				Map<String, Object> map1 = JsonUtil.fromJson(json, Map.class);
+				problem.setPlacename((String) map1.get("name"));
+			}
+		}
+		return list;
+	}
+
+	/**
+	 * 获取游客
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @author ChenQi
+	 */
+	public static Visitor getNickVisitor(HttpServletRequest request, HttpServletResponse response) {
+		String ip = NetUtil.getIPAddr(request);
+		Visitor visitor = getRandomVisitor();
+		if (StrUtil.isEmpty(visitor.getAvatar()) || StrUtil.isEmpty(visitor.getNickname())) {
+			visitor = getRandomVisitor();
+		}
+		visitor.setLoginip(ip);
+		visitor.setCreatetime(new DateTime());
+		User user = BaseUserHP.getCurrUser(request);
+		if (user != null) {
+			visitor.setUseruid(user.getUid());
+		}
+		getVisitorSO().add(visitor);
+		return visitor;
+	}
+
+	/**
+	 * 获取随机昵称和头像
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @author ChenQi
+	 */
+	@SuppressWarnings("unchecked")
+	public static Visitor getRandomVisitor() {
+		String path = SysConf.SerialBasePath + SysConf.SerialUserVisitorPath;
+		List<Visitor> list = new ArrayList<Visitor>();
+		list = SerialUtil.deserializeFromJson(path, list.getClass(), Json.cacheStrategy);
+		Visitor visitor = new Visitor();
+		visitor = list.get((int) (Math.random() * list.size()));
+		return visitor;
+	}
+
+	/**
+	 * 获取随机昵称和头像
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @author ChenQi
+	 */
+	public static void organizedUser(Problem problem) {
+		problem.setUser(getUserSO().get(problem.getUseruid()));
+	}
+
+	/**
+	 * 根据城市名称查询所在经纬度
+	 * 
+	 * @param addr
+	 *            查询的地址
+	 * @return
+	 * @throws IOException
+	 */
+	public static Map<String, Object> getCoordinate(String addr) throws IOException {
+		String lng = null;// 经度
+		String lat = null;// 纬度
+		String address = null;
+		try {
+			address = java.net.URLEncoder.encode(addr, "UTF-8");
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+		String url = String.format("http://api.map.baidu.com/geocoder?address=%s&output=json", address);
+		System.err.println(url);
+		URL myURL = null;
+		URLConnection httpsConn = null;
+		try {
+			myURL = new URL(url);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		InputStreamReader insr = null;
+		BufferedReader br = null;
+		try {
+			httpsConn = (URLConnection) myURL.openConnection();// 不使用代理
+			if (httpsConn != null) {
+				insr = new InputStreamReader(httpsConn.getInputStream(), "UTF-8");
+				br = new BufferedReader(insr);
+				String data = null;
+				int count = 1;
+				while ((data = br.readLine()) != null) {
+					if (count == 5) {
+						lng = (String) data.subSequence(data.indexOf(":") + 1, data.indexOf(","));// 经度
+						count++;
+					} else if (count == 6) {
+						lat = data.substring(data.indexOf(":") + 1);// 纬度
+						count++;
+					} else {
+						count++;
+					}
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (insr != null) {
+				insr.close();
+			}
+			if (br != null) {
+				br.close();
+			}
+		}
+		Map<String, Object> placemap = new HashMap<String, Object>();
+		placemap.put("value", new String[] { lng, lat });
+		return placemap;
+	}
+
+	/**
+	 * 获取行万里路的地图数据
+	 * 
+	 * @throws
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static void OrganizedCity(Map<String, Object> model) {
+		List<Map<String, Object>> chinaList = new ArrayList<>();
+		List<Map<String, Object>> worldList = new ArrayList<>();
+		Map<String, Object> chinaMap = new HashMap<>();
+		Map<String, Object> worldMap = new HashMap<>();
+		Map<String, Object> tempMap = null;
+		int maxChina = 1;
+		int maxWorld = 1;
+		int chinaValue = 0;
+		int worldValue = 0;
+		String country = null;
+		Map<String, Object> problemmap = getParamMap();
+		problemmap.put("cid", ECatalogue.travel);
+		List<Problem> problems = so.getList(problemmap);
+		for (Problem problem : problems) {
+			if (StrUtil.isEmpty(problem.getPlace())) {
+				continue;
+			}
+			tempMap = JsonUtil.fromJson(problem.getPlace(), Map.class);
+			country = (String) tempMap.get("country");
+			if (tempMap.containsKey("province")) {
+				String province = (String) tempMap.get("province");
+				if (chinaMap.containsKey(province)) {
+					chinaValue = (int) chinaMap.get(province);
+					chinaMap.put(province, chinaValue + 1);
+					if (chinaValue + 1 > maxChina) {
+						maxChina = chinaValue + 1;
+					}
+				} else {
+					chinaMap.put(province, 1);
+				}
+			}
+			if (worldMap.containsKey(country)) {
+				worldValue = (int) worldMap.get(country);
+				worldMap.put(country, worldValue + 1);
+				if (worldValue + 1 > maxWorld) {
+					maxWorld = worldValue + 1;
+				}
+			} else {
+				worldMap.put(country, 1);
+			}
+		}
+		if (chinaMap != null) {
+			Iterator chinait = chinaMap.keySet().iterator();
+			String chinaKey = null;
+			Map<String, Object> china = null;
+			while (chinait.hasNext()) {
+				chinaKey = (String) chinait.next();
+				china = new HashMap<>();
+				china.put("name", chinaKey);
+				china.put("value", chinaMap.get(chinaKey));
+				chinaList.add(china);
+			}
+		}
+		if (worldMap != null) {
+			Iterator worldit = worldMap.keySet().iterator();
+			String worldKey = null;
+			Map<String, Object> world = null;
+			while (worldit.hasNext()) {
+				worldKey = (String) worldit.next();
+				world = new HashMap<>();
+				world.put("name", worldKey);
+				world.put("value", worldMap.get(worldKey));
+				worldList.add(world);
+			}
+		}
+		model.put(ViewKeyDict.china, JsonUtil.toJson(chinaList));
+		model.put(ViewKeyDict.world, JsonUtil.toJson(worldList));
+		model.put(ViewKeyDict.maxChina, maxChina);
+		model.put(ViewKeyDict.maxWorld, maxWorld);
+	}
+}

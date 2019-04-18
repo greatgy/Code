@@ -1,0 +1,326 @@
+[#ftl]
+[#if channel == "debate"]
+	[#list list?reverse as item]
+		[#if item.isred]
+			<div class="commentitem commentred">
+				[#if item.fromUser.oid == me.oid]
+					[#assign url="${base}/my/article" /]
+				[#else]
+					[#assign url="${base}/his/article/${item.fromUser.oid?c}" /]
+				[/#if]
+				[#if item.fromUser??]
+                    <a href="${url}" target="_blank">
+                [#else]
+                	<a href="javascript:void(0);">
+                [/#if]
+				<img class="nameimg" [#if "${item.fromUser.avatar}" == ""]src="${baseimg}/imgs/web/noavatar.png"[#else]src="${userimg}${item.fromUser.avatar}"[/#if]>
+		  		</a>
+				<div class="commentright" data-uid="${item.uid}" data-touseruid="${item.fromuseruid}" data-tousername="${item.fromusername}">
+					<div class="commentrtop">
+						<a [#if item.fromUser??] href="${url}" [#else] href="javascript:void(0);" style="font-size: 14px; color: #1d71b6; font-weight: bold;" [/#if] target="_blank" class="name">${item.fromusername}</a>
+						<span class="time">${(item.createtime).toString("M月dd日  HH:mm:ss")}</span>
+					</div>
+					<p class="reditem comment_debate">${item.content?html}</p>
+					<div class="reply">
+						<a href="javascript:void(0);" id="btnprizecomments_${(me.oid?c)!"0"}_${item.uid}" data-counter=".prizecounter">
+							<img src="${baseimg}/imgs/default/heart_02.png" data-isprize="${item.isprize!'false'}" />
+							<span class="zancountjs">(${item.prizecount!'0'})</span>
+						</a>
+						<a href="javascript:void(0)" onclick="reply(this);" class="replylik"><img src="${baseimg}/imgs/default/msgimg.png" />&nbsp;回复</a>
+						[#if item.replys?size >3]
+		  					<a class="openmore" onclick="loadlist(this)" href="javascript:;">
+								查看更多评论
+								<img src="${baseimg}/imgs/default/morejg.png" class="openimg" />
+							</a>
+		  				[/#if]
+					</div>
+					[#if item.replys?size > 0]
+		  				[#list item.replys as item2]
+			  				[#if item2_index < item.replys?size-3]
+					    		<div class="secondcomment hd" >
+					    	[#else]
+					    		<div class="secondcomment" >
+					    	[/#if]
+					    		[#if item2.fromUser.oid == me.oid]
+									[#assign url2="${base}/my/article" /]
+								[#else]
+									[#assign url2="${base}/his/article/${item2.fromUser.oid?c}" /]
+								[/#if]
+								[#if item2.toUser.oid == me.oid]
+									[#assign url3="${base}/my/article" /]
+								[#else]
+									[#assign url3="${base}/his/article/${item2.toUser.oid?c}" /]
+								[/#if]
+					    		[#if item2.fromUser??]
+	                                <a href="${url2}" target="_blank">
+	                            [#else]
+	                            	<a href="javascript:void(0);">
+	                            [/#if]
+	                            <img class="nameimg" [#if "${item2.fromUser.avatar}" == ""]src="${baseimg}/imgs/web/noavatar.png"[#else]src="${userimg}${item2.fromUser.avatar}"[/#if]>
+							    </a>
+								<div class="secondright" data-uid="${item2.uid}" data-topuid="${item.uid}" data-touseruid="${item2.fromuseruid}"  data-tousername="${item2.fromusername}">
+									<div class="secondrtop">
+										<a [#if item2.fromUser??] href="${url2}" [#else] href="javascript:void(0);" style="font-size: 14px; color: #1d71b6; font-weight: bold;"[/#if] class="name" target="_blank">${item2.fromusername}</a><span class="answer">回复</span><a [#if item2.toUser??] href="${url3}" [#else] href="javascript:void(0);" [/#if] class="name" target="_blank"> ${item2.tousername}</a>
+										<span class="time">${(item2.createtime).toString("M月dd日  HH:mm:ss")}</span>
+									</div>
+									<p class="gray comment_debate">${item2.content?html}</p>
+									<div class="reply">
+										<a href="javascript:void(0);" id="btnprizecomments_${(me.oid?c)!"0"}_${item2.uid}" data-counter=".prizecounter">
+											<img src="${baseimg}/imgs/default/heart_02.png" data-isprize="${item2.isprize!'false'}"/>
+											<span class="zancountjs">(${item2.prizecount!'0'})</span>
+										</a>
+										<a href="javascript:;" class="replylik" onclick="reply(this);"><img src="${baseimg}/imgs/default/msgimg.png" />&nbsp;回复</a>
+									</div>
+								</div>
+					    	</div>
+					    [/#list]
+					[/#if]
+				</div>
+			</div>
+		[#else]
+			<div class="commentitem commentblue">
+				[#if item.fromUser.oid == me.oid]
+					[#assign url="${base}/my/article" /]
+				[#else]
+					[#assign url="${base}/his/article/${item.fromUser.oid?c}" /]
+				[/#if] 
+				<div class="commentright" data-uid="${item.uid}" data-touseruid="${item.fromuseruid}"  data-tousername="${item.fromusername}">
+					<div class="commentrtop">
+						<span class="time">${(item.createtime).toString("M月dd日  HH:mm:ss")}</span>
+						<a [#if item.fromUser??] href="${url}" [#else] href="javascript:void(0);" style="font-size: 14px; color: #1d71b6; font-weight: bold;"[/#if] target="_blank" class="name">${item.fromusername}</a>
+					</div>
+					<p class="blueitem comment_debate">${item.content?html}</p>
+					<div class="reply">
+						<a href="javascript:void(0);" id="btnprizecomments_${(me.oid?c)!"0"}_${item.uid}" data-counter=".prizecounter">
+							<img src="${baseimg}/imgs/default/heart_02.png" data-isprize="${item.isprize!'false'}" />
+							<span class="zancountjs">(${item.prizecount!'0'})</span>
+						</a>
+						<a href="javascript:;" onclick="reply(this);" class="replylik"><img src="${baseimg}/imgs/default/msgimg.png" />&nbsp;回复</a>
+						[#if item.replys?size >3]
+  							<a class="openmore" onclick="loadlist(this)" href="javascript:;">
+								查看更多评论
+								<img src="${baseimg}/imgs/default/morejg.png" class="openimg" />
+							</a>
+  						[/#if]
+					</div>
+					[#if item.replys?size > 0]
+  						[#list item.replys as item2]
+  							[#if item2_index < item.replys?size-3]
+					    		<div class="secondcomment hd">
+					    	[#else]
+					    		<div class="secondcomment">
+					    	[/#if]
+					    	[#if item2.fromUser.oid == me.oid]
+								[#assign url2="${base}/my/article" /]
+							[#else]
+								[#assign url2="${base}/his/article/${item2.fromUser.oid?c}" /]
+							[/#if]
+							[#if item2.toUser.oid == me.oid]
+								[#assign url3="${base}/my/article" /]
+							[#else]
+								[#assign url3="${base}/his/article/${item2.toUser.oid?c}" /]
+							[/#if]
+					    		<div class="secondright" data-uid="${item2.uid}" data-topuid="${item.uid}" data-touseruid="${item2.fromuseruid}"  data-tousername="${item2.fromusername}">
+									<div class="secondrtop">
+										<span class="time">${(item2.createtime).toString("M月dd日  HH:mm:ss")}</span>
+										<a [#if item2.fromUser??] href="${url2}" [#else] href="javascript:void(0);" style="font-size: 14px; color: #1d71b6; font-weight: bold;"[/#if] class="name" target="_blank">${item2.fromusername}</a><span class="answer">回复</span><a [#if item2.toUser??] href="${url3}" [#else] href="javascript:void(0);" style="font-size: 14px; color: #1d71b6; font-weight: bold;"[/#if] class="name" target="_blank"> ${item2.tousername}</a>
+									</div>
+									<p class="gray comment_debate">${item2.content?html}</p>
+									<div class="reply">
+										<a href="javascript:void(0);" id="btnprizecomments_${(me.oid?c)!"0"}_${item2.uid}" data-counter=".prizecounter">
+											<img src="${baseimg}/imgs/default/heart_02.png" data-isprize="${item2.isprize!'false'}"/>
+											<span class="zancountjs">(${item2.prizecount!'0'})</span>
+										</a>
+										<a href="javascript:;" class="replylik" onclick="reply(this);"><img src="${baseimg}/imgs/default/msgimg.png" />&nbsp;回复</a>
+									</div>
+								</div>
+								[#if item2.toUser??]
+                               		<a href="${url3}" target="_blank">
+	                            [#else]
+	                            	<a href="javascript:void(0);">
+	                            [/#if]
+	                            <img [#if !item2.toUser.avatar?? || item2.toUser.avatar == ""] src="${baseimg}/imgs/web/noavatar.png" [#else] src="${userimg}${item2.toUser.avatar}" [/#if] class="nameimg" />
+							    </a>
+							</div>
+  						[/#list]
+					[/#if]
+				</div>
+				[#if item.fromUser??]
+                    <a href="${url}" target="_blank">
+                [#else]
+              	  <a href="javascript:void(0);">
+                [/#if]
+				<img class="nameimg" [#if !item.fromUser.avatar?? || item.fromUser.avatar == ""]src="${baseimg}/imgs/web/noavatar.png"[#else]src="${userimg}${item.fromUser.avatar}"[/#if]>
+		  		</a>
+			</div>
+		[/#if]
+	[/#list]
+[/#if]
+
+[#if channel == "finance"]
+	[#list list?reverse as item]
+		[#if item.fromUser.oid == me.oid]
+			[#assign url="${base}/my/article" /]
+		[#else]
+			[#assign url="${base}/his/article/${item.fromUser.oid?c}" /]
+		[/#if]
+		<div class="commentitem">
+			[#if item.fromUser??]
+	            <a href="${url}" target="_blank">
+	        [#else]
+	            <a href="javascript:void(0);">
+	        [/#if]
+				<img class="personimg" [#if "${item.fromUser.avatar}" == ""]src="${baseimg}/imgs/web/noavatar.png"[#else]src="${userimg}${item.fromUser.avatar}"[/#if] />
+			</a>
+			<div class="itemright replay_comment" data-uid="${item.uid}" data-touseruid="${item.fromuseruid}"  data-tousername="${item.fromusername}" >
+				[#if item.fromUser??]
+	                <a href="${url}" class="name" target="_blank">
+	            [#else]
+	                <a href="javascript:void(0);" style="font-size: 14px; color: #1d71b6; font-weight: bold;">
+	            [/#if]
+	            ${item.fromusername}
+	            </a>
+	            <p class="comments">${item.content}</p>
+				<div class="itembottom">
+					<span class="time">${(item.createtime).toString("M月dd日")}</span>
+					<div class="comlinkbox">
+						<a href="javascript:;" onclick="reply(this)">
+							<img src="${baseimg}/imgs/default/msgimg.png"/>
+							评论(${item.commentcount!0})
+						</a>
+						<a href="javascript:void(0);" id="btnprizecomments_${(me.oid?c)!"0"}_${item.uid}" data-counter=".prizecounter">
+							<img src="${baseimg}/imgs/default/zanicon.png" data-isprize="${item.isprize!'false'}"/>
+							<span style="margin-right:0px" class="zancountjs">赞(${item.prizecount!'0'})</span>
+						</a>
+					</div>
+				</div>
+				<div>
+					[#if item.replys?size>0]
+						[#list item.replys as item2]
+							[#if item2.fromUser.oid == me.oid]
+								[#assign url2="${base}/my/article" /]
+							[#else]
+								[#assign url2="${base}/his/article/${item2.fromUser.oid?c}" /]
+							[/#if]
+							[#if item2.toUser.oid == me.oid]
+								[#assign url3="${base}/my/article" /]
+							[#else]
+								[#assign url3="${base}/his/article/${item2.toUser.oid?c}" /]
+							[/#if]
+							<div class="seconditem">
+								[#if item2.fromUser??]
+					                <a href="${url2}" target="_blank">
+					            [#else]
+					                <a href="javascript:void(0);">
+					            [/#if]
+									<img class="personimg" [#if "${item2.fromUser.avatar}" == ""]src="${baseimg}/imgs/web/noavatar.png"[#else]src="${userimg}${item2.fromUser.avatar}"[/#if] />
+								</a>
+								<div class="secondright" data-topuid="${item.uid}" data-uid="${item2.uid}" data-touseruid="${item2.fromuseruid}"  data-tousername="${item2.fromusername}" >
+									[#if item2.fromUser??]
+			                            <a href="${url2}" class="name" target="_blank">
+			                        [#else]
+			                       		<a href="javascript:void(0);" style="font-size: 14px; color: #1d71b6; font-weight: bold;">
+			                        [/#if]${item2.fromusername}</a>
+			                        	回复
+									[#if item2.toUser??]
+			                            <a href="${url3}" class="name" target="_blank">
+			                        [#else]
+			                        	<a href="javascript:void(0);" style="font-size: 14px; color: #1d71b6; font-weight: bold;" >
+			                        [/#if]${item2.tousername}</a>
+									<p class="comments">${item2.content!''}</p>
+									<div class="itembottom">
+										<span class="time">${(item2.createtime).toString("M月dd日")}</span>
+										<div class="comlinkbox">
+											<a href="javascript:;" onclick="reply(this)">
+												<img src="${baseimg}/imgs/default/retret.png" />
+												回复(0)
+											</a>
+											<a href="javascript:void(0);" id="btnprizecomments_${(me.oid?c)!"0"}_${item2.uid}" data-counter=".prizecounter">
+												<img src="${baseimg}/imgs/default/zanicon.png" data-isprize="${item2.isprize!'false'}"/>
+												<span style="margin-right:0px" class="zancountjs">赞(${item2.prizecount!'0'})</span>
+											</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						[/#list]
+					[/#if]
+				</div>
+			</div>
+		</div>
+	[/#list]
+[/#if]
+
+[#if channel == "topic"]
+    [#list list?reverse as item]
+        <div class="commentitem">
+            [#if item.fromUser??]
+                <a href="${base}/his/topic/${item.fromUser.oid?c}" target="_blank">
+            [#else]
+                <a href="javascript:void(0);">
+            [/#if]
+                <img [#if item.fromUser.avatar == ""]src="${baseimg}/imgs/web/noavatar.png"[#else]src="${userimg}${item.fromUser.avatar}"[/#if] class="personimg" />
+            </a>
+            <div class="itemright">
+                [#if item.fromUser??]
+                    <a href="${base}/his/topic/${item.fromUser.oid?c}" class="name" target="_blank">
+                [#else]
+                    <a href="javascript:void(0);" style="font-size: 14px; color: #1d71b6; font-weight: bold;">
+                [/#if]
+                    ${item.fromusername}
+                </a>
+                <p class="comments">${item.content}</p>
+                <div class="itembottom">
+                    <span class="time">${item.createtimeStr}</span>
+                    <div class="comlinkbox">
+                        <a href="javascript:void(0);" onclick="startreply(this);" data-toname="${item.fromusername}" data-uid="${item.uid}" data-touseruid="${item.fromuseruid}">
+                            <img src="${baseimg}/imgs/default/msgimg.png" />评论(${item.commentcount!0})
+                        </a>
+                        <a href="javascript:void(0);" id="btnprizecomments_${(me.oid?c)!"0"}_${item.uid}" data-counter=".prizecounter">
+                            <img src="${baseimg}/imgs/default/heart_01.png" data-isprize="${item.isprize!'false'}"/>
+                            <span class="zancountjs">赞(${item.prizecount!'0'})</span>
+                        </a>
+                    </div>
+                </div>
+                [#if item.replys?size>0]
+                    [#list item.replys as reply]
+                        <div class="seconditem">
+                            <a href="${base}/his/topic/${reply.fromUser.oid?c}" target="_blank">
+                                [#if reply.fromUser.avatar == ""]
+                                    <img src="${baseimg}/imgs/web/noavatar.png" class="personimg" />
+                                [#else]
+                                    <img src="${userimg}${reply.fromUser.avatar}" class="personimg" />
+                                [/#if]
+                            </a>
+                            <div class="secondright">
+                                [#if reply.fromUser??]
+                                    <a href="${base}/his/topic/${reply.fromUser.oid?c}" class="name" target="_blank">
+                                [#else]
+                                    <a href="javascript:void(0);" style="font-size: 14px; color: #1d71b6; font-weight: bold;">
+                                [/#if]${reply.fromusername}</a>&nbsp;&nbsp;回复&nbsp;
+                                [#if reply.toUser??]
+                                    <a href="${base}/his/topic/${reply.toUser.oid?c}" class="name" target="_blank">
+                                [#else]
+                                    <a href="javascript:void(0);" style="font-size: 14px; color: #1d71b6; font-weight: bold;">
+                                [/#if]${reply.tousername}</a>
+                                <p class="comments">${reply.content}</p>
+                                <div class="itembottom">
+                                    <span class="time">${reply.createtimeStr}</span>
+                                    <div class="comlinkbox">
+                                        <a href="javascript:;" onclick="startreply(this);" data-toname="${reply.fromusername}" data-uid="${item.uid}"  data-touseruid="${reply.fromuseruid}">
+                                            <img src="${baseimg}/imgs/default/retret.png" />回复(${reply.replys?size})
+                                        </a>
+                                        <a href="javascript:;" id="btnprizecomments_${(me.oid?c)!"0"}_${reply.uid}" data-counter=".prizecounter">
+                                            <img src="${baseimg}/imgs/default/heart_01.png" data-isprize="${reply.isprize!'false'}"/>
+                                            <span class="zancountjs">赞(${reply.prizecount!'0'})</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    [/#list]
+                [/#if]
+            </div>
+        </div>
+    [/#list]
+[/#if]

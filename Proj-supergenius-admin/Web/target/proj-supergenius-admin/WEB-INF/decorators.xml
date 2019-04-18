@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<decorators defaultdir="/WEB-INF/Decorators">
+	<!-- Any urls that are excluded will never be decorated by Sitemesh -->
+	<excludes>
+		<pattern>*.html</pattern>
+		<pattern>*.mf</pattern>
+		<pattern>*.manifest</pattern>
+		<pattern>*.sitemap</pattern>
+		<pattern>*/api/*</pattern>
+		<pattern>*/ajax/*</pattern>
+		<pattern>*/ws/*</pattern>
+		<pattern>/fresh/*</pattern>
+		<pattern>*/section/*</pattern>
+		<pattern>/supergeniusadmin/login</pattern>
+		<pattern>/supergeniusadmin/index</pattern>
+		<pattern>/supergeniusadmin/admintop</pattern>
+		<pattern>/supergeniusadmin/adminmenu</pattern>
+	</excludes>
+    
+	<decorator name="admin" page="Admin/Admin.ftl">
+		<pattern>/supergeniusadmin*</pattern>
+	</decorator>
+    
+	<decorator name="web" page="Web/Web.ftl">
+		<pattern>/*</pattern>
+	</decorator>
+
+</decorators>

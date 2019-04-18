@@ -1,0 +1,271 @@
+package com.supergenius.web.finance.controller;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.genius.core.base.annotation.Json;
+import com.genius.core.base.utils.CookieUtil;
+import com.genius.core.base.utils.JsonUtil;
+import com.genius.core.base.utils.WebUtil;
+import com.genius.model.base.entity.Pager;
+import com.genius.server.base.controller.BaseController;
+import com.supergenius.global.conf.SysConf;
+import com.supergenius.global.conf.WebConf;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.server.user.helper.BaseUserHP;
+import com.supergenius.web.finance.helper.CommentsHP;
+import com.supergenius.web.finance.helper.InboxHP;
+import com.supergenius.web.finance.helper.MsgHP;
+import com.supergenius.web.finance.helper.UserHP;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.finance.entity.UserStatistics;
+import com.supergenius.xo.finance.service.InboxSO;
+import com.supergenius.xo.finance.service.UserStatisticsSO;
+import com.supergenius.xo.user.entity.Comments;
+import com.supergenius.xo.user.entity.User;
+import com.supergenius.xo.user.enums.EComment;
+import com.supergenius.xo.user.enums.ECommentConfig;
+import com.supergenius.xo.user.service.CommentsSO;
+
+/**
+ * 评论（赞）的控制器
+ * @author ShangJianguo
+ */
+@Controller
+public class CommentController extends BaseController {
+
+	@Autowired
+	CommentsSO so;
+
+	@Autowired
+	InboxSO inboxSO;
+
+	@Autowired
+	UserStatisticsSO statisticsSO;
+
+	/**
+	 * 添加评论
+	 * @param comments
+	 * @param channel 来自的频道
+	 * @param uid fromuid
+	 * @param request
+	 * @param response
+	 * @return
+	 * @author ShangJianguo
+	 */
+	@ResponseBody
+	@RequestMapping(value = { "/ajax/comment/{channel:[a-z]+}_{uid:.{32}}" }, method = RequestMethod.POST)
+	public ResponseEntity<Map<String, Object>> comment_add(Comments comments, @PathVariable String channel, @PathVariable String uid, HttpServletRequest request, HttpServletResponse response) {
+		// TODO 处理验证码以及回复次数限制等
+		User user = BaseUserHP.getCurrUser(request);
+		comments.setFromuid(uid);
+		if (user != null) {
+			comments.setFromuseruid(user.getUid());
+			comments.setFromuseroid(user.getOid());
+			comments.setFromusername(user.getShowname());
+			UserStatistics statistics = statisticsSO.obtainOne(user.getUid());
+			int number = statistics.getMycommentcount();
+			if (number <= 0) {
+				number = CommentsHP.getMyCommentsCount(user.getUid());
+			}
+			statisticsSO.update(statistics.getUid(), (number + 1) >= 0 ? (number + 1) : 0, MapperDict.mycommentcount);
+		} else {
+			comments.setFromuseruid(SysConf.DefaultAnonymousUid);
+			comments.setFromuseroid(SysConf.DefaultAnonymousOid);
+			if (StringUtils.isEmpty(comments.getFromusername())) {
+				comments.setFromusername(WebConf.DefaultAnonymousName);
+			}
+		}
+		if (StringUtils.isNotEmpty(comments.getTouseruid())) {
+			User toUser = BaseUserHP.get(comments.getTouseruid());
+			if (toUser != null) {
+				comments.setTousername(toUser.getShowname());
+				comments.setTouseroid(toUser.getOid());
+			} else {
+				if (StringUtils.isEmpty(comments.getTousername())) {
+					comments.setTousername(WebConf.DefaultAnonymousName);
+				}
+				comments.setTouseruid(SysConf.DefaultAnonymousUid);
+				comments.setTouseroid(SysConf.DefaultAnonymousOid);
+			}
+		}
+		comments.setType(EComment.comment);
+		comments.setChannel(EChannel.get(channel));
+		comments.setContent(WebUtil.clearXSS(comments.getContent()));
+		if (EChannel.debate.equals(EChannel.get(channel))) {
+			boolean isred = Boolean.valueOf(request.getParameter(ViewKeyDict.isred));
+			if (isred) {
+				comments.setConfig(Integer.parseInt(ECommentConfig.debatered.toString()));
+			} else {
+				comments.setConfig(Integer.parseInt(ECommentConfig.debateblue.toString()));
+			}
+		}
+		String topuid = request.getParameter(ViewKeyDict.topuid);
+		if (StringUtils.isEmpty(topuid)) {
+			topuid = request.getParameter(ViewKeyDict.touid);
+		}
+		if (StringUtils.isNotEmpty(topuid)) {
+			Map<String, Object> map = new HashMap<>();
+			map.put(ViewKeyDict.topuid, topuid);
+			comments.setData(JsonUtil.toJson(map));
+		}
+		boolean addresult = CommentsHP.add(comments, request);
+		if (addresult == true && user != null) {
+			if (CommentsHP.IsSend(comments)) {
+				InboxHP.sendInbox(CommentsHP.sendMsg(comments), comments);
+			}
+		}
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(ViewKeyDict.success, addresult);
+		result.put(ViewKeyDict.bean, comments);
+		return json(result, Json.webStrategy);
+	}
+
+	/**
+	 * 获取评论
+	 * @param model
+	 * @param channel 频道
+	 * @param fromuid 相关的uid（文章、话题、论战）
+	 * @param pagenum 当前页数
+	 * @return
+	 * @author ShangJianguo
+	 */
+	@RequestMapping(value = ("/ajax/comment/{channel:[a-z]+}_{fromuid:.{32}}_{pagenum:\\d+}"), method = RequestMethod.GET)
+	public String comments_list(Map<String, Object> model, @PathVariable String channel, @PathVariable String fromuid, @PathVariable Integer pagenum, HttpServletRequest request) {
+		EChannel eChannel = EChannel.get(channel);
+		List<Comments> list = new ArrayList<>();
+		if (pagenum == null || pagenum <= 0) {
+			pagenum = 1;
+		}
+		Object me = request.getParameter(ViewKeyDict.me);// 这个不是当前登录用户me
+		if (eChannel != null) {
+			User user = BaseUserHP.getCurrUser(request);
+			if (me != null) {// 与我相关的话题
+				list = so.getAboutMeList(user.getUid(), fromuid, new Pager(pagenum, SysConf.DebateCommentPageSize), eChannel, EComment.comment);
+			} else {
+				list = CommentsHP.getCommentList(eChannel, fromuid, -1, pagenum);
+			}
+			List<String> prizes = new ArrayList<>();
+			if (user != null) {
+				prizes = UserHP.getListPrize(user);
+				for (Comments comments : list) {
+					for (String item : prizes) {
+						if (comments.getUid().equals(item)) {
+							comments.setIsprize(true);
+							break;
+						}
+					}
+				}
+			} else {// 从cookie中获取
+				for (Comments item : list) {
+					Cookie cookie = CookieUtil.getCookie(request, EChannel.comments.name() + item.getUid() + ViewKeyDict.prizefinance);
+					if (cookie != null) {
+						item.setIsprize(true);
+					}
+				}
+			}
+		}
+		model.put(ViewKeyDict.channel, channel);
+		model.put(ViewKeyDict.list, list);
+		return "ajaxcomments";
+	}
+
+	/**
+	 * 点赞的处理
+	 * @param model
+	 * @param channel
+	 * @param oid
+	 * @param uid
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/ajax/prize/{channel:[a-z]+}_{oid:\\d+}_{uid:.{32}}", method = RequestMethod.GET)
+	public @ResponseBody
+	boolean comments_prize(Map<String, Object> model, @PathVariable String channel, @PathVariable int oid, @PathVariable String uid, HttpServletRequest request, HttpServletResponse response) {
+		User user = BaseUserHP.getCurrUser(request);
+		UserStatistics statistics = null;
+		boolean bool = false;
+		boolean isprize = false;
+		String useruid = "";
+		if (EChannel.comments.name().equals(channel)) {
+			Comments comments = so.get(uid);
+			useruid = comments.getFromuseruid();
+			if (useruid != null && !SysConf.DefaultAnonymousUid.equals(useruid)) {
+				statistics = statisticsSO.obtainOne(useruid);
+			}
+		}
+		if (user != null) {
+			if (!so.isNotPrized(uid, user.getUid(), EChannel.get(channel))) {// 取消赞
+				CommentsHP.cancelPrize(oid, uid, channel);
+				isprize = false;
+				bool = false;
+			} else {// 加赞
+				Comments comment = new Comments();
+				comment.setFromuid(uid);
+				comment.setFromuseruid(user.getUid());
+				comment.setFromuseroid(user.getOid());
+				comment.setFromusername(user.getShowname());
+				comment.setContent("");
+				comment.setType(EComment.praise);
+				comment.setChannel(EChannel.get(channel));
+				isprize = true;
+				bool = CommentsHP.add(comment, request);
+				if (bool) {
+					InboxHP.sendInbox(MsgHP.prizeMsg(channel, uid, user), comment);
+				}
+			}
+		} else {// 非会员
+			Cookie cookie = CookieUtil.getCookie(request, channel + uid + ViewKeyDict.prizefinance);
+			if (cookie != null) {// 已经点过赞，再次点击取消赞
+				CookieUtil.removeCookie(response, channel + uid + ViewKeyDict.prizefinance);
+				CommentsHP.cancelPrize(SysConf.DefaultAnonymousOid, uid, channel);
+				isprize = false;
+				bool = false;
+			} else {
+				CookieUtil.addCookieSess(response, channel + uid + ViewKeyDict.prizefinance, channel + ViewKeyDict.prize);
+				Comments comment = new Comments();
+				comment.setFromuid(uid);
+				comment.setFromuseruid(SysConf.DefaultAnonymousUid);
+				comment.setFromuseroid(SysConf.DefaultAnonymousOid);
+				comment.setFromusername(WebConf.DefaultAnonymousName);// WebConf.defaultAnonymousName
+				comment.setContent("");
+				comment.setType(EComment.praise);
+				comment.setChannel(EChannel.get(channel));
+				isprize = true;
+				bool = CommentsHP.add(comment, request);
+			}
+		}
+		if (statistics != null) { // 更新userstatistics
+			int number = statistics.getTomeprizecount();
+			if (number <= 0) {
+				number = CommentsHP.getMyReceivedPrizeCount(useruid);
+			} else {
+				if (isprize) {
+					number = (number + 1) >= 0 ? (number + 1) : 0;
+				} else {
+					number = (number - 1) >= 0 ? (number - 1) : 0;
+				}
+			}
+			statisticsSO.update(statistics.getUid(), number, MapperDict.tomeprizecount);
+		}
+		return bool;
+	}
+
+}

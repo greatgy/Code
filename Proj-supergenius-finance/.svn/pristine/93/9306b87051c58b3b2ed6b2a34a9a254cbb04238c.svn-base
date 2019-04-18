@@ -1,0 +1,100 @@
+package com.supergenius.global.conf;
+
+import java.util.Properties;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import com.genius.core.base.conf.BaseWebConf;
+import com.genius.core.base.utils.GlobalUtil;
+
+/**
+ * @author Architect.bian
+ * 
+ */
+@Component
+public class WebConf extends BaseWebConf {
+
+	public static String defaultMark = "";
+	public static String defaultavatar = "";
+	public static String defaultavatartiny = "";
+	public static String pageSplitter = GlobalUtil.getUUID();// 防止在没配置的情况下将所有的字符分割，uid则不会分割
+	public static int UsersPageSize;
+	public static int FinancePageSize;
+	public static int FinanceTopSize;
+	public static int IndexFinanceTopSize;
+	public static int IndexFinanceLatestSize;
+	public static String DefaultAnonymousName;
+	public static int FinanceRankClickDay;
+	public static int FinanceRankPublishDay;
+	public static int FinanceRankListNum;
+	public static int MyArticlePageSize;
+	public static int MyCommentPageSize;
+	public static int MyFavouritePageSize;
+	public static int MyTopicPageSize;
+	public static int TopicPageSize;
+	public static int TopicIndexRotateSize;
+	public static int DebatePageSize;
+	public static int TopicCommentPageSize;
+	public static int DebatePageLoadMoreSize;
+	public static int MsgPageSize;
+	public static String LoginURL;
+	public static String SearchUrl;
+	public static String SnsRootPath;
+	public static int MySubscribeCount;
+	public static int MyPublishCommentCount;
+	public static int AllNewestComments;
+	public static int MyHotSubscribeCount;
+	public static int MyCollectPageSize;
+	public static int SearchPageSize;
+	public static int NewestCommentsCount;
+	public static String MoralBaseRootPath;
+	public static String TpiBaseRootPath;
+	public static String OfficialBaseRootPath;
+	public static String ManagerBaseRootPath;
+	public static String UserBaseRootPath;
+	public static String StartupBaseRootPath;
+	public static String EnterpriserBaseRootPath;
+
+	@Value("#{web}")
+	public void setWebConf(Properties prop) {
+		WebConf.defaultMark = prop.getProperty("defaultMark");
+		WebConf.defaultavatar = prop.getProperty("defaultavatar");
+		WebConf.defaultavatartiny = prop.getProperty("defaultavatartiny");
+		WebConf.UsersPageSize = Integer.valueOf(prop.getProperty("UsersPageSize"));
+		WebConf.FinancePageSize = Integer.valueOf(prop.getProperty("FinancePageSize"));
+		WebConf.FinanceTopSize = Integer.valueOf(prop.getProperty("FinanceTopSize"));
+		WebConf.IndexFinanceTopSize = Integer.valueOf(prop.getProperty("IndexFinanceTopSize"));
+		WebConf.IndexFinanceLatestSize = Integer.valueOf(prop.getProperty("IndexFinanceLatestSize"));
+		WebConf.DefaultAnonymousName = prop.getProperty("DefaultAnonymousName");
+		WebConf.MyArticlePageSize = Integer.parseInt(prop.getProperty("MyArticlePageSize"));
+		WebConf.MyFavouritePageSize = Integer.parseInt(prop.getProperty("MyFavouritePageSize"));
+		WebConf.MyCommentPageSize = Integer.parseInt(prop.getProperty("MyCommentPageSize"));
+		WebConf.MyTopicPageSize = Integer.parseInt(prop.getProperty("MyTopicPageSize"));
+		WebConf.TopicPageSize = Integer.parseInt(prop.getProperty("TopicPageSize"));
+		WebConf.TopicIndexRotateSize = Integer.parseInt(prop.getProperty("TopicIndexRotateSize"));
+		WebConf.DebatePageSize = Integer.parseInt(prop.getProperty("DebatePageSize"));
+		WebConf.TopicCommentPageSize = Integer.parseInt(prop.getProperty("TopicCommentPageSize"));
+		WebConf.DebatePageLoadMoreSize = Integer.parseInt(prop.getProperty("DebatePageLoadMoreSize"));
+		WebConf.MsgPageSize = Integer.parseInt(prop.getProperty("MsgPageSize"));
+		WebConf.LoginURL = prop.getProperty("LoginURL");
+		WebConf.SearchUrl = prop.getProperty("SearchUrl");
+		WebConf.SnsRootPath = prop.getProperty("SnsRootPath");
+		WebConf.pageSplitter = prop.getProperty("pageSplitter");
+		WebConf.MyPublishCommentCount = Integer.parseInt(prop.getProperty("MyPublishCommentCount"));
+		WebConf.MySubscribeCount = Integer.parseInt(prop.getProperty("MySubscribeCount"));
+		WebConf.AllNewestComments = Integer.parseInt(prop.getProperty("AllNewestComments"));
+		WebConf.MyHotSubscribeCount = Integer.parseInt(prop.getProperty("MyHotSubscribeCount"));
+		WebConf.MyCollectPageSize = Integer.parseInt(prop.getProperty("MyCollectPageSize"));
+		WebConf.SearchPageSize = Integer.parseInt(prop.getProperty("SearchPageSize"));
+		WebConf.NewestCommentsCount = Integer.parseInt(prop.getProperty("NewestCommentsCount"));
+		WebConf.MoralBaseRootPath = prop.getProperty("MoralBaseRootPath");
+		WebConf.TpiBaseRootPath = prop.getProperty("TpiBaseRootPath");
+		WebConf.OfficialBaseRootPath = prop.getProperty("OfficialBaseRootPath");
+		WebConf.ManagerBaseRootPath = prop.getProperty("ManagerBaseRootPath");
+		WebConf.UserBaseRootPath = prop.getProperty("UserBaseRootPath");
+		WebConf.StartupBaseRootPath = prop.getProperty("StartupBaseRootPath");
+		WebConf.EnterpriserBaseRootPath = prop.getProperty("EnterpriserBaseRootPath");
+	}
+
+}

@@ -1,0 +1,20 @@
+@charset "utf-8";
+/* CSS Document */
+/*话题成功页面 begin*/
+.topic_ah_box{ width:1000px; height: 700px}
+
+/*面包屑begin*/
+.crumbs{ float:left; left:0px; margin-top:30px;}
+.crumbs img{float:left; margin-top:5px; margin-right:5px;}
+.crumbs .crumbs_arrow{ color:#999999; font-size:14px;}
+.crumbs a{ font-size:14px; color:#999999; }
+/*面包屑over*/
+
+.ct_ah_con{ width:687px; clear:both; font-size:18px; color:#757575; padding-top:37px;}
+.ct_ah_con .ct_ah_title{ font-size:20px; color:#666666; width:162px; font-weight:bold;}
+.ct_ah_con .ct_ah_title img{ float:left; }
+.ct_ah_con .ct_ah_margin{ margin-top:25px;}
+.ct_ah_con .ah_clear{ clear:both; float:left; line-height:25px;}
+.ct_ah_con .ah_font{ color:#51aded;}
+/*话题成功页面 over*/
+

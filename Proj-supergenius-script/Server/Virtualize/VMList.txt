@@ -1,0 +1,54 @@
+192.168.1.9/root/kvm.genius					....VNC:kvm.vnc
+192.168.1.8/root/iaas.cloud					....VNC:kvm.iaas.vnc
+http://192.168.1.8:8080/client		admin/iaas.admin
+192.168.1.6/root/iaas.mysql/cloud/iaas.cloud....VNC:kvm.iaas.vnc
+
+[root@node1 ~]# virsh list --all
+ Id    Name                           State
+----------------------------------------------------
+ 1     IaaS_cloudstack_centos6.5      running
+ 2     Team_it_wiki_win2012           running
+ 3     IaaS_mysql_centos6.5           running
+ 4     Office_it_000_centos6.5        running
+ 5     Serv_webtest_supergenius_app2_centos6.5 running
+ 6     Serv_webtest_supergenius_app1_centos6.5 running
+ 7     Team_it_code_win2012           running
+ 9     Serv_webtest_supergenius_web_centos6.5 running
+ 10    Team_it_allinone_win2012       running
+ 11    Team_ui_ftp_win2012            running
+ 12    Team_it_oa_centos6.5           running
+ 13    v-1946-VM                      running
+ 14    s-2050-VM                      running
+ 15    r-1958-VM                      running
+ -     Team_it_puretmpl_centos6.5     shut off
+
+
+
+KVM
+Office_it_001_centos7					IT练习服务器					192.168.1.160/root/mima.123/192.168.1.9:5941/office.it
+Serv_webtest_supergenius_web_centos6.5	超天才Web服务器					192.168.1.96/root/serv.web/192.168.1.9:5961/serv.webtest
+Serv_webtest_supergenius_app1_centos6.5	超天才应用1服务器				192.168.1.97/root/serv.app/192.168.1.9:5962/serv.webtest
+Serv_backup_allinone_centos7	数据备份服务器
+192.168.1.93/root/serv.backup/192.168.1.9:5967/serv.backup
+Serv_webtest_supergenius_game_ubuntu14.04 超天才游戏服务器				192.168.1.95/root/serv.webgame/game/game/192.168.1.9:5964/serv.webgame
+Serv_game_nodejs_centos7 数独开发服务器                                                 192.168.1.168/root/serv.nodejs/192.168.1.9:5968/serv.nodejs
+
+Team_it_allinone_win2012				IT综合服务器					192.168.1.99/administrator/allinone/192.168.1.9:5970/team.it
+Team_it_wiki_win2012					IT Wiki服务器					192.168.1.7/administrator/it.wiki/192.168.1.9:5971/team.it
+Team_it_code_win2012					IT代码服务器					192.168.1.3/administrator/it.code/192.168.1.9:5972/team.it
+Team_ui_ftp_win2012						UI部门ftp服务器					192.168.1.5/administrator/ui.ftp/192.168.1.9:5973/team.it/filezilla{14147:admin.ui}
+
+Team_it_puretmpl_centos6.5				CentOS6.5模板服务器				192.168.1.xx/root/team.it/192.168.1.9:5980/team.it
+Team_it_oa_centos6.5					IT办公协作服务器				192.168.1.4/root/team.it/192.168.1.9:5981/team.it
+
+CloudStack	http://192.168.1.8:8080/client/[admin/iaas.admin]
+
+Serv-webtest-supergenius-win2012		超天才网前windows临时测试服务器，现虚拟化体验机	192.168.1.35/administrator/123456
+Office-develop-030-CentOS65				超天才数据库缓存服务器			192.168.1.36/root/db.test/admin/mima.123
+Office-develop-030-win8
+
+Serv_webtest_supergenius_dbcache_centos7	超天才数据库缓存服务器		192.168.1.78/root/serv.db/192.168.1.9:5965/serv.db
+Serv_webtest_puretmpl_centos7				超天才模板服务器			192.168.1.173/root/serv.tmpl/192.168.1.9:5966/serv.tmpl
+Serv_webtest_docker_app				超天才docker应用服务器			192.168.1.77/root/serv.test.docker/192.168.1.9:5990/team.it
+Serv_backup_aws_centos7                       超天才docker应用服务器			192.168.1.79/root/serv.aws/192.168.1.9:5991/team.it
+Serv_backup_aws1_centos7                       超天才docker应用服务器			192.168.1.80/root/serv.aws/192.168.1.9:5992/team.it

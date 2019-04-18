@@ -1,0 +1,37 @@
+basePath=
+#db 0
+#/one
+/=redis://localhost:6379
+#db 2 temp
+/users=redis://localhost:6379/2
+
+#db 3 permanence, could not be deleted
+
+/count=redis://localhost:6379/3?keylen=3
+
+#db 4 sess, could be deleted,not important
+#totalcount = usercount*(7) + 1
+#/count/sess:uid
+/count/sess=redis://localhost:6379/4?keylen=3
+
+#db 5 temp,could be deleted then resigned
+/count/cmt=redis://localhost:6379/5?keylen=3
+#/count/prize:abc
+/count/prize=redis://localhost:6379/5?keylen=3
+#/count/share:abc
+/count/share=redis://localhost:6379/5?keylen=3
+#article click rank on today
+#"/count/article:articleClickRank"
+/count/article=redis://localhost:6379/5?keylen=3
+
+#db 6 permanence
+/fans=redis://localhost:6379/6
+#db 7 permanence
+/follow=redis://localhost:6379/7
+#sys 9 permanence
+/sys=redis://localhost:6379/
+
+#/users/privilege 11 permanence
+/users/privilege=redis://localhost:6379/11
+#sys 12 permanence
+/autoincr=redis://localhost:6379/12

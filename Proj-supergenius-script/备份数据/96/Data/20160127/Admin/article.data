@@ -1,0 +1,37 @@
+[#ftl]
+<div class="content_left">
+	<div class="botcontent_top">
+		<h3>
+		          并购动态<span class="li_title">M&A News</span>
+			<a href="${baseTpiPath}/article/mergenews" target="_blank"><img src="${baseOfficialImg}/imgs/default/left_more.png" class="more" alt="" /></a>
+		</h3>
+	</div>
+	<ul>
+		[#list list2 as item2]
+			<li>
+				<span class="green_pot"></span>
+					<a href="${baseTpiPath}/article/detail/${item2.uid}" class="licontent" target="_blank">${item2.title}</a>
+				<span class="time">${item2.createtime.toString("YYYY-MM-dd")}</span>
+			</li>
+		[/#list]
+	</ul>
+</div>
+<div class="content_right">
+	<div class="botcontent_top">
+		<h3>
+		          并购案例<span class="li_title">Case studies</span>
+			<a href="${baseTpiPath}/article/mergecase" target="_blank"><img src="${baseOfficialImg}/imgs/default/right_more.png" class="more" alt="" /></a>
+		</h3>
+	</div>
+	<ul>
+		[#list list as item1]
+		<li>
+			<span class="green_pot"></span>
+				<a href="${baseTpiPath}/article/detail/${item1.uid}" class="licontent" target="_blank">${item1.title}</a>
+			<span class="time">${item1.createtime.toString("YYYY-MM-dd")}</span>
+		</li>
+		[/#list]
+	</ul>
+</div>
+
+

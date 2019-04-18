@@ -1,0 +1,50 @@
+package com.supergenius.web.finance.controller;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.genius.core.base.utils.CookieUtil;
+import com.genius.core.session.constant.SessDict;
+import com.genius.server.base.controller.BaseController;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.xo.server.helper.BaseUserHP;
+import com.supergenius.xo.user.entity.User;
+import com.supergenius.xo.user.service.UserSO;
+
+
+@Controller
+public class MctController extends BaseController {
+		
+	@RequestMapping(value = {"/mct/article" })
+	public String mct_article(Map<String, Object> model) {
+		return "mctarticle";
+	}
+
+	@RequestMapping(value = {"/mct/topic" })
+	public String mct_topic(Map<String, Object> model) {
+		return "mcttopic";
+	}
+
+	@RequestMapping(value = {"/mct/collect" })
+	public String mct_collect(Map<String, Object> model) {
+		return "mctcollect";
+	}
+	@RequestMapping(value = {"/mct/judge" })
+	public String mct_judge(Map<String, Object> model) {
+		return "mctjudge";
+	}
+	@RequestMapping(value = {"/mct/subs" })
+	public String mct_subs(Map<String, Object> model) {
+		return "mctsubs";
+	}
+
+}

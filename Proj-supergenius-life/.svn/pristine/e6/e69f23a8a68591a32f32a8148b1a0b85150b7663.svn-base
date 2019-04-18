@@ -1,0 +1,26 @@
+[#ftl]
+[#if list??]
+	[#list list as item]
+		<li>
+			<a href="/videoDetail.html">
+				<img class="talentimg" src="${webimg}/${item.imgmedium}" alt="${item.labelName}" title="${item.labelName}" />
+				<div class="play">
+					<img src="${baseimg}/imgs/default/playbtn.png" alt="播放" title="播放" />
+				</div>
+			</a>
+			<div class="talentDetail">
+				<span class="talentTitle"><i class="type">${item.labelName}</i>${item.title}</span>
+				<span class="looktimes">
+					<img src="${baseimg}/imgs/default/audience.png" alt="" />
+					${item.clickcount}人观看
+				</span>
+				<p>
+					<img src="/imgs/default/author.png" />
+					向日葵
+					<span class="time">上传于<i>${item.createtimeStr}</i></span>
+				</p>
+			</div>
+		</li>
+	[/#list]
+[/#if]
+

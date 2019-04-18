@@ -1,0 +1,101 @@
+package com.supergenius.web.front.life.helper;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import com.genius.core.base.utils.JsonUtil;
+import com.genius.server.base.helper.BaseHP;
+import com.supergenius.global.constants.ViewKeyDict;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.life.entity.Content;
+import com.supergenius.xo.life.entity.Photo;
+import com.supergenius.xo.life.enums.ECatalogue;
+import com.supergenius.xo.life.enums.EContent;
+import com.supergenius.xo.life.service.ContentSO;
+
+public class ContentHP extends BaseHP {
+	
+	private static ContentSO contentSO;
+
+	public static ContentSO getContentSO() {
+		if (contentSO == null) {
+			contentSO = (ContentSO) spring.getBean(ContentSO.class);
+		}
+		return contentSO;
+	}
+
+	/**
+	 * 得到广告位
+	 * 
+	 * @return
+	 * @author YangGuang
+	 * @date 2018年5月14日16:59:42
+	 * @return List<Content>
+	 */
+	public static List<Content> getContentList(EContent content, ECatalogue cid) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.type, content);
+		map.put(MapperDict.cid, cid);
+		return getContentSO().getList(map);
+	}
+	
+	/**
+	 * 得到banner
+	 * 
+	 * @return
+	 * @author YangGuang
+	 * @date 2018年5月17日14:48:35
+	 * @return Content
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<Photo> getbannerList(ECatalogue cid) {
+		List<Photo> result = new ArrayList<>();
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.type, EContent.banner);
+		map.put(MapperDict.cid, cid);
+		Content content = getContentSO().getOne(map);
+		Photo photo = null;
+		Map<String, Map<String, String>> dataMap = JsonUtil.fromJson(content.getData(), Map.class);
+		Iterator<String> iter = dataMap.keySet().iterator();
+		while (iter.hasNext()) {
+			String key = iter.next();
+			Map<String, String> data = dataMap.get(key);
+			photo = createPhoto(key, data);
+			photo.setCid(content.getCid());
+			result.add(photo);
+		}
+		return result;
+	}
+	
+	/**
+	 * 组织数据
+	 * 
+	 * @return
+	 * @author ChenQi
+	 */
+	public static Photo createPhoto(String oid, Map<String, String> map) {
+		Photo photo = new Photo();
+		photo.setOid(Integer.parseInt(oid));
+		photo.setTitle(map.get(ViewKeyDict.title));
+		photo.setContent(map.get(ViewKeyDict.content));
+		photo.setUrl(map.get(ViewKeyDict.url));
+		return photo;
+	}
+	
+	/**
+	 * 获取页面content
+	 * 
+	 * @return
+	 * @author YangGuang
+	 * @date 2018年5月15日11:13:16
+	 * @return List<Content>
+	 */
+	public static Content getOneContent(EContent content, int cid) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.type, content);
+		map.put(MapperDict.cid, cid);
+		return getContentSO().getOne(map);
+	}
+}

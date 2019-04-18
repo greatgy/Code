@@ -1,0 +1,155 @@
+package com.supergenius.web.finance.api;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.genius.core.base.annotation.Json;
+import com.genius.core.base.utils.JsonUtil;
+import com.genius.core.base.utils.StrUtil;
+import com.genius.model.base.entity.Pager;
+import com.genius.server.base.controller.BaseController;
+import com.supergenius.global.conf.SysConf;
+import com.supergenius.global.conf.WebConf;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.server.finance.helper.BaseCollectDetailHP;
+import com.supergenius.server.user.helper.BaseUserHP;
+import com.supergenius.web.finance.helper.FinanceHP;
+import com.supergenius.web.finance.helper.UserHP;
+import com.supergenius.xo.finance.entity.Finance;
+import com.supergenius.xo.finance.enums.ECollectType;
+import com.supergenius.xo.finance.enums.EFinance;
+import com.supergenius.xo.finance.service.FinanceSO;
+import com.supergenius.xo.user.entity.User;
+import com.supergenius.xo.user.entity.Visitor;
+import com.supergenius.xo.user.service.VisitorSO;
+
+/**
+ * app文章详情页
+ * 
+ * @author chenminchang
+ * @date 2017年1月5日 下午12:23:02
+ */
+@Controller
+public class ArticleInterfacer extends BaseController {
+
+	@Autowired
+	private FinanceSO so;
+	@Autowired
+	private VisitorSO visitorSO;
+	/**
+	 * app加载文章详情页的文章内容相关
+	 * 
+	 * @param request
+	 * @param oid
+	 * @return
+	 * @author chenminchang
+	 * @create 2017年1月5日下午4:42:50
+	 */
+	@RequestMapping(value = { "/api/article/{oid:\\d+}" }, method = RequestMethod.GET)
+	public String article_detail(Map<String, Object> model, HttpServletRequest request, @PathVariable int oid) {
+		Finance finance = FinanceHP.getSerialize(oid);
+		if (finance != null) {
+			model.put(ViewKeyDict.finance, finance);
+			return "apparticledetail";
+		}
+		return null;
+	}
+
+	/**
+	 * app加载文章详情页时判断是否收藏过
+	 * 
+	 * @param request
+	 * @param uid
+	 * @param userUid
+	 * @return
+	 * @author YangGuang
+	 * @create 2017年5月18日上午12:12:50
+	 */
+	@RequestMapping(value = { "/api/article/detial/{useruid:.{32}}/{uid:.{32}}" }, method = RequestMethod.GET)
+	@ResponseBody
+	public String article_collect(HttpServletRequest request, @PathVariable String uid, @PathVariable String useruid) {
+		if (StrUtil.isNotEmpty(useruid) && StrUtil.isNotEmpty(uid)) {
+			User user = BaseUserHP.get(useruid);
+			Finance finance = so.get(uid);
+			if (user != null) {
+				// 判断是否收藏
+				if (BaseCollectDetailHP.isCollect(user.getUid(), ECollectType.article, finance.getUid())) {
+					finance.setIscollect(true);
+					return "success";
+				}
+			}
+		}
+		return "false";
+	}
+
+	/**
+	 * 通过类型返回文章列表
+	 * 
+	 * @return
+	 * @author xuzhixiang 2017年4月27日 下午6:32:02
+	 */
+	@RequestMapping(value = { "/api/articles/{type:[a-z]+}" }, method = RequestMethod.GET)
+	@ResponseBody
+	private String loadMoreByType(HttpServletRequest request, @PathVariable String type) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		Map<String, Object> articles = new HashMap<String, Object>();
+		int num = Integer.valueOf((request.getParameter("num") == null || request.getParameter("num").length() == 0) ? "1" : request.getParameter("num"));
+		Pager pager = Pager.getNewInstance(num, WebConf.FinancePageSize);
+		List<Finance> index = FinanceHP.getLatestList(EFinance.getByName(type), num, WebConf.FinancePageSize);
+		result.put(ViewKeyDict.tops, index);
+		int total = so.getCount(EFinance.getByName(type));
+		List<Finance> finances = so.getList(EFinance.getByName(type), pager);
+		//result.put(ViewKeyDict.total, total);
+		result.put(ViewKeyDict.list, finances);
+		articles.put(type, result);
+		articles.put(ViewKeyDict.tops, index);
+		articles.put(ViewKeyDict.total, total);
+		articles.put(ViewKeyDict.list, finances);
+		return JsonUtil.toJson(articles, Json.appStrategy);
+	}
+	
+	/**
+	 * 判断文章是否点赞过
+	 * @param request
+	 * @param uid 文章uid
+	 * @param useruid 用户uid 
+	 * @return
+	 */
+	@RequestMapping(value = { "/api/article/prize/{useruid:.{32}}/{uid:.{32}}" }, method = RequestMethod.GET)
+	@ResponseBody
+	public String article_prize(HttpServletRequest request, @PathVariable String uid, @PathVariable String useruid, String loginip) {
+		User user = null;
+		if (useruid != null && useruid != "" && !SysConf.DefaultAnonymousUid.equals(useruid)) {
+			user = BaseUserHP.get(useruid);
+		} else {
+			Visitor visitor = new Visitor();
+			visitor.setLoginip(loginip);
+			visitor.setCreatetime(new DateTime());
+			visitorSO.add(visitor);
+			return "true" + visitor.getUid();
+		}
+		if(StrUtil.isNotEmpty(uid)) {
+			Finance finance = so.get(uid);
+			if (user != null) {
+				List<String> prizes = UserHP.getListPrize(user);
+				for (String item : prizes) {
+					if (finance.getUid().equals(item)) {
+						return "true";
+					}
+				}
+			}
+		}
+		return "false";
+	}
+}

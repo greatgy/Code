@@ -1,0 +1,32 @@
+package com.supergenius.core.mybatis.handlers;
+
+import org.apache.ibatis.type.MappedTypes;
+
+import com.genius.model.base.enums.EStatus;
+import com.genius.xo.base.mybatis.handler.BaseEnumTypeHandler;
+import com.supergenius.xo.base.enums.EGender;
+import com.supergenius.xo.base.enums.EUserChannel;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.common.enums.ECommentConfig;
+import com.supergenius.xo.common.enums.ECommentType;
+import com.supergenius.xo.common.enums.EFinance;
+import com.supergenius.xo.finance.enums.EContributeState;
+import com.supergenius.xo.finance.enums.ECountType;
+import com.supergenius.xo.finance.enums.EDebate;
+import com.supergenius.xo.finance.enums.EDebateArticle;
+import com.supergenius.xo.finance.enums.EGuestState;
+import com.supergenius.xo.finance.enums.ETopicState;
+import com.supergenius.xo.finance.enums.EUsertype;
+
+/**
+ * @author Architect.bian
+ * 
+ */
+@MappedTypes(value = { EStatus.class, EFinance.class, ETopicState.class, EGuestState.class, EDebate.class, EDebateArticle.class, EContributeState.class,
+		EUsertype.class, EChannel.class, ECommentType.class, ECountType.class, ECommentConfig.class,
+		EUserChannel.class,EGender.class})
+public class EnumTypeHandler<E extends Enum<E>> extends BaseEnumTypeHandler<E> {
+	public EnumTypeHandler(Class<E> type) {
+		super(type);
+	}
+}

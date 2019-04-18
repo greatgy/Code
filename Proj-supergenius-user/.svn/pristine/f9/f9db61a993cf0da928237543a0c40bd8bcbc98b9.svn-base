@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<decorators defaultdir="/WEB-INF/Decorators">
+	<!-- Any urls that are excluded will never be decorated by Sitemesh -->
+	<excludes>
+		<pattern>*.html</pattern>
+		<pattern>*.mf</pattern>
+		<pattern>*.manifest</pattern>
+		<pattern>*.sitemap</pattern>
+		<pattern>*/api/*</pattern>
+		<pattern>*/ajax/*</pattern>
+		<pattern>*/ws/*</pattern>
+		<pattern>/fresh/*</pattern>
+		<pattern>*/section/*</pattern>
+		<pattern>.*succeed.*</pattern>
+		<pattern>.*fail.*</pattern>
+	</excludes>
+
+	<decorator name="revenue" page="Web/Revenue.ftl">
+		<!-- <pattern>/login</pattern>
+		<pattern>/userrule</pattern>
+		<pattern>/legal</pattern>
+		<pattern>/managerule</pattern>
+		<pattern>/register*</pattern>
+		<pattern>/resetpwd*</pattern>
+		<pattern>/pay*</pattern> --><!-- 自己加（主要是收支管理部分） -->
+	</decorator>
+	
+	<decorator name="web" page="Web/Web.ftl">
+		<pattern>/*</pattern>
+	</decorator>
+
+</decorators>

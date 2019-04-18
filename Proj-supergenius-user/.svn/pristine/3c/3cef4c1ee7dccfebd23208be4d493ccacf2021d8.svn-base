@@ -1,0 +1,47 @@
+[#ftl]
+<div class="header_tou clear">
+    <div class="top">
+        <div class="top_main1">
+            <ul class="top_left">
+                <li><a href="http://www.supergenius.cn" class="tl_act">超天才</a></li>
+                <li><a href="http://guchujun.supergenius.cn">顾雏军专栏</a></li>
+                <li><a href="http://finance.supergenius.cn/">天财评论</a></li>
+                <li><a href="http://tpi.supergenius.cn" target="_blank">并购平台</a></li>
+                <li><a href="http://moral.supergenius.cn" target="_blank">职业道德培训</a></li>
+                <li><a href="http://www.supergenius.cn/login" target="_blank">人间仙境</a></li>
+            </ul>
+            
+            <div class="top_right">
+                <div class="toprightleft">
+                    <a href="#" class="toprigleftname">
+						欢迎回来
+                      <a href="${base}/my/user/info" class="topusername">
+	                     [#if me.name ??]${me.name}
+	                     [#elseif me.email ??]${me.email}
+	                     [#elseif me.mobile ??]${me.mobile}
+	                     [/#if]
+                      </a>
+                    </a>
+                </div>
+                
+                <a href="${base}/offline" class="exit">退出</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="top_02">
+        <div class="top_main2"> 
+            <!--nav开始-->   
+            <div class="top_22">
+                <span class="vipcenter">会员中心</span>
+                <ul class="box-nav" id="box-nav">
+                    <li><a href="${base}/my/home">我的超天才</a></li>
+                    <li><a href="${base}/my/user">账号管理</a></li>
+					<li><a href="${base}/my/account">收支管理</a></li>
+                    <li><a href="${base}/my/order">我的订单</a></li>
+                </ul>
+            </div>
+          <!-- nav 结束--> 
+        </div>
+    </div>
+</div>

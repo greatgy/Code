@@ -1,0 +1,344 @@
+[#ftl]
+[#if channel == "debate"]
+	[#list list?reverse as item]
+		[#if item.isred]
+		<div class="contro_pl text_left">
+			<div class="comment_detail" data-uid="${item.uid}" data-touseruid="${item.fromuseruid}" data-tousername="${item.fromusername}" >
+			    [#if item.fromUser??]
+                    <a href="${basesns}/p/${item.fromUser.oid}/home" target="_blank">
+                [#else]
+                <a href="javascript:void(0);">
+                [/#if]
+				<img class="contr_pic_t left" [#if "${item.fromUser.avatar}" == ""]src="${baseimg}/imgs/web/noavatar.png"[#else]src="${userimg}${item.fromUser.avatar}"[/#if]>
+		  		<span class="contro_red_name">${item.fromusername}</span>
+		  		</a>
+		  		<span>${item.createtimeStr}</span>
+		  		<br />
+		  		<span class="contro_nei">${item.content?html}</span>
+		  		<br />
+		  		<span class="reply">
+					<a href="javascript:void(0)" id="btnprizecomments_${(me.oid)!"0"}_${item.uid}" data-counter=".prizecounter">
+						<img src="${baseimg}/imgs/default/heart_02.png" data-isprize="${item.isprize!'false'}"/>
+						<span class="prizecounter">(${item.prizecount!'0'})</span>
+					</a>
+				</span>
+		  		<span class="reply"><a href="javascript:void(0)" onclick="reply(this);">回复</a></span>
+			</div>
+		  	[#if item.replys?size > 0]
+		  	<div class="contro_pnei_z"><!-- 留言框 -->
+		  		<div class="contro_borer">
+		  			<img src="${baseimg}/imgs/default/lzh_02_1.jpg">
+		  		</div><!-- 留言框上边框 -->
+				<div class="contro_pnei">
+				  	<div class="left contro_red_hui comment_detail">
+	  				[#if item.replys?size >3]
+	  					<a class="more_comment" href="javascript:void(0);" onclick="loadlist(this)" style="padding:5px;">加载更多&darr;</a>
+	  				[/#if]
+		  			[#list item.replys as item2]
+		  				[#if item2_index < item.replys?size-3]
+				    	<div class="reply_detail hd" data-uid="${item2.uid}" data-topuid="${item.uid}" data-touseruid="${item2.fromuseruid}"  data-tousername="${item2.fromusername}" >
+				    	[#else]
+				    	<div class="reply_detail" data-uid="${item2.uid}" data-topuid="${item.uid}" data-touseruid="${item2.fromuseruid}"  data-tousername="${item2.fromusername}" >
+				    	[/#if]
+				    	[#if item2.isred]
+						    <span class="contro_red_name">
+						    [#if item2.fromUser??]
+                                <a href="${basesns}/p/${item2.fromUser.oid}/home" target="_blank">
+                            [#else]
+                            <a href="javascript:void(0);">
+                            [/#if]
+						    ${item2.fromusername}
+						    </a>
+						    &nbsp;回复&nbsp;
+						    [#if item2.toUser??]
+                                <a href="${basesns}/p/${item2.toUser.oid}/home" target="_blank">
+                            [#else]
+                            <a href="javascript:void(0);">
+                            [/#if]
+                            ${item2.tousername}
+                            </a>
+                            </span>
+						    <span>
+						    ${item2.createtimeStr}</span>
+						  	<br />
+						  	<span class="contro_nei">${item2.content?html}</span>
+						  	<br />
+						  	<span class="reply">
+								<a href="javascript:void(0)" id="btnprizecomments_${(me.oid)!"0"}_${item2.uid}" data-counter=".prizecounter">
+									<img src="${baseimg}/imgs/default/heart_02.png" data-isprize="${item2.isprize!'false'}"/>
+									<span class="prizecounter">(${item2.prizecount!'0'})</span>
+								</a>
+							</span>
+						  	<span class="reply"><a href="javascript:void(0)" onclick="reply(this);">回复</a></span>
+					  	[#else]
+						    <span class="contro_bule_name">
+                            [#if item2.fromUser??]
+                                <a href="${basesns}/p/${item2.fromUser.oid}/home" target="_blank">
+                            [#else]
+                            <a href="javascript:void(0);">
+                            [/#if]
+                            ${item2.fromusername}
+                            </a>
+                            &nbsp;回复&nbsp;
+                            [#if item2.toUser??]
+                                <a href="${basesns}/p/${item2.toUser.oid}/home" target="_blank">
+                            [#else]
+                            <a href="javascript:void(0);">
+                            [/#if]
+                            ${item2.tousername}
+                            </a>
+                            </span>
+						    <span>${item2.createtimeStr}</span>
+						  	<br/>
+						  	<span class="contro_nei">${item2.content?html}</span>
+						  	<br />
+						  	<span class="reply">
+								<a href="javascript:void(0)" id="btnprizecomments_${(me.oid)!"0"}_${item2.uid}" data-counter=".prizecounter">
+									<img src="${baseimg}/imgs/default/heart_02.png" data-isprize="${item2.isprize!'false'}"/>
+									<span class="prizecounter">(${item2.prizecount!'0'})</span>
+								</a>
+							</span>
+						  	<span class="reply"><a href="javascript:void(0)" onclick="reply(this);">回复</a></span>
+					  	[/#if]
+						</div>
+		    		[/#list]
+			  		</div>
+		 		</div>
+	    	</div>
+			[/#if]
+		</div>
+		[#else]
+		<div class="contro_pl text_right">
+	  		<div class="comment_detail" data-uid="${item.uid}" data-touseruid="${item.fromuseruid}"  data-tousername="${item.fromusername}" >
+	  		    [#if item.fromUser??]
+                    <a href="${basesns}/p/${item.fromUser.oid}/home" target="_blank">
+                [#else]
+                <a href="javascript:void(0);">
+                [/#if]
+	  			<img class="contr_pic_t right" [#if "${item.fromUser.avatar}" == ""]src="${baseimg}/imgs/web/noavatar.png"[#else]src="${userimg}${item.fromUser.avatar}"[/#if]>
+		 	 	<span class="contro_bule_name">${item.fromusername}</span>
+		 	 	</a>
+		 	 	<span>${item.createtimeStr}</span>
+		 	 	<br />
+		  		<span class="contro_nei">${item.content?html}</span>
+		  		<br />
+		  		<span class="reply">
+					<a href="javascript:void(0)" id="btnprizecomments_${(me.oid)!"0"}_${item.uid}" data-counter=".prizecounter">
+						<img src="${baseimg}/imgs/default/heart_02.png" data-isprize="${item.isprize!'false'}"/>
+						<span class="prizecounter">(${item.prizecount!'0'})</span>
+					</a>
+				</span>
+		  		<span class="reply"><a href="javascript:void(0)" onclick="reply(this);">回复</a></span>
+	  		</div>
+			[#if item.replys?size > 0]
+	  		<div class="contro_pnei_z"><!-- 留言框 -->
+	  			<div class="contro_borer2"><img src="${baseimg}/imgs/default/lzh_02_2.jpg"></div>	<!-- 留言框上边框 -->
+	   				<div class="contro_pnei">
+						<div class="left contro_red_hui comment_detail" data-topuid="${item.uid}" data-touid="${item2.uid}" data-touseruid="${item2.fromuseruid}"  data-tousername="${item2.fromusername}" >
+						[#if item.replys?size >3]
+	  					<a class="more_comment" href="javascript:void(0);" onclick="loadlist(this)" style="padding:5px;">加载更多&darr;</a>
+	  					[/#if]
+				  		[#list item.replys as item2]
+				  			[#if item2_index < item.replys?size-3]
+					    	<div class="reply_detail hd" data-uid="${item2.uid}" data-topuid="${item.uid}" data-touseruid="${item2.fromuseruid}"  data-tousername="${item2.fromusername}" >
+					    	[#else]
+					    	<div class="reply_detail" data-uid="${item2.uid}" data-topuid="${item.uid}" data-touseruid="${item2.fromuseruid}" data-tousername="${item2.fromusername}" >
+					    	[/#if]
+					  		[#if item2.isred]
+							    <span class="contro_red_name"
+							    [#if item2.fromUser??]
+                                    <a href="${basesns}/p/${item2.fromUser.oid}/home" target="_blank">
+                                [#else]
+                                <a href="javascript:void(0);">
+                                [/#if]
+                                ${item2.fromusername}
+                                </a>
+                                &nbsp;回复&nbsp;
+                                [#if item2.toUser??]
+                                    <a href="${basesns}/p/${item2.toUser.oid}/home" target="_blank">
+                                [#else]
+                                <a href="javascript:void(0);">
+                                [/#if]
+                                ${item2.tousername}
+                                </a>
+                                </span>
+							    <span>${item2.createtimeStr}</span>
+							    <br />
+							  	<span class="contro_nei">${item2.content?html}</span>
+							  	<br />
+							  	<span class="reply">
+									<a href="javascript:void(0)" id="btnprizecomments_${(me.oid)!"0"}_${item2.uid}" data-counter=".prizecounter">
+										<img src="${baseimg}/imgs/default/heart_02.png" data-isprize="${item2.isprize!'false'}"/><span class="prizecounter">(${item2.prizecount!'0'})</span>
+									</a>
+								</span>
+							  	<span class="reply"><a href="javascript:void(0)" onclick="reply(this);">回复</a></span>
+							[#else]
+							    <span class="contro_bule_name">
+							    [#if item2.fromUser??]
+                                    <a href="${basesns}/p/${item2.fromUser.oid}/home" target="_blank">
+                                [#else]
+                                <a href="javascript:void(0);">
+                                [/#if]
+                                ${item2.fromusername}
+                                </a>
+                                &nbsp;回复&nbsp;
+                                [#if item2.toUser??]
+                                    <a href="${basesns}/p/${item2.toUser.oid}/home" target="_blank">
+                                [#else]
+                                <a href="javascript:void(0);">
+                                [/#if]
+                                ${item2.tousername}
+                                </a>
+							    </span>
+							    <span>${item2.createtimeStr}</span> 
+							  	<br/>
+							  	<span class="contro_nei">${item2.content?html}</span>
+							  	<br />
+							  	<span class="reply">
+									<a href="javascript:void(0)" id="btnprizecomments_${(me.oid)!"0"}_${item2.uid}" data-counter=".prizecounter">
+										<img src="${baseimg}/imgs/default/heart_02.png" data-isprize="${item2.isprize!'false'}"/><span class="prizecounter">(${item2.prizecount!'0'})</span>
+									</a>
+								</span>
+							  	<span class="reply"><a href="javascript:void(0)" onclick="reply(this);">回复</a></span>
+				  	 		[/#if]
+				  	 		</div>
+			  	 		[/#list]
+			  	 		</div>
+		  	 		</div>
+				</div>
+			</div>
+	 		[/#if]
+	    </div>
+		[/#if]
+	[/#list]
+[/#if]
+
+[#if channel == "finance"]
+	[#list list?reverse as item]
+	<div class="com_list">
+		[#if item.fromUser??]
+            <a href="${basesns}/p/${item.fromUser.oid}/home" target="_blank">
+        [#else]
+            <a href="javascript:void(0);">
+        [/#if]
+			<img width="45px" height="45px" class="left" [#if "${item.fromUser.avatar}" == ""]src="${baseimg}/imgs/web/noavatar.png"[#else]src="${userimg}${item.fromUser.avatar}"[/#if] />
+		</a>
+		<div class="com_info right" data-uid="${item.uid}" data-touseruid="${item.fromuseruid}"  data-tousername="${item.fromusername}" >
+			<h3>
+			[#if item.fromUser??]
+                <a href="${basesns}/p/${item.fromUser.oid}/home" target="_blank">
+            [#else]
+                <a href="javascript:void(0);">
+            [/#if]
+            ${item.fromusername}
+            </a>
+                                    ：${item.content!''}</h3>
+			<div class="com_con"> </div>
+			<div class="com_reply">
+				<span style="float:left;">${item.createtimeStr}</span>
+				<span class="reply">
+					<a href="javascript:void(0)" id="btnprizecomments_${(me.oid)!"0"}_${item.uid}" data-counter=".prizecounter">
+						<img src="${baseimg}/imgs/default/heart_02.png" data-isprize="${item.isprize!'false'}"/><span class="prizecounter">(${item.prizecount!'0'})</span>
+					</a>
+				</span>
+				<a href="javascript:void(0);" class="reply" onclick="reply(this)">回复</a>
+			</div>
+		</div>
+		<div class="clear"></div>
+		<div class="com_hide right">
+		[#if item.replys?size>0]
+			[#if item.replys?size > 3]
+			<a class="com_but" href="javascript:void(0);" class="showmore" onclick="showmore(this)"><span >展开剩余${item.replys?size-3}条评论↓</span></a>
+			[/#if]
+			[#list item.replys as item2]
+			[#if item2_index < item.replys?size-3]
+				<div class="com_list com_listInner hd">
+			[#else]
+				<div class="com_list com_listInner">
+			[/#if]
+				[#if item.fromUser??]
+                    <a href="${basesns}/p/${item2.fromUser.oid}/home" target="_blank">
+                [#else]
+                <a href="javascript:void(0);">
+                [/#if]
+					<img width="45px" height="45px" class="left" [#if "${item2.fromUser.avatar}" == ""]src="${baseimg}/imgs/web/noavatar.png"[#else]src="${userimg}${item2.fromUser.avatar}"[/#if]>
+				</a>
+				<div class="com_info right com_short" data-topuid="${item.uid}" data-uid="${item2.uid}" data-touseruid="${item2.fromuseruid}"  data-tousername="${item2.fromusername}"  >
+					<h3>
+						[#if item.fromUser??]
+                            <a href="${basesns}/p/${item2.fromUser.oid}/home" target="_blank">
+                        [#else]
+                        <a href="javascript:void(0);">
+                        [/#if]${item2.fromusername}</a>
+							回复
+						[#if item.fromUser??]
+                            <a href="${basesns}/p/${item2.toUser.oid}/home" target="_blank">
+                        [#else]
+                        <a href="javascript:void(0);">
+                        [/#if]${item2.tousername}</a>
+                                                                        ：<span class="com_con">${item2.content!''}</span></h3>
+					<p class="com_reply">
+						<span style="float:left;">${item2.createtimeStr}</span>
+						<span class="reply">
+							<a href="javascript:void(0)" id="btnprizecomments_${(me.oid)!"0"}_${item.uid}" data-counter=".prizecounter">
+								<img src="${baseimg}/imgs/default/heart_02.png" data-isprize="${item.isprize!'false'}"/><span class="prizecounter">(${item.prizecount!'0'})</span>
+							</a>
+						</span>
+						<a href="javascript:void(0);" class="reply" onclick="reply(this)">回复</a>
+					</p>
+				</div>
+			</div>
+			[/#list]
+		[/#if]
+		</div>
+		<div class="clear"></div>
+	</div>
+	[/#list]
+[/#if]
+
+[#if channel == "topic"]
+	[#list list as item]
+		[#if item.fromuseruid != me.uid]
+		<div class="com_list com_list_left">
+			[#if item.fromUser??]
+                <a href="${basesns}/p/${item.fromUser.oid}/home" target="_blank">
+            [#else]
+            <a href="javascript:void(0);">
+            [/#if]
+            <img class="contr_pic_t left" [#if "${item.fromUser.avatar}" == ""]src="${baseimg}/imgs/web/noavatar.png"[#else]src="${userimg}${item.fromUser.avatar}"[/#if]>
+            </a>
+			<div class="com_info left" >
+		[#else]
+		<div class="com_list com_list_right">
+			[#if item.fromUser??]
+                <a href="${basesns}/p/${item.fromUser.oid}/home" target="_blank">
+            [#else]
+            <a href="javascript:void(0);">
+            [/#if]
+            <img class="contr_pic_t right" [#if "${item.fromUser.avatar}" == ""]src="${baseimg}/imgs/web/noavatar.png"[#else]src="${userimg}${item.fromUser.avatar}"[/#if]>
+            </a>
+			<div class="com_info right" >
+		[/#if]
+				<h3>
+                [#if item.fromUser??]
+                    <a href="${basesns}/p/${item.fromUser.oid}/home" target="_blank">
+                [#else]
+                <a href="javascript:void(0);">
+                [/#if]
+                    ${item.fromusername}
+                </a>&nbsp;&nbsp;${item.createtimeStr!''}</h3>
+				<p class="com_con">${item.content?html!''}</p>
+				<p class="com_reply">
+					<span class="time"></span>
+					<span class="reply">
+						<a href="javascript:void(0)" id="btnprizecomments_${(me.oid)!"0"}_${item.uid}" data-counter=".prizecounter">
+							<img src="${baseimg}/imgs/default/heart_02.png" data-isprize="${item.isprize!'false'}"/><span class="prizecounter">(${item.prizecount!'0'})</span>
+						</a>
+					</span>
+					<a href="javascript:void(0);" onclick="reply(this);" data-toname="${item.fromusername}">回复</a>
+				</p>
+			</div>
+			<div class="clear"></div>
+		</div>
+	[/#list]
+[/#if]

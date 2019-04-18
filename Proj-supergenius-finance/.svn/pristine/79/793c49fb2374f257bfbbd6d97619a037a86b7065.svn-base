@@ -1,0 +1,42 @@
+[#ftl]
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>${title!'投稿结果'}</title>
+    <link href="${basecss}/css/default/pages/ct_ah.css" type="text/css" rel="stylesheet">
+    </head>
+<body>
+<div class="ct_ah_box">
+    <div class="crumbs">
+        <img src="${baseimg}/imgs/default/home.png" />
+        <a href="${base}">首页</a><span class="crumbs_arrow"> ></span>
+        <a href="${base}/contribute">在线投稿</a>
+    </div>
+    [#if success??]
+	    <div class="ct_ah_con">
+	        <p class="ct_ah_title">
+	            <img src="${baseimg}/imgs/default/ok.png"/>
+	            <span>投稿成功！</span>
+	        </p>
+	        <p class="ah_clear ct_ah_margin">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;感谢您的投稿，您的文章需要审核才能发表，我们将会在尽快完成审核工作并通知
+	        </p>
+	        <p class="ah_clear">您，请耐心等候。</p>
+	        [#if me??]
+	        	<p class="ah_clear">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;您可以进入<a href="${base}/my/article" class="ah_font">我的文章</a>查看和管理您的文章。</p>
+	        [/#if]
+	    </div>
+    [#else]
+	    <div class="ct_ah_con">
+	        <p class="ct_ah_title">
+	            <img src="${baseimg}/imgs/default/err.png"/>
+	            <span>投稿失败！</span>
+	        </p>
+	    </div>
+    [/#if]
+    
+</div> 
+
+<div class="clear"></div>
+
+</body>
+</html>

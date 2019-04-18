@@ -1,0 +1,112 @@
+package com.supergenius.global.conf;
+
+import java.util.Properties;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import com.genius.core.base.conf.BaseSysConf;
+
+/**
+ * @author Architect.bian
+ * 
+ */
+@Component
+public class SysConf extends BaseSysConf {
+
+	public static final int[][] ImgShowSizes = new int[][] { { 720, 540 }, { 480, 360 }, { 160, 120 } };
+	public static final int[][] ImgAvatarSizes = new int[][] {  { 300, 300 }, { 180, 180 }, { 50, 50 } };
+	
+	public static String SerialSeoPath;
+	public static String BaseSeoPath;
+	public static int FinanceRankClickDay;
+	public static int FinanceRankPublishDay;
+	public static int FinanceRankListNum;
+	public static int TopicRankClickDay;
+	public static int TopicRankPublishDay;
+	public static int TopicRankListNum;
+	public static int DebateRankClickDay;
+	public static int DebateRankPublishDay;
+	public static int DebateRankListNum;
+	public static int DebateHistoryPageSize;
+	public static int TopicPraisehour;
+	public static int TopicListNum;
+	public static int TopicUserCommentNum;
+	public static int TopicCommentRankNum;
+	public static int FinancePraisehour;
+	public static int FinanceListNum;
+	public static String ImgcontributePath;
+	public static String DefaultAnonymousUid = "00000000000000000000000000000000";
+	public static int DefaultAnonymousOid = 0;
+	public static int FinanceDebateVoteExpire;
+	public static int FinanceDebateVoteHour;
+	public static int DebateRankUserDay;
+	public static int DebateRankUserSize;
+	public static String dot = ".";
+	public static String SerialCommentPath;
+	public static String SerialCommentsExt;
+	public static String SerialPraisePath;
+	public static int DebateCommentPageSize;
+	public static int DebateUserCommentNum;
+	public static int IndexTopicCommenthour;
+	public static String UploadImgPath;
+	// 首页热门话题
+	public static String SerialIndexHotTopicPath;
+	
+	// 缓存时间配置
+	public static int Expire_UserArticleClickCount;
+	public static int Expire_FinanceRecommend;
+	public static int Expire_FinanceRank;
+	public static int Expire_TopicRank;
+	public static int Expire_TopicRecommend;
+	public static int Expire_TopicMaxComment;
+	public static int Expire_DebateRank;
+	public static int Expire_DebateCur;
+	
+	public static String SerialFinancePath;
+	
+	@Value("#{sys}")
+	public void setSysConf(Properties sys) {
+		SysConf.SerialSeoPath = sys.getProperty("SerialSeoPath");
+		SysConf.BaseSeoPath = sys.getProperty("BaseSeoPath");
+		SysConf.FinanceRankClickDay = Integer.parseInt(sys.getProperty("FinanceRankClickDay"));
+		SysConf.FinanceRankPublishDay = Integer.parseInt(sys.getProperty("FinanceRankPublishDay"));
+		SysConf.FinanceRankListNum = Integer.parseInt(sys.getProperty("FinanceRankListNum"));
+		SysConf.TopicRankClickDay = Integer.parseInt(sys.getProperty("TopicRankClickDay"));
+		SysConf.TopicRankPublishDay = Integer.parseInt(sys.getProperty("TopicRankPublishDay"));
+		SysConf.TopicRankListNum = Integer.parseInt(sys.getProperty("TopicRankListNum"));
+		SysConf.DebateRankClickDay = Integer.parseInt(sys.getProperty("DebateRankClickDay"));
+		SysConf.DebateRankPublishDay = Integer.parseInt(sys.getProperty("DebateRankPublishDay"));
+		SysConf.DebateRankListNum = Integer.parseInt(sys.getProperty("DebateRankListNum"));
+		SysConf.DebateHistoryPageSize = Integer.parseInt(sys.getProperty("DebateHistoryPageSize"));
+		SysConf.TopicPraisehour = Integer.parseInt(sys.getProperty("TopicPraisehour"));
+		SysConf.TopicListNum = Integer.parseInt(sys.getProperty("TopicListNum"));
+		SysConf.TopicUserCommentNum = Integer.parseInt(sys.getProperty("TopicUserCommentNum"));
+		SysConf.TopicCommentRankNum = Integer.parseInt(sys.getProperty("TopicCommentRankNum"));
+		SysConf.FinancePraisehour = Integer.parseInt(sys.getProperty("FinancePraisehour"));
+		SysConf.FinanceListNum = Integer.parseInt(sys.getProperty("FinanceListNum"));
+		SysConf.ImgcontributePath = sys.getProperty("ImgcontributePath");
+		SysConf.FinanceDebateVoteExpire = Integer.parseInt(sys.getProperty("FinanceDebateVoteExpire"));
+		SysConf.FinanceDebateVoteHour = Integer.parseInt(sys.getProperty("FinanceDebateVoteHour"));
+		SysConf.DebateRankUserDay = Integer.parseInt(sys.getProperty("DebateRankUserDay"));
+		SysConf.DebateRankUserSize = Integer.parseInt(sys.getProperty("DebateRankUserSize"));
+		SysConf.SerialCommentPath = sys.getProperty("SerialCommentPath");
+		SysConf.SerialCommentsExt = sys.getProperty("SerialCommentsExt");
+		SysConf.SerialPraisePath = sys.getProperty("SerialPraisePath");
+		SysConf.DebateCommentPageSize = Integer.parseInt(sys.getProperty("DebateCommentPageSize"));
+		SysConf.DebateUserCommentNum = Integer.parseInt(sys.getProperty("DebateUserCommentNum"));
+		SysConf.IndexTopicCommenthour = Integer.parseInt(sys.getProperty("IndexTopicCommenthour"));
+		SysConf.UploadImgPath = sys.getProperty("UploadImgPath");
+		SysConf.SerialIndexHotTopicPath = sys.getProperty("SerialIndexHotTopicPath");
+		SysConf.Expire_UserArticleClickCount = Integer.parseInt(sys.getProperty("Expire_UserArticleClickCount"));
+		SysConf.Expire_FinanceRecommend = Integer.parseInt(sys.getProperty("Expire_FinanceRecommend"));
+		SysConf.Expire_FinanceRank = Integer.parseInt(sys.getProperty("Expire_FinanceRank"));
+		SysConf.Expire_TopicRank = Integer.parseInt(sys.getProperty("Expire_TopicRank"));
+		SysConf.Expire_TopicRecommend = Integer.parseInt(sys.getProperty("Expire_TopicRecommend"));
+		SysConf.Expire_TopicRecommend = Integer.parseInt(sys.getProperty("Expire_TopicMaxComment"));
+		SysConf.Expire_DebateRank = Integer.parseInt(sys.getProperty("Expire_DebateRank"));
+		SysConf.Expire_DebateCur = Integer.parseInt(sys.getProperty("Expire_DebateCur"));
+		SysConf.SerialFinancePath = sys.getProperty("SerialFinancePath");
+		
+	}
+}

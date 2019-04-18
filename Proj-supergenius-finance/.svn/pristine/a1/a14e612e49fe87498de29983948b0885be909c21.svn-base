@@ -1,0 +1,70 @@
+package com.supergenius.web.finance.helper;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.genius.core.serial.utils.SerialUtil;
+import com.supergenius.global.conf.SysConf;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.server.user.helper.BaseUserHP;
+import com.supergenius.xo.user.entity.User;
+import com.supergenius.xo.user.enums.EComment;
+import com.supergenius.xo.user.service.CommentsSO;
+
+/**
+ * 用户HP
+ * @author liushaomin
+ */
+public class UserHP extends BaseUserHP{
+
+	private static CommentsSO commentsSO;
+
+	private static CommentsSO getCommentsSO() {
+		if (commentsSO == null) {
+			commentsSO = (CommentsSO) spring.getBean(CommentsSO.class);
+		}
+		return commentsSO;
+	}
+	
+	/**
+	 * 得到会员所有的赞
+	 * @param user
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<String> getListPrize(User user){
+		if (user == null )
+			return null;
+		List<String> praiseuids = new ArrayList<>();
+		String fullpath = SysConf.SerialBasePath + SysConf.SerialPraisePath + SysConf.Separator_Directory + user.getOid();
+		praiseuids =(List<String>)SerialUtil.deserializeFromJson(fullpath, List.class);
+		if (praiseuids == null) {
+			praiseuids = getCommentsSO().getList(user.getOid(), EComment.praise);
+			SerialUtil.serializeToJson(praiseuids, SysConf.SerialBasePath + SysConf.SerialPraisePath + SysConf.Separator_Directory + user.getOid());
+		}
+		return praiseuids;
+	}
+	
+	/**
+	 * 将user部分字段转成map
+	 * @param user
+	 * @return
+	 * @author YuYingJie
+	 */
+	public static Map<String, Object> getSearchMap(User user) {
+		if (user == null) {
+			return null;
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put(ViewKeyDict.useroid, user.getOid());
+		map.put(ViewKeyDict.avatar, user.getAvatar());
+		map.put(ViewKeyDict.showname, user.getShowname());
+		map.put(ViewKeyDict.company, user.getCompany());
+		map.put(ViewKeyDict.department, user.getDepartment());
+		map.put(ViewKeyDict.job, user.getJob());
+		return map;
+	}
+
+}

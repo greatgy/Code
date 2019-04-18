@@ -1,0 +1,293 @@
+package com.supergenius.web.front.life.helper;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.genius.core.base.utils.CookieUtil;
+import com.genius.core.base.utils.StrUtil;
+import com.genius.core.base.utils.WebUtil;
+import com.genius.core.cache.rule.Rule;
+import com.genius.core.cache.utils.MemcacheUtil;
+import com.genius.model.base.entity.Pager;
+import com.genius.model.base.enums.EStatus;
+import com.genius.server.base.helper.BaseHP;
+import com.supergenius.global.conf.SysConf;
+import com.supergenius.global.constants.ViewKeyDict;
+import com.supergenius.server.life.util.ArticleRedisUtil;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.life.entity.Article;
+import com.supergenius.xo.life.rule.LifeFirstArticleRule;
+import com.supergenius.xo.life.service.ArticleSO;
+
+public class ArticleHP extends BaseHP {
+
+	private static Logger log = LoggerFactory.getLogger(ArticleHP.class);
+
+	private static ArticleSO so;
+
+	public static ArticleSO getSO() {
+		if (so == null) {
+			so = (ArticleSO) spring.getBean(ArticleSO.class);
+		}
+		return so;
+	}
+
+	/**
+	 * 通过oid获取文章
+	 * 
+	 * @param id
+	 * @return
+	 * @author YangGuang
+	 * @date 2018年5月15日14:42:31
+	 */
+	public static Article getArticle(int id) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.oid, id);
+		return getSO().getOne(map);
+	}
+
+	/**
+	 * 增加点击计数
+	 * 
+	 * @param articleuid
+	 * @param user
+	 * @return
+	 * @author 2017年8月29日14:45:35
+	 */
+	public static void incrClickCount(HttpServletRequest request, HttpServletResponse response, String uid) {
+		boolean isfirst = true;
+		Cookie cookie = CookieUtil.getCookie(request, uid);
+		if (cookie != null) {
+			isfirst = false;
+		}
+		if (isfirst) {
+			ArticleRedisUtil.incr(uid, ViewKeyDict.clickcount);
+			CookieUtil.addCookieSess(response, uid, EChannel.finance.name());
+		}
+	}
+
+	/**
+	 * 获取个页面首次加载文章
+	 * 
+	 * @return
+	 * @author YangGuang
+	 * @date 2018年5月14日16:17:08
+	 * @return List<Article>
+	 */
+	public static List<Article> getFirstArticle(int pagerSize, int cid) {
+		Rule rule = new LifeFirstArticleRule(String.valueOf(cid));
+		List<Article> list = getArticleListFromMC(rule);
+		if (list != null && list.size() > 0) {
+			initArticleList(list);
+			return list;
+		} else {
+			Pager pager = Pager.getNewInstance(0, pagerSize);
+			Map<String, Object> map = getParamMap(pager);
+			if (cid > 0) {
+				map.put(MapperDict.cid, cid);
+			}
+			map.put(MapperDict.orderBy, MapperDict.sql_order_by + MapperDict.istop + MapperDict.desc + MapperDict.comma + MapperDict.createtime + MapperDict.desc);
+			map.put(MapperDict.type, EStatus.enable);
+			list = getSO().getList(map);
+			for (Article article : list) {
+				setSummary(article);
+				article.setContent("");
+			}
+			if (list != null && list.size() > 0) {
+				MemcacheUtil.set(rule, list);
+			}
+		}
+		initArticleList(list);
+		return list;
+	}
+
+	/**
+	 * 首页加载更多文章
+	 * 
+	 * @return
+	 * @author YangGuang
+	 * @date 2018年5月14日16:18:12
+	 * @return List<Article>
+	 */
+	public static List<Article> getFirstMore(int pagenum, int pagesize) {
+		Pager pager = Pager.getNewInstance(pagenum, pagesize);
+		Map<String, Object> map = getParamMap(pager);
+		map.put(MapperDict.type, EStatus.enable);
+		map.put(MapperDict.orderBy, MapperDict.sql_order_by + MapperDict.istop + MapperDict.desc + MapperDict.comma + MapperDict.createtime + MapperDict.desc);
+		List<Article> list = getSO().getList(map);
+		for (Article article : list) {
+			setSummary(article);
+			article.setContent("");
+		}
+		return list;
+	}
+
+	/**
+	 * 根据cid加载更多文章
+	 * 
+	 * @return
+	 * @author YangGuang
+	 * @date 2018年5月15日12:20:56
+	 * @return List<Article>
+	 */
+	public static List<Article> getMoreArticle(int pagenum, int pagesize, int cid) {
+		Pager pager = Pager.getNewInstance(pagenum, pagesize);
+		Map<String, Object> map = getParamMap(pager);
+		map.put(MapperDict.type, EStatus.enable);
+		map.put(MapperDict.cid, cid);
+		map.put(MapperDict.orderBy, MapperDict.sql_order_by + MapperDict.istop + MapperDict.desc + MapperDict.comma + MapperDict.createtime + MapperDict.desc);
+		List<Article> list = getSO().getList(map);
+		initArticleList(list);
+		return list;
+	}
+
+	/**
+	 * 获得热门文章
+	 * 
+	 * @return
+	 * @author YangGuang
+	 * @date 2018年5月15日11:45:54
+	 * @return List<Article>
+	 */
+	public static List<Article> getHotArticles(int pagerSize, int cid) {
+		List<Article> hotArticleList = getHotArticleByTime(cid, 6);
+		List<Article> list = new ArrayList<>();
+		if (hotArticleList.size() < pagerSize) {
+			hotArticleList = getHotArticleByTime(cid, 30);
+		}
+		initArticleList(hotArticleList);
+		hotArticleList.sort(COMPARATOR);
+		for (Article article : hotArticleList) {
+			if (list.size() >= pagerSize) {
+				break;
+			}
+			list.add(article);
+		}
+		return list;
+	}
+
+	/**
+	 * 
+	 * @author YangGuang
+	 * @Datetime 2018年5月15日11:47:48
+	 */
+	public static List<Article> getHotArticleByTime(int cid, int time) {
+		Map<String, Object> map = getParamMap();
+		map.put(MapperDict.cid, cid);
+		map.put(MapperDict.time, time);
+		map.put(MapperDict.type, EStatus.enable);
+		return getSO().getList(map);
+	}
+
+	/**
+	 * 为文章设置摘要
+	 * 
+	 * @return
+	 * @author ChenQi
+	 * @date 2017年9月12日18:19:43
+	 * @return Article
+	 */
+	public static Article setSummary(Article article) {
+		if (StrUtil.isEmpty(article.getSummary()) && StrUtil.isNotEmpty(article.getContent())) {
+			String content = StringEscapeUtils.unescapeHtml4(article.getContent());// 转义特殊字符
+			StringBuffer clearHtmlContent = WebUtil.clearHtmlTag(content);
+			if (!StrUtil.isEmpty(clearHtmlContent)) {
+				String summary = clearHtmlContent.length() > SysConf.SummarySize ? clearHtmlContent.substring(0, SysConf.SummarySize) + "......"
+						: clearHtmlContent.substring(0, clearHtmlContent.length() - 1);
+				article.setSummary(StringEscapeUtils.unescapeHtml4(summary));
+			}
+		} else if (StringEscapeUtils.unescapeHtml4(article.getSummary()).length() > SysConf.SummarySize) {
+			article.setSummary(StringEscapeUtils.unescapeHtml4(article.getSummary()).substring(0, SysConf.SummarySize) + "......");
+		}
+		return article;
+	}
+
+	/**
+	 * 初始化所有文章
+	 * 
+	 * @return
+	 * @author ChenQi
+	 * @date 2017年8月29日17:04:02
+	 * @return boolean
+	 */
+	public static boolean initArticleList(List<Article> allArticleList) {
+		boolean flag = true;
+		Map<String, Object> map = new HashMap<String, Object>();
+		for (Article article : allArticleList) {
+			String uid = article.getUid();
+			if (ArticleRedisUtil.isInit(uid)) {
+				article.setClickcount(ArticleRedisUtil.getInt(uid, ViewKeyDict.clickcount));
+				article.setCollectcount(ArticleRedisUtil.getInt(uid, ViewKeyDict.collectcount));
+				article.setCommentscount(ArticleRedisUtil.getInt(uid, ViewKeyDict.commentscount));
+				article.setPrizecount(ArticleRedisUtil.getInt(uid, ViewKeyDict.prizecount));
+				article.setWeight(getWeight(uid));
+			} else {
+				map.clear();
+				map.put(ViewKeyDict.clickcount, 0);
+				map.put(ViewKeyDict.collectcount, 0);
+				map.put(ViewKeyDict.commentscount, 0);
+				map.put(ViewKeyDict.prizecount, 0);
+				flag = ArticleRedisUtil.set(uid, map);
+			}
+			setSummary(article);
+			article.setContent("");
+			if (!flag) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * 计算权重值
+	 * 
+	 * @return
+	 * @author ChenQi
+	 * @date 2017年8月29日17:25:25
+	 * @return Float
+	 */
+	public static Float getWeight(String uid) {
+		Map<String, Float> map = new HashMap<String, Float>();
+		map.put(ViewKeyDict.clickcount, SysConf.ClickcountPercent);
+		map.put(ViewKeyDict.collectcount, SysConf.CollectcountPercent);
+		map.put(ViewKeyDict.commentscount, SysConf.CommentscountPercent);
+		map.put(ViewKeyDict.prizecount, SysConf.PrizecountPercent);
+		return ArticleRedisUtil.getWeight(uid, map);
+	}
+
+	private static final Comparator<Article> COMPARATOR = new Comparator<Article>() {
+		public int compare(Article o1, Article o2) {
+			return o1.compareTo(o2);// 运用Article类的compareTo方法比较两个对象
+		}
+	};
+
+	/**
+	 * 从缓存中获取文章
+	 * 
+	 * @param rule
+	 * @return
+	 * @author YangGuang
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<Article> getArticleListFromMC(Rule rule) {
+		List<Article> list = null;
+		try {
+			list = (List<Article>) MemcacheUtil.get(rule);
+		} catch (Exception e) {
+			logException(log, e);
+		}
+		return list;
+	}
+}

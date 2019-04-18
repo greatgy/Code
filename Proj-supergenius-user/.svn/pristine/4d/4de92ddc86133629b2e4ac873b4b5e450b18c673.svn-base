@@ -1,0 +1,15 @@
+#the fourth mysql
+UserDB.jdbc.driverClassName=com.mysql.jdbc.Driver
+UserDB.jdbc.url=jdbc:mysql://localhost:3306/GUserDB2
+UserDB.jdbc.username=root
+UserDB.jdbc.password=123456
+UserDB.min=30
+UserDB.max=100
+
+#account
+AccountDB.jdbc.driverClassName=com.mysql.jdbc.Driver
+AccountDB.jdbc.url=jdbc:mysql://localhost:3306/GAccountDB
+AccountDB.jdbc.username=root
+AccountDB.jdbc.password=123456
+AccountDB.min=30
+AccountDB.max=100

@@ -1,0 +1,94 @@
+[#ftl]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>${title}</title>
+	<link rel="stylesheet" href="${basecss}/css/default/pages/msg.css"/>
+</head>
+<body>
+	<div class="wraper centerbox">
+		<div class="main">
+			<div class="newsContainer">
+				<div class="newsLeft">
+					<h3>消息中心</h3>
+					<ul class="newsnav">
+						<li>
+							<a href="${base}/msg/comment">评论<span>24</span></a>
+						</li>
+						<li>
+							<a href="${base}/msg/notify">通知<span>26</span></a>
+						</li>
+						<li class="curSelect">
+							<a href="${base}/msg/system">系统消息<span>12</span></a>
+						</li>
+					</ul>
+				</div>
+				<div class="newsRight">
+					<h4>
+						<span class="valtit">我收到的系统消息</span>
+					</h4>
+					<ul class="getJudgelist systemNewslist">
+						<li>
+							<div class="judgeContent">
+								<div class="nametime">
+									<span class="judgename systemTitle" title="欢迎使用职业道德培训！">欢迎使用职业道德培训！</span>
+									<a href="javascript:;" class="deletelink"><img src="${baseimg}/imgs/default/deleteimg.png" class="deleteimg" /></a>
+									<span class="outtime">2014年12月14日12:34</span>
+								</div>
+								<p class="systemcontent">
+									改革开放三十多年以来，中国企业，尤其是民营企业迅速发展壮大，中国职业经理人队伍也随之成长起来，但中国职业经理人的良好从业规范却没有随之确立起来。超天才职业经理人培训学院致力于为中国企业培训德才识兼备的高绩效职业经理人，尤其是具有雄才大略可纵横天下的商界领袖，率先提出了“最纯洁职业经理人”的职场理念，并创立了相应的资格认证体系。
+								</p>
+							</div>
+						</li>
+						<li>
+							<div class="judgeContent">
+								<div class="nametime">
+									<span class="judgename systemTitle" title="天使汇创业公开课4月9日开课！">清华&天使汇创业公开课4月9日开课！</span>
+									<a href="javascript:;" class="deletelink"><img src="${baseimg}/imgs/default/deleteimg.png" class="deleteimg" /></a>
+									<span class="outtime">2014年12月14日12:34</span>
+								</div>
+								<p class="systemcontent hd">
+									改革开放三十多年以来，中国企业，尤其是民营企业迅速发展壮大，中国职业经理人队伍也随之成长起来，但中国职业经理人的良好从业规范却没有随之确立起来。超天才职业经理人培训学院致力于为中国企业培训德才识兼备的高绩效职业经理人，尤其是具有雄才大略可纵横天下的商界领袖，率先提 出了“最纯洁职业经理人”的职场理念，并创立了相应的资格认证体系。
+								</p>
+							</div>
+						</li>
+						<li>
+							<div class="judgeContent">
+								<div class="nametime">
+									<span class="judgename systemTitle"title="天使汇创业公开课4月9日开课！" >天使汇创业公开课4月9日开课！</span>
+									<a href="javascript:;" class="deletelink"><img src="${baseimg}/imgs/default/deleteimg.png" class="deleteimg" /></a>
+									<span class="outtime">2014年12月14日12:34</span>
+								</div>
+								<p class="systemcontent hd">
+									改革开放三十多年以来，中国企业，尤其是民营企业迅速发展壮大，中国职业经理人队伍也随之成长起来，但中国职业经理人的良好从业规范却没有随之确立起来。超天才职业经理人培训学院致力于为中国企业培训德才识兼备的高绩效职业经理人，尤其是具有雄才大略可纵横天下的商界领袖，率先提出了“最纯洁职业经理人”的职场理念，并创立了相应的资格认证体系。
+								</p>
+							</div>
+						</li>
+					</ul>
+					<div class="endnews">
+						<div class="dotline"></div>
+						<span>以上是全部系统消息</span>
+						<div class="dotline"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		$(function(){
+			$(".deletelink").click(function(){
+				$(this).parents("li").remove();
+			});
+
+			/*点击展开下面内容*/
+			$(".judgeContent").click(function(){
+				$(this).parent().siblings().find(".systemcontent").addClass("hd");
+				$(this).find(".systemcontent").removeClass("hd");
+			});
+		});
+	</script>
+</body>
+</html>
+
+

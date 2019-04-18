@@ -1,0 +1,65 @@
+[#ftl]
+<div class="topnav">
+    <div class="shownav">
+        <ul class="navlist">
+            <li class="current">
+                <a href="${base}/m/catalogue/0/1">首页</a>
+            </li>
+            <li>
+                <a href="${base}/m/catalogue/2/1024">人生定位</a>
+            </li>
+            <li>
+                <a href="${base}/m/catalogue/0/4">疯狂理想</a>
+            </li>
+        </ul>
+        <a href="javascript:;" class="collopse"><img src="${baseimg}/imgs/default/arrawDown.png" /></a>
+    </div>
+    <ul class="collopseNav hd">
+        [#if cataloguelist??]
+        	[#list cataloguelist as map]
+        		<li class="catalogue_mobile_${(map["first"].cid)?c} [#if pcid?? && pcid?c == (map["first"].cid)?c || cid?? && cid?c == (map["first"].cid)?c]current[/#if]">
+	            	[#if map["second"]?? && map["second"]?size>0]
+	            		<a class="catalogue_mobile" data-value="${(map["first"].cid)?c}" >${map["first"].name}</a>
+	            	[#else]
+	            		<a class="aa" href="${base}/m/catalogue/${map["first"].pcid}/${(map["first"].cid)?c}">${map["first"].name}</a>
+	            	[/#if]	
+		        </li>
+        	[/#list]
+        [/#if]
+        <li>
+            <a href="${base}/m/life/allcatalogue" class="morelinks">+&nbsp;更多</a>
+        </li>
+    </ul>
+</div>
+<div class="popmask"></div>
+<div class="popNavlist">
+    <h3 class="firstCatalogue"></h3>
+    <ul class="rollnavs">
+    </ul>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $(".collopse").click(function () {
+            $(this).toggleClass("toggleimg");
+            $(".collopseNav").toggleClass("hd");
+        });
+        $(".popmask").click(function () {
+            $(this).hide();
+            $(".popNavlist").hide();
+        });
+
+		$(".catalogue_mobile").click(function(){
+			var cid = $(this).data("value");
+			var cataloguename= $(this).html();
+			$.get("${base}/m/ajax/secondcatalogue", {cid:cid}, function(data){
+				if(data!=''){
+					$(".rollnavs").html(data);
+					$(".firstCatalogue").html(cataloguename);
+					$(".popmask").show();
+            		$(".popNavlist").show();
+				}
+			})
+		})
+    });
+</script>

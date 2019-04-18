@@ -1,0 +1,344 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+[#import "/WEB-INF/FtlLib/Macro/Official.ftl" as o]
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>${title!'首页'}</title>
+	<link rel="stylesheet" href="${basecss}/css/default/pages/index.css"/>
+	<link rel="stylesheet" href="${basecss}/css/default/pages/attentionus.css"/>
+	<style type="text/css">
+		.ma{overflow:hidden;}
+		.ma_one{overflow:hidden;text-align:left;}
+		.title_bg a{color:#fff;font-size:14px;}
+	</style>
+	<script src="${basejs}/js/pages/index.js"></script>
+	<script src="${basejs}/js/libs3/ejs.min.js"></script>
+	<script src="${basejs}/js/libs/components.js"></script>
+	<script type="text/javascript" src="${basejs}/js/pages/vote.js"></script>
+    <script type="text/javascript">
+		var broadcastData = [
+		[#list list as item]
+            {
+				title : '${item.title}',
+				img : '${webimg}${item.imgbig}',
+				link : '${base}/${item.firstTypeName}/${item.oid?c}',
+				baseimg:'${baseimg}'
+			}[#if item_index != list?size-1],[/#if]
+        [/#list]
+		];
+	</script>
+	 <script type="text/javascript">
+	    $(function(){
+	    	$(".points").each(function() {
+	    	    var str = $(this).html();
+	    	    str = str.replace(/\[em_([0-9]*)\]/g, '<img src="' + g.baseimg
+			          + '/imgs/face/qq/$1.gif" border="0" />');
+		        $(this).html(str);
+			});
+	    })
+	 </script>
+	[@o.BroadcastTemplate /]
+</head>
+<body>
+<div class="main_m centerbox">
+	<div class="main">
+		<div class="left">
+            <div class="blockgroup recommend">
+                <div class="mb" style="background: url(${baseimg}/imgs/default/titbg.png) no-repeat left center;">
+                </div>
+                <div class="recommendArticle">
+                    <a href="${base}/goldlanguage/${(newestgoldlanguage.oid?c)!'0'}" target="_blank" title="${newestgoldlanguage.title!""}">
+                        <img src="[#if newestgoldlanguage.imglittle??]${userimg}${newestgoldlanguage.imglittle}[#else]${baseimg}/imgs/default/sayimg.png[/#if]" class="articleimg" />
+                    </a>
+                    <div class="articleright">
+                        <a href="${base}/goldlanguage/${(newestgoldlanguage.oid?c)!'0'}" target="_blank" title="${newestgoldlanguage.title!''}" class="articlelink">${newestgoldlanguage.title!""}</a>
+                        <div class="newestgoldlanguagecontent">[@f.TrimSubstring content="${newestgoldlanguage.summary}" mylength=100 /]</div>
+                    </div>
+                </div>
+            </div>
+		    <div class="ma"></div>
+            <div class="blockgroup">
+                [#--[#if debate??]
+    		   		<div class="debateblock">
+    				    <div class="mb">
+    				    	&nbsp;&nbsp;论战进行时
+    				    </div>
+    				    <div class="mc">
+    				    	<a href="${base}/debate/${debate.oid?c}" target="_blank">
+    				    		<img src="${webimg}${debate.imgoriginal}" class="debateimg_lg" />
+    				    	</a>
+    				    	<div class="mc_2"></div>
+    				    	<a href="${base}/debate/${debate.oid?c}" class="debateTit" title="${debate.title!''}" target="_blank">[@f.TrimSubstring content="${debate.title!''}" mylength=28 /]</a>
+    				    </div>
+    				    <div class="md">
+    				    	<div class="md_1">
+    				    	    <span class="vstitle redtitle" title="${debate.titlered}">${debate.titlered}</span>
+    				    	    <img src="${baseimg}/imgs/default/vs.png" />
+    				    	    <span class="vstitle bluetitle" title="${debate.titleblue}">${debate.titleblue}</span>
+    				    	</div>
+    			    		<div class="votestatus">
+    			    			<span class="redside">
+    			    				<a href="javascript:void(0);" id="debate_vote_two_${debate.uid}_red" data-support="red" data-id="${debate.uid}">
+    			    					<img src="${baseimg}/imgs/default/redzan.png" data-isvoted="${voted.voted!"false"}" data-isme="${voted.isred!"false"}" />
+    			    				</a>
+    			    				<span class="rednum num_${debate.uid}_red">${(debate.countred)?c}</span>
+    			    			</span>
+    			    			<div class="progress">
+        			    			[#if debate.countblue+debate.countred==0]
+                                        [#assign redper=0.5]
+                                    [#else]
+                                        [#assign redper=debate.countred/(debate.countblue+debate.countred)]
+                                    [/#if]
+                                    [#assign blueper=(1-redper)]
+    			    				<div class="redbar" style="width:${redper*100}%" title="${redper*100}%"></div>
+    			    				<div class="bluebar" style="width:${blueper*100}%" title="${blueper*100}%"></div>
+    			    			</div>
+    			    			<span class="blueside">
+    			    				<a href="javascript:void(0);" id="debate_vote_two_${debate.uid}_blue" data-support="blue" data-id="${debate.uid}">
+    			    					<img src="${baseimg}/imgs/default/bluezan.png" data-isvoted="${voted.voted!"false"}" data-isme="${voted.isblue!"false"}" />
+    			    				</a>
+    			    				<span class="bluenum num_${debate.uid}_blue">${(debate.countblue)?c}</span>
+    			    			</span>
+    			    		</div>
+    				    	<a href="${base}/debate/${debate.oid?c}" class="join" target="_blank">立即参与</a>
+    				    </div>
+    				</div>
+                [/#if]--]
+                [#if topic??]
+    	    	<div class="hotipicblock">
+    			    <div class="mb">
+    			    	&nbsp;&nbsp;热门话题
+    			    </div>
+    			    <a class="mb_a" href="${base}/topic/${topic.oid?c}">
+    			    	<img src="${webimg}${topic.imgoriginal}" />
+    			    </a>
+    			    <div class="me">
+    			    	<h4><a href="${base}/topic/${topic.oid?c}" title="${topic.title!''}" target="_blank">${topic.title!''}</a></h4>
+    					<ul class="topicjudge">
+                            [#list topic.comments as comment]
+                            [#if me?? && me.oid == comment.fromuseroid]
+                                    [#assign url="${base}/my/article"]
+                                [#else]
+                                    [#assign url="${base}/his/article/${comment.fromuseroid}"]
+                                [/#if]
+                                <li>
+                                    <a href="${url}">
+                                       <img class="userpicture" [#if comment.fromUser.avatar==""]src="${baseimg}/imgs/web/noavatar.png"[#else]src="${userimg}${comment.fromUser.avatar}"[/#if] />
+                                    </a>
+                                    <div class="judgers">
+                                        <a class="name" href="${url}">${comment.fromusername}</a>
+                                        <span class="time">${comment.createtimeStr}</span>
+                                        <p class="points">${comment.content}</p>
+                                    </div>
+                                </li>
+    						[/#list]
+    					</ul>
+    			    </div>
+    			</div>
+    			[/#if]
+    	    	<div class="recomendblock">
+    			    <div class="mb">
+    			    	&nbsp;&nbsp;推荐文章
+    			    </div>
+    			    <div class="mf" id="mf_a">
+    			        [#list recommendlist as recommend]
+    				    	<div class="mf_1 mf_a">
+    				    	    <div class="mf_bg"></div>
+    				    	    <p class="p1">
+    			    	    		<a href="${base}/geniusfocus/${recommend.oid?c}" target="_blank">${recommend.title}</a>
+    			    	    	</p>
+    				    		<img src="${webimg}${recommend.imgoriginal}" />
+    				    	</div>
+    			    	[/#list]
+    			    </div>
+    		    </div>
+    	    	<div class="newartblock">
+    			    <div class="mb">
+    			    	&nbsp;&nbsp;最新文章
+    			    </div>
+    			    <div class="mg">
+    			    	<div class="focusbox">
+    				    	<p><a class="p1" href="${base}/geniusfocus">天财焦点</a><span class="p2">/&nbsp;Genius&nbsp;Focus</span></p>
+    			    		<ul class="focuslist">
+                                [#list map['geniusfocus'] as geniusfocus]
+    				    			<li>
+    				    				<a href="${base}/geniusfocus/${geniusfocus.oid?c}" target="_blank"><img src="${webimg}${geniusfocus.imgoriginal}" /></a>
+    				    				<a href="${base}/geniusfocus/${geniusfocus.oid?c}" class="articleTit" target="_blank">${geniusfocus.title}</a>
+    				    			</li>
+    			    			[/#list]
+    			    		</ul>
+    			    	</div>
+    			    	<div class="focusbox">
+    				    	<p><a class="p1" href="${base}/industries">产业</a><span class="p2">/&nbsp;Industries</span></p>
+    			    		<ul class="focuslist">
+                                [#list map['industries'] as industries]
+    				    			<li> 
+    				    				<a href="${base}/industries/${industries.oid?c}" target="_blank"><img src="${webimg}${industries.imgoriginal}" /></a>
+    				    				<a href="${base}/industries/${industries.oid?c}" class="articleTit" target="_blank">${industries.title}</a>
+    				    			</li>
+    			    			[/#list]
+    			    		</ul>
+    			    	</div>
+    			    	<div class="focusbox">
+    				    	<p><a class="p1" href="${base}/corporations">企业</a><span class="p2">/&nbsp;Companies</span></p>
+    			    		<ul class="focuslist">
+                                [#list map['corporations'] as corporations]
+    				    			<li> 
+    				    				<a href="${base}/corporations/${corporations.oid?c}" target="_blank"><img src="${webimg}${corporations.imgoriginal}" /></a>
+    				    				<a href="${base}/corporations/${corporations.oid?c}" class="articleTit" target="_blank">${corporations.title}</a>
+    				    			</li>
+    			    			[/#list]
+    			    		</ul>
+    			    	</div>
+    			    	<div class="focusbox">
+    				    	<p><a class="p1" href="${base}/mergerandacquisition">并购</a><span class="p2">/&nbsp;M & A</span></p>
+    			    		<ul class="focuslist">
+                                [#list map['mergerandacquisition'] as mergerandacquisition]
+    				    			<li> 
+    				    				<a href="${base}/mergerandacquisition/${mergerandacquisition.oid?c}" target="_blank"><img src="${webimg}${mergerandacquisition.imgoriginal}" /></a>
+    				    				<a href="${base}/mergerandacquisition/${mergerandacquisition.oid?c}" class="articleTit" target="_blank">${mergerandacquisition.title}</a>
+    				    			</li>
+    			    			[/#list]
+    			    		</ul>
+    			    	</div>
+    			    	<div class="focusbox">
+    				    	<p><a class="p1" href="${base}/careerexecutives">职场新视点</a><span class="p2">/&nbsp;Ethics in Management</span></p>
+    			    		<ul class="focuslist">
+                                [#list map['careerexecutives'] as careerexecutives]
+    				    			<li> 
+    				    				<a href="${base}/careerexecutives/${careerexecutives.oid?c}" target="_blank"><img src="${webimg}${careerexecutives.imgoriginal}" /></a>
+    				    				<a href="${base}/careerexecutives/${careerexecutives.oid?c}" class="articleTit" target="_blank">${careerexecutives.title}</a>
+    				    			</li>
+    			    			[/#list]
+    			    		</ul>
+    			    	</div>
+    			    	<div class="focusbox">
+    				    	<p><a class="p1" href="${base}/officecafe">职场夜话</a><span class="p2">/&nbsp;Office Café</span></p>
+    			    		<ul class="focuslist">
+                                [#list map['officecafe'] as officecafe]
+    				    			<li> 
+    				    				<a href="${base}/officecafe/${officecafe.oid?c}" target="_blank"><img src="${webimg}${officecafe.imgoriginal}" /></a>
+    				    				<a href="${base}/officecafe/${officecafe.oid?c}" class="articleTit" target="_blank">${officecafe.title}</a>
+    				    			</li>
+    			    			[/#list]
+    			    		</ul>
+    			    	</div>
+    			    	[#--<div class="focusbox">
+                            <p><a class="p1" href="${base}/legalandeconomic">经济与法</a><span class="p2">/&nbsp;Legal And Economic</span></p>
+                            <ul class="focuslist">
+                                [#list map['legalandeconomic'] as legalandeconomic]
+                                    <li> 
+                                        <a href="${base}/legalandeconomic/${legalandeconomic.oid?c}" target="_blank"><img src="${webimg}${legalandeconomic.imgoriginal}" /></a>
+                                        <a href="${base}/legalandeconomic/${legalandeconomic.oid?c}" class="articleTit" target="_blank">${legalandeconomic.title}</a>
+                                    </li>
+                                [/#list]
+                            </ul>
+                        </div>--]
+	                    <div class="focusbox">
+	                        <p><a class="p1" href="${base}/goldlanguage">醒世金语</a><span class="p2">/&nbsp;Master's Piece</span></p>
+	                        <ul class="focuslist">
+	                            [#list map['goldlanguage'] as goldlanguage]
+	                                <li> 
+	                                    <a href="${base}/goldlanguage/${goldlanguage.oid?c}" target="_blank"><img src="${webimg}${goldlanguage.imgoriginal}" /></a>
+	                                    <a href="${base}/goldlanguage/${goldlanguage.oid?c}" class="articleTit" target="_blank">${goldlanguage.title}</a>
+	                                </li>
+	                            [/#list]
+	                        </ul>
+	                    </div>
+                        <div class="focusbox">
+                            <p><a class="p1" href="${base}/goodarticle">文萃</a><span class="p2">/&nbsp;Article Collection</span></p>
+                            <ul class="focuslist">
+                                [#list map['goodarticle'] as goodarticle]
+                                    <li> 
+                                        <a href="${base}/goodarticle/${goodarticle.oid?c}" target="_blank"><img src="${webimg}${goodarticle.imgoriginal}" /></a>
+                                        <a href="${base}/goodarticle/${goodarticle.oid?c}" class="articleTit" target="_blank">${goodarticle.title}</a>
+                                    </li>
+                                [/#list]
+                            </ul>
+                        </div>
+                        <div class="focusbox">
+                            <p><a class="p1" href="${base}/economicobservation">经济观察</a><span class="p2">/&nbsp;Economy Observe</span></p>
+                            <ul class="focuslist">
+                                [#list map['economicobservation'] as economicobservation]
+                                    <li> 
+                                        <a href="${base}/economicobservation/${economicobservation.oid?c}" target="_blank"><img src="${webimg}${economicobservation.imgoriginal}" /></a>
+                                        <a href="${base}/economicobservation/${economicobservation.oid?c}" class="articleTit" target="_blank">${economicobservation.title}</a>
+                                    </li>
+                                [/#list]
+                            </ul>
+                        </div>
+    			    </div>
+    			</div>
+			</div>
+		</div>
+		<div class="right">
+			[#include "/WEB-INF/Views/Web/attentionus.ftl" /]
+	  		<div class="ranklist">
+	  			<h4>热门文章排行榜</h4>
+	  			<ul class="hotlist">
+                    [#list financelist as article]
+    	  				<li [#if article_index==0]class="curshow"[/#if]>
+    	  					<span [#if (article_index < 3)] class="normalspan ranknum" [#else] class="normalspan"[/#if]>${article_index + 1}</span>
+    	  					<div class="rankright">
+    	  						<a href="${base}/geniusfocus/${article.oid?c}" title="${article.title!''}" class="arttile">${article.title!''}</a>
+    	  						<p class="titdescribe">
+    								[@f.TrimSubstring content="${article.content}" mylength=40 /]  
+    								<a href="${base}/${article.firstTypeName}/${article.oid?c}" target="_blank">[详情]</a>
+    							</p>
+    	  					</div>
+    	  				</li>
+	  				[/#list]
+	  			</ul>
+	  		</div>
+	  		<div class="ranklist">
+	  			<h4>热门话题排行榜</h4>
+	  			<ul class="hotlist">
+                    [#list topiclist as hottopic]
+    	  				<li [#if hottopic_index==0]class="curshow"[/#if]>
+    	  					<span [#if (hottopic_index < 3)] class="normalspan ranknum" [#else] class="normalspan"[/#if]>${hottopic_index + 1}</span>
+    	  					<div class="rankright">
+    	  						<a href="${base}/topic/${hottopic.oid?c}" title="${hottopic.title!''}" class="arttile">${hottopic.title!''}</a>
+    	  						<div class="titdescribe">
+    	  							<span>发起人：${hottopic.author!''}</span>
+    	  							<span class="comment">
+    	  								<a>
+    	  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+    	  									${hottopic.commentcount}
+    	  								</a>
+    	  							</span>
+    	  						</div>
+    	  					</div>
+    	  				</li>
+	  				[/#list]
+	  			</ul>
+	  		</div>
+	  		[#--<div class="ranklist">
+	  			<h4>论战排行榜</h4>
+	  			<ul class="hotlist">
+                    [#list debatelist as hotdebate]
+    	  				<li>
+    	  					<span class="normalspan ranknum">${hotdebate_index + 1}</span>
+    	  					<div class="rankright">
+    	  						<a href="${base}/debate/${hotdebate.oid?c}" title="${hotdebate.title!''}" class="arttile" target="_blank">${hotdebate.title!''}</a>
+    	  					</div>
+    	  				</li>
+	  				[/#list]
+	  			</ul>
+	  		</div>--]
+		</div>
+	</div>	
+</div>
+<script type="text/javascript">
+    var hasvote = -1;// 用来在页面级别存储已经投过票，防止多次请求后台
+    $(function(){
+    	InitDebateVoteEvent();
+    	$(".hotlist li").hover(function(){
+    		$(this).siblings().removeClass("curshow");
+    		$(this).addClass("curshow");
+    	});
+    });
+</script>
+</body>
+</html>

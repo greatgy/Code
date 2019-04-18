@@ -1,0 +1,232 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+[#if type=="topicindex"][#--话题首页-加载更多 --]
+	[#list list as item]
+        <li>
+            <div class="litopbox">
+                <a href="${base}/his/topic/${item.authorUser.oid}" target="_blank">
+                    [#if item.authorUser.avatar??]
+                        <img src="${userimg}${item.authorUser.avatar}" />
+                    [#else]
+                        <img src="${baseimg}/imgs/web/noavatar.png" />
+                    [/#if]
+				</a>
+                <a href="${base}/his/topic/${item.authorUser.oid}" class="name" target="_blank">${item.authorUser.showname}</a>
+                <span class="distime">${item.createtimeStr}</span>
+            </div>
+            <a href="${base}/topic/${item.oid}" class="tit" title="${item.title}" target="_blank">${item.title}</a>
+            <a href="${base}/topic/${item.oid}" class="limidbox" target="_blank">
+                <img src="${webimg}${item.imgoriginal}" />
+            </a>
+            <div class="iconsbox">
+                <span title="查看次数">
+                    <img src="${baseimg}/imgs/default/viewicon.png" />
+                    ${item.clickcount}
+                </span>
+                <span title="点赞次数">
+                    <img src="${baseimg}/imgs/default/thumb.png" />
+                    ${item.admirecount}
+                </span>
+                <span title="评论次数">
+                    <img src="${baseimg}/imgs/default/msg01.png" />
+                    ${item.commentcount}
+                </span>
+                <span title="分享">
+                    <img src="${baseimg}/imgs/default/shareicon.png" />
+                    ${item.sharecount}
+                </span>
+            </div>
+        </li>
+    [/#list]
+[#elseif type=="all"][#-- 个人话题主页-全部话题 --]
+	[#list list as alltopic]
+		<li class="tpcitem">
+            [#if alltopic.isDisable]
+                <img src="${baseimg}/imgs/default/verify.png" class="statusimg" />
+            [#elseif alltopic.isTopicStateInit]
+                <img src="${baseimg}/imgs/default/verify.png" class="statusimg">
+            [#elseif alltopic.isTopicStateSucceed]
+                <img src="${baseimg}/imgs/default/pass.png" class="statusimg">
+            [#elseif alltopic.isTopicStateFailed]
+                <img src="${baseimg}/imgs/default/notpass.png" class="statusimg">
+            [/#if]
+			<div class="newjudger">
+				<a href="${base}/his/topic/${alltopic.authorUser.oid}" class="newjudgerimg" target="_blank"><img src="${userimg}${alltopic.authorUser.avatar}" /></a>
+				<a href="${base}/his/topic/${alltopic.authorUser.oid}" class="newNamelink" target="_blank"><span class="newname">${alltopic.author}</span></a>
+				<span class="newtime">${alltopic.publishtimeStr}</span>
+			</div>
+			<span class="topictit">${alltopic.title}</span>
+			<div class="imgcontainer"><img src="${webimg}${alltopic.imgoriginal}" class="topicimg" /></div>
+			<div class="iconsbox">
+				<span title="查看次数">
+					<img src="${baseimg}/imgs/default/viewicon.png" />
+					${alltopic.clickcount}
+				</span>
+				<span title="点赞次数">
+					<img src="${baseimg}/imgs/default/thumb.png" />
+					${alltopic.prizecount}
+				</span>
+				<span title="评论次数">
+					<img src="${baseimg}/imgs/default/msg01.png" />
+					${alltopic.commentcount}
+				</span>
+				<span title="分享">
+					<img src="${baseimg}/imgs/default/shareicon.png" />
+				</span>
+			</div>
+		</li>
+	[/#list]
+[#elseif type=="succeed"][#-- 个人话题主页-已发布话题 --]
+	[#list list as succeedtopic]
+	    [#if succeedtopic.isTopicStateSucceed]
+			<li class="tpcitem">
+				<img src="${baseimg}/imgs/default/pass.png" class="statusimg">
+				<div class="newjudger">
+	                <a href="javascript:void(0);" class="newjudgerimg" target="_blank"><img src="${userimg}${succeedtopic.authorUser.avatar}" /></a>
+	                <a href="javascript:void(0);" class="newNamelink" target="_blank"><span class="newname">${succeedtopic.author}</span></a>
+	                <span class="newtime">${succeedtopic.publishtimeStr}</span>
+	            </div>
+				<a href="${base}/topic/${succeedtopic.oid}" class="topicTitlink" target="_blank"><span class="topictit">${succeedtopic.title}</span></a>
+				<a href="${base}/topic/${succeedtopic.oid}" class="imgcontainer" target="_blank">
+					<img src="${webimg}${succeedtopic.imgoriginal}" class="topicimg" />
+				</a>
+				<div class="iconsbox">
+					<span title="查看次数">
+						<img src="${baseimg}/imgs/default/viewicon.png" />
+						${succeedtopic.clickcount}
+					</span>
+					<span title="点赞次数">
+						<img src="${baseimg}/imgs/default/thumb.png" />
+						${succeedtopic.prizecount}
+					</span>
+					<span title="评论次数">
+						<img src="${baseimg}/imgs/default/msg01.png" />
+						${succeedtopic.commentcount}
+					</span>
+					<span title="分享">
+						<img src="${baseimg}/imgs/default/shareicon.png" />
+					</span>
+				</div>
+			</li>
+	    [/#if]
+	[/#list]
+[#elseif type=="failed"][#-- 个人话题主页-未通过话题 --]
+	[#list list as failedtopic]
+        [#if failedtopic.isTopicStateFailed]
+			<li class="tpcitem">
+				<img src="${baseimg}/imgs/default/notpass.png" class="statusimg" />
+				<div class="newjudger">
+					<a href="javascript:void(0);" class="newjudgerimg" target="_blank"><img src="${userimg}${failedtopic.authorUser.avatar}" /></a>
+					<a href="javascript:void(0);" class="newNamelink" target="_blank"><span class="newname">${failedtopic.author}</span></a>
+					<span class="newtime">${failedtopic.publishtimeStr}</span>
+				</div>
+				<span class="topictit">${failedtopic.title}</span>
+				<div class="imgcontainer"><img src="${webimg}${failedtopic.imgoriginal}" class="topicimg" /></div>
+				<div class="iconsbox">
+					<span title="查看次数">
+						<img src="${baseimg}/imgs/default/viewicon.png" />
+						${failedtopic.clickcount}
+					</span>
+					<span title="点赞次数">
+						<img src="${baseimg}/imgs/default/thumb.png" />
+						${failedtopic.prizecount}
+					</span>
+					<span title="评论次数">
+						<img src="${baseimg}/imgs/default/msg01.png" />
+						${failedtopic.commentcount}
+					</span>
+					<span title="分享">
+						<img src="${baseimg}/imgs/default/shareicon.png" />
+					</span>
+				</div>
+			</li>
+		[/#if]
+	[/#list]
+[#elseif type=="init"][#-- 个人话题主页-审核中话题 --]
+	[#list list as inittopic]
+	    [#if inittopic.isTopicStateInit]
+			<li class="tpcitem">
+				<img src="${baseimg}/imgs/default/verify.png" class="statusimg" />
+				<div class="newjudger">
+					<a href="javascript:void(0);" class="newjudgerimg" target="_blank"><img src="${userimg}${inittopic.authorUser.avatar}" /></a>
+					<a href="javascript:void(0);" class="newNamelink" target="_blank"><span class="newname">${inittopic.author}</span></a>
+					<span class="newtime">${inittopic.publishtimeStr}</span>
+				</div>
+				<span class="topictit">${inittopic.title}</span>
+				<div class="imgcontainer"><img src="${webimg}${inittopic.imgoriginal}" class="topicimg" /></div>
+				<div class="iconsbox">
+					<span title="查看次数">
+						<img src="${baseimg}/imgs/default/viewicon.png" />
+						${inittopic.clickcount}
+					</span>
+					<span title="点赞次数">
+						<img src="${baseimg}/imgs/default/thumb.png" />
+						${inittopic.prizecount}
+					</span>
+					<span title="评论次数">
+						<img src="${baseimg}/imgs/default/msg01.png" />
+						${inittopic.commentcount}
+					</span>
+					<span title="分享">
+						<img src="${baseimg}/imgs/default/shareicon.png" />
+					</span>
+				</div>
+			</li>
+		[/#if]
+	[/#list]
+[#elseif type=="disable"][#-- 个人话题主页-已撤销话题 --]
+	[#list list as item]
+		<div class="tab_one">
+			<img src="${webimg}${item.imgmedium}" style="width:212px;height:140px;">
+			<p class="t06_w680_fix">
+				<img src="${baseimg}/imgs/default/topic04_check04.png">
+			</p>
+			<div class="tab_one_r">
+				<h3>${item.title}</h3>
+				<p>发布于 ${item.publishtime.toString("YYYY-MM-dd")}<br>
+					[@f.TrimSubstring content="${item.content!''}" mylength=70 /]
+					[#if item.isTopicStateSucceed]<a href="${base}/topic/${item.oid}" target="_blank">[详情]</a>[/#if]
+				</p>
+			</div>
+			<div class="tab_one_bt">
+				<img src="${baseimg}/imgs/default/heart_02.png">${item.prizecount!0}&nbsp;&nbsp;|&nbsp;&nbsp;评论 ${item.commentcount!0}
+			</div>
+		</div>
+	[/#list]
+[#elseif type=="join"][#--个人话题主页-我参与的话题 --]
+	[#list list as item]
+		[#if item.authorUser.oid != me.oid]
+			[#assign url="${base}/his/topic/${item.authorUser.oid}" /]
+		[#else]
+			[#assign url="javascript:void(0);" /]
+		[/#if]
+		<li class="tpcitem">
+			<div class="newjudger">
+                <a href="${url}" class="newjudgerimg" target="_blank"><img [#if item.authorUser.avatar?? && item.authorUser.avatar != ""]src="${userimg}${item.authorUser.avatar}" [#else] src="${baseimg}/imgs/web/noavatar.png" [/#if]/></a>
+                <a href="${url}" class="newNamelink" target="_blank"><span class="newname">${item.author}</span></a>
+                <span class="newtime" style="margin-right: 0px;">${item.publishtimeStr}</span>
+            </div>
+			<a href="${base}/topic/${item.oid}" class="topicTitlink" target="_blank"><span class="topictit">${item.title}</span></a>
+			<a href="${base}/topic/${item.oid}" class="imgcontainer" target="_blank">
+				<img src="${webimg}${item.imgoriginal}" class="topicimg" />
+			</a>
+			<div class="iconsbox">
+				<span title="查看次数">
+					<img src="${baseimg}/imgs/default/viewicon.png" />
+					${item.clickcount}
+				</span>
+				<span title="点赞次数">
+					<img src="${baseimg}/imgs/default/thumb.png" />
+					${item.prizecount}
+				</span>
+				<span title="评论次数">
+					<img src="${baseimg}/imgs/default/msg01.png" />
+					${item.commentcount}
+				</span>
+				<span title="分享">
+					<img src="${baseimg}/imgs/default/shareicon.png" />
+				</span>
+			</div>
+		</li>
+	[/#list]
+[/#if]

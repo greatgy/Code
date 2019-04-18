@@ -1,0 +1,257 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/Public.ftl" as p]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>天财评论-${catalogueName}</title>
+	<meta name="Keywords" content="天财评论-${catalogueName}" />
+	<meta name="Description" content="天财评论-${catalogueName}" />
+	<!--# include file="/include/headcommon.html" -->
+	<link rel="stylesheet" href="${basecss}/css/default/index.css">
+	<script src="${basejs}/js/libs3/swiper.jquery.min.js"></script>
+	<script type="text/javascript" src="${basejs}/js/pages/scroll.js"></script>
+</head>
+<body>
+	<div class="contentLeft">
+		<!-- 轮播 -->
+		<div id="lunbo" class="swiper-container">
+			<ul id="banner_list" class="swiper-wrapper">
+			[#if RecommendArticle??]
+				[#assign bannercount = 0]
+				[#list RecommendArticle as article]
+					<li data-index="${bannercount}" class="swiper-slide">
+						<a href="${base}/article/${article.cid}/${article.oid}" class="banneritem" style="background: #000 url(${webimg}${article.imgbig}) no-repeat center center; background-size: 100% 100%;" title="" target="_blank">
+							<p class="titlebottom">
+								${article.title}
+							</p>
+						</a>
+					</li>
+				[#assign bannercount = bannercount + 1]
+				[/#list]
+			[/#if]
+			</ul>
+			<div class="swiper-pagination"></div>
+		</div>
+		<div class="articleList">
+			<ul class="tabBox">
+				[#if list??]
+					[#list list as article]
+						<li>
+							<a class="tabitemimg" href="${base}/article/${article.cid}/${article.oid}">
+								<img src="${webimg}${article.imgmedium}" />
+							</a>
+							<div class="tabitemRt">
+								<a href="${base}/article/${article.cid}/${article.oid}" class="articleTitle">
+									[#if article.isoriginal == 1]
+										<span class="original">[原创]</span>
+									[/#if]
+									[#if article.kind == 1]
+										<span class="videotype">[视频]</span>
+									[#elseif article.kind == 2]
+										<span class="pictype">[图片]</span>
+									[/#if]
+									${article.title}
+								</a>
+								<p class="descripe">
+								[#if article.summary==""]
+									[@p.TrimSubstring content="${article.content}" mylength=80 /]
+								[#else]
+									[@p.TrimSubstring content="${article.summary}" mylength=80 /]	
+								[/#if]	
+								</p>
+								<div class="timepiece">
+									<span class="time">
+										[@p.mytime datetime="${article.createtimeStr}"/]
+									</span>
+									<div class="operateBox">
+										<a href="${base}/article/${article.cid}/${article.oid}" class="littleicon">
+											<img src="${baseimg}/imgs/default/heart.png" />
+											${article.prizecount}
+										</a>
+										<a href="${base}/article/${article.cid}/${article.oid}" class="littleicon">
+											<img src="${baseimg}/imgs/default/discuss.png" />
+											${article.commentscount}
+										</a>
+										<a href="${base}/article/${article.cid}/${article.oid}" class="littleicon">
+											<img src="${baseimg}/imgs/default/clickcount.png" />
+											${article.clickcount}
+										</a>
+									</div>
+								</div>
+							</div>
+						</li>
+					[/#list]
+				[/#if] 
+			</ul>
+			<div class="load hd">下拉加载更多~</div>
+			<div class="nomore">
+				<i class="line"></i>
+				我是有底线的
+				<i class="line"></i>
+			</div>
+		</div>
+	</div>
+	<div class="contentRight">
+		<div class="rightItem itemBlock">
+			<h4><i></i>热门搜索</h4>
+			<ul class="tags">
+				[#if lablelist??]
+					[#list lablelist as label]
+		        		<li><a href="${base}/search?keyword=${label.content}&uid=${label.uid}">${label.content}</a></li>
+		        	[/#list]
+		     	[/#if]
+		    </ul>
+		</div>
+		<div class="rightItem itemBlock">
+			<h4><i></i>热门文章</h4>
+			<ul class="hotArticle">
+				[#if HotArticleList??]
+		       [#-- 前三条热门文章大图显示 --]
+		       	[#assign hotsize = 1]
+		       		[#list HotArticleList as article]
+		       			[#if hotsize gte 1  && hotsize lte 3] 
+					        <li class="top1">
+					        	[#if hotsize == 1]
+					        		<span class="hoticon redicon">TOP&nbsp;${hotsize}</span>
+					        	[#elseif hotsize == 2]
+					        		<span class="hoticon yellowicon">TOP&nbsp;${hotsize}</span>
+					        	[#elseif hotsize == 3]
+					        		<span class="hoticon greenicon">TOP&nbsp;${hotsize}</span>
+					        	[/#if]
+					        	<a href="${base}/article/${article.cid}/${article.oid}">
+					        		<img src="${webimg}/${article.imgbig}" />
+					        		<div class="description">
+										${article.title}
+									</div>
+					        	</a>
+					        </li>
+		        		[#elseif hotsize lte 5]
+			      		  [#-- 第4,5条热门文章 小图显示--]
+					        <li>
+								<a href="${base}/article/${article.cid}/${article.oid}">
+									[#if hotsize == 4]
+										<span class="numtag four">${hotsize}</span>
+									[#elseif hotsize == 5]
+										<span class="numtag five">${hotsize}</span>
+									[/#if]
+									
+									<img class="fourimg" src="${webimg}/${article.imglittle}" alt="" />
+									<div class="title">
+										${article.title}
+										<span class="flashtime">
+										[@p.mytime datetime="${article.createtimeStr}"/]
+										</span>
+									</div>
+								</a>
+							</li>
+						[#elseif hotsize gte 6 && hotsize lte article?size]
+						[#-- 后五条文章 --]
+							<li>
+								<a href="${base}/article/${article.cid}/${article.oid}">
+								
+									[#if article.kind == 2]
+										<span class="pictype">[图片]</span>
+									[/#if]
+									[#if article.isoriginal == 1]
+										<span class="original">[原创]</span>
+									[/#if]
+									${article.title}
+								</a>
+								<span class="flashtime">
+								[@p.mytime datetime="${article.createtimeStr}"/]
+								</span>
+							</li>
+						[/#if]
+					[#assign hotsize = hotsize + 1]
+					[/#list]
+				[/#if]
+		    </ul>
+		</div>
+	</div>
+	<script>
+		$(function(){
+			var swiper = new Swiper('.swiper-container', {
+		        pagination: '.swiper-pagination',
+		        paginationClickable: true,
+		        spaceBetween: 30,
+		        centeredSlides: true,
+		        autoplay: 2500,
+		        autoplayDisableOnInteraction: false
+		    });
+		    $.fn.scrollHandle({
+				obj: window,
+				fun: loadmore
+			})
+			/*轮播*/
+			/*var a = 1;
+			$("#controller li").click(function(){
+				var i = $(this).index();
+				a = i;
+				$(this).addClass("active").siblings().removeClass("active");
+				$("#banner_list li").eq(i).css("display","block").siblings().css("display","none");
+			});
+			setInterval(function(){
+				if(a == $("#controller li").length){
+					a = 0 ;
+				}
+				$("#controller li").eq(a).addClass("active").siblings().removeClass("active");
+				$("#banner_list li").eq(a).css("display","block").siblings().css("display","none");
+				a++;
+			},5000);*/
+			/*判断是否有广告位内容*/
+			[#if ADContent??]
+				[#list ADContent as content]
+					loadImg("${content.originurl}","${content.content}","${content.uid}",addImg);
+				[/#list]
+			[/#if]
+		});
+			var prePage = 1;
+			var pagenum = 2;
+				
+			// 加载更多事件处理
+			function loadmore() {
+				pagenum = pagenum +　1;
+				var	url = "${base}/ajax/otherpage/catalogue/${cid}";
+				if(prePage != pagenum) {
+				    prePage = pagenum;
+					$.get(url, {pagenum:pagenum}, function(data){
+					    pagenum += 1;
+						if(data.trim() == ""){// 没有更多内容
+							pagenum -= 1;
+							$(this).hide();
+							$(".nomore").show();
+							$(window).unbind("scroll", defaultScrollHandler);
+							return false;
+						}
+						$(".tabBox").append(data);
+					});
+				}
+			}
+			function loadImg(originurl,content,uid,callback){
+			    var img = new Image();
+			    img.onload = function(){
+			      img.onload = null;
+			      callback(img,originurl,uid);
+			    }
+			    img.src="${webimg}"+content;
+			    img.width ="326";
+			    img.height = "195";
+	 	 }
+		 	 
+	    function addImg(img, original,uid){
+	    	var html='';
+		    html += '<div class="rightItem">';
+		    [#if cid == 15]
+		   		 html += '<a class="huiyuan" id="'+uid+'" >';
+		    [#else]  
+		   		 html += '<a class="huiyuan" id="'+uid+'" href="' + original + '">';
+		    [/#if]
+		    html += '</a>';
+			html += '</div>';
+		    $(html).prependTo($(".contentRight"));
+		    $(img).appendTo($("#"+uid));
+	    }
+	</script>
+</body>
+</html>

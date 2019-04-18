@@ -1,0 +1,25 @@
+[#ftl]
+<html>
+<head>
+<title>文章管理</title>
+<script type="text/javascript">
+</script>
+</head>
+<body>
+	[#if type="finance"]
+		<div style="width:1000px;margin-left:auto;margin-right: auto;">
+			<div style="font-size:25px;" >${(bean.title)!}</div></br>
+			<div style="font-size:18px;"><label>作者:</label>${(bean.author)!}</div></br>
+			<div style="font-size:18px;"><label>关键字:</label>${(bean.keywords)!}</div></br>
+			<div>${(bean.content)!}</div>
+		</div>
+	[#elseif type="contribute"]
+		<div style="width:1000px;margin-left:auto;margin-right: auto;">
+			<div style="font-size:25px;" >${(bean.title)!}</div></br>
+			<div style="font-size:18px;"><label>作者:</label>${(bean.name)!}</div></br>
+			<div style="font-size:18px;"><label>关键字:</label>${(bean.keywords)!}</div></br>
+			<div>${(bean.content)!}</div>
+		</div>
+	[/#if]
+</body>
+</html>

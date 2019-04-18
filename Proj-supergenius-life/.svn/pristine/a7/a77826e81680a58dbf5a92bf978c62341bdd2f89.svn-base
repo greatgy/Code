@@ -1,0 +1,40 @@
+[#ftl]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>个人中心--我的文章</title>
+	<meta name="Keywords" content="天才人生，个人中心，我的文章" />
+	<meta name="Description" content="天才人生，个人中心，我的文章" />
+	<!--# include file="/include/headcommon.html" -->
+	<link rel="stylesheet" href="${base}/css/mobile/default/index.css">
+</head>
+<body>
+	<!-- 我的提问 -->
+	<div class="myCollect">
+		[#if problem??]
+			<ul class="tabBox">
+				[#list problem as item]
+					<li>
+						<a href="${base}/problem/detail/${(item.cid)?c}/${(item.oid)?c}" class="articleTitle">
+							${item.title}
+							[#-- ???????? --]
+							<span class="[#if item.ismember == 1 && (item.cid)?c == 16384][#if item.state == 0]comment2[#elseif item.state == 2]comment1[/#if][/#if]">[#if item.ismember == 1 && item.cid == 16384][#if item.state == 0]待点评[#elseif item.state == 2]已点评[/#if][/#if]</span>
+						</a>
+						<p class="descripe">[@p.TrimSubstring content="${item.content}" mylength=180 /]</p>
+						<div class="pubTime">
+							[@p.mytime datetime="${item.createtimeStr}"/]
+						</div>
+					</li>
+				[/#list]
+			</ul>
+		[/#if]
+		<div class="nomore">
+			<i class="line"></i>
+			我是有底线的
+			<i class="line"></i>
+		</div>
+	</div>
+	
+</body>
+</html>

@@ -1,0 +1,254 @@
+package com.supergenius.web.finance.helper;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.genius.core.cache.rule.Rule;
+import com.genius.core.cache.utils.MemcacheUtil;
+import com.genius.core.cache.utils.RedisUtil;
+import com.genius.model.base.entity.Pager;
+import com.supergenius.core.rule.CountDebateVoteRule;
+import com.supergenius.core.rule.DebateCurRlue;
+import com.supergenius.core.rule.DebateHistoryRlue;
+import com.supergenius.core.rule.DebateRankRlue;
+import com.supergenius.global.conf.SysConf;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.common.enums.ECommentConfig;
+import com.supergenius.xo.common.enums.ECommentType;
+import com.supergenius.xo.finance.entity.Debate;
+import com.supergenius.xo.finance.service.DebateArticleSO;
+import com.supergenius.xo.finance.service.DebateSO;
+import com.supergenius.xo.server.helper.BaseUserHP;
+import com.supergenius.xo.user.entity.User;
+import com.supergenius.xo.user.service.CommentsSO;
+import com.supergenius.xo.user.service.UserSO;
+
+/**
+ * 天财评论HP
+ * 
+ * @author ShangJianguo
+ */
+public class DebateHP extends com.supergenius.server.finance.helper.BaseDebateHP {
+	
+	private static Logger log = LoggerFactory.getLogger(DebateHP.class);
+	private static DebateSO so;
+
+	public static DebateSO getSo() {
+		if (so == null) {
+			so = (DebateSO) spring.getBean(DebateSO.class);
+		}
+		return so;
+	}
+
+	private static CommentsSO commentsSO;
+
+	private static CommentsSO getCommentsSO() {
+		if (commentsSO == null) {
+			commentsSO = (CommentsSO) spring.getBean(CommentsSO.class);
+		}
+		return commentsSO;
+	}
+
+	private static DebateArticleSO debateArticleSO;
+
+	public static DebateArticleSO getDebateArticleSO() {
+		if (debateArticleSO == null) {
+			debateArticleSO = (DebateArticleSO) spring.getBean(DebateArticleSO.class);
+		}
+		return debateArticleSO;
+	}
+
+	private static UserSO userSO;
+
+	public static UserSO getUserSO() {
+		if (userSO == null) {
+			userSO = (UserSO) spring.getBean(UserSO.class);
+		}
+		return userSO;
+	}
+
+	/**
+	 * 获取评论的红蓝双方的最新评论人
+	 * 
+	 * @param debateuid
+	 * @return
+	 * @author ShangJianguo
+	 */
+	public static Map<String, Object> getCommentUser(String debateuid) {
+		List<String> uidred = getCommentsSO().getLatestFromuseruidList(debateuid, EChannel.debate, ECommentType.comment, ECommentConfig.debatered, SysConf.DebateUserCommentNum);
+		List<String> uidblue = getCommentsSO().getLatestFromuseruidList(debateuid, EChannel.debate, ECommentType.comment, ECommentConfig.debateblue, SysConf.DebateUserCommentNum);
+		List<User> usersred = new ArrayList<>();
+		List<User> usersblue = new ArrayList<>();
+		for (String item : uidred) {
+			usersred.add(BaseUserHP.get(item));
+		}
+		for (String item : uidblue) {
+			usersblue.add(BaseUserHP.get(item));
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put(ViewKeyDict.listred, usersred);
+		map.put(ViewKeyDict.listblue, usersblue);
+		return map;
+	}
+
+	/**
+	 * 获取用户发言排行榜
+	 * @return List<Map<User, Integer>> map的key值是用户对象，value值是该用户的评论数
+	 * @author ShangJianguo
+	 */
+	@SuppressWarnings("rawtypes")
+	public static List<Map> getRankUser() {
+		List<Map<?, ?>> list = getCommentsSO().getRankUser(EChannel.debate, ECommentType.comment, SysConf.DebateRankUserDay, SysConf.DebateRankUserSize);
+		List<Map> rankList = new ArrayList<>();
+		User user = null;
+		Map<User, Integer> entity = null;
+		TreeMap<Integer, Map> rankMap = new TreeMap<Integer, Map>(new Comparator<Integer>() {
+			public int compare(Integer k1, Integer k2) {
+				return k2.compareTo(k1);
+			}
+		});
+		for (Map<?, ?> item : list) {
+			user = getUserSO().get((String) item.get(MapperDict.fromuseruid));
+			entity = new HashMap<User, Integer>();
+			Integer count = Integer.parseInt(item.get(ViewKeyDict.count).toString());
+			entity.put(user, count);
+			// rankList.add(entity);
+			rankMap.put(count, entity);
+		}
+		rankList = new ArrayList<>(rankMap.values());
+		return rankList;
+	}
+
+	/**
+	 * 投票
+	 * 
+	 * @param uid
+	 *            论战uid
+	 * @param isred
+	 *            是否是红方，true是，false不是
+	 * @param user
+	 *            投票人
+	 * @return
+	 * @author ShangJianguo
+	 */
+	public static boolean vote(String uid, boolean isred, User user) {
+		Rule rule = new CountDebateVoteRule(uid + isred);
+		RedisUtil.incr(rule);
+		boolean result = getSo().vote(uid, isred, 1, user);
+		return result;
+	}
+
+	/**
+	 * 获取往期论战
+	 * 
+	 * @param curuid
+	 *            当前期论战的uid
+	 * @return
+	 * @author ShangJianguo
+	 */
+	public static List<Debate> getHistoryDebate(String curuid, int pagenum) {
+		List<Debate> list = null;
+		Rule rule = new DebateHistoryRlue();
+		if (pagenum == 1) {
+			list = getDebateListFromMC(rule);
+			if (list != null && list.size() > 0) {
+				return list;
+			}
+		}
+		List<String> uidList = new ArrayList<>();
+		uidList.add(curuid);
+		list = getSo().getHistoryList(uidList, new Pager(pagenum, SysConf.DebateHistoryPageSize));
+		if (pagenum == 1 && list != null && list.size() > 0) {
+			MemcacheUtil.set(rule, list);
+		}
+		return list;
+	}
+
+	/**
+	 * 获取当前期论战
+	 * 
+	 * @return
+	 * @author ShangJianguo
+	 */
+	public static Debate getCurDebate() {
+		Rule rule = new DebateCurRlue("", SysConf.Expire_DebateCur);
+		Debate debate = getDebateFromMC(rule);
+		if (debate != null) {
+			return debate;
+		}
+		debate = getSo().getCurDebate();
+		if (debate != null) {
+			debate = setArticles(debate);
+			MemcacheUtil.set(rule, debate);
+		}
+		return debate;
+	}
+
+	/**
+	 * 30天内，发言数较多的论战排行榜
+	 * 
+	 * @return
+	 * @author ShangJianguo
+	 */
+	public static List<Debate> getListByDebateRankFromComments() {
+		Rule rule = new DebateRankRlue("", SysConf.Expire_DebateRank);
+		List<Debate> list = getDebateListFromMC(rule);
+		if (list != null && list.size() > 0) {
+			return list;
+		}
+		List<Map<?, ?>> topicuids = getCommentsSO().getListByCountcurrType(EChannel.debate, ECommentType.comment, SysConf.DebateRankClickDay, SysConf.DebateRankPublishDay, SysConf.DebateRankListNum);
+		List<String> debateuid = new ArrayList<>();
+		for (Map<?, ?> map : topicuids) {
+			debateuid.add(map.get(ViewKeyDict.fromuid).toString());
+		}
+		list = getSo().getList(debateuid);
+		if (list.size() > 0) {
+			MemcacheUtil.set(rule, list);
+		}
+		return list;
+	}
+
+	/**
+	 * 从缓存中获取论战
+	 * 
+	 * @param rule
+	 * @return
+	 * @author ShangJianguo
+	 */
+	private static Debate getDebateFromMC(Rule rule) {
+		Debate debate = null;
+		try {
+			debate = (Debate) MemcacheUtil.get(rule);
+		} catch (Exception e) {
+			logException(log, e);
+		}
+		return debate;
+	}
+
+	/**
+	 * 从缓存中获取论战
+	 * 
+	 * @param rule
+	 * @return
+	 * @author ShangJianguo
+	 */
+	@SuppressWarnings("unchecked")
+	private static List<Debate> getDebateListFromMC(Rule rule) {
+		List<Debate> list = null;
+		try {
+			list = (List<Debate>) MemcacheUtil.get(rule);
+		} catch (Exception e) {
+			logException(log, e);
+		}
+		return list;
+	}
+}

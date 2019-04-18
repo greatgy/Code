@@ -1,0 +1,92 @@
+[#ftl]
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>${title!'添加足迹'}</title>
+	<link rel="stylesheet" href="${basecss}/css/default/index.css">
+	<link href="${basecss}/css/map/style.css" type="text/css" rel="stylesheet">
+	<script type="text/javascript" src="${basejs}/js/pages/map/jquery.min.js"></script>
+	<script type="text/javascript" src="${basejs}/js/pages/map/City_data.js"></script>
+	<script type="text/javascript" src="${basejs}/js/pages/map/areadata.js"></script>
+	<script type="text/javascript" src="${basejs}/js/pages/map/auto_area.js"></script>
+	<script type="text/javascript" src="${basejs}/ckeditor/ckeditor.js"></script>
+	<!--此插件为高德地图api,key值为开发者账号的key-->
+	<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.4.6&key=9d40cbd45e7f26dc0c0226329e910fd4"></script>
+    <script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
+	<script type="text/javascript">
+	/***************************************
+	由于Chrome、IOS10等已不再支持非安全域的浏览器定位请求，为保证定位成功率和精度，请尽快升级您的站点到HTTPS。
+	***************************************/
+	    var map, geolocation;
+	    //加载地图，调用浏览器定位服务
+	    map = new AMap.Map('', {
+	        resizeEnable: true
+	    });
+	    map.plugin('AMap.Geolocation', function() {
+	        geolocation = new AMap.Geolocation({
+	            enableHighAccuracy: true,//是否使用高精度定位，默认:true
+	            timeout: 10000,          //超过10秒后停止定位，默认：无穷大
+	            buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+	            zoomToAccuracy: true,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+	            buttonPosition:'RB'
+	        });
+	        map.addControl(geolocation);
+	        geolocation.getCurrentPosition();
+	        AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
+	    });
+	    //解析定位结果
+	    function onComplete(data) {
+	        document.getElementById('city').value =  data.addressComponent.province;
+	    }
+	    
+	    $(function(){
+	    	CKEDITOR.replace('content',{
+		        toolbar : 'MyToolbarLifeTravel',
+		        imageUploadUrl : "${base}/ajax/upload/webdata/Lifecontribute/false/dropimg",
+		        filebrowserImageUploadUrl : "${base}/ajax/upload/webdata/Lifecontribute",
+		        filebrowserFlashUploadUrl : "${base}/ajax/ckeditor/flash"
+    });
+	    })
+	</script>
+</head>
+<body>
+	<div class="askQuestionBox questionBox">
+		<h3>发表旅行感想</h3>
+		<form action="${base}/my/contribute" class="questionForm" method="post" enctype="multipart/form-data">
+			<input type="hidden" name="cid" value="${cid}">
+			<input type="hidden" name="type" value="1">
+			<div>
+				<label class="mb_30"><span class="state" style="margin-right:16px;">标题：</span></label>
+				<input type="text" name="title" id="txttitle" style="width:91%;">
+			</div>
+			<br/>
+			<br/>
+			<br/>
+			<div>
+				<label class="mb_30"><span class="state">目的地：</span></label>
+				<input name="city" id="city" type="text" value="" class="area-danxuan"  data-value="" style="width:91%;"/>
+				<input type="hidden" name="code" id="code" type="text" value=""/>
+				<input type="hidden" name="province" id="province" type="text" value=""/>
+			</div>
+			<div>
+				<label class="mb_30"><p class="state">旅行感想</p></label>
+				<textarea name="content"></textarea>
+			</div>
+			<a class="cancelBtn submitBtn" href="/dream/moreQuestion.html">取消</a>
+			<a class="submitBtn" onclick="publish()">确认添加</a>
+		</form>
+	</div>
+	<script type="text/javascript">
+	    
+	   function publish(){
+	   		var title = $("#txttitle").val();
+			if(title.length > 50 || 1 > title.length){
+	   			$("#txttitle").focus();
+				alert("请输入标题");
+	   		} else{
+				$(".questionForm").submit();
+			}
+	   }
+	</script>
+</body>
+</html>

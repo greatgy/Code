@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<decorators defaultdir="/WEB-INF/Decorators">
+	<!-- Any urls that are excluded will never be decorated by Sitemesh -->
+	<excludes>
+		<pattern>*.html</pattern>
+		<pattern>*.mf</pattern>
+		<pattern>*.manifest</pattern>
+		<pattern>*.sitemap</pattern>
+		<pattern>*/api/*</pattern>
+		<pattern>*/ajax/*</pattern>
+		<pattern>*/ws/*</pattern>
+		<pattern>/fresh/*</pattern>
+		<pattern>*/section/*</pattern>
+		<pattern>*/indexdebate/*</pattern>
+	</excludes>
+	
+	<decorator name="web" page="Web/Web.ftl">
+		<pattern>/*</pattern>
+	</decorator>
+	
+	<!-- 手机端 -->
+	<decorator name="mobileindex" page="Web/MobileIndex.ftl">
+		<!--<pattern>/m/</pattern>
+		<pattern>/m/index</pattern>-->
+		<pattern>/m/*</pattern>
+	</decorator>
+	<decorator name="mobilearticle" page="Web/MobileArticle.ftl">
+		<pattern>/m/article/*</pattern>
+		<pattern>/m/problem/*</pattern>
+		<pattern>/m/topic/*</pattern>
+		<pattern>/m/videoDetail/*</pattern>
+	</decorator>
+	<!-- 网页总览 -->
+	<decorator name="mobilecatalogue" page="Web/MobileCatalogue.ftl">
+		<pattern>/m/life/allcatalogue</pattern>
+	</decorator>
+	<decorator name="mobilemycenter" page="Web/MobileMyCenter.ftl">
+		<pattern>/m/my/center/mycenter</pattern>
+	</decorator>
+	<decorator name="mobilesetavatarlife" page="Web/MobileMyCenter.ftl">
+		<pattern>/m/my/user/setavatarlife</pattern>
+	</decorator>
+	<decorator name="mobilemycenteritem" page="Web/MobileMyCenterItem.ftl">
+		<pattern>/m/my/center/*</pattern>
+		<pattern>/m/course/morecourse</pattern>
+	</decorator>
+	<!--<decorator name="mobileweb" page="Web/MobileWeb.ftl">
+		<pattern>/m/*</pattern>
+	</decorator>-->
+</decorators>

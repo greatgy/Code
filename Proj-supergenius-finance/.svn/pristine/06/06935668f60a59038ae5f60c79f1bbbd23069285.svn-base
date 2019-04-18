@@ -1,0 +1,35 @@
+# \u65b0\u589e\u7c7b\u578b\u7684\u56fd\u9645\u5316
+EChannel.index=\u9996\u9875
+EChannel.admin=\u7ba1\u7406\u5458
+
+# \u57fa\u7840\u7c7b\u578b\u7684\u56fd\u9645\u5316
+EComment.comment=\u8bc4\u8bba
+EComment.admire=\u8d5e
+
+EAdmin.Deny=\u9ed1\u540d\u5355
+EAdmin.False=\u975e\u7ba1\u7406\u5458
+EAdmin.True=\u662f\u7ba1\u7406\u5458
+EAdmin.Owner=\u6240\u6709\u8005
+EAdmin.Systemer=\u7cfb\u7edf\u7ba1\u7406\u5458
+
+EStatus.enable=\u6b63\u5e38
+EStatus.disable=\u51bb\u7ed3
+EStatus.init=\u521d\u59cb\u72b6\u6001
+EStatus.start=\u5f00\u59cb
+
+EFinance.geniusfocus=\u5929\u8d22\u7126\u70b9
+EFinance.industries=\u4ea7\u4e1a
+EFinance.corporations=\u4f01\u4e1a
+EFinance.mergerandacquisition=\u5e76\u8d2d
+EFinance.careerexecutives=\u804c\u573a\u65b0\u89c6\u70b9
+EFinance.officecafe=\u804c\u573a\u591c\u8bdd
+EFinance.debate=\u8bba\u6218
+EFinance.legalandeconomic=\u6cd5\u6cbb\u4e0e\u7ecf\u6d4e
+	
+EContributeState.init=\u5ba1\u6838\u4e2d
+EContributeState.accept=\u5df2\u53d1\u5e03
+EContributeState.refuse=\u672a\u901a\u8fc7
+
+ECommentType.praise=\u8d5e
+ECommentType.comment=\u8bc4\u8bba
+ECommentType.debatevote=\u8bba\u6218\u6295\u7968

@@ -1,0 +1,63 @@
+basePath=
+/=localhost:11211 127.0.0.1:11211,1
+/s=127.0.0.1:11211
+#below list for junit test
+/users=127.0.0.1:11211,1
+/users/online=127.0.0.1:11211
+/users/mycart=127.0.0.1:11211
+/users/stat=127.0.0.1:11211
+/users/articleclickcount=127.0.0.1:11211
+/users/articlecount=127.0.0.1:11211
+/users/topiccount=127.0.0.1:11211
+/users/topiccomment=127.0.0.1:11211
+
+/groups=127.0.0.1:11211,1
+
+/finance/recommend=127.0.0.1:11211
+/finance/latest=127.0.0.1:11211
+/finance/rank=127.0.0.1:11211
+
+/topic/rank=127.0.0.1:11211
+/topic/latestk=127.0.0.1:11211
+/topic/recommend=127.0.0.1:11211
+/topic/joinuser=127.0.0.1:11211
+/topic/maxcomment=127.0.0.1:11211
+
+/count/debatevote=127.0.0.1:11211
+/debate/history=127.0.0.1:11211
+
+#AI
+/ai/article=127.0.0.1:11211
+/ai/article/left=127.0.0.1:11211
+/ai/article/top=127.0.0.1:11211
+#/shops=127.0.0.1:11211
+#/shops/b2c=127.0.0.1:11211
+
+#startup
+/startup/articlelist=127.0.0.1:11211
+/startup/recommendlist=127.0.0.1:11211
+/startup/article/first=127.0.0.1:11211
+
+#career
+/career/article=127.0.0.1:11211
+/career/article/left=127.0.0.1:11211
+/career/article/top=127.0.0.1:11211
+/career/article/experience=127.0.0.1:11211
+##############
+# mc cache config
+
+#finance
+/finance/article=127.0.0.1:11211
+/finance/article/top=127.0.0.1:11211
+/finance/article/first=127.0.0.1:11211
+
+# gupage
+/gupage/photo=127.0.0.1:11211
+/gupage/video=127.0.0.1:11211
+/count/gupage/photo=127.0.0.1:11211
+
+# enterpriser
+/enterpriser/article=127.0.0.1:11211
+/enterpriser/article/first=127.0.0.1:11211
+/enterpriser/article/index=127.0.0.1:11211
+/enterpriser/video=127.0.0.1:11211

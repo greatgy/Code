@@ -1,0 +1,99 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/Public.ftl" as p]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>${title!'天才人生'}</title>
+	<link rel="stylesheet" href="${basecss}/css/default/index.css">
+	<script type="text/javascript" src="${basejs}/js/pages/scroll.js"></script>
+</head>
+<body>
+	<div class="topicBox">
+		<ul class="judgement">
+			<li class="curjudge" onclick="lastTopics(this);" id="lastest">最新</li>
+			<li onclick="hotTopics(this);">最热</li>
+		</ul>
+		<a href="${base}/my/topic/contribute?cid=${cid}" class="publishBtn [#if !me??]pop-up[/#if]">+发布话题</a>
+		<ul class="talentList topicList">
+		</ul>
+	</div>
+	
+	<script type="text/javascript">
+		$(function(){
+			$("#lastest").click();
+			$.fn.scrollHandle({
+				obj: window,
+				fun: loadmore
+			})
+		})
+		
+		var hotnum = 0;
+		var lastnum = 0;
+		var prePage = 0;
+		var ishot = false;
+		// 加载更多话题
+		function loadmore() {
+			var json = {};
+			json.cid='${cid}';
+			if(hotnum> 1){
+				json.pagenum=hotnum;
+				prePage = hotnum - 1;
+				ishot = true;
+			} else{
+				json.pagenum=lastnum;
+				prePage = lastnum - 1;
+			}
+			var	url = "${base}/ajax/topic/moretopic";
+			if(prePage != json.pagenum) {
+			    prePage = json.pagenum;
+				$.get(url, json, function(data){
+					if(data.trim() == ""){// 没有更多内容
+						$(window).unbind("scroll", defaultScrollHandler);
+						return false;
+					}
+					$(".topicList").append(data);
+					if(ishot == true){
+						hotnum+=1;
+					} else{
+						lastnum+=1;
+					}
+				});
+			}
+		}
+		
+		
+		//获得最热话题
+		function hotTopics(obj){
+			hotnum = 1;
+			$(obj).addClass("curjudge").siblings().removeClass("curjudge");
+			var url = "${base}/ajax/topic/hottopic";
+			var json = {};
+			json.cid='${cid}';
+			json.pagenum=hotnum;
+			$.get(url, json,function(data){
+				if(data != ''){
+					hotnum +=1;
+					$(".topicList").html(data);
+				}
+			});
+		}
+		
+		//获得最新话题
+		function lastTopics(obj){
+			lastnum = 1;
+			$(obj).addClass("curjudge").siblings().removeClass("curjudge");
+			var url = "${base}/ajax/topic/moretopic";
+			var json = {};
+			json.cid='${cid}';
+			json.pagenum=lastnum;
+			$.get(url, json,function(data){
+				if(data != ''){
+					lastnum +=1;
+					$(".topicList").html(data);
+				}
+			});
+		}
+	</script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/Public.ftl" as p]
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+	<title>个人中心</title>
+	<meta name="Keywords" content="天才人生，个人中心" />
+	<meta name="Description" content="天才人生，个人中心" />
+	<link href="${basecss}/css//mobile/default/detail.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="${base}/css/mobile/default/index.css">
+	<script src="${basejs}/js/libs3/swiper.jquery.min.js"></script>
+</head>
+<body>
+	<div class="userhome" >
+		<div class="userinforbox">
+			<a href="javascript:;" class="changeimg">
+				[#if me.useravatar??]
+					<img src="${me.useravatar}" />
+				[#else]
+					<img src="${baseimg}/imgs/default/user.png" />
+				[/#if]
+			</a>
+			<div class="phonenumber">
+				[@p.PrivateString content="${me.mobile}" /]
+				<a href="${base}/m/my/center/info" class="changenum">修改</a>
+			</div>
+		</div>
+		<ul class="userInfo">
+			<li class="curguide">
+				<a href="${base}/m/my/center/article">
+					<img src="${baseimg}/imgs/default/arted.png" alt="我的文章" title="我的文章">
+					我的文章
+				</a>
+			</li>
+			<li>
+				<a href="${base}/m/my/center/question">
+					<img src="${baseimg}/imgs/default/ask.png" alt="我的提问" title="我的提问">
+					我的提问
+				</a>
+			</li>
+			<li>
+				<a href="${base}/m/my/center/video">
+					<img src="${baseimg}/imgs/default/film.png" alt="我的视频" title="我的视频">
+					我的视频
+				</a>
+			</li>
+			<li>
+				<a href="${base}/m/my/center/topic">
+					<img src="${baseimg}/imgs/default/topic.png" alt="我的话题" title="我的话题">
+					我的话题
+				</a>
+			</li>
+		</ul>
+		<ul class="userInfo homeinfor">
+			<li>
+				<a href="${base}/m/my/center/msg">
+					<img src="${baseimg}/imgs/default/news.png" alt="消息通知" title="消息通知">
+					消息通知
+					<span class="arrow usermessage"></span>
+				</a>
+			</li>
+			<li>
+				<a href="${base}/m/my/center/collect">
+					<img src="${baseimg}/imgs/mobile/default/collects.png" alt="我的收藏" title="我的收藏">
+					我的收藏
+				</a>
+			</li>
+			<li>
+				<a href="${base}/m/my/center/info">
+					<img src="${baseimg}/imgs/default/infor.png" alt="个人资料" title="个人资料">
+					个人资料
+				</a>
+			</li>
+		</ul>
+	</div>
+	<script>
+		
+		$(function () {
+			[#if me??]
+				$.get("${base}/m/ajax/my/unreads", function(data){
+	    			if(data != 0){
+	                    $(".usermessage").before('<i class="reddot"></i>');
+	    			}
+	            });
+	        [/#if]
+		});
+	</script>
+</body>
+</html>

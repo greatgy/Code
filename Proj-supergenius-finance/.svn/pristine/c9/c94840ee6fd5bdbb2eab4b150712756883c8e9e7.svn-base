@@ -1,0 +1,311 @@
+[#ftl]
+<link rel="stylesheet" type="text/css" href="${basecss}/css/default/common.css" class="cssfx" />
+<link rel="stylesheet" type="text/css" href="${basecss}/css/default/base.css" />
+<div class="header_tou clear">
+	<div class="top">
+    	<div class="top_main1">
+	    	<ul class="top_left">
+	            <li><a href="http://www.supergenius.cn">超天才</a>
+                <li><a href="http://guchujun.supergenius.cn">顾雏军专栏</a>
+                <li><a href="" target="_blank" class="tl_act">天财评论</a>
+                [#--<li><a href="http://moral.supergenius.cn">职业道德培训</a></li>--]
+                <li><a href="http://tpi.supergenius.cn">并购平台</a>
+                <li><a href="http://sns.supergenius.cn">人间仙境</a>
+	        </ul>
+	        
+	        <ul class="top_right">
+	        	<li class='welcome'><a href="" target="_blank">欢迎您&nbsp;<span class="headerName">周义梅</span></a></li>
+	        	<li class="newsnotice">
+	        		<a href="javascript:;" class="newsnum">
+		        		新消息
+		        		（<b class="number">999</b>）
+                    	<span class="rdot"></span>
+	        		</a>
+	        		<div class="newsection hd">
+	        			<div class="trangle">
+						  <em></em>
+						  <i></i>
+						</div>
+	        			<ul class="msglist">
+	        				<li>
+                            	<a href="http://finance.180800.cn/my/msg">
+                              		天财评论有新消息
+  									（<b class="number">10</b>）
+								</a>
+                              	<a href="javascript:;" class="del">
+                                	<img src="/imgs/default/delimg.png" />
+                              	</a>
+	        				</li>
+	        				<li>
+                            	<a href="http://tpi.supergenius.cn/mycenter/message/inbox">
+                              		并购平台有新消息
+  									（<b class="number">10</b>）
+								</a>
+                              	<a href="javascript:;" class="del">
+                                	<img src="/imgs/default/delimg.png" />
+                              	</a>
+	        				</li>
+	        				<li>
+                            	<a href="http://moral.supergenius.cn/mycenter/message">
+                              		职业道德培训有新消息
+  									（<b class="number">99+</b>）
+								</a>
+                              	<a href="javascript:;" class="del">
+                                	<img src="/imgs/default/delimg.png" />
+                              	</a>
+	        				</li>
+                      	</ul>
+                      	<div class="msglist">
+                      		<pre>
+                      			<p>没有永远的朋友，只有永远的利益</p>
+								<span class="authorname">———张伯伦</span>
+							</pre>
+  							<div class="nonews">暂无新消息</div>
+                      	</div>
+    				</div>
+				</li>
+	        	<li class='offline'><a href="javascript:offline();">退出</a></li>
+	        	<li class="tr_act login hd"><a href="${loginurl}/login" target="_blank">登录</a></li>
+                <li class="register hd"><a href="${loginurl}/register" target="_blank">注册</a></li>
+	           
+                <li><a href="http://www.supergenius.cn/huiyuan" target="_blank">会员特权</a></li>
+	        </ul>
+        </div>
+    </div>
+    <div class="top_02">
+    	<img src="${baseimg}/imgs/default/logo.png" class="logoicon" />
+    	<div class="logoTitle">
+    		<span class="bgtitle">独特视角</span>
+    		解读国内外财经事件
+    	</div>
+    	<div class="searchUser">
+    		<form id="searchform" action="${base}/search">
+               <input type="text" id="txtsearch" name="keyword" placeholder="搜索文章、论战、话题" />  
+               <a href="javascript:;" class="searchimg"></a>
+               <input type="hidden" id="txtsearch" name="channel" value="finance"/> 
+               <ul class="searchlist">
+               		<li class="slistli01">
+               			<span><i>文章</i>搜索：</span>
+               			<section>中国制造2025</section>
+               		</li>
+               		<li class="slistli02">
+               			<span><i>话题</i>搜索：</span>
+               			<section>中国制造2025</section>
+               		</li>
+               		<li class="slistli03">
+               			<span><i>论战</i>搜索：</span>
+               			<section>中国制造2025</section>
+               		</li>
+               		<li class="slistli04">
+               			<span><i>作者</i>搜索：</span>
+               			<section>中国制造2025</section>
+               		</li>
+               </ul>
+            </form>
+            <a href="#" class="contribute">投稿</a>
+            <div class="userbox">
+            	<div class="yesuser">
+            		<a href="javascript:;"><img src="${baseimg}/imgs/default/userimg.png" class="userimg" /></a>
+            		<span class="reddot"></span>
+            		<div class="userselfbox">
+            			<div class="trangle"></div>
+	            		<div class="userselfcontent">
+		            		<ul class="userights">
+		            			<li>
+		            				<a href="${base}/mct/article">我的文章</a>
+		            			</li>
+		            			<li>
+		            				<a href="${base}/mct/topic">
+		            					我的话题
+		            					<span>+99</span>
+		            				</a>
+		            			</li>
+		            			<li>
+		            				<a href="${base}/mct/collect">我的收藏</a>
+		            			</li>
+		            			<li>
+		            				<a href="${base}/msg/comment">
+			            				消息中心
+			            				<span>12</span>
+		            				</a>
+		            			</li>
+		            		</ul>
+		            	</div>
+	            	</div>
+            	</div>
+            	<div class="notuser" style="display:none">
+            		<a href="javascript:;"><img src="${baseimg}/imgs/default/contribute.png" class="userimg" /></a>
+            	</div>
+            	
+            </div>
+    	</div>
+
+
+
+
+    	<!-- <div class="top_main2">
+    		<div class="top_21">
+        		<form id="searchform" action="${base}/search">
+                   <input type="text" id="txtsearch" name="keyword"/> 
+                   <input type="hidden" id="txtsearch" name="channel" value="finance"/> 
+                </form>
+                <img src="${baseimg}/imgs/web/pro_search.png" class="search_top" />
+                <span><a href=""class="search_top">搜索</a></span>&nbsp;&nbsp;&nbsp;&nbsp;
+        		<img src="${baseimg}/imgs/web/pro_mail.png" />
+                <span><a href="${base}/contribute">投稿</a></span>&nbsp;&nbsp;
+                [#if me??]<a href="${base}/my/article"  id="myessay">我的文章</a>[/#if]
+        	</div>
+    	</div>-->
+    </div>
+    <!--sidenav开始-->
+    <ul class="sidenav">
+		<li>
+			<a href="${base}/index" class="sidea01 activelink">
+				<span>首页</span>
+			</a>
+		</li>
+		<li>
+			<a href="${base}/geniusfocus" class="sidea02">
+				<span>天财焦点</span>
+			</a>
+		</li>
+		<li>
+			<a href="#" class="sidea03">
+				<span>范苑金语</span>
+			</a>
+		</li>
+		<li>
+			<a href="#" class="sidea04">
+				<span>经济观察</span>
+			</a>
+		</li>
+		<li>
+			<a href="#" class="sidea06">
+				<span>产业</span>
+			</a>
+		</li>
+		<li>
+			<a href="#" class="sidea07">
+				<span>企业</span>
+			</a>
+		</li>
+		<li>
+			<a href="#" class="sidea08">
+				<span>并购</span>
+			</a>
+		</li>
+		<li>
+			<a href="#" class="sidea09">
+				<span>文萃</span>
+			</a>
+		</li>
+		<li>
+			<a href="#" class="sidea05">
+				<span>经济与法</span>
+			</a>
+		</li>
+		<li>
+			<a href="#" class="sidea10">
+				<span>职场新观点</span>
+			</a>
+		</li>
+		<li>
+			<a href="#" class="sidea11">
+				<span>职场夜话</span>
+			</a>
+		</li>
+		<li>
+			<a href="${base}/topic" class="sidea12">
+				<span>热门话题</span>
+			</a>
+		</li>
+		<li>
+			<a href="${base}/debate" class="sidea13">
+				<span>论战</span>
+			</a>
+		</li>
+	</ul><!--sidenav结束-->
+
+
+    <!--nav开始-->   
+    <!-- <div class="navContainer">
+		<ul class="box-nav" id="box-nav">
+			<li><a href="${base}/">首页</a><img src="${baseimg}/imgs/web/nav_bg.jpg"></li>
+			<li><a href="${base}/geniusfocus">天财焦点</a><img src="${baseimg}/imgs/web/nav_bg.jpg"></li>
+			<li><a href="${base}/industries">产业</a><img src="${baseimg}/imgs/web/nav_bg.jpg"></li>
+				<li><a href="${base}/corporations">企业</a><img src="${baseimg}/imgs/web/nav_bg.jpg"></li>
+			<li><a href="${base}/mergerandacquisition">并购</a><img src="${baseimg}/imgs/web/nav_bg.jpg"></li>
+			<li><a href="${base}/careerexecutives">职场新视点</a><img src="${baseimg}/imgs/web/nav_bg.jpg"></li>
+			<li><a href="${base}/officecafe">职场夜话</a><img src="${baseimg}/imgs/web/nav_bg.jpg"></li>
+			<li><a href="${base}/legalandeconomic">法治与经济</a><img src="${baseimg}/imgs/web/nav_bg.jpg"></li>
+			<li><a href="${base}/topic">热门话题</a><img src="${baseimg}/imgs/web/nav_bg.jpg"></li>
+			<li><a href="${base}/debate">论战</a></li>
+		</ul>
+	</div>--> 
+  <!-- nav 结束--> 
+
+	<script type="text/javascript">
+		$(function(){
+			 <!-- 搜索框获得焦点，选项出现--> 
+			$("#txtsearch").focus(function(){
+				$(".searchlist").show();
+			});
+			$("#txtsearch").blur(function(){
+				$(".searchlist").hide();
+			});
+			 <!-- 切换导航选中状态--> 
+			$(".sidenav li a").click(function(){
+				$(this).parent().siblings().find("a").removeClass("activelink");
+				$(this).addClass("activelink");
+			});
+			<!-- 滚动条滚动，导航固定位置--> 
+			$(window).scroll(function(){
+				var scrollTop = $(window).scrollTop();
+				if(scrollTop > 42) {
+					$(".header_tou .top").hide();
+					$(".header_tou .top_02").css({position:"fixed",top:"0"});
+					$(".sidenav").css("top","59px");
+				} else {
+					$(".header_tou .top").show();
+					$(".header_tou .top_02").css({position:"static"});
+					$(".sidenav").css("top","96px");
+				}	
+			});
+
+			/* 一级导航新消息部分点击切换 */
+			$(".newsnum").click(function(){
+				$(this).parent().find(".newsection").toggleClass("hd");
+			});
+			/* 点击删除可以忽略消息 */
+			$(".del").click(function(){
+				$(this).parent().remove();
+			});
+			
+		});
+
+	<!--
+	    $(function(){
+	        $(".search_top").hover(function(){
+	            $(".top_21 form").find("#txtsearch").show().animate({width: "300px",}, 1000).focus();
+	        })
+	        $(".search_top").bind("click", function(){
+	        	$("#searchform").submit();
+	        });
+	        
+	    });
+	    [#if me??]
+	    function offline(){
+	       $.post("${base}/offline", function(data){
+	           if(data){
+	               $(".welcome").addClass("hd");
+	               $(".offline").addClass("hd");
+	               $(".login").removeClass("hd");
+	               $(".register").removeClass("hd");
+	           }
+	       });
+	    }
+	    [/#if]
+	-->
+	</script>
+</div>
+

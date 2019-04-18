@@ -1,0 +1,76 @@
+[#ftl]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>个人中心--我的文章</title>
+	<meta name="Keywords" content="天才人生，个人中心，我的文章" />
+	<meta name="Description" content="天才人生，个人中心，我的文章" />
+	<!--# include file="/include/headcommon.html" -->
+	<link rel="stylesheet" href="${base}/css/mobile/default/index.css">
+</head>
+<body>
+	<!-- 消息通知 -->
+	[#if msg??]	
+	<div class="userNews">
+	[#assign oldcreatetime = 0]
+	[#list msg as item]
+		[#if oldcreatetime != item.createtime.toString("YYYY年MM月dd日")]
+		[#assign oldcreatetime = item.createtime.toString("YYYY年MM月dd日")]
+		<div class="date">
+			<h5>
+				${item.createtime.toString("YYYY年MM月dd日")}
+				<a href="" class="clean">清除</a>
+			</h5>
+			[/#if]
+			<ul class="newslist">
+				<li>
+					[#if item.isread == false]
+					<i>NEW</i>
+					[/#if]
+					[#if item.type ==1]
+						<span class="newstip">${item.fromusername}赞了你的文章</span>
+					[#elseif item.type ==2]
+						<span class="newstip">${item.fromusername}评论了你的文章</span>
+					[#elseif item.type ==3]
+						<span class="newstip">${item.fromusername}赞了你的评论</span>
+					[#elseif item.type ==4]
+						<span class="newstip">${item.fromusername}回复了你的评论</span>
+					[#elseif item.type ==5]
+						<span class="newstip">${item.fromusername}赞了你的话题</span>
+					[#elseif item.type ==6]
+						<span class="newstip">${item.fromusername}评论了你的话题</span>
+					[#elseif item.type ==7]
+						<span class="newstip">专家点评了你的视频</span>
+					[#elseif item.type ==8]
+						<span class="newstip">专家点评了你的问题</span>
+					[#elseif item.type ==9]
+						<span class="newstip">您的举报系统已处理</span>
+					[/#if]
+					<a href="/detail.html" class="form readNews" [#if item.type ==7 || item.type ==8]data-href="${item.href}"[#else]data-href="${base}${item.href}"[/#if] data-uid="${item.uid}">${item.title}</a>
+					<a href="javascript:;" class="delete" data-uid="${item.uid}"><img src="${baseimg}/imgs/default/crush.png" alt="删除" title="删除" /></a>
+				</li>
+			</ul>
+			[/#list]
+		</div>
+		[/#if]
+	</div>
+	<div class="nomoreContent hd" >我是有底线的~</div>
+	<script>
+		
+		/**************阅读消息 开始*****************/
+		$(".readNews").on("click", function(){
+			var newsUid = $(this).data("uid");
+			var href = $(this).data("href");
+			var url = "${base}/ajax/my/msg/read";
+			var hrefurl = $(this).data("href");
+			//设置成已读
+			$.get(url, {uid: newsUid}, function(data){
+				if (data = "success") {	
+					window.location.href = hrefurl;
+				}
+			})
+		});
+	</script>
+</body>
+</html>

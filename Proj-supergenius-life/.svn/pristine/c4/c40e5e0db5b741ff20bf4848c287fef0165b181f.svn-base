@@ -1,0 +1,89 @@
+package com.supergenius.web.front.life.helper;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.genius.core.base.utils.StrUtil;
+import com.genius.server.base.helper.BaseHP;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.life.entity.Article;
+import com.supergenius.xo.life.entity.Comments;
+import com.supergenius.xo.life.enums.EComment;
+import com.supergenius.xo.life.enums.ELifeMsg;
+import com.supergenius.xo.life.service.ArticleSO;
+import com.supergenius.xo.life.service.CommentsSO;
+import com.supergenius.xo.life.service.NewsSO;
+import com.supergenius.xo.user.service.UserSO;
+
+/**
+ * 消息HP
+ * 
+ * @author yangguang
+ * @date 2017年8月29日17:18:18
+ */
+public class NewsHP extends BaseHP {
+
+	private static ArticleSO articleSO;
+
+	private static NewsSO so;
+
+	private static CommentsSO commentsSO;
+
+	private static NewsSO getSO() {
+		if (so == null) {
+			so = (NewsSO) spring.getBean(NewsSO.class);
+		}
+		return so;
+	}
+
+	private static ArticleSO getArticleSO() {
+		if (articleSO == null) {
+			articleSO = (ArticleSO) spring.getBean(ArticleSO.class);
+		}
+		return articleSO;
+	}
+
+	private static CommentsSO getCommentsSO() {
+		if (commentsSO == null) {
+			commentsSO = (CommentsSO) spring.getBean(CommentsSO.class);
+		}
+		return commentsSO;
+	}
+
+	/**
+	 * 评论之后发送消息
+	 * 
+	 * @param comment
+	 * @return
+	 * @author yangguang
+	 */
+	public static void sendMsg(Comments comment, int cid, ELifeMsg eMsg, String href) {
+		Article finance = new Article();
+		if (eMsg == ELifeMsg.praisecomments) {
+			finance = getArticleSO().get(getCommentsSO().get(comment.getFromuid()).getFromuid());
+		} else {
+			finance = getArticleSO().get(comment.getFromuid());
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.type, eMsg);
+		if (StrUtil.isEmpty(comment.getTouseruid())) {
+			map.put(MapperDict.touid, finance.getUseruid());
+		} else {
+			map.put(MapperDict.touid, comment.getTouseruid());
+		}
+		map.put(MapperDict.content, comment.getContent());
+		if (comment.getType() == EComment.praise) {
+			map.put(MapperDict.title, comment.getType().getName());
+		} else {
+			if (StrUtil.isEmpty(comment.getTouid())) {
+				map.put(MapperDict.title, comment.getContent());
+			} else {
+				map.put(MapperDict.title, getCommentsSO().get(comment.getTouid()).getContent());
+			}
+		}
+		map.put(MapperDict.href, href);
+		map.put(MapperDict.fromuseruid, comment.getFromuseruid());
+		getSO().add(map);
+	}
+
+}

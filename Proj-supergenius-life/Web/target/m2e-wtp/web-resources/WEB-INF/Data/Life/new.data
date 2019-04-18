@@ -1,0 +1,15 @@
+[#ftl]
+[#if list??]
+	[#assign count = 1]
+	[#list list as item]
+			[#if count == 1]
+				<a href="${baseLifePath}/article/${item.firstCid}/${(item.oid)?c}"><img src="${webimg}${item.imgmedium}" alt="" class="leftimg"></a>
+				<ul class="judgelist">
+			[/#if]
+			<li>
+				<a href="${baseLifePath}/article/${item.firstCid}/${(item.oid)?c}" title="${item.title}">${item.title}</a>
+			</li>
+		[#assign count = count + 1]
+	[/#list]
+	</ul>
+[/#if]

@@ -1,0 +1,69 @@
+[#ftl]
+[#if inboxs??]
+    [#if type == "comment"]
+        [#list inboxs as inbox]
+            <li>
+                 <a href="[#if inbox.sender.oid?? && inbox.sender.oid !=""]${base}/his/article/${inbox.sender.oid?c} [#else]javascript:void(0); [/#if]" class="getuserimg">
+                    <img [#if inbox.sender.avatar?? && inbox.sender.avatar != ""] src="${userimg}${inbox.sender.avatar}" [#else] src="${baseimg}/imgs/web/noavatar.png" [/#if] class="judgeuser" />
+                    [#if inbox.isread==false]
+                        <span class="newtip">N</span>
+                    [/#if]
+                </a>
+                <div class="judgeContent">
+                    <div class="nametime">
+                        <a href="[#if inbox.sender.oid?? && inbox.sender.oid !=""]${base}/his/article/${inbox.sender.oid?c} [#else]javascript:void(0); [/#if]" class="judgename"><em>${inbox.sender.showname}</em></a>
+                        <a href="javascript:;" class="deletelink" data-uid="${inbox.uid}" onclick="delMessage(this)"><img src="${baseimg}/imgs/default/deleteimg.png" class="deleteimg" /></a>
+                        <span class="outtime">${inbox.createtimeStr}</span>
+                    </div>
+                    <p>${inbox.message.content}</p>
+                    <div class="source">
+                    [#if inbox.type==1]评论我的文章：
+                    [#elseif inbox.type==2]评论我的话题：
+                    [#elseif inbox.type==3]回复我的评论：
+                    [/#if]
+                        ${inbox.message.title}
+                    </div>
+                </div>
+            </li>
+        [/#list]
+    [#elseif type == "notify"]
+        [#list inboxs as inbox]
+            <li>
+                <a href="[#if inbox.sender.oid?? && inbox.sender.oid !=""]${base}/his/article/${inbox.sender.oid?c} [#else]javascript:void(0); [/#if]" class="getuserimg">
+                    <img [#if inbox.sender.avatar?? && inbox.sender.avatar != ""] src="${userimg}${inbox.sender.avatar}" [#else] src="${baseimg}/imgs/web/noavatar.png" [/#if]class="judgeuser" />
+                    [#if inbox.isread==false]
+                        <span class="newtip">N</span>
+                    [/#if]
+                </a>
+                <div class="judgeContent">
+                    <div class="nametime">
+                        <span class="notifystatus">${inbox.message.content}</span>
+                        <a href="javascript:;" class="deletelink" data-uid="${inbox.uid}" onclick="delMessage(this)"><img src="${baseimg}/imgs/default/deleteimg.png" class="deleteimg" /></a>
+                        <span class="outtime">${inbox.createtimeStr}</span>
+                    </div>
+                    <div class="source">来自：${inbox.message.title}</div>
+                </div>
+            </li>
+        [/#list]
+    [#elseif type == "system"]
+        [#list inboxs as inbox]
+            <li>
+                [#if inbox.isread==false]
+                    <a class="getuserimg">
+                        <span class="newtip">N</span>
+                    </a>
+                [/#if]
+                <div class="judgeContent">
+                    <div class="nametime">
+                        <span class="judgename systemTitle" title="${inbox.message.title}">${inbox.message.title}</span>
+                        <a href="javascript:;" class="deletelink" data-uid="${inbox.uid}" onclick="delMessage(this)"><img src="${baseimg}/imgs/default/deleteimg.png" class="deleteimg" /></a>
+                        <span class="outtime">${inbox.createtimeStr}</span>
+                    </div>
+                    <p class="systemcontent">
+                        ${inbox.message.content}
+                    </p>
+                </div>
+            </li>
+        [/#list]
+    [/#if]
+[/#if]

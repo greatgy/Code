@@ -1,0 +1,24 @@
+WebAppDir=E:/MyWork2/Proj-supergenius-solr/Web/src/main/webapp
+#\u6587\u4ef6\u7ad9\u6839\u76ee\u5f55
+FileSiteBasePath=E:/MyWork2/Proj-supergenius-data/image
+#\u56fe\u7247\u7ad9\u6839\u76ee\u5f55
+ImgSiteBasePath=E:/MyWork2/Proj-supergenius-data/image
+# ---------------------------------\u9879\u76ee\u914d\u7f6e---------------------------------
+CookieDomain=
+#\u81ea\u52a8\u767b\u5f55\u7684\u5929\u6570
+AliveTime=10
+#\u5e8f\u5217\u5316\u57fa\u76ee\u5f55
+#\u9996\u9875\u53f3\u4fa7\u70ed\u95e8\u6807\u7b7e\u7684\u6570\u91cf
+LoadSize=5
+FirstArticleSize=15
+FirstVideoSize=3
+FirstProblemSize=5
+FirstTopicSize=2
+HotArticleSize=10
+#\u6743\u91cd\u5206\u914d\u914d\u7f6e
+ClickcountPercent=0.1
+PrizecountPercent=0.25
+CommentscountPercent=0.3
+CollectcountPercent=0.35
+#\u6587\u7ae0\u6458\u8981\u6587\u5b57\u7684\u6570\u91cf
+SummarySize=80

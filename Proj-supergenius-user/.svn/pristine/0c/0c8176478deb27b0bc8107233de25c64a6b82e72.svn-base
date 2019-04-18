@@ -1,0 +1,283 @@
+package com.supergenius.web.front.user.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.genius.core.base.utils.GlobalUtil;
+import com.genius.server.base.controller.BaseController;
+import com.supergenius.global.conf.SysConf;
+import com.supergenius.global.constants.MsgKeyDict;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.server.common.utils.ValidUtil;
+import com.supergenius.web.front.user.helper.UserHP;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.user.entity.User;
+import com.supergenius.xo.user.entity.UserInfo;
+import com.supergenius.xo.user.service.UserInfoSO;
+import com.supergenius.xo.user.service.UserSO;
+
+/**
+ * 找回密码controller
+ * 
+ * @author XieMing
+ * @createtime 2016-4-21 下午16:18:26
+ */
+@Controller
+public class ResetPwdController extends BaseController {
+
+	@Autowired
+	UserSO so;
+	@Autowired
+	UserInfoSO userInfoSO;
+
+	/**
+	 *  找回密码
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/resetpwd/usersn")
+	public String usersn(Map<String, Object> model, HttpServletRequest request) {
+		return "resetpwdstep01";
+	}
+
+	/**
+	 * 验证用户并判断是否匹配邮箱并跳转到填写密保问题页面
+	 * 
+	 * @param model
+	 * @param email
+	 * @param usersn
+	 * @param request
+	 * @return
+	 * @author XieMing
+	 */
+	@RequestMapping(value = { "/resetpwd/step2" }, method = RequestMethod.POST)
+	public String step02(Map<String, Object> model, String email, String usersn, HttpServletRequest request, HttpServletResponse response) {
+		User user = so.getByUsersn(usersn);
+		/*List<SafeQA> list = null;
+		Map<String, Object> map = new HashMap<String, Object>();
+		model.put(ViewKeyDict.email, email);
+		model.put(ViewKeyDict.usersn, usersn);
+		if(user == null) {
+			model.put(MsgKeyDict.msg_page, true);
+			model.put(MsgKeyDict.not_exist, true);
+			return "resetpwdstep01";
+		}
+		map.put(MapperDict.useruid, user.getUid());
+		if((user != null) && (safeQASO.getOne(map) != null)) {
+			list = SafeQAHP.getUserQuestionAsc(user.getUid());
+		}
+		if (list != null) {
+			if (user.getEmail().equals(email)) {
+				model.put(ViewKeyDict.question, list.get(0).getQuestion().getName());
+				model.put(ViewKeyDict.question2, list.get(1).getQuestion().getName());
+				model.put(MsgKeyDict.exist, email);
+				return "resetpwdstep02";
+			} else {
+				model.put(MsgKeyDict.msg_page, true);
+				model.put(MsgKeyDict.err_user_password_no_match_usersn, true);
+				return "resetpwdstep01";
+			}
+		} else {
+			model.put(MsgKeyDict.msg_page, true);
+			model.put(MsgKeyDict.not_exist, true);
+			return "resetpwdstep01";
+		}*/
+		return "resetpwdstep01";
+	}
+
+	/**
+	 * 验证用户并判断是否匹配邮箱并跳转到填写密保问题页面
+	 * 
+	 * @param model
+	 * @param identityid
+	 * @param name
+	 * @param email_1
+	 * @param request
+	 * @param response
+	 * @return
+	 * @author XieMing
+	 */
+	@RequestMapping(value = { "/resetpwd/step2_1" }, method = RequestMethod.POST)
+	public String step2_1(Map<String, Object> model, String identityid, String name, String email_1, HttpServletRequest request, HttpServletResponse response) {
+		UserInfo userInfo = userInfoSO.getOneByField("identityid", identityid);
+		User user;
+		model.put(ViewKeyDict.identityid, identityid);
+		model.put(ViewKeyDict.name, name);
+		model.put(ViewKeyDict.email_1, email_1);
+		if(userInfo == null) {
+			model.put(MsgKeyDict.msg_page, false);
+			model.put(MsgKeyDict.not_exist_1, true);
+			return "resetpwdstep01";
+		}
+		/*List<SafeQA> list = null; 
+		if((userInfo != null) && (safeQASO.getOneByField("useruid", userInfo.getUid()) != null)) {
+			list = SafeQAHP.getUserQuestionAsc(userInfo.getUid());
+		}
+		if (list != null) {
+			userInfo.getName();
+			if (userInfo.getName().equals(name)) {
+				user = so.get(userInfo.getUid());
+				if ((user != null) && user.getEmail().equals(email_1)) {
+					model.put(ViewKeyDict.question, list.get(0).getQuestion().getName());
+					model.put(ViewKeyDict.question2, list.get(1).getQuestion().getName());
+					model.put(MsgKeyDict.exist, email_1);
+					return "resetpwdstep02";
+				} else {
+					model.put(MsgKeyDict.msg_page, false);
+					model.put(MsgKeyDict.err_email, true);
+					return "resetpwdstep01";
+				}
+			} else {
+				model.put(MsgKeyDict.msg_page, false);
+				model.put(MsgKeyDict.err_name, true);
+				return "resetpwdstep01";
+			}
+		} else {
+			model.put(MsgKeyDict.msg_page, false);
+			model.put(MsgKeyDict.not_exist_1, true);
+			return "resetpwdstep01";
+		}*/
+		return "resetpwdstep01";
+	}
+
+	/**
+	 * 验证密保答案是正确并且发送重置密码的email
+	 * 
+	 * @param model
+	 * @param f_name
+	 * @param m_name
+	 * @param email
+	 * @param question
+	 * @param question2
+	 * @param request
+	 * @param response
+	 * @return
+	 * @author XieMing
+	 */
+	@RequestMapping(value = { "/resetpwd/step3" }, method = RequestMethod.POST)
+	public String step3(Map<String, Object> model, String f_name, String m_name, String email, String question, String question2, HttpServletRequest request, HttpServletResponse response) {
+		User user = so.getByEmail(email);
+		String resetpwd = GlobalUtil.getUUID();
+		boolean flag = true;
+		/*List<SafeQA> list = SafeQAHP.getUserQuestionAsc(user.getUid());
+		if (StringUtils.isEmpty(f_name) || (!list.get(0).getAnswer().equals(f_name))) {
+			model.put(MsgKeyDict.err_father_name, true);
+			flag = false;
+		}
+		if (StringUtils.isEmpty(m_name) || (!list.get(1).getAnswer().equals(m_name))) {
+			model.put(MsgKeyDict.err_mother_name, true);
+			flag = false;
+		}*/
+		if ((user != null) && flag) {
+			user.setResetpwd(resetpwd);
+			user.setDataMap_resetpwdtime();
+			UserHP.resetPwdEmail(user);
+			so.updateresetpwd(user);
+			model.put(ViewKeyDict.url, UserHP.getEmailLoginUrl(user.getEmail()));
+			model.put(MsgKeyDict.msg, user.getEmail());
+			return "resetpwdstep03";
+		} else {
+			model.put(ViewKeyDict.question, question);
+			model.put(ViewKeyDict.question2, question2);
+			model.put(MsgKeyDict.exist, email);
+			return "resetpwdstep02";
+		}
+	}
+
+	/**
+	 * 验证邮箱链接跳转到重置密码页面
+	 * 
+	 * @param model
+	 * @param oid
+	 * @param resetpwd
+	 * @param request
+	 * @param response
+	 * @return
+	 * @author XieMing
+	 */
+	@RequestMapping(value = { "/resetpwd/step4/{oid:\\d+}{resetpwd:.{32}}" }, method = RequestMethod.GET)
+	public String step4(Map<String, Object> model, @PathVariable String oid, @PathVariable String resetpwd, HttpServletRequest request, HttpServletResponse response) {
+		boolean flag = true;
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put(MapperDict.oid, oid);
+		User user = so.getOne(map);
+		DateTime date1 = user.getDataMap_resetpwdtime();
+		if(!date1.plusDays(SysConf.ResetPwdDays).isAfterNow()){
+			flag = false;
+		}
+		if ((user != null) && (user.getResetpwd().equals(resetpwd)) && flag) {
+			resetpwd = GlobalUtil.getUUID();
+			user.setResetpwd(resetpwd);
+			so.update(user);
+			model.put(MsgKeyDict.exist, user.getEmail());
+			return "resetpwdstep04";
+		} else {
+			return response404(response);
+		}
+	}
+
+	/**
+	 * 重置密码
+	 * 
+	 * @param model
+	 * @param pwd
+	 * @param repwd
+	 * @param email
+	 * @param request
+	 * @param response
+	 * @return
+	 * @author XieMing
+	 */
+	@RequestMapping(value = { "/resetpwd/step5" }, method = RequestMethod.POST)
+	public String step5(Map<String, Object> model, String pwd, String repwd, String email, HttpServletRequest request, HttpServletResponse response) {
+		if((pwd != null) && ValidUtil.isPassword(pwd)) {
+			User user = so.getByEmail(email);
+			if (pwd.equals(repwd)) {
+				user.initPassword(pwd);
+				so.updatePwd(user);
+				return "resetpwdstep05";
+			} else {
+				model.put(MsgKeyDict.err_pwd2_equal, user.getEmail());
+				model.put(MsgKeyDict.exist, email);
+				return "resetpwdstep04";
+			}
+		} else {
+			model.put(MsgKeyDict.err_pwd, true);
+			return "resetpwdstep04";
+		}
+	}
+	
+	/**
+	 * ajax判断该会员号的用户是否存在
+	 * @param model
+	 * @param usersn
+	 * @return
+	 * @author XieMing
+	 * 2016年12月5日 下午5:57:44
+	 */
+	@RequestMapping(value = "/ajax/user/usersnvalid")
+	@ResponseBody
+	public String emailvalid(Map<String, Object> model, @RequestParam("v") String usersn) {
+		String flag = "1";
+		User user = so.getByUsersn(usersn);
+		if (user != null) {
+			flag = "";
+		} else {
+			flag = "0";
+		}
+		return flag.length() == 0 ? "true" : flag;
+	}
+}

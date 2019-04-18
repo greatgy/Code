@@ -1,0 +1,11 @@
+package com.supergenius.server.finance.helper;
+
+import com.genius.server.base.helper.BaseHP;
+
+/**
+ * 天财评论文章HP（前台和后台共用）
+ * @author liushaomin
+ */
+public class BaseFinanceHP extends BaseHP{
+	
+}

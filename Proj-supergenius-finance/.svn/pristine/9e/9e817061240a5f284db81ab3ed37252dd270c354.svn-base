@@ -1,0 +1,181 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+[#if channel == "finance"]
+	[#list list as item]
+		<li>
+			[#assign link=""]
+			[#if "${item.firstTypeName}" == "debate"]
+				[#assign link="${base}/debate/article/${item.uid}"]
+			[#else]
+				[#assign link="${base}/${item.firstTypeName}/${item.oid?c}"]
+			[/#if]
+			<a href="${link}" target="_blank"><img src="${webimg}/${item.imglittle}" class="artileimg" /></a>
+			<div class="artdetail">
+				<div class="artTitlebox">
+					<a href="${link}" class="artTitle" target="_blank">[@f.TrimSubstring content='${item.title}' mylength=40 /]</a>
+					<span class="collectTime">${item.createtime.toString("YYYY.MM.dd HH.mm")}</span>
+				</div>
+				<p>[@f.TrimSubstring content='${item.summary}' mylength=100 /]</p>
+				<div class="iconsbox">
+					<span title="查看次数">
+						<img src="${baseimg}/imgs/default/viewicon.png">
+						${item.clickcount!0}
+					</span>
+					<span title="点赞次数">
+						<img src="${baseimg}/imgs/default/thumb.png">
+						${item.prizecount!"0"}
+					</span>
+					<span title="评论次数">
+						<img src="${baseimg}/imgs/default/msg01.png">
+						${item.commentcount!0}
+					</span>
+					<span title="分享">
+						<img src="${baseimg}/imgs/default/shareicon.png">
+					</span>
+				</div>
+			</div>
+		</li>
+	[/#list]
+[#elseif channel == "topic"]
+	[#list list as item]
+		[#if me?? && me.oid == item.authorUser.oid]
+			[#assign url="${base}/my/topic"]
+		[#else]
+			[#assign url="${base}/his/topic/${item.authorUser.oid?c}"]
+		[/#if]
+		<li>
+			<div class="topicTopinfor">
+				<a href="${url}" target="_blank">
+					<img [#if item.authorUser.avatar?? && item.authorUser.avatar != ""] src="${userimg}${item.authorUser.avatar}" [#else] src="${baseimg}/imgs/web/noavatar.png" [/#if] class="authorimg" />
+				</a>
+				<a href="${url}" class="authorname" target="_blank">${item.author}</a>
+				<span class="collectTime">${item.createtime.toString("YYYY.MM.dd HH.mm")}</span>
+			</div>
+			<div class="topicMidinfor">
+				<a href="${base}/topic/${item.oid?c}" class="topicTitle" title="${topic.title}" target="_blank">[@f.TrimSubstring content='${item.title}' mylength=40 /]</a>
+				<a href="${base}/topic/${item.oid?c}" class="mctTopicimg" target="_blank"><img src="${webimg}/${item.imgoriginal}" /></a>
+				<div class="iconsbox">
+					<span title="查看次数">
+						<img src="${baseimg}/imgs/default/viewicon.png">
+						${item.clickcount!0}
+					</span>
+					<span title="点赞次数">
+						<img src="${baseimg}/imgs/default/thumb.png">
+						${item.prizecount!"0"}
+					</span>
+					<span title="评论次数">
+						<img src="${baseimg}/imgs/default/msg01.png">
+						${item.commentcount!0}
+					</span>
+					<span title="分享">
+						<img src="${baseimg}/imgs/default/shareicon.png">
+					</span>
+				</div>
+			</div>
+		</li>
+	[/#list]
+[#elseif channel == "debate"]
+	[#list list as item]
+		<li>
+			<div class="mctDebate">
+				<a href="${base}/debate/${item.bean.oid?c}" target="_blank" class="mctTopicimg"><img src="${webimg}${item.bean.imgmedium}" /></a>
+				<div class="mctDebatetitbg"></div>
+				<a href="${base}/debate/${item.bean.oid?c}" target="_blank" class="mctDebatetit" title="${item.bean.title}">[@f.TrimSubstring content="${item.bean.title}" mylength=25 /]</a>
+			</div>
+			<div class="dbtSupport">
+				<div class="dbtTitle">
+					<span>${item.bean.titlered}</span>
+					<img src="${baseimg}/imgs/default/vs.png" />
+					<span>${item.bean.titleblue}</span>
+				</div>
+				<div class="dbtvote">
+					<a href="javascript:void(0);" target="_blank" class="redside redvote" id="debate_vote_two_${item.bean.uid}_red" data-support="red" data-id="${item.bean.uid}">
+						<img src="${baseimg}/imgs/default/redzan.png" data-isvoted="${item.voted.voted!"false"}" data-isme="${item.voted.isred!"false"}" />
+					</a>
+					<div class="voteprogress">
+						[#assign red=item.bean.countred /]
+						[#assign blue=item.bean.countblue /]
+						[#assign all=red + blue /]
+						<div class="rprogress" style="width:${red/all*100}%">
+							<div class="redbar"></div>
+						</div>
+						<div class="bprogress" style="width:${blue/all*100}%">
+							<div class="bluebar"></div>
+						</div>
+						<div class="numberbox">
+							<span class="rednum num_${item.bean.uid}_red">${(item.bean.countred)?c}</span>
+							<span class="bluenum num_${item.bean.uid}_blue">${(item.bean.countblue)?c}</span>
+						</div>
+					</div>
+					<a href="javascript:void(0);" target="_blank" class="redside bluevote" id="debate_vote_two_${item.bean.uid}_blue" data-support="blue" data-id="${item.bean.uid}">
+						<img src="${baseimg}/imgs/default/bluezan.png" data-isvoted="${item.voted.voted!"false"}" data-isme="${item.voted.isblue!"false"}"/>
+					</a>
+				</div>
+			</div>
+		</li>
+	[/#list]
+[#else]
+	[#list list as item]
+		[#if me?? && me.oid == item.bean.oid]
+			[#assign url="${base}/my/article"]
+			[#assign url2="${base}/my/article"]
+			[#assign url3="${base}/my/topic"]
+		[#else]
+			[#assign url="${base}/his/article/${item.bean.oid?c}"]
+			[#assign url2="${base}/his/article/${item.bean.oid?c}"]
+			[#assign url3="${base}/his/topic/${item.bean.oid?c}"]
+		[/#if]
+		<li>
+			<div class="subsperson">
+				<a href="${url}" class="personimg" target="_blank">
+					<img [#if item.bean.avatar?? && item.bean.avatar != ""] src="${userimg}${item.bean.avatar}" [#else] src="${baseimg}/imgs/web/noavatar.png" [/#if] />
+				</a>
+				<div class="personinfor">
+					<h4>
+						<a href="${url}" class="personame" target="_blank">${item.bean.showname}</span></a>
+						<div class="subsbtn">
+						[#if item.issubscribe]
+							<span class="substip redtip">已取消订阅</span>
+							<a [#if me?? && me.oid != item.bean.oid] href="javascript:void(0);" onclick="subscribeHandle(this, ${item.bean.oid?c});" [#elseif me??] href="javascript:void(0);" [#else] href="javascript:;" class="cancelsubs cancelSubs pop-up"  [/#if] class="cancelsubs cancelSubs" data-isubscribe="${item.issubscribe!'false'}">
+								<img src="${baseimg}/imgs/default/cancelsubs.png" />
+							</a>
+						[#else]
+							<span class="substip bluetip">订阅成功</span>
+							<a [#if me?? && me.oid != item.bean.oid] href="javascript:void(0);" onclick="subscribeHandle(this, ${item.bean.oid?c});" [#elseif me??] href="javascript:void(0);" [#else] href="javascript:;" class="cancelsubs cancelSubs pop-up"  [/#if] class="cancelsubs cancelSubs" data-isubscribe="${item.issubscribe!'false'}">
+								<img src="${baseimg}/imgs/default/addsubs.png" />
+							</a>
+						[/#if]
+						</div>
+					</h4>
+					<div class="companyInfor">
+						[#if item.bean.company?trim?? && item.bean.company?trim != ""]${item.bean.company}[#if item.bean.department?trim?? && item.bean.department?trim != "" || item.bean.job?trim?? && item.bean.job?trim != "" ]-[/#if][/#if][#if item.bean.department?trim?? && item.bean.department?trim != ""]${item.bean.department}[#if item.bean.job?trim?? && item.bean.job?trim != ""]-[/#if][/#if]${item.bean.job?if_exists}
+					</div>
+					<div class="numcont">
+						<span class="articleNum">
+							文章
+							<a href="${url2}" target="_blank">${item.count!"0"}篇</a>
+						</span>
+						<span class="topicNum">
+							话题
+							<a href="${url3}}" target="_blank">${item.count2!"0"}个</a>
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class="newaction">
+				<img src="${baseimg}/imgs/default/voiceimg.png" />
+					[#if item.finance?? ]
+						<a href="${base}/${item.typename}/${item.finance.oid?c}" class="activity" target="_blank">
+						[@f.TrimSubstring content='${item.finance.title}' mylength=100 /]
+					[#elseif item.topic??]
+						<a href="${base}/${item.typename}/${item.topic.oid?c}" class="activity" target="_blank">
+						[@f.TrimSubstring content='${item.topic.title}' mylength=100 /]
+					[#else]
+						<a href="javascript:void(0);" class="activity">
+						暂无最新文章...
+					[/#if]
+				</a>
+			</div>
+		</li>
+	[/#list]
+[/#if]

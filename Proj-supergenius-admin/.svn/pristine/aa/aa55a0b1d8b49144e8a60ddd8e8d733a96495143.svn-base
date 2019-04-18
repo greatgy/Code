@@ -1,0 +1,114 @@
+package com.supergenius.web.admin.finance.helper;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.genius.server.base.helper.BaseHP;
+import com.genius.server.baseadmin.helper.AdminHP;
+import com.supergenius.global.conf.SysConf;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.server.user.helper.BaseUserConfigHP;
+import com.supergenius.server.user.helper.BaseUserHP;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.finance.entity.Finance;
+import com.supergenius.xo.finance.entity.Message;
+import com.supergenius.xo.finance.entity.Topic;
+import com.supergenius.xo.finance.enums.EFinanceMsg;
+import com.supergenius.xo.finance.service.InboxSO;
+import com.supergenius.xo.finance.service.MessageSO;
+import com.supergenius.xo.user.entity.User;
+
+/**
+ * 后台收件箱HP
+ * 
+ * @author LiJiacheng
+ */
+public class InboxHP extends BaseHP {
+
+	private static Logger log = LoggerFactory.getLogger(InboxHP.class);
+
+	private static InboxSO inboxSO;
+
+	private static MessageSO messageSO;
+
+	private static InboxSO getInboxSO() {
+		if (inboxSO == null) {
+			inboxSO = (InboxSO) spring.getBean(InboxSO.class);
+		}
+		return inboxSO;
+	}
+
+	private static MessageSO getMessageSO() {
+		if (messageSO == null) {
+			messageSO = (MessageSO) spring.getBean(MessageSO.class);
+		}
+		return messageSO;
+	}
+
+	/**
+	 * 后台向收件箱中发送inbox，仅根据message(审核)
+	 * 
+	 * @param message
+	 * @author LiJiacheng
+	 */
+	public static void sendInboxByMsg(Message message) {
+		if (message != null) {
+			boolean flag = false;
+			if (message.getRecipient() != null) {
+				flag = getInboxSO().addInbox(message);
+			}
+			if (flag == false) {
+				log.info("Message add success, but the inbox send failed. the messageuid is:" + message.getUid());
+			} else {
+				int i = Integer.parseInt(message.getType().toString());
+				User user = BaseUserHP.get(message.getRecipient());
+				if (user != null) {
+					if (i >= 1 && i <= 3) {
+						BaseUserConfigHP.updateUserIgnoreMsgFile(user.getOid(), SysConf.getUserIgnoreFilePath(), MapperDict.cmtmsgcount, EChannel.finance.name());
+					} else if (i == 0) {
+						BaseUserConfigHP.updateUserIgnoreMsgFile(user.getOid(), SysConf.getUserIgnoreFilePath(), MapperDict.sysmsgcount, EChannel.finance.name());
+					} else {
+						BaseUserConfigHP.updateUserIgnoreMsgFile(user.getOid(), SysConf.getUserIgnoreFilePath(), MapperDict.ntemsgcount, EChannel.finance.name());
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * 发送删除话题或者文章的消息
+	 * 
+	 * @param topic
+	 * @param finance
+	 * @return
+	 * @author LiJiacheng
+	 */
+	public static Message sendDeletedMsg(Topic topic[], Finance finance[]) {
+		String recipient = null;
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.href, ViewKeyDict.poundOperation);
+		map.put(MapperDict.adminuid, AdminHP.getAdminUid());
+		if (finance == null) {
+			map.put(MapperDict.title, topic[0].getTitle());
+			map.put(MapperDict.type, EFinanceMsg.topicdelete);
+			recipient = topic[0].getUseruid();
+		} else if (topic == null) {
+			map.put(MapperDict.title, finance[0].getTitle());
+			map.put(MapperDict.type, EFinanceMsg.articledelete);
+			recipient = finance[0].getAuthoruid();
+		}
+		Message message = getMessageSO().addMsg(map);
+		if (message != null) {
+			message.setRecipient(recipient);
+			return message;
+		} else {
+			log.info("The sendDeletedMsg send failed.");
+			return null;
+		}
+	}
+
+}

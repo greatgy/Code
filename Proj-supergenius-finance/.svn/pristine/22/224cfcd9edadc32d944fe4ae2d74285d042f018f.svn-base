@@ -1,0 +1,57 @@
+package com.supergenius.web.finance.helper;
+
+import com.genius.core.base.utils.WebUtil;
+import com.supergenius.server.finance.helper.BaseContributorHP;
+import com.supergenius.xo.finance.entity.Contribute;
+import com.supergenius.xo.finance.entity.Contributor;
+import com.supergenius.xo.finance.service.ContributorSO;
+import com.supergenius.xo.user.entity.User;
+
+/**
+ * 投稿人HP 
+ * @author liushaomin
+ */
+public class ContributorHP extends BaseContributorHP{
+	
+	
+private static ContributorSO so;
+
+	
+	public static ContributorSO getSo() {
+		if (so == null) {
+			so = (ContributorSO) spring.getBean(ContributorSO.class);
+		}
+		return so;
+	}
+
+
+	/**
+	 * 根据用户赋值
+	 * @param cbutor
+	 * @param user
+	 */
+	public static void set(Contributor cbutor, User user) {
+		cbutor.setEmail(user.getEmail());
+		cbutor.setUseruid(user.getUid());
+		cbutor.setName(user.getName());
+		cbutor.setPhone(user.getPhone());
+		cbutor.setQq(user.getQq());
+		if (cbutor.getSummary() == null) {
+			cbutor.setSummary(user.getSummary());
+		}
+	}
+	
+	/**
+	 * 根据投稿赋值
+	 * @param cbutor
+	 * @param contribute
+	 */
+	public static void set(Contributor cbutor, Contribute contribute) {
+		cbutor.setEmail(contribute.getEmail());
+		cbutor.setName(WebUtil.clearXSS(contribute.getName()));
+		cbutor.setPhone(contribute.getPhone());
+		cbutor.setQq(WebUtil.clearXSS(contribute.getQq()));
+		cbutor.setSummary(WebUtil.clearXSS(contribute.getSummary()));
+	}
+	
+}

@@ -1,0 +1,9 @@
+basePath=
+#db 0
+#/one
+/=redis://localhost:6379
+#db 2 temp
+/users=redis://localhost:6379/2
+#\u6587\u7ae0\u7684\u70b9\u8d5e\u3001\u8bc4\u8bba\u3001\u6536\u85cf\u3001\u6d4f\u89c8\u7b49
+/life/article=redis://localhost:6379/20?keylen=3
+/life/topic=redis://localhost:6379/20?keylen=3

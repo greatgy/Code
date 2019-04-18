@@ -1,0 +1,73 @@
+package com.supergenius.web.finance.api;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.genius.core.base.annotation.Json;
+import com.genius.core.base.utils.JsonUtil;
+import com.genius.server.base.controller.BaseController;
+import com.supergenius.global.conf.WebConf;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.server.user.helper.BaseUserHP;
+import com.supergenius.web.finance.helper.CollectDetailHP;
+import com.supergenius.web.finance.helper.FinanceHP;
+import com.supergenius.xo.finance.entity.Finance;
+import com.supergenius.xo.finance.enums.ECollectType;
+import com.supergenius.xo.finance.enums.EFinance;
+import com.supergenius.xo.user.entity.User;
+
+/**
+ * app首页数据控制器
+ * 
+ * @author XieMing
+ * @date 2017年1月6日 下午3:12:15
+ */
+@Controller
+public class IndexInterfacer extends BaseController {
+
+	private static Logger log = LoggerFactory.getLogger(IndexInterfacer.class);
+	/**
+	 * 初始化页面数据
+	 * 
+	 * @return
+	 * @author XieMing 2017年1月5日 下午6:32:02
+	 */
+	@RequestMapping(value = { "/api/initialdata" }, method = RequestMethod.GET)
+	@ResponseBody
+	private String initialData(HttpServletRequest request) {
+		log.info("---------------------------------http://finance.180800.cn/api/initialdata");
+		User user = BaseUserHP.getCurrUser(request);
+		Map<String, Object> allArticle = new HashMap<>();
+		Map<String, Object> articles = new HashMap<>();
+		int pageNum = Integer.valueOf((request.getParameter("num") == null || request.getParameter("num").length() == 0) ? "1" : request.getParameter("num"));
+		for (EFinance type : EFinance.getAppTypes()) {
+			Map<String, Object> article = new HashMap<>();
+			List<Finance> index = FinanceHP.getLatestList(type, pageNum, WebConf.FinancePageSize);
+			if (user != null) {
+				log.info("********************user*******************"+user);
+				for (Finance finance : index) {
+					finance.setIscollect(CollectDetailHP.isCollect(user.getUid(), ECollectType.article, finance.getUid()));
+				}
+			}
+			if (index.size() > WebConf.FinanceTopSize) {
+				article.put(ViewKeyDict.tops, index.subList(0, WebConf.FinanceTopSize));
+			} else {
+				article.put(ViewKeyDict.tops, index);
+			}
+			article.put(ViewKeyDict.list, index);
+			articles.put(type.name(), article);
+		}
+		allArticle.put(ViewKeyDict.articles, articles);
+		return JsonUtil.toJson(allArticle, Json.appStrategy);
+	}
+}

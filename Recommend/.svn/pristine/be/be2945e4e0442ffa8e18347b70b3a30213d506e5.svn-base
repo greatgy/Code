@@ -1,0 +1,82 @@
+# -*- coding: utf-8 -*-
+
+# 导入必要模块
+import pandas as pd
+import func
+from func import GL
+import numpy as np
+import time
+from pymongo import MongoClient
+
+sql_dict, db_dict = func.read_dbinfo_xml()
+host = sql_dict["mysqlhost"]
+port = sql_dict["mysqlport"]
+user = sql_dict["user"]
+password = sql_dict["password"]
+Mongoconn = MongoClient(sql_dict["mongohost"], int(sql_dict["mongoport"]))
+t = time.time()
+
+
+def mainFunc(dbname, table, mongodbname):
+    db = Mongoconn.get_database(mongodbname)  # 连接mongodbname数据库，没有则自动创建
+    words_set = db[table + '_words_set']  # 使用words_set集合，没有则自动创建
+    recommend_set = db[table + '_recommend_set']
+
+    datadf = func.getArticleFromMysql(host, port, user, password, dbname, table, 1)
+
+    print("Start splitWords %s" % dbname)
+    dtList = []
+    for index, html in enumerate(datadf['content'].values):
+        content = func.removeHtml(html)
+        dt = func.splitWords(datadf['uid'].values[index], content)
+        dtList.append(dt)
+    print("End splitWords %s,Start save words_set" % dbname)
+    if (len(dtList) > 0):
+        func.saveList(dtList, words_set)
+        print("end save words_set %s" % dbname)
+
+        # 建立语料库
+        print("------------------------------------------------------------")
+        t = time.time()
+        for x in func.getAll(words_set):
+            x.pop('_id')
+            x.pop('uid')
+            GL.wordcountmat.append(list(x.values()))
+           #dt = func.countTF_IDF(x)
+            # func.getKeyWords(dt)
+        print(GL.wordcountmat)
+        print("End Calculation tf_idf %s,%f" % (dbname, time.time() - t))
+        '''
+        print("------------------------------------------------------------")
+        t = time.time()
+        nparray = func.getVectorModel()
+        print("End Calculation getVectorModel %s,%f" % (dbname, time.time() - t))
+
+        print("************************************************************")
+        t = time.time()
+        cosMatrix = func.getMatrix(nparray)
+        print("End Calculation getMatrixByNew %s,%f" % (dbname, time.time() - t))
+
+        print("************************************************************")
+        t = time.time()
+        func.getRecommendDict(cosMatrix)
+        print("************************************************************")
+        print("End Calculation getRecommendDict %s,%f" % (dbname, time.time() - t))
+        recommend_set.delete_many({})
+        print("************************************************************")
+        print("End Calculation %s,Start save recommend_set" % dbname)
+        func.saveDict(GL.recommendDict, recommend_set)
+        print("end save words_set %s" % dbname)
+        '''
+
+    else:
+        print("no new data")
+
+
+print("Start ***** %f" % t)
+for dbname in list(db_dict.keys()):
+    print("Start analysis %s" % dbname)
+    for tablename in db_dict[dbname]:
+        mainFunc(dbname, tablename, dbname)
+    print("analysis %s complete" % dbname)
+print("Finansh *****")

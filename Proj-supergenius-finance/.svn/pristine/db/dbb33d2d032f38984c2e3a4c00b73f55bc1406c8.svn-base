@@ -1,0 +1,20 @@
+<div class="broadcast">
+	<a class="broadcast-center" href="<%= this.hots[0].link %>"><img src="<%= this.hots[0].img %>" /></a>
+	<a class="broadcast-previous" href="javascript:void(0);"><img src="<%= g.baseimg %>/imgs/default/index_prev_btn.png"></a>
+	<a class="broadcast-next" href="javascript:void(0);"><img src="<%= g.baseimg %>/imgs/default//index_next_btn.png"></a>
+	<div class="broadcast-link">
+		<a href="<%= this.hots[0].link %>"><%= this.hots[0].title %></a>
+	</div>
+	<div class="broadcast-next"><a href="javascript:void(0);"></a></div>
+	<div class='broadcast-bottom'>
+		<% for(var i = 0; i < this.hotsCount; i++) { %>
+			<% var hot = this.hots[i] ? this.hots[i] : {link: '', img: '', title: '无'} %>
+			<div index='<%= i %>'>
+				<a href="<%= hot.link %>">
+					<img src="<%= hot.img %>"/>
+					<p class="broadcast-cover"><span><%= hot.title %></span></p>
+				</a>
+			</div>
+		<% } %>
+	</div>
+</div>

@@ -1,0 +1,31 @@
+[#ftl]
+<div class="container-fluid secondNavbox">
+	<ul class="row phoneSecond">
+		[#if LeftCatalogue??]
+			[#assign count = 1]
+	        [#list LeftCatalogue as catalogue]
+				[#if count<6]
+					[#if catalogue.cid>0]
+						<li class="[#if cid??][#if catalogue.cid == cid]active[/#if][/#if] item col-xs-3 col-sm-3">
+							<a href="${base}/catalogue/${catalogue.cid}" data-cid="${catalogue.cid}">${catalogue.name}</a>
+			        	</li>
+		        	[/#if]
+	        	[/#if]
+				[#assign count = count + 1]
+			[/#list]
+        [/#if]
+	</ul><!-- 二级导航结束 -->
+	<ul class="row">
+		[#if LeftCatalogue??]
+			[#assign count = 1]
+	        [#list LeftCatalogue as catalogue]
+	        	[#if count>5]
+					<li class="[#if cid??][#if catalogue.cid == cid]active[/#if][/#if] item col-xs-3 col-sm-3">
+						<a href="${base}/catalogue/${catalogue.cid}" data-cid="${catalogue.cid}">${catalogue.name}</a>
+		        	</li>
+	        	[/#if]
+				[#assign count = count + 1]
+			[/#list]
+        [/#if]
+	</ul>
+</div>

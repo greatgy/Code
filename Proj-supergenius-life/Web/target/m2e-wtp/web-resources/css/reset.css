@@ -1,0 +1,82 @@
+@charset "utf-8";
+* {
+	padding: 0;
+	margin:0 auto;
+	border: 0;
+}
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,br,hr,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+ 	border: 0;
+	font-family: normal;
+	font-size: 100%;
+	font-style: normal;
+	font-weight: normal;
+	margin: 0 auto;
+	outline: 0;
+	padding: 0;
+	vertical-align: baseline;
+}
+body{margin:0; padding:0; font-family:"微软雅黑"; text-align:center;}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+html{height: 100%;-webkit-text-size-adjust:none;}
+/* 设置默认字体 */
+body,button, input, select, textarea { /* for ie */
+    /*font: 12px/1 Tahoma, Helvetica, Arial, "宋体", sans-serif;*/
+    font: 12px/1 Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif,"微软雅黑","宋体"; 
+}
+h1,h2,h3,h4,h5,h6{
+ font-size: 14px; /* 18px / 12px = 1.5 */ 
+}
+code, kbd, pre, samp, tt { 
+	font-family: "Courier New", Courier, monospace; 
+} 
+small { 
+	font-size: 12px; 
+}
+
+/* 重置列表元素 */
+ul,ol,li {
+	list-style: none;
+	margin:0;	
+	padding:0;
+}
+input{
+	border:none;
+	outline:none;
+}
+img {
+	border: none;
+}
+a,img{border:0;}
+/* 重置文本格式元素 */
+a { 
+	text-decoration: none;
+}
+a:hover,a:focus { 
+	text-decoration: none;
+	cursor:pointer; 
+}
+table {/* tables still need 'cellspacing="0"' in the markup */
+	border-collapse: separate;
+	border-spacing: 0;
+}
+caption, th, td {
+	font-weight: normal;
+	text-align: left;
+}

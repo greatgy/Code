@@ -1,0 +1,12 @@
+package com.supergenius.global.constants;
+
+/**
+ * 页面常量
+ * 
+ * @author YangGuang
+ * @date 2018年1月30日18:14:29
+ */
+public class ViewKeyDict extends com.supergenius.server.common.constants.ViewKeyDict {
+	public static final String title = "title";
+	public static final String content = "content";
+}

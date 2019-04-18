@@ -1,0 +1,191 @@
+[#ftl]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>天财评论-他的主页</title>
+	<meta name="Keywords" content="天财评论,他的主页" />
+	<meta name="Description" content="天财评论,他的主页" />
+	<link rel="stylesheet" href="${basecss}/css/default/detail.css">
+</head>
+<body>
+		<div class="contentLeft">
+			<div class="articleList">
+				<ul class="tabBox">
+					[#list list as item]
+						<li>
+							<a class="tabitemimg" href="${base}/article/${item.cid}/${item.oid}">
+								<img src="${base}/imgs/${item.imgbig}" />
+							</a>
+							<div class="tabitemRt">
+								<a href="${base}/article/${item.cid}/${item.oid}" class="articleTitle">
+									[#if item.kind == 1]
+										<span class="videotype">[视频]</span>
+									[#elseif item.kind == 2]
+										<span class="pictype">[图片]</span>
+									[/#if]
+									${item.title}
+								</a>
+								<p class="descripe">${item.summary}</p>
+								<div class="timepiece">
+									<span class="time">${item.publishtime}</span>
+									<div class="operateBox">
+										<a href="${base}/article/${article.cid}/${article.oid}" class="littleicon">
+											<img src="${baseimg}/imgs/default/heart.png" />
+											26
+										</a>
+										<a href="${base}/article/${article.cid}/${article.oid}" class="littleicon">
+											<img src="${baseimg}/imgs/default/discuss.png" />
+											5
+										</a>
+										<a href="${base}/article/${article.cid}/${article.oid}" class="littleicon">
+											<img src="${baseimg}/imgs/default/collect.png" />
+											8
+										</a>
+									</div>
+								</div>
+							</div>
+						</li>
+					[/#list]
+				</ul>
+				<div class="load">下拉加载更多~</div>
+				<div class="nomore">
+					<i class="line"></i>
+					我是有底线的
+					<i class="line"></i>
+				</div>
+			</div>
+		</div>
+		<div class="contentRight">
+			<!-- 登录后 -->
+			<div class="authorbox">
+				<div class="author">
+					<div class="authorPiece">
+						<a href="/uhome/${item.authoruid}"><img class="authorimg" [#if user.avatar??]src="${userimg}${user.avatar}"[#else]src="${baseimg}/imgs/default/author.png"[/#if]/></a>
+						<div class="resAuthor">						
+							<a href="/uhome/${item.authoruid}" class="authorName">${item.author}</a>
+							<span>文章<a href="#">${count}</a></span>
+						</div>
+					</div>
+					<div class="addsub">
+						<a href="#">+</a>
+						订阅
+					</div>
+					<p>${user.summary}</p>
+					<div class="totalArt">共${count}篇文章</div>
+				</div>
+			</div>
+			<div class="rightItem">
+				<h4><i></i>他的热门</h4>
+				<ul class="hotArticle">
+			    [#if hotarticles??]
+					[#assign i = 0]
+					[#list hotarticles as article]
+					[#assign i = i+1 ]
+					[#if i <= 3]
+				        <li class="top1">
+				        	[#if i == 1]
+				        		<span class="hoticon redicon">TOP1</span>
+				        	[#elseif i == 2]
+				        		<span class="hoticon yellowicon">TOP2</span>
+				        	[#elseif i == 3]
+				        		<span class="hoticon greenicon">TOP3</span>
+				        	[/#if]
+				        	<a href="${base}/article/${article.cid}/${article.oid}">
+				        		<img src="${webimg}${article.imgmedium}" />
+				        		<div class="description">
+									[#if article.isoriginal == 1]
+										<span class="original">[原创]</span>
+									[/#if]
+									[#if article.kind == 1]
+										<span class="videotype">[视频]</span>
+									[#elseif article.kind == 2]
+										<span class="pictype">[图片]</span>
+									[/#if]
+									${article.title}
+								</div>
+				        	</a>
+				        </li>
+			        [#elseif i==4 || i== 5]
+				        <li>
+							<a href="${base}/article/${article.cid}/${article.oid}">
+								<span class="numtag">${i}</span>
+								<img class="fourimg" src="${webimg}${article.imgmedium}" alt="" />
+								<div class="title">
+									[#if article.isoriginal == 1]
+										<span class="original">[原创]</span>
+									[/#if]
+									[#if article.kind == 1]
+										<span class="videotype">[视频]</span>
+									[#elseif article.kind == 2]
+										<span class="pictype">[图片]</span>
+									[/#if]
+									${article.title}
+									<span class="flashtime">${article.publishtime}</span>
+								</div>
+							</a>
+						</li>
+			        [#else]
+						<li>
+							<a href="${base}/article/${article.cid}/${article.oid}">
+								[#if article.isoriginal == 1]
+									<span class="original">[原创]</span>
+								[/#if]
+								[#if article.kind == 1]
+									<span class="videotype">[视频]</span>
+								[#elseif article.kind == 2]
+									<span class="pictype">[图片]</span>
+								[/#if]
+								${article.title}
+							</a>
+							<span class="flashtime">${article.publishtime}</span>
+						</li>
+					[/#if]
+					[/#list]
+			    [/#if]
+			    </ul>
+			</div>
+		</div>
+	</div>
+	<script>
+		window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+	
+		var prePage = 1;
+		var pagenum = 2;
+			
+		// 加载更多事件处理
+		function loadmore() {
+			pagenum = pagenum +　1;
+			var	url = "${base}/ajax/his/article/${uid}";
+			if(prePage != pagenum) {
+			    prePage = pagenum;
+				$.get(url, {pagenum:pagenum}, function(data){
+				    pagenum += 1;
+					if(data.trim() == ""){// 没有更多内容
+						pagenum -= 1;
+						$(this).hide();
+						$(".nomore").show();
+						return false;
+					}
+					$(".tabBox").append(data);
+				});
+			}
+		}
+			
+		$(function(){
+			var swiper = new Swiper('.swiper-container', {
+		        pagination: '.swiper-pagination',
+		        paginationClickable: true,
+		        spaceBetween: 30,
+		        centeredSlides: true,
+		        autoplay: 2500,
+		        autoplayDisableOnInteraction: false
+		    });
+		    $.fn.scrollHandle({
+				obj: window,
+				fun: loadmore
+			})
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,536 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>${title!'热门话题'}</title>
+    <link rel="stylesheet" href="${basecss}/css/default/pages/topic.css"/>
+	<script type="text/javascript">
+	<!--
+		var TOPIC_PAGE =
+			{
+				pagenum:1,
+				url:"${base}/ajax/topic"
+			};
+			
+		$(function($) {
+			// 注册事件
+			$(".loadmore").click(loadmore);
+		});
+		
+		// 加载更多事件处理
+		function loadmore() {
+			var pagenum = TOPIC_PAGE.pagenum +　1;
+			var url = TOPIC_PAGE.url;
+			$.get(url, {pagenum:pagenum}, function(data){
+				if(data.trim() == ""){// 没有更多内容
+					$(".loadmore a").html("无更多话题").unbind("click");
+					return;
+				}
+				TOPIC_PAGE.pagenum += 1;
+				$(".pubuliu").append(data);
+				masonryHandleAgain();
+			});
+		}
+	//-->
+	</script>
+	<style type="text/css">
+		.pubuliu {position:relative;}
+		.topic{float:none; position:absolute;}
+		.p1 a{color:#fff;}
+		.hd {display:none !important;}
+	</style>
+</head>
+<body>
+<div class="centerbox">
+	<div class="topic_07_box">
+		<div class="blockgroup">
+			<div class="tp_01_one">	
+				<div id="box">
+	                <ul id="ul1">
+	                [#list toplist as item]
+	                	[#if item_index == 0]
+	                		<li style="width:420px"><a href="${base}/topic/${item.oid}" target="_blank"><img src="${webimg}${item.imgbig}"/><span class="cover_bar" title="${item.title}">${item.title}</span></a></li>
+	                	[#elseif item_index != 0]
+	                		<li><a href="${base}/topic/${item.oid}" target="_blank"><img src="${webimg}${item.imgbig}"/><span class="cover_bar hd" title="${item.title}">${item.title}</span></a></li>
+	                	[/#if]
+	            	[/#list]
+	                </ul>
+	            </div>
+			</div>
+			<div class="topicmain">
+				<div class="tp_01_two">
+					<div class="mb">
+		                &nbsp;&nbsp;推荐话题
+		            </div>
+		             <div class="mf" id="mf_a" >
+			             [#list recommendlist as item]
+			                <div class="mf_1 mf_a">
+			                	<div class="mf_bg"></div>
+					    	    <p class="p1">
+				    	    		<a href="#" target="_blank">中国制造VS印度制造</a>
+				    	    	</p>
+			                    <img src="${baseimg}/imgs/default/recomarticle02.png" />
+			                </div>
+			            [/#list]
+		            </div>
+				</div>
+		        <div class="tp_01_thr">
+		        	<div class="mb">
+		                &nbsp;&nbsp;最新话题
+		            </div>
+		     		<ul class="newtopicbox">
+		     			<li>
+		     				<div class="litopbox">
+		     					<a href="#"><img src="${baseimg}/imgs/default/subsimg01.png" /></a>
+		     					<a href="#" class="name">丹尼</a>
+		     					<span class="distime">2015.08.18&nbsp;12.34</span>
+		     				</div>
+		     				<a href="#" class="tit" title="混合所有制改革真的能实现“国民共进”吗？">混合所有制改革真的能实现“国民共进”吗？</a>
+		     				<a href="#" class="limidbox">
+		     					<img src="${baseimg}/imgs/default/topiclist01.png" />
+		     				</a>
+		     				<div class="iconsbox">
+								<span title="查看次数">
+									<img src="${baseimg}/imgs/default/viewicon.png" />
+									10010
+								</span>
+								<span title="点赞次数">
+									<img src="${baseimg}/imgs/default/thumb.png" />
+									1234
+								</span>
+								<span title="评论次数">
+									<img src="${baseimg}/imgs/default/msg01.png" />
+									67
+								</span>
+								<span title="分享">
+									<img src="${baseimg}/imgs/default/shareicon.png" />
+								</span>
+							</div>
+		     			</li>
+		     			<li>
+		     				<div class="litopbox">
+		     					<a href="#"><img src="${baseimg}/imgs/default/subsimg01.png" /></a>
+		     					<a href="#" class="name">丹尼</a>
+		     					<span class="distime">2015.08.18&nbsp;12.34</span>
+		     				</div>
+		     				<a href="#" class="tit" title="混合所有制改革真的能实现“国民共进”吗？">混合所有制改革真的能实现“国民共进”吗？</a>
+		     				<a href="#" class="limidbox">
+		     					<img src="${baseimg}/imgs/default/topiclist02.png" />
+		     				</a>
+		     				<div class="iconsbox">
+								<span title="查看次数">
+									<img src="${baseimg}/imgs/default/viewicon.png" />
+									10010
+								</span>
+								<span title="点赞次数">
+									<img src="${baseimg}/imgs/default/thumb.png" />
+									1234
+								</span>
+								<span title="评论次数">
+									<img src="${baseimg}/imgs/default/msg01.png" />
+									67
+								</span>
+								<span title="分享">
+									<img src="${baseimg}/imgs/default/shareicon.png" />
+								</span>
+							</div>
+		     			</li>
+		     			<li>
+		     				<div class="litopbox">
+		     					<a href="#"><img src="${baseimg}/imgs/default/subsimg01.png" /></a>
+		     					<a href="#" class="name">丹尼</a>
+		     					<span class="distime">2015.08.18&nbsp;12.34</span>
+		     				</div>
+		     				<a href="#" class="tit" title="混合所有制改革真的能实现“国民共进”吗？">混合所有制改革真的能实现“国民共进”吗？</a>
+		     				<a href="#" class="limidbox">
+		     					<img src="${baseimg}/imgs/default/topiclist03.png" />
+		     				</a>
+		     				<div class="iconsbox">
+								<span title="查看次数">
+									<img src="${baseimg}/imgs/default/viewicon.png" />
+									10010
+								</span>
+								<span title="点赞次数">
+									<img src="${baseimg}/imgs/default/thumb.png" />
+									1234
+								</span>
+								<span title="评论次数">
+									<img src="${baseimg}/imgs/default/msg01.png" />
+									67
+								</span>
+								<span title="分享">
+									<img src="${baseimg}/imgs/default/shareicon.png" />
+								</span>
+							</div>
+		     			</li>
+		     			<li>
+		     				<div class="litopbox">
+		     					<a href="#"><img src="${baseimg}/imgs/default/subsimg01.png" /></a>
+		     					<a href="#" class="name">丹尼</a>
+		     					<span class="distime">2015.08.18&nbsp;12.34</span>
+		     				</div>
+		     				<a href="#" class="tit" title="混合所有制改革真的能实现“国民共进”吗？">混合所有制改革真的能实现“国民共进”吗？</a>
+		     				<a href="#" class="limidbox">
+		     					<img src="${baseimg}/imgs/default/topiclist04.png" />
+		     				</a>
+		     				<div class="iconsbox">
+								<span title="查看次数">
+									<img src="${baseimg}/imgs/default/viewicon.png" />
+									10010
+								</span>
+								<span title="点赞次数">
+									<img src="${baseimg}/imgs/default/thumb.png" />
+									1234
+								</span>
+								<span title="评论次数">
+									<img src="${baseimg}/imgs/default/msg01.png" />
+									67
+								</span>
+								<span title="分享">
+									<img src="${baseimg}/imgs/default/shareicon.png" />
+								</span>
+							</div>
+		     			</li>
+		     		</ul>		        	
+		        </div>
+		        <div class="loadmore"><a href="">加载更多话题</a></div> 
+		    </div>
+		</div>
+		<!--右侧 开始-->
+		<div class="tp_07_right">
+			<div class="btnsbox">
+				<a class="tp_07_onel linkbtn" href="${base}/topic/apply">发起话题</a>
+				[#if toplist?? && toplist?size > 0]
+					<a class="tp_07_oner linkbtn" href="${base}/topic/random">随机穿越</a>
+				[/#if]
+			</div>
+			<!- 话题发言榜 -->
+			<div class="ranklist">
+				<h4>话题发言榜</h4>
+				<ul class="statelist">
+					<li>
+						<a href="#">
+							<img src="${baseimg}/imgs/default/subsimg04.png" />
+						</a>
+						<a href="#">拖拖</a>
+						<span>
+							<img src="${baseimg}/imgs/default/msgimg.png" />
+							88
+						</span>
+					</li>
+					<li>
+						<a href="#">
+							<img src="${baseimg}/imgs/default/subsimg04.png" />
+						</a>
+						<a href="#">拖拖</a>
+						<span>
+							<img src="${baseimg}/imgs/default/msgimg.png" />
+							88
+						</span>
+					</li>
+				</ul>
+			</div>
+			<!- 最新发言 -->
+			<div class="ranklist">
+				<h4>最新发言</h4>
+				<div class="wordslist">
+					<div class="sdot"></div>
+					<ul class="newords">
+						<li>
+							<span class="circledot"></span>
+							<div class="wordright">
+								<div class="justtime">55&nbsp;分钟前</div>
+								<div class="nameimg">
+									<a class="visitor">
+										<img src="${baseimg}/imgs/default/subsimg04.png" />
+										游客
+									</a>
+								</div>
+								<p> 
+									2002年的法国，曾经是中世纪英法战争古战场的多尔登山谷某处。一个考古小组正在历史学家爱德华曾经是中世纪英法战争古战场的...
+								</p>
+								<div class="source">
+									来自论战：<a href="#">2015快递业会不会掀起“并购风”</a>
+								</div>
+							</div>
+						</li>
+						<li>
+							<span class="circledot"></span>
+							<div class="wordright">
+								<div class="justtime">5&nbsp;小时前</div>
+								<div class="nameimg">
+									<a href="#">
+										<img src="${baseimg}/imgs/default/subsimg04.png" />
+										呼呼 
+									</a>
+								</div>
+								<p> 
+									2002年的法国，曾经是中世纪英法战争古战场的多尔登山谷某处。一个考古小组正在历史学家爱德华曾经是中世纪英法战争古战场的...
+								</p>
+								<div class="source">
+									来自论战：<a href="#">2015快递业会不会掀起“并购风”</a>
+								</div>
+							</div>
+						</li>
+						<li>
+							<span class="circledot"></span>
+							<div class="wordright">
+								<div class="justtime">8&nbsp;小时前</div>
+								<div class="nameimg">
+									<a href="#">
+										<img src="${baseimg}/imgs/default/subsimg04.png" />
+										呼呼 
+									</a>
+								</div>
+								<p> 
+									2002年的法国，曾经是中世纪英法战争古战场的多尔登山谷某处。一个考古小组正在历史学家爱德华曾经是中世纪英法战争古战场的...
+								</p>
+								<div class="source">
+									来自论战：<a href="#">2015快递业会不会掀起“并购风”</a>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<!- 热门话题排行榜 -->
+			<div class="ranklist">
+	  			<h4>热门话题排行榜</h4>
+	  			<ul class="hotlist">
+	  				<li class="curshow">
+	  					<span class="normalspan ranknum">1</span>
+	  					<div class="rankright">
+	  						<a href="#" title="如何基于微信开放接口开发企业的微" class="arttile">如何基于微信开放接口开发企业的微</a>
+	  						<div class="titdescribe">
+	  							<span>发起人：王文竹</span>
+	  							<span class="comment">
+	  								<a href="#">
+	  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+	  									88
+	  								</a>
+	  							</span>
+	  						</div>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan ranknum">2</span>
+	  					<div class="rankright">
+	  						<a href="#" title="移动营销革命中的新策略" class="arttile">移动营销革命中的新策略</a>
+	  						<div class="titdescribe">
+	  							<span>发起人：王文竹</span>
+	  							<span class="comment">
+	  								<a href="#">
+	  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+	  									88
+	  								</a>
+	  							</span>
+	  						</div>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan ranknum">3</span>
+	  					<div class="rankright">
+	  						<a href="#" title="从植物大战僵尸看产品的本土化" class="arttile">从植物大战僵尸看产品的本土化</a>
+	  						<div class="titdescribe">
+	  							<span>发起人：王文竹</span>
+	  							<span class="comment">
+	  								<a href="#">
+	  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+	  									88
+	  								</a>
+	  							</span>
+	  						</div>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">4</span>
+	  					<div class="rankright">
+	  						<a href="#" title="习大大亲和优雅的举止" class="arttile">习大大亲和优雅的举止</a>
+	  						<div class="titdescribe">
+	  							<span>发起人：王文竹</span>
+	  							<span class="comment">
+	  								<a href="#">
+	  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+	  									88
+	  								</a>
+	  							</span>
+	  						</div>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">5</span>
+	  					<div class="rankright">
+	  						<a href="#" title="开放接口开发企业" class="arttile">开放接口开发企业</a>
+	  						<div class="titdescribe">
+	  							<span>发起人：王文竹</span>
+	  							<span class="comment">
+	  								<a href="#">
+	  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+	  									88
+	  								</a>
+	  							</span>
+	  						</div>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">6</span>
+	  					<div class="rankright">
+	  						<a href="#" title="开展煤气化装置大型气化炉、喷嘴、开工" class="arttile">开展煤气化装置大型气化炉、喷嘴、开工</a>
+	  						<div class="titdescribe">
+	  							<span>发起人：王文竹</span>
+	  							<span class="comment">
+	  								<a href="#">
+	  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+	  									88
+	  								</a>
+	  							</span>
+	  						</div>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">7</span>
+	  					<div class="rankright">
+	  						<a href="#" title="紧密围绕电力产业的安全、高效" class="arttile">紧密围绕电力产业的安全、高效</a>
+	  						<div class="titdescribe">
+	  							<span>发起人：王文竹</span>
+	  							<span class="comment">
+	  								<a href="#">
+	  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+	  									88
+	  								</a>
+	  							</span>
+	  						</div>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">8</span>
+	  					<div class="rankright">
+	  						<a href="#" title="增强我国相关领域竞争力为目标" class="arttile">增强我国相关领域竞争力为目标</a>
+	  						<div class="titdescribe">
+	  							<span>发起人：王文竹</span>
+	  							<span class="comment">
+	  								<a href="#">
+	  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+	  									88
+	  								</a>
+	  							</span>
+	  						</div>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">9</span>
+	  					<div class="rankright">
+	  						<a href="#" title="国神集团和丰煤电公司" class="arttile">国神集团和丰煤电公司</a>
+	  						<div class="titdescribe">
+	  							<span>发起人：王文竹</span>
+	  							<span class="comment">
+	  								<a href="#">
+	  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+	  									88
+	  								</a>
+	  							</span>
+	  						</div>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">10</span>
+	  					<div class="rankright">
+	  						<a href="#" title="黄骅港务公司顺利通过河北省安全生产" class="arttile">黄骅港务公司顺利通过河北省安全生产</a>
+	  						<div class="titdescribe">
+	  							<span>发起人：王文竹</span>
+	  							<span class="comment">
+	  								<a href="#">
+	  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+	  									88
+	  								</a>
+	  							</span>
+	  						</div>
+	  					</div>
+	  				</li>
+	  			</ul>
+	  		</div>
+
+	  		<!- 登录后会员图像部分 -->
+			[#if me??]
+				<div class="twosf">
+					<a href="#" style="display:inline" >
+						<img [#if "${me.avatar}" == ""]src="${baseimg}/imgs/web/noavatar132x130.png"[#else]src="${userimg}${(me.avatar)}"[/#if]>
+					</a>
+					<h1><a hrfe="${base}/mytopic">${me.showname}</a></h1>	
+					<div class="onr_rr">
+						<p><a href="${base}/mytopic">${count}<br><span>我发起</span></a></p>
+						<p class="rrtb"></p>
+						<p><a href="${base}/mytopic">${count2}<br><span>我参与</span></a></p>
+					</div>
+				</div>
+			[/#if]
+		</div>
+	</div>
+</div>
+<div class="clear"></div>
+
+<script type="text/javascript" src="${basejs}/js/pages/topic.js"></script>
+<script src="${basejs}/js/libs/masonry-1.0.0.js"></script>
+<script src="${basejs}/js/pages/move.js"></script>
+<script>
+    window.onload=function(){
+        var oBox=document.getElementById('box');
+        var oUl=document.getElementById('ul1');
+        var aLi=oUl.children;
+        for(var i=0;i<aLi.length;i++){
+            aLi[i].onmouseover=function(){
+	            var aLspan=document.getElementsByClassName('cover_bar');
+	            for(var i=0;i<aLi.length;i++){
+	                startMove(aLi[i],{width:51});
+	                $(".cover_bar", aLi[i]).addClass("hd");
+	            }
+	            startMove(this,{width:420});
+	            $(".cover_bar", this).removeClass("hd");
+            }
+        }
+    }
+    
+    function masonryHandler(){
+		 $('.pubuliu').masonry({tiles : $('.topic'), margin:8, margintop:10});
+  	}
+  	function masonryHandleAgain() {
+  		try {
+		 $('.pubuliu').show(100, masonryHandler).delay(1000).show(1000, masonryHandler);
+	  	} catch(e){}
+  	}
+    $(function(){
+	  	masonryHandleAgain();
+	});
+
+	 //推荐话题鼠标悬停效果
+	$(".mf_a").hover(function() {
+		$(this).find(".mf_bg").css({
+			"top" : "0px",
+			"height" : "100%",
+			"background" : "#1d71b6",
+			"opacity" : "0.6"
+		});
+		$(this).find(".p1").css({
+			"height" : "100%",
+		});
+		$(this).find(".p1 a").css({
+			"line-height" : "150px",
+		});
+	}, function() {
+		$(this).find(".mf_bg").css({
+			"top" : "128px",
+			"background" : "#000",
+			"opacity" : "0.5"
+		});
+		$(this).find(".p1").css({
+			"height" : "30px",
+		});
+		$(this).find(".p1 a").css({
+			"line-height" : "30px",
+		});
+	});
+</script>
+
+</body>
+</html>

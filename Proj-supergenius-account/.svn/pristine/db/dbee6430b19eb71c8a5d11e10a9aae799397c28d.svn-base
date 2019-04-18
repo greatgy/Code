@@ -1,0 +1,1091 @@
+package com.supergenius.web.account.helper;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.httpclient.URIException;
+import org.apache.commons.httpclient.util.URIUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.bocom.netpay.b2cAPI.BOCOMSetting;
+import com.bocom.netpay.b2cAPI.NetSignServer;
+import com.genius.core.base.utils.CookieUtil;
+import com.genius.core.base.utils.DateUtil;
+import com.genius.core.base.utils.HttpUtil;
+import com.genius.core.base.utils.I18N;
+import com.genius.core.base.utils.JsonUtil;
+import com.genius.core.base.utils.MathUtil;
+import com.genius.core.base.utils.StrUtil;
+import com.genius.core.base.utils.WebUtil;
+import com.genius.server.base.helper.BaseHP;
+import com.hitrust.b2b.trustpay.client.b2b.FundTransferRequest;
+import com.hitrust.b2b.trustpay.client.b2b.TrnxInfo;
+import com.hitrust.b2b.trustpay.client.b2b.TrnxItem;
+import com.hitrust.b2b.trustpay.client.b2b.TrnxItems;
+import com.hitrust.b2b.trustpay.client.b2b.TrnxRemarks;
+import com.hitrust.b2b.trustpay.client.b2b.TrnxResult;
+import com.hitrust.trustpay.client.TrxException;
+import com.hitrust.trustpay.client.TrxResponse;
+import com.hitrust.trustpay.client.b2c.Order;
+import com.hitrust.trustpay.client.b2c.OrderItem;
+import com.hitrust.trustpay.client.b2c.PaymentRequest;
+import com.hitrust.trustpay.client.b2c.PaymentResult;
+import com.supergenius.global.conf.SysConf;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.third.alipay.config.AlipayConfig;
+import com.supergenius.third.alipay.util.AlipayNotify;
+import com.supergenius.third.alipay.util.AlipaySubmit;
+import com.supergenius.third.boc.util.BocOrderBuilder;
+import com.supergenius.third.cmb.CmbUtil;
+import com.supergenius.third.icbcB2C.pay.IcbcB2CNotifyImpl;
+import com.supergenius.third.icbcB2C.pay.IcbcB2CPayImpl;
+import com.supergenius.third.unionpay.QuickPayConf;
+import com.supergenius.third.unionpay.QuickPayUtils;
+import com.supergenius.third.wxpay.qrcode.config.PayData;
+import com.supergenius.third.wxpay.qrcode.config.WXPayConfig;
+import com.supergenius.third.wxpay.util.WXPayUtil;
+import com.supergenius.xo.account.entity.Account;
+import com.supergenius.xo.account.enums.EBank;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.common.enums.ESite;
+
+import icbcB2C.model.FormData;
+import icbcB2C.model.NotifyData;
+import icbcB2C.model.NotifyOrderInfo;
+import icbcB2C.model.OrderInfo;
+import icbcB2C.model.TranData;
+import icbcB2C.notify.IcbcB2CNotify;
+import icbcB2C.pay.IcbcB2CPay;
+
+/**
+ * 充值hp
+ * @author liushaomin
+ */
+public class RechargeHP extends BaseHP{
+	
+	private static Logger log = LoggerFactory.getLogger(RechargeHP.class);
+	
+	/**
+	 * 判断平台和对应的apiuid是否一致
+	 * @param site
+	 * @param apiuid
+	 * @author liushaomin
+	 */
+	public static boolean CheckApiuid(String site, String apiuid) {
+		if (ESite.sudoku.toString().equals(site)) {
+			if (apiuid.equals(SysConf.SiteSudokuApiuid)) {
+				return true;
+			}
+		} else if (ESite.supergenius.toString().equals(site)) {
+			if (apiuid.equals(SysConf.SiteSuperGeniusApiuid)) {
+				return true;
+			}
+		} else if (ESite.tpi.toString().equals(site)) {
+			if (apiuid.equals(SysConf.SiteTpiApiuid)) {
+				return true;
+			}
+		} else if (ESite.user.toString().equals(site)) {
+			if (apiuid.equals(SysConf.SiteUserApiuid)) {
+				return true;
+			}
+		} else if (ESite.moral.toString().equals(site)) {
+			if (apiuid.equals(SysConf.SiteMoralApiuid)) {
+				return true;
+			}
+		} else if (ESite.manager.toString().equals(site)) {
+			if (apiuid.equals(SysConf.SiteManagerApiuid)) {
+				return true;
+			}
+		} else if (ESite.sns.toString().equals(site)) {
+			if (apiuid.equals(SysConf.SiteSnsApiuid)) {
+				return true;
+			}
+		} else if (ESite.enterpriser.toString().equals(site)) {
+			if (apiuid.equals(SysConf.SiteEnterpriserApiuid)) {
+				return true;
+			}
+		} else if (ESite.demopay.toString().equals(site)) {
+			if (apiuid.equals(SysConf.DemoPayApiuid)) {
+				return true;
+			}
+		}
+		// TODO 有新的站点使用account接口时需要改这里的代码
+		return ESite.get(Integer.valueOf(site)) != null;
+	}
+	
+	/**
+	 * 据选择的银行获得post的数据，并post给银行
+	 * @param model
+	 * @param type
+	 * @param account
+	 * @param resulturl
+	 * @param ipAddr
+	 * @author liushaomin
+	 */
+	public static String getPostData(Map<String, Object> model, EBank type, Account account, String resulturl, String ipAddr) {
+		log.info(String.format("begin to execute getPostData(EBank:%s, accountsn:%s, money:%s, resulturl:%s, customerIp:%s)", type.name(), account.getAccountsn(), account.getMoney(), resulturl, ipAddr));
+		Map<String, String> errs = new HashMap<>();
+		try {
+			if (type == EBank.icbc) {//工商银行
+				IcbcB2CPay pay = new IcbcB2CPayImpl();
+				TranData tranData = new TranData();
+				tranData.setOrderDate(account.getCreatetime().toString(DateUtil.FORMAT_DATE_YYYYMMddHHmmss));
+//				tranData.setOrderDate("20131020" + DateUtil.NowTime().toString("HHmmss"));
+//				tranData.setOrderDate("20130925123056");
+				tranData.setGoodsType("1"); //取值“0”：虚拟商品；取值“1”，实物商品
+				String merURL = String.format(String.format(SysConf.BankMerBackEndUrl, EBank.icbc), account.getUid());
+				tranData.setMerURL(merURL);//交易结束，将客户引导到商户的此url，即通过客户浏览器post交易结果信息到商户的此URL
+				//tranData.setMerVAR();//商户自定义，当返回银行结果时，作为一个隐藏域变量，商户可以用此变量维护session等等
+				//tranData.setMerCustomID();//买家用户号
+				//tranData.setMerCustomPhone();//买家联系电话
+				//tranData.setGoodsAddress();//收货地址
+				List<OrderInfo> orders = new ArrayList<>();
+				OrderInfo o = new OrderInfo();
+				o.setInstallmentTimes("1");//分期付款期数
+				o.setOrderid(account.getAccountsn());//订单号
+				o.setAmount(StrUtil.format("#", MathUtil.muti(account.getMoney(), 100)));//订单金额，单位分,如1
+				o.setGoodsName(account.getTypeName());//商品名称
+//				o.setGoodsName(StrUtil.get(account.getName(), SysConst.UTF8, SysConst.GBK));//商品名称
+//				o.setCarriageAmt(CarriageAmt);//已含运费金额
+//				o.setGoodsID(GoodsID);//商品编号
+//				o.setGoodsNum(GoodsNum);//商品数量
+				orders.add(o);//至少有一个订单信息
+				tranData.setOrderInfoVector(orders);
+				FormData fd = pay.createFormData(SysConf.BankICBCConfigFile, tranData);
+				String interfaceName = fd.getInterfaceName();
+				String interfaceVersion = fd.getInterfaceVersion();
+				String merCert = fd.getMerCert();
+				String merSignMsg = fd.getMerSignMsg();
+				String strTranData = fd.getTranData();
+				model.put("interfaceName", interfaceName);//生成的接口名称
+				model.put("interfaceVersion", interfaceVersion);//生成的接口版本号
+				model.put("merCert", merCert);//生成的交易数据
+				model.put("merSignMsg", merSignMsg);//生成的订单签名数据
+				model.put("tranData", strTranData);//生成的商城证书公钥
+				log.info("interfaceName:" + interfaceName);
+				log.info("interfaceVersion:" + interfaceVersion);
+				log.info("merCert:" + merCert);
+				log.info("merSignMsg:" + merSignMsg);
+				log.info("tranData:" + strTranData);
+				log.info("returning bankpost_icbc ...");
+				return "bankpost_icbc";
+			} else if (type == EBank.unionpay) {//银联
+				//商户需要组装如下对象的数据
+				String[] valueVo = new String[]{
+						QuickPayConf.version,//协议版本
+						QuickPayConf.charset,//字符编码
+			            "01",//交易类型
+			            "",//原始交易流水号,当交易类型是撤销或者退货时，该域必须出现
+			            QuickPayConf.merCode,//商户代码
+			            QuickPayConf.merName,//商户简称
+			            "",//收单机构代码（仅收单机构接入需要填写）
+			            "",//商户类别（收单机构接入需要填写）
+			            "",//商品URL
+			            "",//商品名称
+			            "",//商品单价 单位：分
+			            "",//商品数量
+			            "",//折扣 单位：分
+			            "",//运费 单位：分
+			            account.getAccountsn(),//订单号（需要商户自己生成）
+			            StrUtil.format("#", MathUtil.muti(account.getMoney(), 100)),//交易金额 单位：分，如1
+			            "156",//交易币种
+			            account.getCreatetime().toString(DateUtil.FORMAT_DATE_YYYYMMddHHmmss),//交易时间
+			            ipAddr,//用户IP
+			            "",//用户真实姓名
+			            "",//默认支付方式
+			            "",//默认银行编号
+			            "300000",//交易超时时间
+			            resulturl,// 前台回调商户URL QuickPayConf.merFrontEndUrl
+						String.format(QuickPayConf.merBackEndUrl, account.getUid()),// 后台回调商户URL
+			            ""//商户保留域
+				};
+				String html = new QuickPayUtils().createPayHtml(valueVo, QuickPayConf.signType);//跳转到银联页面支付
+				model.put(ViewKeyDict.html, html);
+				log.info("Unionpay html in getPostData(...):" + html);
+				log.info("returning bankpost_unionpay ...");
+				return "bankpost_unionpay";
+			} else if(type == EBank.cmbchina){//招商银行
+				String branchId = SysConf.BankCmbBranchId; //开户分行号0010
+				log.info("开户分行号branchId:" + branchId);
+				String cono = SysConf.BankCmbCono;//商户号007639
+				log.info("商户号cono:" + cono);
+				String date = account.getCreatetime().toString(DateUtil.FORMAT_DATE_SHORT);//交易时间 格式20131115
+				log.info("交易时间date:" + date);
+				String money = StrUtil.format("#.##", account.getMoney());//交易金额 单位：元，如0.01
+				log.info("交易金额money:" + money);
+				String billno = account.getAccountsn().substring(6,16);//订单号（需要商户自己生成6-10位）
+				log.info("订单号billno:" + billno);
+				String merchantUrl = String.format(String.format(SysConf.BankMerBackEndUrl, EBank.cmbchina), account.getUid());;//支付结果通知地址
+				log.info("支付结果通知地址merchantUrl:" + merchantUrl);
+				String MerchantPara = "";//商户参数
+				log.info("商户参数MerchantPara:" + MerchantPara);
+				model.put("branchid", branchId);
+				model.put("cono", cono);
+				model.put("date", date);
+				model.put("money", money);
+				model.put("billno", billno);
+				model.put("merchantUrl",merchantUrl);
+				model.put("MerchantPara",MerchantPara);
+				log.info("returning bankpost_cmb ...");
+				return "bankpost_cmb";
+			} else if (type == EBank.paypal) {//paypal支付
+				String money = StrUtil.format("#.##", account.getMoney());//交易金额 单位：元，如0.01
+				log.info("交易金额money:" + money);
+				String notify_url = String.format(String.format(SysConf.BankMerBackEndUrl, EBank.paypal), account.getUid());
+				log.info("后台处理地址notifyUrl:" + notify_url);
+				model.put("money", money);
+				model.put("notify_url", notify_url);
+				model.put("resulturl", resulturl);
+				model.put("business", SysConf.EmailHostEmailAddr);
+				model.put("item_name", SysConf.WebSiteName);//商品名称（可选项）
+				model.put("item_number", 125);//商品编码（可选项）
+				model.put("currency_code", SysConf.BankPaypalCurrency_code);
+				model.put("bn", SysConf.BankPaypalBn);
+				model.put("cmd", SysConf.BankPaypalCmd);
+				model.put("BankPaypalPostUrl", SysConf.BankPaypalPostUrl);
+				log.info("returning bankpost_paypal ...");
+				return "bankpost_paypal";
+			}else if (type == EBank.bankcomm) {//交行
+				String interfaceVersion = "1.0.0.0";
+				String merID = BOCOMSetting.MerchantID;
+				String orderid = account.getAccountsn();
+				String orderDate = account.getCreatetime().toString(DateUtil.FORMAT_DATE_SHORT);//交易时间 格式20131115
+				String orderTime = account.getCreatetime().toString("HHmmss");//交易时间 格式HHmmss
+				String tranType = "0";// 0:B2C
+				String amount = StrUtil.format("#.##", account.getMoney());//交易金额 单位：元，如0.01
+				String curType = "CNY";
+				String orderContent = "";//订单内容，非必填
+				String orderMono = "";//商家备注，非必填
+				String phdFlag = "";//物流配送标志，非必填
+				String notifyType = "1";//0 不通知 1 通知 2 转页面
+				String merURL = String.format(String.format(SysConf.BankMerBackEndUrl, EBank.bankcomm), account.getUid());// 后台回调商户URL
+				String goodsURL ="";//取货 URL,非必填
+				String jumpSeconds ="";//自动跳转时间,非必填
+				String payBatchNo = "";//商户批次号,非必填
+				String proxyMerName = "";//代理商家名称，非必填
+				String proxyMerType = "";//代理商家证件类型，非必填
+				String proxyMerCredentials = "";//代理商家证件号码,非必填
+				String netType = "0";//渠道编号
+				String sourceMsg = interfaceVersion + "|" + merID + "|" + orderid + "|" + orderDate + "|" + orderTime + "|" + tranType
+                        + "|" + amount + "|" + curType + "|" + orderContent + "|" + orderMono + "|" + phdFlag + "|"
+                        + notifyType + "|" + merURL + "|" + goodsURL + "|" + jumpSeconds + "|" + payBatchNo + "|"
+                        + proxyMerName + "|" + proxyMerType + "|" + proxyMerCredentials + "|" + netType;
+				log.info("sourceMsg:" + sourceMsg);
+				NetSignServer nss = new NetSignServer();
+		        String merchantDN = BOCOMSetting.MerchantCertDN;
+		        log.info("merchantDN:" + merchantDN);
+		        nss.NSSetPlainText(sourceMsg.getBytes("GBK"));
+		        byte bSignMsg [] = nss.NSDetachedSign(merchantDN);
+		        if (nss.getLastErrnum() < 0) {
+		        	log.info("ERROR:商户端签名失败");
+		        }
+		        String signMsg = new String(bSignMsg, "GBK");
+		        log.info("signMsg:" + signMsg);
+		        model.put("interfaceVersion", interfaceVersion);
+		        model.put("merID", merID);
+		        model.put("orderid", orderid);
+		        model.put("orderDate", orderDate);
+		        model.put("orderTime", orderTime);
+		        model.put("tranType", tranType);
+		        model.put("amount", amount);
+		        model.put("curType", curType);
+		        model.put("orderContent", orderContent);
+		        model.put("orderMono", orderMono);
+		        model.put("phdFlag", phdFlag);
+		        model.put("notifyType", notifyType);
+		        model.put("merURL", merURL);
+		        model.put("goodsURL", goodsURL);
+		        model.put("jumpSeconds", jumpSeconds);
+		        model.put("payBatchNo", payBatchNo);
+		        model.put("proxyMerName", proxyMerName);
+		        model.put("proxyMerType", proxyMerType);
+		        model.put("proxyMerCredentials", proxyMerCredentials);
+		        model.put("netType", netType);
+		        model.put("merSignMsg", signMsg);
+		        model.put("orderUrl", BOCOMSetting.OrderURL);//提交到银行的URL
+		        log.info("orderUrl:" + BOCOMSetting.OrderURL);
+		        log.info("returning bankpost_comm ...");
+		        return "bankpost_comm";
+			} else if (type == EBank.abchina) {//农业银行
+				Order tOrder = new Order();
+				tOrder.setOrderNo(account.getAccountsn());//设定订单编号 （必要信息）
+				tOrder.setExpiredDate(new Integer(30).intValue());//设定订单有效期 （必要信息）
+				tOrder.setOrderDesc(account.getTypeName());//设定订单说明
+				tOrder.setOrderDate(account.getCreatetime().toString("YYYY/MM/dd"));//设定订单日期（必要信息 - YYYY/MM/dd）
+				tOrder.setOrderTime(account.getCreatetime().toString("HH:mm:ss"));//设定订单时间 （必要信息 - HH:mm:ss）
+				tOrder.setOrderAmount(account.getMoney());//设定订单金额 （必要信息）
+				tOrder.setOrderURL(SysConf.WebSiteUri);//设定订单网址
+				tOrder.setBuyIP(ipAddr);//设定订单IP
+				tOrder.addOrderItem(new OrderItem(account.getAccountsn(), account.getTypeName(), account.getMoney(), 1));//生成定单订单对象，并将订单明细加入定单中（可选信息）
+				PaymentRequest tPaymentRequest = new PaymentRequest();
+				tPaymentRequest.setOrder(tOrder);//设定支付请求的订单 （必要信息）
+				tPaymentRequest.setProductType(PaymentRequest.PRD_TYPE_ONE);//设定商品种类 （必要信息） PaymentRequest.PRD_TYPE_ONE：非实体商品，如服务、IP卡、下载MP3、... PaymentRequest.PRD_TYPE_TWO：实体商品
+				tPaymentRequest.setPaymentType(PaymentRequest.PAY_TYPE_ABC);//设定支付类型 PaymentRequest.PAY_TYPE_ABC：农行卡支付 PaymentRequest.PAY_TYPE_INT：国际卡支付
+				tPaymentRequest.setNotifyType("1");//设定商户通知方式 0：URL页面通知 1：服务器通知
+				tPaymentRequest.setResultNotifyURL(resulturl);//设定支付结果回传网址 （必要信息）
+				tPaymentRequest.setMerchantRemarks("");//设定商户备注信息
+				tPaymentRequest.setPaymentLinkType("1");//设定支付接入方式
+				TrxResponse tTrxResponse = tPaymentRequest.extendPostRequest(1);
+				if (tTrxResponse.isSuccess()) {
+					log.info("tTrxResponse.isSuccess(): return true");
+					model.put(ViewKeyDict.url, tTrxResponse.getValue("PaymentURL"));
+					log.info("ABChina url in getPostData(...):" + tTrxResponse.getValue("PaymentURL"));
+					log.info("returning bankpost_abchina ...");
+					return "bankpost_abchina";
+				} else {
+					log.info("failed tTrxResponse.isSuccess(): return false");
+					log.info("tTrxResponse.getReturnCode()：" + tTrxResponse.getReturnCode());
+					log.info("tTrxResponse.getErrorMessage()：" + tTrxResponse.getErrorMessage());
+					errs.put(ViewKeyDict.result, "支付请求提交失败");
+				}
+			} else if (type == EBank.abchina_b2b) {//农业银行 企业B2B
+				String merURL = String.format(String.format(SysConf.BankMerBackEndUrl, EBank.abchina_b2b), account.getUid());
+				String tMerchantTrnxNo = account.getAccountsn();//商户交易编号
+				String tTrnxAmountStr = StrUtil.format("#.##", account.getMoney());//交易金额,如0.01
+				String tTrnxDate = account.getCreatetime().toString("yyyy/MM/dd");//交易时间
+				String tTrnxTime = account.getCreatetime().toString("HH:mm:ss");//交易时间
+				String tAccountDBNo = SysConf.BankABCAccountDBNo;//收款方账号
+				String tAccountDBName = new String(SysConf.Corporation.getBytes("UTF-8"), "GB2312");//收款方账户名
+				String tAccountDBBank = "000000";//收款方账户开户行联行号
+				String tResultNotifyURL = merURL;//
+				String tMerchantRemarks = "";//商户备注信息
+				double tTrnxAmount = 0;
+				try {
+					tTrnxAmount = Double.parseDouble(tTrnxAmountStr);
+				} catch (NumberFormatException e) {
+					logException(log, e);
+				}
+				TrnxItems tTrnxItems = new TrnxItems();
+				tTrnxItems.addTrnxItem(new TrnxItem(account.getAccountsn(), account.getTypeName(), account.getMoney(), 1));
+				TrnxRemarks tTrnxRemarks = new TrnxRemarks();
+//				tTrnxRemarks.addTrnxRemark(new TrnxRemark("付款时间", tTrnxDate + " " + tTrnxTime));
+//				tTrnxRemarks.addTrnxRemark(new TrnxRemark("其它说明", "能够使买方确信该交易是自己交易的信息"));
+				TrnxInfo tTrnxInfo = new TrnxInfo();
+				tTrnxInfo.setTrnxOpr(account.getUsername());//交易人员（可选信息）（提供买方操作员在商户的交易网站上输入姓名或员工代码，便于买方在后续交易中知道此交易是由谁发起的）
+				tTrnxInfo.setTrnxRemarks(tTrnxRemarks);
+				tTrnxInfo.setTrnxItems(tTrnxItems);
+				FundTransferRequest tFundTransferRequest = new FundTransferRequest();
+				tFundTransferRequest.setTrnxInfo(tTrnxInfo);//设定交易细项 （必要信息）
+				tFundTransferRequest.setMerchantTrnxNo(tMerchantTrnxNo);//设定商户交易编号（必要信息）
+				log.info("设定商户交易编号setMerchantTrnxNo:" + tMerchantTrnxNo);
+				tFundTransferRequest.setTrnxAmount(tTrnxAmount);//设定交易金额 （必要信息）
+				log.info("设定交易金额setTrnxAmount:" + tTrnxAmount);
+				tFundTransferRequest.setTrnxDate(tTrnxDate);//设定交易日期 （必要信息）
+				log.info("设定交易日期setTrnxDate:" + tTrnxDate);
+				tFundTransferRequest.setTrnxTime(tTrnxTime);//设定交易时间 （必要信息）
+				log.info("设定交易时间setTrnxTime:" + tTrnxTime);
+				tFundTransferRequest.setAccountDBNo(tAccountDBNo);//设定收款方账号 （必要信息）
+				log.info("设定收款方账号setAccountDBNo:" + tAccountDBNo);
+				tFundTransferRequest.setAccountDBName(tAccountDBName);//设定收款方账户名（必要信息）
+				log.info("设定收款方账户名setAccountDBName:" + tAccountDBName);
+				tFundTransferRequest.setAccountDBBank(tAccountDBBank);//设定收款方账户开户行联行号（必要信息）
+				log.info("设定收款方账户开户行联行号setAccountDBBank:" + tAccountDBBank);
+				tFundTransferRequest.setResultNotifyURL(tResultNotifyURL);//设定交易结果回传网址（必要信息）
+				log.info("设定交易结果回传网址setResultNotifyURL:" + tResultNotifyURL);
+				tFundTransferRequest.setMerchantRemarks(tMerchantRemarks);//设定商户备注信息
+				com.hitrust.b2b.trustpay.client.TrxResponse tTrxResponse = tFundTransferRequest.postRequest();
+				if (tTrxResponse.isSuccess()) {//直接支付请求提交成功,将客户端导向出示买方企业客户证书页面
+					log.info("TrnxType:" + tTrxResponse.getValue("TrnxType"));
+					log.info("TrnxAMT:" + tTrxResponse.getValue("TrnxAMT"));
+					log.info("MerchantID:" + tTrxResponse.getValue("MerchantID"));
+					log.info("MerchantTrnxNo:" + tTrxResponse.getValue("MerchantTrnxNo"));
+					String url = tTrxResponse.getValue("PaymentURL");
+					log.info("PaymentURL:" + url);
+					model.put(ViewKeyDict.url, url);
+					return "bankpost_abchina";
+				} else {//直接支付请求提交失败，商户自定后续动作
+					log.info("ReturnCode:" + tTrxResponse.getReturnCode());
+					log.info("ErrorMessage:" + tTrxResponse.getErrorMessage());
+				}
+			} else if (type == EBank.boc) {//中国银行
+				String bankpostbockurl = SysConf.BankBOCPostUrl;
+				String merchantno = SysConf.BankBOCMerchantno;//商户号 104110059475555
+				String orderNo = account.getAccountsn();//订单号
+				String orderTime = account.getCreatetime().toString(DateUtil.FORMAT_DATE_YYYYMMddHHmmss);//设定订单时间 YYYYMMDDHHMISS
+				String orderTimeoutDate = account.getCreatetime().plusDays(30).toString(DateUtil.FORMAT_DATE_YYYYMMddHHmmss) ;// 过期时间:订单时间加30天
+				String orderAmount = StrUtil.format("#.##", account.getMoney());//订单金额，如0.01
+				String payType = SysConf.BankBOCPayType;//支付类型： 1
+				String curcode = SysConf.BankBOCCurcode;//支付币种： 目前只支持人保民币001；
+				String orderNote = account.getTypeName();//订单说明，必填!
+				String orderUrl = resulturl;//回调商户url
+				log.info("商户号merchantno:" + merchantno);
+				log.info("订单号orderNo:" + orderNo);
+				log.info("订单时间orderTime:" + orderTime);
+				log.info("过期时间orderTimeoutDate:" + orderTimeoutDate);
+				log.info("订单金额orderAmount:" + orderAmount);
+				log.info("支付类型payType:" + payType);
+				log.info("支付币种curcode:" + curcode);
+				log.info("订单说明orderNote:" + orderNote);
+				log.info("回调商户url orderUrl:" + orderUrl);
+				BocOrderBuilder bob = new BocOrderBuilder(orderNo,orderTime,orderAmount);//数字签名
+				try {
+					String signatureData = bob.getSignatureData();
+					log.info("signatureData：" + signatureData);
+					model.put("signData:", signatureData);
+					model.put("orderNo:", orderNo);
+					model.put("merchantNo:", merchantno);
+					model.put("payType:", payType);
+					model.put("curCode:", curcode);
+					model.put("orderNote:", orderNote);
+					model.put("orderUrl:", orderUrl);
+					model.put("orderTime:", orderTime);
+					model.put("orderAmount:", orderAmount);
+					model.put("orderTimeoutDate:", orderTimeoutDate);
+					model.put("bankpostbocurl",bankpostbockurl);
+					log.info("returning bankpost_boc ...");
+					return "bankpost_boc";
+				} catch (Exception e) {
+					e.printStackTrace();
+					logException(log, e);
+					errs.put(ViewKeyDict.result, e.getMessage());
+				}
+			} else if (type == EBank.alipay) {//支付宝 参数说明https://doc.open.alipay.com/docs/doc.htm?spm=a219a.7629140.0.0.Za3oIY&treeId=62&articleId=104743&docType=1#s0
+				//把请求参数打包成数组
+				String notifyUrl = String.format(String.format(SysConf.BankMerBackEndUrl, EBank.alipay), account.getUid());
+				log.info("notifyUrl:" + notifyUrl);
+				log.info("订单号orderNo:" + account.getAccountsn());
+				log.info("订单时间orderTime:" + account.getCreatetime().toString(DateUtil.FORMAT_DATE_YYYYMMddHHmmss));
+				log.info("订单金额money:" + StrUtil.format("#.##", account.getMoney()));
+				log.info("订单类型typeName:" + account.getTypeName());
+				Map<String, String> params = new HashMap<String, String>();
+				if (model.get(ViewKeyDict.ismobile) != null && (Boolean) model.get(ViewKeyDict.ismobile)) {
+					params.put("service", AlipayConfig.serviceMobilePay);
+					log.info("service:" + AlipayConfig.serviceMobilePay);
+				} else {
+					params.put("service", AlipayConfig.servicePCPay);
+					log.info("service:" + AlipayConfig.servicePCPay);
+				}
+		        params.put("partner", AlipayConfig.partner);
+		        params.put("seller_id", AlipayConfig.seller_id);
+		        params.put("_input_charset", AlipayConfig.input_charset);
+				params.put("payment_type", AlipayConfig.payment_type);
+				params.put("notify_url", notifyUrl);
+				params.put("return_url", resulturl);
+				params.put("anti_phishing_key", AlipayConfig.anti_phishing_key);
+				params.put("exter_invoke_ip", AlipayConfig.exter_invoke_ip);
+				params.put("out_trade_no", account.getAccountsn());
+				params.put("subject", account.getTypeName());
+				params.put("total_fee", String.valueOf(account.getMoney()));
+//				sParaTemp.put("body", "商品描述");
+				//其他业务参数根据在线开发文档，添加参数.文档地址:https://doc.open.alipay.com/doc2/detail.htm?spm=a219a.7629140.0.0.O9yorI&treeId=62&articleId=103740&docType=1
+				String html = AlipaySubmit.buildRequest(params, "get", "Submit");
+				model.put(ViewKeyDict.html, html);
+				log.info("Alipay html in getPostData(...):" + html);
+				log.info("returning bankpost_alipay ...");
+				return "bankpost_alipay";
+			} else if (type == EBank.tenpay) {//财付通
+				return "bankpost_tenpay";
+			} else if (type == EBank.wxpay) {// 微信支付
+				String notifyUrl = String.format(String.format(SysConf.BankMerBackEndUrl, EBank.wxpay), account.getUid());
+				PayData data = new PayData("超天才-" + account.getTypeName(), account.getAccountsn(), (int)MathUtil.muti(account.getMoney(), 100));
+				data.setNotifyUrl(notifyUrl);
+				String url = WXPayUtil.GetPayUrl(data);
+				log.info("wxpay url:" + url);
+				if (url != null) {
+					model.put(ViewKeyDict.url, WebUtil.encodeURI(url));
+				} else {
+					model.put(ViewKeyDict.err, true);
+				}
+				model.put(ViewKeyDict.account, account);
+				return "bankpost_wxpay";
+			}
+		} catch (UnsupportedEncodingException e) {
+			errs.put(ViewKeyDict.result, e.getMessage());
+			logException(log, e);
+		}
+		model.put(ViewKeyDict.err, errs);
+		return "error";
+	}
+
+	/**
+	 * 处理从银行传递过来的参数
+	 * 返回ture 为充值成功
+	 * @param model
+	 * @param type
+	 * @param account 
+	 * @param request
+	 * @return 是否成功支付
+	 * @throws IOException 
+	 */
+	public static boolean receivePostData(Map<String, Object> model, Account account, Map<String, String> msgmap, HttpServletRequest request, HttpServletResponse response) throws IOException {
+		log.info(String.format("begin to execute receivePostData(EBank:%s, accountsn:%s, money:%s)", account.getBankName(), account.getAccountsn(), account.getMoney()));
+		if (receiveDataFromBankHandler(model, account, msgmap, request, response)) {
+			log.info("success, return true execute receiveDataFromBankHandler(...)");
+			return true;
+		} else {
+			log.info("failed, return false execute receiveDataFromBankHandler(...)");
+			return false;
+		}
+	}
+	
+	/**
+	 * 处理银行返回的充值信息，判断是否充值成功
+	 * @param account
+	 * @param errs
+	 * @param request
+	 * @return
+	 * @author liushaomin
+	 * @throws IOException 
+	 */
+	private static boolean receiveDataFromBankHandler(Map<String, Object> model, Account account, Map<String, String> msgmap, HttpServletRequest request ,HttpServletResponse response) throws IOException {
+		log.info(String.format("begin to execute receiveDataFromBankHandler(EBank:%s, accountsn:%s, money:%s)", account.getBankName(), account.getAccountsn(), account.getMoney()));
+		if (msgmap == null) {
+			msgmap = new HashMap<String, String>();
+		}
+		if (account.getBank() == EBank.icbc) {//工行
+			String strNotifyData = request.getParameter("notifyData");
+			try {
+				log.info("notifyData:" + StrUtil.get(strNotifyData, "GBK", "UTF-8"));
+			} catch (UnsupportedEncodingException e1) {
+				e1.printStackTrace();
+				logException(log, e1);
+			}
+			String strSignMsg = request.getParameter("signMsg");
+			log.info("signMsg:" + strSignMsg);
+			IcbcB2CNotify notify = new IcbcB2CNotifyImpl();
+			NotifyData notifyData = new NotifyData();
+			notifyData = notify.createNotifyData(strNotifyData, strSignMsg, SysConf.BankICBCConfigFile);
+			if(notifyData==null) {
+				msgmap.put(ViewKeyDict.bank_notifydata_null, I18N.getError(ViewKeyDict.bank_notifydata_null, Locale.CHINA));
+			} else {
+				log.info("TranStat:" + notifyData.getTranStat());//订单处理状态
+				String comment = notifyData.getComment();
+				log.info("Comment:" + comment);
+				log.info("CurType:" + notifyData.getCurType());//支付币种
+				log.info("InterfaceName:" + notifyData.getInterfaceName());//接口名称
+				log.info("InterfaceVersion:" + notifyData.getInterfaceVersion());//接口版本号
+				log.info("JoinFlag:" + notifyData.getJoinFlag());//客户联名标志
+				log.info("MerID:" + notifyData.getMerID());//商户代码
+				log.info("NotifyData:" + notifyData.getNotifyData());//NotifyData的明文XML串
+				log.info("NotifyDate:" + notifyData.getNotifyDate());//返回通知日期时间
+				log.info("OrderDate:" + notifyData.getOrderDate());//交易日期时间
+				log.info("TranBatchNo:" + notifyData.getTranBatchNo());//批次号
+				log.info("UserNum:" + notifyData.getUserNum());//联名会员号
+				log.info("VerifyJoinFlag:" + notifyData.getVerifyJoinFlag());//检验联名标志
+				List<?> orderInfoList = notifyData.getSubOrderInfoList();
+				for(int i = 0; i < orderInfoList.size(); i++) {
+					int num = i + 1;
+					log.info("第" + num + "笔订单信息：");
+					NotifyOrderInfo notifyOrderInfo = (NotifyOrderInfo)orderInfoList.get(i);
+					log.info("orderid:" + notifyOrderInfo.getOrderid());//订单号
+					log.info("amount:" + notifyOrderInfo.getAmount());//订单金额
+					log.info("installmentTimes:" + notifyOrderInfo.getInstallmentTimes());//分期付款期数
+					log.info("merAcct:" + notifyOrderInfo.getMerAcct());//商户账号
+					log.info("tranSerialNo:" + notifyOrderInfo.getTranSerialNo());//银行指令序号
+				}
+				if (notifyData.getTranStat().equals("1")) {
+					log.info("success in receiveDataFromBankHandler, return true");
+					return true;
+				} else if(notifyData.getTranStat().equals("1")) {
+					msgmap.put(ViewKeyDict.result, "交易失败");
+				} else if(notifyData.getTranStat().equals("3")) {
+					msgmap.put(ViewKeyDict.result, "交易可疑");
+				}
+			}
+		} else if (account.getBank() == EBank.unionpay) {//银联
+			String[] resArr = new String[QuickPayConf.notifyVo.length];
+			for(int i = 0; i < QuickPayConf.notifyVo.length; i++){
+				resArr[i] = request.getParameter(QuickPayConf.notifyVo[i]);
+				log.info(String.format("%s:%s", QuickPayConf.notifyVo[i], resArr[i]));
+			}
+			String signature = request.getParameter(QuickPayConf.signature);
+			log.info("signature:" + signature);
+			String signMethod = request.getParameter(QuickPayConf.signMethod);
+			log.info("signMethod:" + signMethod);
+			boolean signatureCheck = new QuickPayUtils().checkSign(resArr, signMethod, signature);
+			log.info("signatureCheck:" + String.valueOf(signatureCheck));
+			if (signatureCheck) {
+				log.info("respCode:" + resArr[10]);
+				if(!"00".equals(resArr[10])){
+					log.info("respMsg:" + resArr[11]);
+				} else {
+					log.info("success in receiveDataFromBankHandler, return true");
+					return true;
+				}
+			} else {
+				msgmap.put(ViewKeyDict.result, "签名不正确");
+			}
+		} else if(account.getBank() == EBank.cmbchina){//招商银行
+			String url = request.getQueryString();
+			log.info("url:" + url);
+			try {
+				url = URIUtil.decode(url);
+				log.info("URIUtil.decode: " + url);
+			} catch (URIException e) {
+				e.printStackTrace();
+				logException(log, e);
+			}
+			String succeed = request.getParameter("Succeed");//取值Y(成功)或N(失败)；
+			String billNo = request.getParameter("BillNo");//定单号
+			String amount = request.getParameter("Amount");//实际支付金额
+			String date = request.getParameter("Date");//交易日期
+			String msg = request.getParameter("Msg");//银行通知用户的支付结果消息。信息的前38个字符格式为：4位分行号＋6位商户号＋8位银行接受交易的日期＋20位银行流水号；可以利用交易日期＋银行流水号＋定单号对该定单进行结帐处理；
+			String signature = request.getParameter("Signature");
+			log.info("Succeed：" + succeed);
+			log.info("billNo：" + billNo);
+			log.info("amount：" + amount);
+			log.info("date：" + date);
+			log.info("msg：" + msg);
+			log.info("signature：" + signature);
+			if (CmbUtil.checkFromBank(url)) {
+				log.info(String.format("CmbUtil.checkFromBank(%s) == true", url));
+				if (succeed.equals("Y")) {
+					log.info("success in receiveDataFromBankHandler, succeed.equals(Y)");
+					return true;
+//					if(SettleOrderHandler(account)) {
+//						log.info("SettleOrderHandler(account) return true");
+//						log.info("success in receiveDataFromBankHandler, return true");
+//						return true;
+//					} else {
+//						errs.put(ErrKeyConst.result, "支付成功后，银行结账失败");
+//						return false;
+//					}
+				}
+			} else {
+				log.info(String.format("CmbUtil.checkFromBank(%s) == false", url));
+				msgmap.put(ViewKeyDict.result, "URL不正确");
+			}
+		} else if (account.getBank() == EBank.bankcomm) {//交行
+			String notifyMsg = request.getParameter("notifyMsg");//获取银行通知结果
+			log.info("notifyMsg:" + notifyMsg);
+			int lastIndex = notifyMsg.lastIndexOf("|");
+			String signMsg = notifyMsg.substring(lastIndex + 1, notifyMsg.length());//获取签名信息
+			log.info("signMsg:" + signMsg);
+			String srcMsg = notifyMsg.substring(0, lastIndex + 1);
+			log.info("srcMsg:" + srcMsg);
+			int veriyCode = -1;
+			NetSignServer nss = new NetSignServer();
+			try {
+				nss.NSDetachedVerify(signMsg.getBytes("GBK"), srcMsg.getBytes("GBK"));
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+				logException(log, e);
+				return false;
+			}
+			veriyCode = nss.getLastErrnum();
+			if (veriyCode < 0) {//验签出错
+				msgmap.put(ViewKeyDict.result, "商户端验证签名失败：return code:" + veriyCode);
+			}
+			String[] arr = srcMsg.split(ViewKeyDict.vLineRegSplitter);
+			try {
+				log.info(String.format("商户客户号:%s", arr[0]));
+				log.info(String.format("订单编号:%s", arr[1]));
+				log.info(String.format("交易金额:%s", arr[2]));
+				log.info(String.format("交易币种:%s", arr[3]));
+				log.info(String.format("平台批次号:%s", arr[4]));
+				log.info(String.format("商户批次号:%s", arr[5]));
+				log.info(String.format("交易日期:%s", arr[6]));
+				log.info(String.format("交易时间:%s", arr[7]));
+				log.info(String.format("交易流水号:%s", arr[8]));
+				log.info(String.format("交易结果:%s", arr[9]));
+				log.info(String.format("手续费总额:%s", arr[10]));
+				log.info(String.format("银行卡类型:%s", arr[11]));
+				log.info(String.format("银行备注:%s", arr[12]));
+				log.info(String.format("错误信息描述:%s", arr[13]));
+				if (arr[9].equals("1")) {
+					log.info("success in receiveDataFromBankHandler, return true");
+					return true;
+				} else {
+					msgmap.put(ViewKeyDict.result, arr[13]);
+				}
+			} catch (ArrayIndexOutOfBoundsException e) {
+				logException(log, e);
+			}
+		} else if (account.getBank() == EBank.abchina) {//农业银行
+			PaymentResult tResult;
+			try {
+				String msg = request.getParameter("MSG");
+				tResult = new PaymentResult(msg);
+				log.info(String.format("交易类型TrxType:%s", tResult.getValue("TrxType")));
+				log.info(String.format("订单号OrderNo:%s", tResult.getValue("OrderNo")));
+				log.info(String.format("订单金额Amount:%s", tResult.getValue("Amount")));
+				log.info(String.format("交易批次号BatchNo:%s", tResult.getValue("BatchNo")));
+				log.info(String.format("交易凭证号VoucherNo:%s", tResult.getValue("VoucherNo")));
+				log.info(String.format("银行交易日期HostDate:%s", tResult.getValue("HostDate")));
+				log.info(String.format("银行交易时间HostTime:%s", tResult.getValue("HostTime")));
+				log.info(String.format("商户备注信息MerchantRemarks:%s", tResult.getValue("MerchantRemarks")));
+				log.info(String.format("消费者支付方式PayType:%s", tResult.getValue("PayType")));
+				log.info(String.format("支付结果通知方式NotifyType:%s", tResult.getValue("NotifyType")));
+				log.info(String.format("银行返回交易流水号iRspRef:%s", tResult.getValue("iRspRef")));
+				if (tResult.isSuccess()) {//支付成功
+					log.info("success in receiveDataFromBankHandler, return true");
+					return true;
+				} else {//支付失败
+					log.info(String.format("响应码returnCode:%s", tResult.getReturnCode()));
+					log.info(String.format("支付失败原因errorMessage:%s", tResult.getErrorMessage()));
+				}
+			} catch (TrxException e) {
+				e.printStackTrace();
+				logException(log, e);
+			}
+		} else if (account.getBank() == EBank.abchina_b2b) {//农业银行 企业B2B
+			try {
+				String msg = request.getParameter("MSG");
+				log.info("msg:" + msg);
+				TrnxResult tResult = new TrnxResult(msg);
+				if (tResult.isSuccess()) {//交易成功
+					log.info(String.format("商户代码MerchantID:%s", tResult.getValue("MerchantID")));
+					log.info(String.format("企业客户代码CorporationCustomerNo:%s", tResult.getValue("CorporationCustomerNo")));
+					log.info(String.format("商户交易编号MerchantTrnxNo:%s", tResult.getValue("MerchantTrnxNo")));
+					log.info(String.format("交易流水号TrnxSN:%s", tResult.getValue("TrnxSN")));
+					log.info(String.format("交易类型TrnxType:%s", tResult.getValue("TrnxType")));
+					log.info(String.format("交易金额TrnxAMT:%s", tResult.getValue("TrnxAMT")));
+					log.info(String.format("冻结序号FreezeNo:%s", tResult.getValue("FreezeNo")));
+					log.info(String.format("原冻结序号OrginalFreezeNo:%s", tResult.getValue("OrginalFreezeNo")));
+					log.info(String.format("付款方帐号AccountNo:%s", tResult.getValue("AccountNo")));
+					log.info(String.format("付款方帐户名AccountName:%s", tResult.getValue("AccountName")));
+					log.info(String.format("付款方开户行联行号AccountBank:%s", tResult.getValue("AccountBank")));
+					log.info(String.format("收款方帐号AccountDBNo:%s", tResult.getValue("AccountDBNo")));
+					log.info(String.format("收款方帐户名AccountDBName:%s", tResult.getValue("AccountDBName")));
+					log.info(String.format("收款方开户行联行号AccountDBBank:%s", tResult.getValue("AccountDBBank")));
+					log.info(String.format("交易时间TrnxTime:%s", tResult.getValue("TrnxTime")));
+					log.info(String.format("交易状态TrnxStatus:%s", tResult.getValue("TrnxStatus")));
+					log.info("success in receiveDataFromBankHandler, return true");
+					return true;
+				} else {//交易失败
+					log.info(String.format("商户代码MerchantID:%s", tResult.getValue("MerchantID")));
+					log.info(String.format("企业客户代码CorporationCustomerNo:%s", tResult.getValue("CorporationCustomerNo")));
+					log.info(String.format("商户交易编号MerchantTrnxNo:%s", tResult.getValue("MerchantTrnxNo")));
+					log.info(String.format("交易类型TrnxType:%s", tResult.getValue("TrnxType")));
+					log.info(String.format("交易金额TrnxAMT:%s", tResult.getValue("TrnxAMT")));
+					log.info(String.format("交易时间TrnxTime:%s", tResult.getValue("TrnxTime")));
+					log.info(String.format("交易状态TrnxStatus:%s", tResult.getValue("TrnxStatus")));
+					log.info(String.format("响应码returnCode:%s", tResult.getReturnCode()));
+					log.info(String.format("支付失败原因errorMessage:%s", tResult.getErrorMessage()));
+				}
+			} catch (com.hitrust.b2b.trustpay.client.TrxException e) {
+				e.printStackTrace();
+				logException(log, e);
+			}
+		} else if (account.getBank() == EBank.boc) {//中国银行
+			String url = request.getQueryString();
+			log.info("url:" + url);
+			try {
+				url = URIUtil.decode(url);
+				log.info("URIUtil.decode: " + url);
+			} catch (URIException e) {
+				e.printStackTrace();
+				logException(log, e);
+			}
+			String merchantNo = request.getParameter("merchantNo");//商户号
+			String orderNo = request.getParameter("orderNo");//订单号
+			String orderSeq = request.getParameter("orderSeq");//银行订单流水号
+			String cardTyp = request.getParameter("cardTyp");//银行卡类别
+			String payTime = request.getParameter("payTime");//支付时间
+			String orderStatus = request.getParameter("orderStatus");//订单状态
+			String payAmount = request.getParameter("payAmount");//支付金额
+			String orderIp = request.getParameter("orderIp");//客户支付IP地址
+			String orderRefer = request.getParameter("orderRefer");//客户浏览器Refer信息
+			String bankTranSeq = request.getParameter("bankTranSeq");//银行交易流水号
+			String returnActFlag = request.getParameter("returnActFlag");//返回操作类型
+			String phoneNum = request.getParameter("phoneNum");//电话号码
+			String signData = request.getParameter("signData");//中行签名数据
+			String dn="CN=铁道部资金清算中心_0c7192965f46f7a0e9069c90016596ff55da3073_铁道部_11,C=CN";
+			log.info("商户号merchantNo:" + merchantNo);
+			log.info("订单号orderNo:" + orderNo);
+			log.info("银行订单流水号orderSeq:" + orderSeq);
+			log.info("银行卡类别cardTyp:" + cardTyp);
+			log.info("支付时间payTime:" + payTime);
+			log.info("订单状态orderStatus:" + orderStatus);
+			log.info("支付金额payAmount:" + payAmount);
+			log.info("客户支付IP地址orderIp:" + orderIp);
+			log.info("客户浏览器Refer信息orderRefer:" + orderRefer);
+			log.info("银行交易流水号bankTranSeq:" + bankTranSeq);
+			log.info("返回操作类型returnActFlag:" + returnActFlag);
+			log.info("电话号码phoneNum:" + phoneNum);
+			log.info("中行签名数据signData:" + signData);
+			StringBuffer sb = new StringBuffer();
+			//示例明文由管道符“|”分割，如：商户号|商户订单号|银行订单流水号|银行卡类别|支付时间|订单状态|支付金额		merchantNo|orderNo|orderSeq|cardTyp|payTime|orderStatus|payAmount
+			String spliter="|";
+			sb.append(merchantNo).append(spliter);
+			sb.append(orderNo).append(spliter);
+			sb.append(orderSeq).append(spliter);
+			sb.append(cardTyp).append(spliter);
+			sb.append(payTime).append(spliter);
+			sb.append(orderStatus).append(spliter);
+			sb.append(payAmount);
+			BocOrderBuilder boc = new BocOrderBuilder();
+			try{
+				if (boc.verifyData(signData, sb.toString(), dn)) {
+					log.info("boc.verifyData return true");
+					if (orderStatus.equals("0")) {//0:未处理 1:支付 2:撤销 3:退货 4:未明 5:失败
+						msgmap.put(ViewKeyDict.msg, "未处理");
+						log.info("0:未处理");
+					} else if (orderStatus.equals("1")) {
+						log.info("1:支付");
+						log.info("success in receiveDataFromBankHandler, return true");
+					} else if (orderStatus.equals("2")) {
+						msgmap.put(ViewKeyDict.msg, "撤销");
+						log.info("2:撤销");
+					} else if (orderStatus.equals("3")) {
+						msgmap.put(ViewKeyDict.msg, "退货");
+						log.info("3:退货");
+					} else if (orderStatus.equals("4")) {
+						msgmap.put(ViewKeyDict.msg, "未明");
+						log.info("4:未明");
+					} else if (orderStatus.equals("5")) {
+						msgmap.put(ViewKeyDict.msg, "失败");
+						log.info("5:失败");
+					}
+					return true;
+				} else {
+					log.info("boc.verifyData return false");
+				}
+				
+			}catch(Exception e){
+				logException(log, e);
+				msgmap.put(ViewKeyDict.exception, e.getMessage());
+			}
+		} else if (account.getBank() == EBank.alipay) {//支付宝
+			//获取支付宝POST过来反馈信息
+			Map<String,String> params = new HashMap<String,String>();
+			Map<?, ?> requestParams = request.getParameterMap();
+			for (Iterator<?> iter = requestParams.keySet().iterator(); iter.hasNext();) {
+				String name = (String) iter.next();
+				String[] values = (String[]) requestParams.get(name);
+				String valueStr = "";
+				for (int i = 0; i < values.length; i++) {
+					valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
+				}
+				//乱码解决，这段代码在出现乱码时使用。如果mysign和sign不相等也可以使用这段代码转化
+				//valueStr = new String(valueStr.getBytes("ISO-8859-1"), "gbk");
+				log.info(String.format("request.Param %s:" , name) + valueStr);
+				params.put(name, valueStr);
+			}
+
+			try {
+				String out_trade_no = new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"),"UTF-8"); //商户订单号
+				String trade_no = new String(request.getParameter("trade_no").getBytes("ISO-8859-1"),"UTF-8"); //支付宝交易号
+				String trade_status = new String(request.getParameter("trade_status").getBytes("ISO-8859-1"),"UTF-8"); //交易状态
+				log.info("支付宝传递过来的订单号out_trade_no:" + out_trade_no);
+				log.info("支付宝传递过来的交易号trade_no:" + trade_no);
+				log.info("支付宝传递过来的交易状态trade_status:" + trade_status);
+				if(AlipayNotify.verify(params)){//验证成功
+					if(trade_status.equals("TRADE_FINISHED")){ //TRADE_FINISHED（普通即时到账的交易成功状态）；
+					//判断该笔订单是否在商户网站中已经做过处理
+					//如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
+					//请务必判断请求时的total_fee、seller_id与通知时获取的total_fee、seller_id为一致的
+					//如果有做过处理，不执行商户的业务程序
+						log.info("success in receiveDataFromBankHandler, return true");
+						return true;
+					//注意：退款日期超过可退款期限后（如三个月可退款），支付宝系统发送该交易状态通知
+					} else if (trade_status.equals("TRADE_SUCCESS")){ //TRADE_SUCCESS（开通了高级即时到账或机票分销产品后的交易成功状态）
+					//判断该笔订单是否在商户网站中已经做过处理
+					//如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
+					//请务必判断请求时的total_fee、seller_id与通知时获取的total_fee、seller_id为一致的
+					//如果有做过处理，不执行商户的业务程序
+						log.info("success in receiveDataFromBankHandler, return true");
+						return true;
+					//注意：
+					//付款完成后，支付宝系统发送该交易状态通知
+					}
+					msgmap.put(ViewKeyDict.result, "trade_status不正确");
+				} else {
+					msgmap.put(ViewKeyDict.result, "验证失败");
+				}
+			} catch (UnsupportedEncodingException e) {
+				logException(log, e);
+			}
+		} else if (account.getBank() == EBank.tenpay) {//财付通
+		} else if (account.getBank() == EBank.wxpay) {//微信支付
+			if (model.get(ViewKeyDict.data) != null) {
+				PayData data = new PayData();
+				data.fromXml(model.get(ViewKeyDict.data).toString());
+				PayData res = new PayData();
+				if (StrUtil.isNotEmpty(data.getTransactionId())) {
+					if (WXPayUtil.queryOrder(data.getTransactionId())) {
+						res.setReturnCode(WXPayConfig.SUCCESS);
+						res.setReturnMsg(WXPayConfig.MsgOk);
+						log.info("success in receiveDataFromBankHandler, return true");
+						model.put(ViewKeyDict.response, res.toXml());
+						return true;
+					}
+				}
+				res.setReturnCode(WXPayConfig.FAIL);
+				res.setReturnMsg(WXPayConfig.MsgFail);
+				log.info("failed in receiveDataFromBankHandler, return false");
+				model.put(ViewKeyDict.response, res.toXml());
+			}
+			return false;
+		} else if (account.getBank() == EBank.paypal) {
+				//  从 PayPal ft读取 POST 信息同时添加变量„cmd‟
+				@SuppressWarnings("unchecked")
+				Enumeration<Object> en = request.getParameterNames();
+				String str = "cmd=_notify-validate";
+				while(en.hasMoreElements()){
+				String paramName = (String)en.nextElement();
+				String paramValue = request.getParameter(paramName);
+				str = str + "&" + paramName + "=" + URLEncoder.encode(paramValue, "iso-8859-1");
+				}
+				log.info("回返给paypal的表单验证：" + str);
+				//建议在此将接受到的信息 str 记录到日志文件中以确认是否收到 IPN 信息
+				//将信息 POST 回给 PayPal 进行验证
+				//设置 HTTP 的头信息
+				//在 Sandbox 情况下，设置：
+				//URL u= new URL(“http://www.sandbox.paypal.com/cgi-bin/webscr”);
+				URL u = new URL("http://www.sandbox.paypal.com/cgi-bin/webscr");
+				URLConnection uc = u.openConnection();
+				uc.setDoOutput(true);
+
+				uc.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+				PrintWriter pw = new PrintWriter(uc.getOutputStream());
+				pw.println(str);
+				pw.close();
+				//接受 PayPal 对 IPN 回发的回复信息
+				BufferedReader in= new BufferedReader(new InputStreamReader(uc.getInputStream()));
+				String res = in.readLine();
+				in.close();
+				
+				//将 POST 信息分配给本地变量，可以根据您的需要添加
+				//该付款明细所有变量可参考：
+				//https://www.paypal.com/IntegrationCenter/ic_ipn-pdt-variable-reference.html
+				log.info("paypal反回的验证信息："+res);
+				String itemName = request.getParameter("item_name");
+				String itemNumber = request.getParameter("item_number");
+				String paymentStatus = request.getParameter("payment_status");
+				String paymentAmount = request.getParameter("mc_gross");
+				String paymentCurrency = request.getParameter("mc_currency");//货币种类
+				String txnId = request.getParameter("txn_id");//事务id
+				String receiverEmail = request.getParameter("receiver_email");
+				String payerEmail = request.getParameter("payer_email");
+				log.info("商品信息:"+itemName);
+				log.info("paymentCurrency="+paymentCurrency);
+				log.info("商品编码:"+itemNumber);
+				log.info("支付状态："+paymentStatus);
+				log.info("支付金额："+paymentAmount);
+				log.info("txnId交易码："+txnId);
+				log.info("receiverEmail收款人邮箱"+receiverEmail);
+				log.info("payerEmail付款人邮箱"+payerEmail);
+				//…
+				//获取 PayPal 对回发信息的回复信息，判断刚才的通知是否为 PayPal 发ft的
+				if(res.equals("VERIFIED")) {
+					boolean flag = true;
+					if (!paymentStatus.equalsIgnoreCase("Completed") || !receiverEmail.equals(SysConf.EmailHostEmailAddr)) {
+						flag = false;
+					}
+					if (!paymentCurrency.equals(SysConf.BankPaypalCurrency_code) || !paymentAmount.equals(account.getMoney())) {
+						flag = false;
+					}
+					Cookie cookie = CookieUtil.getCookie(request, EChannel.account.name() + txnId + ViewKeyDict.totalpay);
+					if (cookie != null) {
+						flag = false;
+					} else {
+						CookieUtil.addCookieSess(response, EChannel.account.name() + txnId + ViewKeyDict.totalpay, txnId);
+					}
+					if (flag) {
+						log.info("success in receiveDataFromBankHandler, return true");
+						return true;
+					}
+				//检查付款状态
+				//检查 txn_id 是否已经处理过
+				//检查 receiver_email 是否是您的 PayPal 账户中的 EMAIL 地址
+				//检查付款金额和货币单位是否正确
+				//处理其他数据，包括写数据库
+				}else if(res.equals("INVALID")) {
+					msgmap.put(ViewKeyDict.result, "非法信息");
+				//非法信息，可以将此记录到您的日志文件中以备调查
+				}else {
+					msgmap.put(ViewKeyDict.result, "validate不正确");
+				//处理其他错误
+				}
+		}
+		log.info("failed in receiveDataFromBankHandler, return false");
+		return false;
+	}
+	
+	/**
+	 * 充值成功后，回调站点提供的NotifyUr，判断是否请求到NotifyUr
+	 * 返回true或false
+	 * @param account
+	 * @return
+	 * @author liushaomin
+	 */
+	public static boolean getSiteNotifyUrl(Account account) {
+		log.info("begin to invoke getSiteResultUrl");
+		Map<String, String> map = new HashMap<String, String>();
+//		map.put(ViewKeyDict.apiuid, SysConf.SudokuApiuid); //TODO 确定是否需要
+		map.put(ViewKeyDict.payuid, account.getPayuid());
+		map.put(ViewKeyDict.money, String.valueOf(account.getMoney()));
+		map.put(ViewKeyDict.banktype, account.getBank().toString());
+		map.put(ViewKeyDict.useruid, account.getUseruid());
+		map.put(ViewKeyDict.pwdmd5, AccountHP.getPwdmd5(account));
+		log.info(String.format("request notifyUrl url( url:%s)", account.getNotifyurl()));
+		log.info(String.format("request notifyUrl map( map:%s)", JsonUtil.toJson(map)));
+		String result = HttpUtil.get(account.getNotifyurl(), map);
+		log.info(String.format("notifyUrl result:%s", result));
+//		Map<String, Object> resultMap = JsonUtil.fromJson(result, Map.class);
+		if (result != null && result.equals("0")) {
+			log.info("request notifyUrl success");
+			return true;
+		} else if (StrUtil.isNotEmpty(result)) {
+			@SuppressWarnings("unchecked")
+			Map<String, Object> resultMap = JsonUtil.fromJson(result, Map.class);
+			if (StrUtil.isNotEmpty(resultMap.get(MapperDict.result)) && String.valueOf(resultMap.get(MapperDict.result)).equals("0")) {
+				log.info("request notifyUrl success");
+				return true;
+			}
+		} else {
+			//TODO 如果请求失败，加入队列定时请求notifyurl
+		}
+		log.info("request notifyUrl failed");
+		return false;
+	}
+	
+	/**
+	 * 给银行后台调用的服务端接口处理逻辑
+	 * @param model
+	 * @param eBank
+	 * @param account
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws IOException 
+	 */
+	public static boolean backReceiveHandler(Map<String, Object> model, Account account, HttpServletRequest request, HttpServletResponse response) throws IOException {
+		log.info(String.format("begin to execute backReceiveHandler(EBank:%s, accountsn:%s, money:%s)", account.getBankName(), account.getAccountsn(), account.getMoney()));
+		if (receiveDataFromBankHandler(model, account, null, request, response)) {
+			log.info("success, return true execute receiveDataFromBankHandler(...)");
+			return true;//成功
+		} else {
+			log.info("failed, return false execute receiveDataFromBankHandler(...)");
+		}
+		response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		log.info("response.setStatus:500");
+		return false;
+	}
+
+	/**
+	 * 返回需要跳转的结果页地址
+	 * @param account
+	 * @param i
+	 * @return
+	 * @author Architect.bian
+	 * @createtime 2016-4-29 下午5:19:47
+	 */
+	public static String getResultUrl(Account account, int i) {
+		String resulturl = String.format(String.format(account.getResulturl()), i);
+		resulturl += "?useruid=" + account.getUseruid();
+		return resulturl;
+	}
+	
+	
+}

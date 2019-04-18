@@ -1,0 +1,231 @@
+[#ftl]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>${title}</title>
+	<link rel="stylesheet" href="${basecss}/css/default/pages/msg.css"/>
+</head>
+<body>
+	<div class="wraper centerbox">
+		<div class="main">
+			<div class="newsContainer searchResult">
+				<div class="newsLeft">
+					<h3>搜索页面</h3>
+					<ul class="newsnav">
+						<li>
+							<a href="${base}/searchr/art">文章<span>24</span></a>
+						</li>
+						<li>
+							<a href="${base}/searchr/topic">话题<span>26</span></a>
+						</li>
+						<li>
+							<a href="${base}/searchr/debate">论战<span>12</span></a>
+						</li>
+						<li class="curSelect">
+							<a href="${base}/searchr/user">用户<span>12</span></a>
+						</li>
+					</ul>
+				</div>
+				<div class="newsRight searchResultright">
+					<h4>与<span class="keyword">“搜索词”</span>相关的用户&nbsp;<b class="keyword">12</b>&nbsp;个</h4>
+					<ul class="searchUserlist">
+						<li>
+							<div class="subsperson">
+								<a href="#" class="personimg">
+									<img src="${baseimg}/imgs/default/subsimg03.png" />
+								</a>
+								<div class="personinfor">
+									<h4>
+										<a href="#" class="personame">哇<span class="keyword">咔咔</span></a>
+										<div class="subsbtn">
+											<span class="substip redtip">已取消订阅</span>
+											<a href="#" class="cancelsubs cancelSubs">
+												<img src="${baseimg}/imgs/default/cancelsubs.png" />
+											</a>
+										</div>
+									</h4>
+									<div class="companyInfor">
+										超天才-IT部门-产品分析专员
+									</div>
+									<div class="numcont">
+										<span class="articleNum">
+											文章
+											<a href="#">789篇</a>
+										</span>
+										<span class="topicNum">
+											话题
+											<a href="#">256个</a>
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="newaction">
+								<img src="${baseimg}/imgs/default/voiceimg.png" />
+								<a href="#" class="activity">
+									发表文章《超天才官网二期正在改版》……
+								</a>
+							</div>
+						</li>
+						<li>
+							<div class="subsperson">
+								<a href="#" class="personimg">
+									<img src="${baseimg}/imgs/default/subsimg04.png" />
+								</a>
+								<div class="personinfor">
+									<h4>
+										<a href="#" class="personame"><span class="keyword">南</span>溪</a>
+										<div class="subsbtn">
+											<span class="substip redtip">已取消订阅</span>
+											<a href="#" class="cancelsubs cancelSubs">
+												<img src="${baseimg}/imgs/default/cancelsubs.png" />
+											</a>
+										</div>
+									</h4>
+									<div class="companyInfor">
+										超天才-IT部门-产品分析专员
+									</div>
+									<div class="numcont">
+										<span class="articleNum">
+											文章
+											<a href="#">789篇</a>
+										</span>
+										<span class="topicNum">
+											话题
+											<a href="#">256个</a>
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="newaction">
+								<img src="${baseimg}/imgs/default/voiceimg.png" />
+								<a href="#" class="activity">
+									发表文章《超天才官网二期正在改版》……
+								</a>
+							</div>
+						</li>
+						<li>
+							<div class="subsperson">
+								<a href="#" class="personimg">
+									<img src="${baseimg}/imgs/default/subsimg01.png" />
+								</a>
+								<div class="personinfor">
+									<h4>
+										<a href="#" class="personame"><span class="keyword">露西</span></a>
+										<div class="subsbtn">
+											<span class="substip bluetip">订阅成功</span>
+											<a href="#" class="cancelsubs cancelSubs">
+												<img src="${baseimg}/imgs/default/addsubs.png" />
+											</a>
+										</div>
+									</h4>
+									<div class="companyInfor">
+										超天才-IT部门-产品分析专员
+									</div>
+									<div class="numcont">
+										<span class="articleNum">
+											文章
+											<a href="#">789篇</a>
+										</span>
+										<span class="topicNum">
+											话题
+											<a href="#">256个</a>
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="newaction">
+								<img src="${baseimg}/imgs/default/voiceimg.png" />
+								<a href="#" class="activity">
+									发表文章《超天才官网二期正在改版》……
+								</a>
+							</div>
+						</li>
+						<li>
+							<div class="subsperson">
+								<a href="#" class="personimg">
+									<img src="${baseimg}/imgs/default/subsimg05.png" />
+								</a>
+								<div class="personinfor">
+									<h4>
+										<a href="#" class="personame">韩<span class="keyword">梅梅</span></a>
+										<div class="subsbtn">
+											<span class="substip redtip">已取消订阅</span>
+											<a href="#" class="cancelsubs cancelSubs">
+												<img src="${baseimg}/imgs/default/cancelsubs.png" />
+											</a>
+										</div>
+									</h4>
+									<div class="companyInfor">
+										超天才-IT部门-产品分析专员
+									</div>
+									<div class="numcont">
+										<span class="articleNum">
+											文章
+											<a href="#">789篇</a>
+										</span>
+										<span class="topicNum">
+											话题
+											<a href="#">256个</a>
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="newaction">
+								<img src="${baseimg}/imgs/default/voiceimg.png" />
+								<a href="#" class="activity">
+									发表文章《超天才官网二期正在改版》……
+								</a>
+							</div>
+						</li>
+						<li>
+							<div class="subsperson">
+								<a href="#" class="personimg">
+									<img src="${baseimg}/imgs/default/subsimg02.png" />
+								</a>
+								<div class="personinfor">
+									<h4>
+										<a href="#" class="personame"><span class="keyword">莉莉</span></a>
+										<div class="subsbtn">
+											<span class="substip bluetip">订阅成功</span>
+											<a href="#" class="cancelsubs cancelSubs">
+												<img src="${baseimg}/imgs/default/addsubs.png" />
+											</a>
+										</div>
+									</h4>
+									<div class="companyInfor">
+										超天才-IT部门-产品分析专员
+									</div>
+									<div class="numcont">
+										<span class="articleNum">
+											文章
+											<a href="#">789篇</a>
+										</span>
+										<span class="topicNum">
+											话题
+											<a href="#">256个</a>
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="newaction">
+								<img src="${baseimg}/imgs/default/voiceimg.png" />
+								<a href="#" class="activity">
+									发表文章《超天才官网二期正在改版》……
+								</a>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		$(function(){
+
+		});
+	</script>
+</body>
+</html>
+
+

@@ -1,0 +1,114 @@
+package com.supergenius.web.admin.finance.helper;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.genius.core.base.utils.StrUtil;
+import com.genius.model.base.entity.Pager;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.finance.entity.Contribute;
+import com.supergenius.xo.finance.entity.Message;
+import com.supergenius.xo.finance.enums.EFinanceMsg;
+import com.supergenius.xo.finance.service.ContributeSO;
+import com.supergenius.xo.finance.service.MessageSO;
+import com.supergenius.xo.user.entity.User;
+import com.supergenius.xo.user.service.UserSO;
+
+/**
+ * 投稿HP（管理后台）
+ * @author liushaomin
+ * 
+ */
+public class ContributeHP extends com.supergenius.server.finance.helper.BaseContributeHP {
+
+	private static Logger log = LoggerFactory.getLogger(ContributeHP.class);
+
+	private static ContributeSO so;
+
+	private static UserSO userSO;
+
+	private static MessageSO messageSO;
+
+	private static ContributeSO getSO() {
+		if (so == null) {
+			so = (ContributeSO) spring.getBean(ContributeSO.class);
+		}
+		return so;
+	}
+
+	private static UserSO getUserSO() {
+		if (userSO == null) {
+			userSO = (UserSO) spring.getBean(UserSO.class);
+		}
+		return userSO;
+	}
+
+	public static MessageSO getMessageSO() {
+		if (messageSO == null) {
+			messageSO = (MessageSO) spring.getBean(MessageSO.class);
+		}
+		return messageSO;
+	}
+
+	/**
+	 * 查询投稿时组织数据
+	 * @param model
+	 * @return
+	 */
+	public static Map<String, Object> query(Map<?, ?> model) {
+		Pager pager = Pager.getNewInstance(model.get("page"), model.get("rows"));
+		Map<String, Object> map = getParamMap(pager, model, MapperDict.title, MapperDict.name);
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.shorttitle))) {
+			map.put(MapperDict.shorttitle + MapperDict.suffix_like_key, model.get(ViewKeyDict.shorttitle).toString().trim());
+		}
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.createtimestart))) {
+			String startTime = model.get(ViewKeyDict.createtimestart).toString().trim() + MapperDict.starttimeformat;
+			map.put(MapperDict.createtimestart, startTime);
+		}
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.createtimeend))) {
+			String endTime = model.get(ViewKeyDict.createtimeend).toString().trim() + MapperDict.endtimeformat;
+			map.put(MapperDict.createtimeend, endTime);
+		}
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.state))) {
+			map.put(MapperDict.state, model.get(ViewKeyDict.state).toString().trim());
+		}
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.status))) {
+			map.put(MapperDict.status, model.get(ViewKeyDict.status).toString().trim());
+		}
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(ViewKeyDict.total, getSO().getCount(map));
+		result.put(ViewKeyDict.rows, getSO().getList(map));
+		return result;
+	}
+
+	/**
+	 * 审核未通过，发送消息
+	 * @param contribute
+	 * @return
+	 * @author LiJiacheng
+	 */
+	public static Message sendContributeMsg(Contribute contribute, String adminuid) {
+		User user = getUserSO().get(contribute.getUseruid());
+		if (user != null) {
+			Map<String, Object> map = new HashMap<>();
+			map.put(MapperDict.title, contribute.getTitle());
+			map.put(MapperDict.type, EFinanceMsg.articleunpass);
+			map.put(MapperDict.href, ViewKeyDict.poundOperation);
+			map.put(MapperDict.adminuid, adminuid);
+			Message message = getMessageSO().addMsg(map);
+			if (message != null) {
+				message.setRecipient(contribute.getUseruid());
+				return message;
+			} else {
+				log.info("The sendFinanceMsg send failed.");
+				return null;
+			}
+		}
+		return null;
+	}
+
+}

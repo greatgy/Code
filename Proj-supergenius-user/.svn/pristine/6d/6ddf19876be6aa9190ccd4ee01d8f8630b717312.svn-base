@@ -1,0 +1,782 @@
+.wraper {
+	width: 100%;
+	background: #e6e6e6;
+}
+.container {
+	min-height: 720px;
+	width: 980px;
+	padding-top: 20px;
+}
+.containerleft {
+	width: 198px;
+	height: 345px;
+	background-color: #fff;
+	display: inline-block;
+	box-shadow: 1px 2px 1px 0 #A0A0A0;
+	text-align: center;
+	margin-right: 12px;
+}
+.containerleft h2 {
+	height: 52px;
+	line-height: 55px;
+	text-align: center;
+	font-size: 17px;
+	font-weight: bold;
+	border-bottom: 3px solid #d1444d;
+	color: #d1444d;
+	letter-spacing: 1px;
+	overflow: hidden;
+}
+.accountlist li {
+	height: 55px;
+	line-height: 55px;
+	overflow: hidden;
+	background: #fff url(../../imgs/default/accountlfbg.png) no-repeat left center;
+}
+.accountlist a {
+	width: 100%;
+	display: block;
+	height: 55px;
+	line-height: 55px;
+	font-size: 16px;
+	color: #626262;
+}
+.accountlist span {
+	text-align: left;
+	display: inline-block;
+	width: 130px;
+	padding-left: 52px;
+}
+.accountlist .activeli {
+	background: #d1444d url(../../imgs/default/accountlfbgw.png) no-repeat left center;
+}
+.accountlist .accountitem01 , .accountlist .activeli.accountitem01 {
+	background-position: 22px 18px;
+}
+.accountlist .accountitem02 , .accountlist .activeli.accountitem02{
+	background-position: 22px -38px;
+}
+.accountlist .accountitem03 , .accountlist .activeli.accountitem03 {
+	background-position: 22px -95px;
+}
+.accountlist .accountitem04 , .accountlist .activeli.accountitem04 {
+	background-position: 22px -155px;
+}
+.accountlist .accountitem05 , .accountlist .activeli.accountitem05 {
+	background-position: 22px -210px;
+}
+.activeli a {
+	color: #fff;
+}
+.accountlist li:hover {
+	background-color: #d1444d;
+}
+.accountlist li:hover a {
+	color: #fff;
+}
+.containerright {
+	width: 765px;
+	min-height: 578px;
+	display: inline-block;
+	vertical-align: top;
+	background: #fff;
+	box-shadow: 1px 2px 1px 0 #A0A0A0;
+	text-align: left;
+} 
+.containerright h2 {
+	height: 50px;
+	line-height: 55px;
+	font-size: 17px;
+	color: #000;
+	padding-left: 38px;
+	border-bottom: 1px dotted #E6E6E6;
+	letter-spacing: 1px;
+}
+.containerright .editinformation {
+	display: inline-block;
+	font-size: 13px;
+	height: 50px;
+	overflow: hidden;
+	float: right;
+	margin-right: 25px;
+	letter-spacing: normal;
+	color: #878787;
+}
+.containerright .editinformation:hover {
+	color: #6e9fd9;
+	text-decoration: underline;
+}
+.editinformation img {
+	width: 17px;
+	height: 16px;
+	overflow: hidden;
+	margin-right: 2px;
+	vertical-align: baseline;
+}
+.personfile {
+	padding-bottom: 20px;
+}
+.personfiletop {
+	border-bottom: 1px dotted #ddd;
+	padding: 0 77.5px;
+	padding-bottom: 10px;
+	width: 610px;
+	margin: 0 auto;
+	padding-top: 10px;
+}
+.filetopleft {
+	display: inline-block;
+	width: 87px;
+	vertical-align: top;
+	margin-right: 20px;
+	overflow: hidden;
+}
+.filetopleft img {
+	width: 85px;
+	height: 85px;
+	border-radius: 50%;
+	margin-top: 12px;
+	overflow: hidden;
+}
+.filetopleft a {
+	display: block;
+	text-align: center;
+	font-size: 13px;
+	color: #6e9fd9;
+}
+.filetopleft a:hover {
+	color: #42D1E8;
+}
+.filetopright {
+	display: inline-block;
+}
+.filetopright li {
+	line-height: 28px;
+}
+.filetopright span {
+	display: inline-block;
+	width: 75px;
+	text-align: left;
+	font-size: 14px;
+	color: #3f3f3f;
+	overflow: hidden;
+	vertical-align: middle;
+} 
+.filetopright img {
+	width: 28px;
+	height: 26px;
+	vertical-align: middle;
+	overflow: hidden;
+}
+.filetopright b {
+	font-size: 12px;
+	font-weight: bold;
+	color: #626262;
+}
+.filetopright .b02 {
+	color: #ff8252;
+	font-weight: normal;
+}
+.personfilebottom {
+	width: 610px;
+	margin: 0 auto;
+	margin-top: 20px;
+}
+.personfilebottom li {
+	line-height: 30px;
+	margin-bottom: 10px;
+}
+.personfilebottom span {
+	display: inline-block;
+	text-align: left;
+	font-size: 14px;
+	color: #828282;
+}
+.personfilebottom .filetopleft {
+	text-align: center;
+	font-size: 14px;
+	color: #242424;
+}
+.personfilebottom .abstract {
+	width: 498px;
+	height: 160px;
+	display: inline-block;
+	font-size: 14px;
+	color: #828282;
+	line-height: 23px;
+	overflow: hidden;
+}
+/* 编辑资料页面 */
+.editfilebottom {
+    width: 660px;
+}
+.editfilebottom .filetopleft {
+	margin-right: 2px;
+}
+.editfilebottom input {
+	width: 455px;
+	height: 32px;
+	border: 1px solid #dbdbdb;
+	border-radius: 3px;
+	padding-left: 10px;
+	line-height: 20px;
+	color: #6e6e6e;
+	font-size: 14px;
+	overflow: hidden;
+}
+.editfilebottom input:focus {
+	box-shadow: inset 0 0 3px 0 #a5c7fe;
+	border: 1px solid #a5c7fe;
+}
+.editfilebottom textarea {
+	width: 445px;
+	height: 135px;
+	border: 1px solid #dbdbdb;
+	text-align: left;
+	padding: 10px;
+	font-size: 14px;
+	color: #828282;
+	line-height: 23px;
+	overflow: hidden;
+	resize: none;
+}
+.editbtns {
+	width: 500px;
+	overflow: hidden;
+	height: 40px;
+	margin: 20px auto;
+	padding: 2px;
+}
+.editbtns .editcancel {
+	display: inline-block;
+	width: 98px;
+	height: 36px;
+	border: 1px solid #8c8c8c;
+	background: #fff;
+	color: #555555;
+	text-align: center;
+	line-height: 36px;
+	font-size: 16px;
+	border-radius: 6px;
+	margin-left: 90px;
+	overflow: hidden;
+}
+.editbtns .editcancel:hover {
+	background: #ddd;
+	border: 1px solid #aaa;
+	color: #6F6969;
+}
+.editbtns .submit {
+	display: inline-block;
+	margin-left: 90px;
+	vertical-align: bottom;
+}
+/* 修改登录密码样式 */
+.logincode {
+	width: 580px;
+	text-align: center;
+	margin-top: 40px;
+	padding-bottom: 20px;
+}
+.changelogincode {
+	width: 100%;
+	margin: 0 auto;
+	padding-top: 10px;
+	text-align: left;
+	overflow: hidden;
+}
+.changelogincode li {
+	margin-bottom: 30px;
+}
+.changelogincode span {
+	display: inline-block;
+	width: 90px;
+	text-align: left;
+	font-size: 15px;
+	color: #676767;
+	overflow: hidden;
+}
+.changelogincode input {
+	width: 230px;
+	height: 22px;
+	display: inline-block;
+	border: 1px solid #cdcdcd;
+	padding: 5px 10px;
+	margin-left: 5px;
+	font-size: 14px;
+	color: #4F4F4F;
+	line-height: 20px;
+	overflow: hidden;
+}
+.changelogincode input:focus {
+	box-shadow: 0 0 2px 0 #129DE3;
+}
+.changelogincode .checknote {
+	height: 36px;
+	line-height: 35px;
+	display: inline-block;
+	float: right;
+	vertical-align: middle;
+	overflow: hidden;
+	font-size: 12px;
+	color: #685f55;
+	/* display: none; */
+}
+.checknote img {
+	width: 16px;
+	height: 16px;
+	overflow: hidden;
+	padding-left: 20px;
+	vertical-align: middle;
+	margin-right: 2px;
+}
+.safe {
+	width: 370px;
+	overflow: hidden;
+	margin-bottom: 10px;
+	margin-top: -20px;
+	/* display: none; */
+}
+.safe span {
+	width: 65px;
+	height: 18px;
+	text-align: center;
+	background: #ede2d5;
+	font-size: 12px;
+	color: #6e6c6b;
+	line-height: 17px;
+	margin-right: 5px;
+}
+.safe .saferange {
+	background-color: #ddcbb6;
+}
+.msg-box {
+	height: 36px;
+    line-height: 35px;
+    width: 200px;
+    display: inline-block;
+    float: right;
+    vertical-align: middle;
+    overflow: hidden;
+}
+.checknote {
+	height: 36px;
+	line-height: 35px;
+	width: 200px;
+	display: inline-block;
+	float: right;
+	vertical-align: middle;
+	overflow: hidden;
+	font-size: 12px;
+	color: #685f55;
+}
+.checknote img {
+	width: 16px;
+	height: 15px;
+	overflow: hidden;
+	padding-left: 5px;
+	vertical-align: middle;
+	margin-right: 2px;
+	margin-top: -2px;
+}
+.msg-box span {
+	display: inline;
+	font-size: 12px;
+	color: #685f55;
+}
+.submit {
+	display: block;
+	width: 100px;
+	height: 38px;
+	background: #c61420;
+	color: #fff;
+	text-align: center;
+	line-height: 38px;
+	font-size: 16px;
+	border-radius: 6px;
+	margin-left: 190px;
+	overflow: hidden;
+}
+.submit:hover {
+	background: #DC0C0C;
+	box-shadow: 0 1px 2px 0 #AB0909;
+	cursor: pointer;
+	outline: none;
+}
+.setmid {
+	width: 560px;
+	text-align: center;
+	padding: 40px 0 20px;
+	overflow: hidden;
+}
+.setmid img {
+	width: 78px;
+	height: 76px;
+	overflow: hidden;
+}
+.setmid .tip {
+	overflow: hidden;
+	font-size: 16px;
+	color: #595959;
+	margin: 30px 0;
+}
+.setmid .submit {
+	margin-left: auto;
+}
+
+/* 修改绑定邮箱样式 */
+.changemail h3 {
+	width: 540px;
+	text-align: left;
+	margin-top: -10px;
+	margin-bottom: 22px;
+	font-size: 15px;
+	color: #676767;
+	overflow: hidden;
+}
+.changemail h3 b {
+	color: #ff8252;
+	font-size: 14px;
+	font-weight: bold;
+	margin-left: 5px;
+}
+.emaillaststep {
+	width: 980px;
+	background: #fff;
+	height: 475px;
+	box-shadow: 1px 2px 1px 0 #A0A0A0;
+	overflow: hidden;
+}
+.goemail {
+	width: 506px;
+	padding: 100px 0 20px;
+}
+.goemail img {
+	width: 30px;
+	height: 30px;
+	vertical-align: middle;
+	margin-right: 5px;
+	overflow: hidden;
+}
+.goemail span {
+	font-size: 16px;
+	color: #6a6a6a;
+	text-align: center;
+	line-height: 20px;
+}
+.goemail .submit {
+	margin-top: 25px;
+	margin-left: auto;
+}
+.relogin {
+	width: 680px;
+	margin-top: 80px;
+	overflow: hidden;
+}
+.remail {
+	width: 520px;
+    margin: 100px auto 20px;
+    padding-bottom: 10px;
+    overflow: hidden;
+}
+.remail .newmail {
+	font-size: 14px;
+    color: #313131;
+    line-height: 20px;
+    text-align: center;
+    margin: 30px auto;
+}
+.newmail img {
+	margin-right: 6px;
+	width: 30px;
+    height: 30px;
+    overflow: hidden;
+    vertical-align: middle;
+}
+
+/* 账号保护样式 */
+.protectlist {
+	width: 655px;
+	margin: 0 auto;
+	margin-top: 38px;
+	overflow: hidden;
+	margin-left: 40px;
+}
+.protectlist li {
+	padding: 8px 10px;
+	height: 60px;
+	text-align: left;
+	border: 1px solid #cdcdcd;
+	margin-bottom: 38px;
+	overflow: hidden;
+}
+.protectlist img {
+	width: 38px;
+	height: 38px;
+	overflow: hidden;
+	vertical-align: top;
+	margin-right: 5px;
+}
+.protectmid {
+	display: inline-block;
+	width: 530px;
+	overflow: hidden;
+}
+.protectmid h3 {
+	font-size: 15px;
+	color: #3f3f3f;
+	margin-bottom: 5px;
+	overflow: hidden;
+}
+.protectmid span {
+	font-size: 12px;
+	color: #939393;
+	line-height: 20px;
+}
+.setresult {
+	display: inline-block;
+	width: 45px;
+	text-align: right;
+	vertical-align: top;
+	overflow: hidden;
+	float: right;
+}
+.setresult a {
+	display: inline-block;
+	margin-top: 10px;
+	font-size: 12px;
+	color: #6487ba;
+}
+.setresult a:hover {
+	text-decoration: underline;
+	color: #789DD3;
+}
+.setresult span {
+	display: block;
+	margin-top: 15px;
+	font-size: 12px;
+	color: #ff8c62;
+	overflow: hidden;
+}
+.identycontent {
+	height: 330px;
+	background-color: rgba(255,255,255,0.7);
+	border-radius: 12px;
+	overflow: hidden;
+}
+.identymid {
+	width: 400px;
+	height: 305px;
+	overflow: hidden;
+	background-color: #fff;
+	border-radius: 12px;
+	margin-top: 12px;
+}
+.identymid h4 {
+	height: 50px;
+	line-height: 52px;
+	text-align: left;
+	padding-left: 45px;
+	color: #626262;
+	font-size: 17px;
+	border-bottom: 1px dotted #D9D9D9;
+}
+.explain {
+	text-align: left;
+	display: block;
+	margin: 0 0 15px;
+	font-size: 14px;
+	color: #A4A4A4;
+	overflow: hidden;
+}
+.checkbtns a {
+	display: inline-block;
+	width: 98px;
+	height: 30px;
+	border-radius: 5px;
+	text-align: center;
+	line-height: 30px;
+	outline: none;
+	font-size: 15px;
+	letter-spacing: 5px;
+	overflow: hidden;
+	margin-right: 50px;
+}
+.checkbtns .cancle {
+	color: #313131;
+	background: #fff;
+	border: 1px solid #555555;
+}
+.checkbtns .save {
+	color: #fff;
+	background: #c61420;
+	border: 1px solid #c61420;
+	margin-right: 0;
+}
+.checkbtns .cancle:hover {
+	color: #fff;
+	background: #959595;
+	opacity: .8;
+	cursor: pointer;
+}
+.checkbtns .save:hover {
+	background: #8C0606;
+	opacity: .8;
+	cursor: pointer;
+}
+.warninginform {
+	margin: 0 auto;
+}
+.checkbtns {
+	margin-top: 20px;
+	padding-bottom: 5px;
+}
+.setquestioncontent {
+	width: 600px;
+	margin: 0 auto;
+	margin-top: 10px;
+	padding-bottom: 20px;
+	overflow: hidden;
+}
+.stepprogress {
+	width: 100%;
+	overflow: hidden;
+	padding: 2px 0;
+	border-bottom: 1px dotted #E6E6E6;
+	padding-bottom: 10px;
+}
+.stepprogress .step {
+	display: inline-block;
+	width: 120px;
+	height: 60px;
+	overflow: hidden;
+	text-align: center;
+	vertical-align: middle;
+}
+.step span {
+	display: block;
+	overflow: hidden;
+	font-size: 15px;
+	color: #959595;
+	margin-top: 8px;
+}
+.step .circle {
+	width: 28px;
+	height: 28px;
+	display: inline-block;
+	border: 2px solid #ddd;
+	line-height: 28px;
+	border-radius: 50%;
+	font-size: 16px;
+	color: #9f9f9f;
+	overflow: hidden;
+	margin-top: 0;
+}
+.checked span {
+	color: #e93f48 !important;
+}
+.checked .circle {
+	border: 2px solid #ff0000;
+}
+.stepprogress img {
+	width: 21px;
+	height: 12px;
+	overflow: hidden;
+	vertical-align: top;
+	margin-top: 15px;
+}
+.stepinfo {
+	text-align: left;
+	padding-bottom: 20px;
+}
+.stepinfo h3 {
+	height: 45px;
+	line-height: 47px;
+	font-size: 16px;
+	color: #ff8252;
+	margin-bottom: 15px;
+}
+.securitylist {
+	margin-left: 35px;
+}
+.securitylist li {
+	margin-bottom: 20px;
+}
+.securitylist span {
+	display: inline-block;
+	width: 90px;
+	text-align: left;
+	font-size: 14px;
+	color: #6D6D6D;
+	overflow: hidden;
+	vertical-align: middle;
+}
+.securitylist .keys {
+	width: 250px;
+	height: 30px;
+	border: 1px solid #a1a1a1;
+	padding-left: 10px;
+	padding-right: 10px;
+	font-size: 14px;
+	color: #717171;
+	vertical-align: middle;
+	overflow: hidden;
+	display: inline-block;
+}
+.securitylist input.keys {
+	width: 230px;
+	height: 28px;
+}
+.securitylist input.keys:focus {
+	box-shadow: 0 0 0 1.2px #BFDEFE
+}
+.stepinfo .checkbtns {
+	text-align: left;
+	width: 380px;
+	margin-top: 25px;
+	margin-left: 128px;
+	padding-bottom: 20px;
+	overflow: hidden;
+}
+.securitylist .safequestion {
+	border: none;
+	line-height: 30px;
+}
+.finishstep {
+	text-align: center;
+	overflow: hidden;
+	margin-top: 100px;
+}
+.finishtop img {
+	width: 42px;
+	height: 42px;
+	overflow: hidden;
+	vertical-align: middle;
+	margin-right: 10px;
+}
+.finishtop span {
+	font-size: 17px;
+	color: #ff8252;
+}
+.finishstep p {
+	font-size: 14px;
+	color: #969696;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	overflow: hidden;
+}
+.stepinfo .checkposition {
+	margin-left: 200px;
+}
+/* 修改头像样式 */
+.imgchangebox {
+	width: 720px;
+	min-height: 450px;
+	overflow: hidden;
+	margin: 15px auto;
+}
+
+
+
+
+

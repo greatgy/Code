@@ -1,0 +1,509 @@
+﻿/*CSS Document */
+.left{ float:left;}
+.right{ float:right;}
+.clear{ clear:both;}
+.hd{display: none;}
+
+/******************以上为公共样式********************/
+/**头部共用样式**/
+body { background: #ffffff;overflow: auto;}
+body * { font-family: "Microsoft Yahei";}
+.firstNavBox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: auto;
+    z-index: 1000;
+}
+.first_nav {
+    height: 56px;
+    overflow: hidden;
+    background: #fff;
+}
+.navbar.navbar01 {
+    height: 56px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 0;
+    overflow: hidden;
+    line-height: 56px;
+    text-align: left;
+}
+.userbox {
+    width: 42px;
+    height: 42px;
+    position: absolute;
+    top: 4px;
+    left: 12px;
+    z-index: 100;
+    background: url(../../imgs/default/defaultimg.png) center center no-repeat;
+    background-size: 90%;
+    overflow: hidden;
+    border-radius: 50%;
+}
+.userbox a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.logo_brand {
+    width: 70%;
+    height: 55px;
+    text-align: left;
+    overflow: hidden;
+}
+.navbar-brand {
+    margin: 0;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    padding: 0;
+    vertical-align: middle;
+}
+.navbar-brand img {
+    overflow: hidden;
+    max-height: 35px;
+    margin: 9px 2%;
+    display: inline-block;
+}
+.navbar-brand .superlogo {
+    max-height: 33px;
+}
+.searchLink {
+    display: inline-block;
+    position: absolute;
+    right: 5px;
+    top: 0;
+    text-align: center;
+    line-height: 55px;
+    height: 55px;
+}
+.searchLink img {
+    margin-top: 32%;
+    width: 60%;
+    height: auto;
+    overflow: hidden;
+}
+.logo {
+    display: inline-block;
+    width: 10%;
+    height: 47px;
+    overflow: hidden;
+    vertical-align: middle;
+}
+.logo img {
+    max-width: 100%;
+    height: 47px;
+}
+.loginbox {
+    display: inline-block;
+    width: 18%;
+    text-align: right;
+    line-height: 39px;
+}
+.logined {
+    display: inline-block;
+    margin-left: 18%;
+    border-radius: 50%;
+}
+.logined img {
+    border-radius: 50%;
+    vertical-align: middle;
+    width: 47px;
+    height: 47px;
+    overflow: hidden;
+}
+.topnav {
+    text-align: left;
+    border-bottom: 2px solid #e2e2e2;
+}
+.shownav {
+    position: fixed;
+    top: 56px;
+    width: 100%;
+    height: 38px;
+    overflow: hidden;
+    border-bottom: 1px solid #ddd;
+    background: #fff;
+    z-index: 1001;
+}
+.collopse {
+    position: absolute;
+    right: 10px;
+    top: 9px;
+    display: inline-block;
+    width: 26px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+}
+.collopse img {
+    width: 26px;
+    height: 22px;
+    overflow: hidden;
+    opacity: 0.8;
+}
+.navlist {
+    display: inline-block;
+    width: 100%;
+    height: 38px;
+    overflow: hidden;
+    vertical-align: middle;
+    background: #fdfdfd;
+    border-top: 1px solid #fe5f0c;
+}
+.navlist li {
+    float: left;
+    line-height: 36px;
+    width: auto;
+    text-align: center;
+    position: relative;
+    width: 30%;
+    overflow: hidden;
+}
+.navlist li a {
+    color: #333;
+    display: block;
+    font-size: 0.98rem;
+    width: 100%;
+}
+.navlist .current {
+    background: #fe6816;
+    color: #fdfdfd;
+    font-family: "FZSEJW--JB1-0";
+}
+.navlist .current a {
+    color: #fdfdfd;
+    /* font-weight: bold; */
+}
+.navlist li a:hover {
+    background: #fe6816;
+    color: #fdfdfd;
+    font-family: "FZSEJW--JB1-0";
+}
+.collopseNav {
+    position: fixed;
+    top: 94px;
+    width: 100%;
+    padding: 15px;
+    background: #fff;
+    z-index: 1001;
+}
+.collopseNav li {
+    float: left;
+    margin: 15px 0.5%;
+    width: 32%;
+    text-align: center;
+}
+.collopseNav li a {
+    color: #333;
+    font-size: 0.92rem;
+}
+.collopseNav .currentnav a {
+    color: #fe6816;
+}
+.collopseNav li .morelinks {
+    color: #7e7e7e;
+    font-size: 0.92rem;
+}
+.toggleimg {
+    -webkit-transform: rotateZ(-180deg);
+    -moz-transform: rotateZ(-180deg);
+    -ms-transform: rotateZ(-180deg);
+    transform: rotateZ(-180deg);
+    -webkit-transition: transform 0.5s ease;
+    -moz-transition: transform 0.5s ease;
+    -ms-transition: transform 0.5s ease;
+    transition: transform 0.5s ease;
+}
+/* 全部导航 */
+.allnavs {
+    position: fixed;
+    top: 0;
+    z-index: 1001;
+    width: 100%;
+    padding: 0 15px;
+    height: 40px;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    line-height: 40px;
+    text-align: left;
+}
+.backbtn {
+    display: inline-block;
+    margin-left: 2%;
+    width: 15%;
+    text-align: left;
+    font-size: 2rem;
+    vertical-align: top;
+    color: #000000;
+}
+.logo_middle {
+    display: inline-block;
+    width: 72%;
+    text-align: center;
+    font-size: 1.12rem;
+    color: #333333;
+}
+.labeltitle {
+    color: #333;
+    display: block;
+    font-size: 1.1rem;
+    width: 100%;
+}
+.curnavLi .labeltitle {
+    color: #fe6816;
+}
+.rollnav {
+    display: none;
+    position: absolute;
+    top: 2px;
+    left: 120%;
+    width: 100%;
+    z-index: 10;
+    background: #f4f5f6;
+}
+.rollnav li {
+    float: left;
+    width: 150%;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    color: #666666;
+    font-size: 16px;
+}
+.navContainer .rollnav .curselected {
+    background: #f4f5f6;
+    color: #666666;
+}
+.navContainer .rollnav li a {
+    padding: 0;
+    color: #666;
+}
+.navContainer .rollnav .curselected a {
+    color: #fe6816;
+}
+.navContainer .rollnav li a:hover {
+    color: #fe6816;
+    background: none;
+}
+.navlist li:hover .rollnav {
+    display: block;
+}
+.curnavLi .rollnav {
+    display: block;
+}
+.classType {
+    font-size:  14px;
+    color: #333;
+    margin-left: 7px;
+}
+.containerBox {
+    width: 100%;
+    padding: 0 15px;
+    margin: 125px auto 40px;
+    text-align: left;
+    overflow: hidden;
+    min-height: 455px;
+}
+.secondNavs {
+    background: #ff6617;
+    color: #fffcfb;
+}
+.secondNavs .backbtn {
+    color: #fffcfb;
+    line-height: 35px;
+}
+.secondNavs .logo_middle {
+    color: #fffcfb;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+}
+
+.rightItem {
+    margin-bottom: 30px;
+}
+.pictype {
+    color: #ff7500;
+}
+.videotype {
+    color: #9900ff;
+}
+.original {
+    color: #00cc00;
+}
+.phoneFooter {
+    margin: 20px auto;
+    font-size: 0.8rem;
+    color: #999;
+    line-height: 22px;
+    text-align: center;
+    position: relative;
+    bottom: 0;
+    display: none;
+    width: 90%;
+}
+.backBtn {
+    font-size: 2rem;
+    position: absolute;
+    left: 4%;
+    top: 0;
+    color: #9b9b9b;
+    line-height: 40px;
+    display: none;
+}
+.swiper-button-next, .swiper-button-prev {
+    display: none;
+}
+/* 分页 */
+.pagenum {
+    text-align: center;
+    padding: 20px 0;
+    width: auto;
+}
+.pagenum li {
+    display: inline;
+    margin-right: 5px;
+}
+.pagenum a {
+    padding: 6px 12px;
+    line-height: 40px;
+    background: #FFF;
+    border: 1px #ddd solid;
+    color: #444;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    font-size: 0.8rem;
+}
+.pagenum .here {
+    background: #ff8000;
+    border: 1px #ff8000 solid;
+    color: #FFF;
+}
+.pagenum a:hover {
+    background: #ff8000;
+    border: 1px #ff8000 solid;
+    text-decoration: none;
+    color: #FFF;
+}
+
+/* 职场困惑弹框 */
+.maskContent {
+    position: fixed;
+    width: 50%;
+    height: auto;
+    top: 30%;
+    left: 25%;
+    background: #ddd;
+    text-align: left;
+    border-radius: 8px;
+    z-index: 1002;
+    display: none;
+}
+.maskContent h3 {
+    margin-top: 30px;
+}
+.questionForm {
+    /* width: 50%; */
+    margin: 30px auto;
+}
+.questionForm .state {
+    
+}
+.maskContent .cancelBtn {
+    float: none;
+    background: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+}
+.maskContent .cancelBtn:hover {
+    background: #a5a5a5;
+    color: #fff;
+}
+
+
+/* 登录弹出遮罩层 */
+.mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1001;
+    display: none;
+}
+.popmask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1001;
+    display: none;
+}
+.popNavlist {
+    position: fixed;
+    top: 25%;
+    left: 7%;
+    z-index: 1002;
+    width: 86%;
+    height: auto;
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    display: none;
+}
+.popNavlist h3 {
+    margin: 5px 0 20px;
+    font-size: 1.1rem;
+    color: #333;
+}
+.popNavlist h3 i {
+    margin: 8px;
+    font-family: "华文行楷";
+    font-size: 0.92rem;
+}
+.rollnavs li {
+    margin-bottom: 15px;
+    line-height: 20px;
+}
+.rollnavs li a {
+    font-size: 1rem;
+    color: #333333;
+}
+.rollnavs .curselected a {
+    color: #fe6816;
+}
+.rollnavs li a:hover {
+    color: #fe6816;
+}
+.maskbook {
+    position: fixed;
+}
+
+
+/************** 轮播共用样式 **************/
+.carousel-indicators {margin-bottom: -8px;}
+.carousel-indicators li { background-color: #ffffff;width: 7px;height: 7px;}
+.carousel-indicators .active { background-color: #d90d0e;width: 8px;height: 8px;border: 1px solid #d90d0e;}
+.carousel { top: 70px;padding-bottom: 65px;}
+
+/******************footer共用样式********************/
+.footer { border-top: 1px solid #E4DFDF;padding-top: 20px;margin-top: 15px;margin-bottom: 20px;}
+.container_follow { overflow: initial;}
+.follow_bottom h4 { color: #848484;font-size: 15px;}
+.copyright { display: inline;height: 0;float: none;background-color: transparent;font-size: 14px;color: #848484;margin-left: 5px;}
+
+
+@media screen and (max-width: 767px){
+ .phoneFooter {
+    display: block;
+ }
+.bottom {
+	display: none;
+}
+}

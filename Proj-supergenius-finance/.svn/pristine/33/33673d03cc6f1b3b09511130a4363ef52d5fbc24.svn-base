@@ -1,0 +1,36 @@
+@charset "utf-8";
+/* CSS Document */
+.contribute{ width:1000px; margin-top:20px; margin-bottom: 100px}
+.contribute_800{ width: 800px;height: auto; min-height:1100px;border: 1px #d6d6d6 solid;text-align: left; position: relative;}
+.contribute_title{ border-bottom: 1px solid #d6d6d6; height: 45px;  text-align: left;}
+.contribute_title .title_1{ font-size: 16px; color: #38485a; font-weight:bold; display: inline-block; border-left:#51aded solid 7px; height: 20px; margin-left: 54px; margin-top: 10px; padding-left: 10px; }
+.contribute_800 .title_2{font-size: 16px; color: #38485a;  display: inline-block; margin-left: 54px;  margin: 10px 54px 10px ;}
+.contribute_800 .agree{ width: 655px;height: 150px; margin-left: 54px; font-size: 14px; font-family: "微软雅黑";overflow:scroll; background:#e6eaed; box-shadow:3px 3px 5px #c6cacc inset; overflow-x:hidden; padding:15px;}
+.contribute_800 .agree_check{ display: inline-block; margin-left: 65px; margin-top: 20px;}
+.contribute_800 .agree_check *{vertical-align: middle;}
+.contribute_800 .agree_check1{font-size:12px; margin-left: 8px;}
+.contribute_800 .title_3{color:#38485a;width: 680px;height: 60px; border-bottom:1px #d6d6d6 solid;border-top:1px #d6d6d6 solid; line-height: 60px; margin-top: 20px; font-size: 18px;}
+
+.draft{ margin-left: 65px; padding-top: 20px;}
+.draft .draft_input{ border:none; background: #e6eaed; width:575px; height: 45px; font-size: 14  Qpx; color: #999999; line-height: 45px; padding-left: 8px;}
+.draft .mb_30{ margin-bottom: 30px; display: inline-block; color: #38485a; font-size: 16px;}
+
+.ml_35{ margin-left: 35px;}
+.ml_20{ margin-left: 20px;}
+.draft_a{ display: inline-block; margin-left: 35px; }
+.draft_a *{ vertical-align: middle;}
+.draft_a a{cursor: pointer;}
+.draft_tjtp{ background: url(../../../imgs/temp/add_pic.png); display: inline-block;  width: 88px;height: 30px; margin-right:35px; }
+.draft_tjtp input{ cursor:pointer;}
+.draft_sc{ background: url(../../../imgs/temp/upload.png); display: inline-block; width: 88px;height: 30px; color:#fff; font-size: 12px; line-height: 30px; text-align:center; position:relative; left:100px; }
+.draft_input2{ font-size: 12px; color: #999999;width: 672px; height: 313px;border:none; background: #e6eaed;font-family: "微软雅黑"; padding-top: 8px; padding-left: 8px; }
+.draft_tg{ width: 200px;height: 40px; background: #2eacfc; display: inline-block; margin-right: 53px; margin-top: 20px; line-height: 40px; text-align: center; color: #fff; cursor: pointer; }
+.draft_select2{ font-size: 12px; color: #999999; padding-left:10px;background: #e6eaed; width: 200px;height: 43px; border:none;display:inline-block;}
+.draft_select1{ width: 346px;height: 45px; margin-left: 20px;}
+.draft_select1 *{ vertical-align: middle;}
+
+/*下拉*/
+.draft #xiala { cursor: pointer; position: relative;right:6px;}
+.contribute_800 #xiala_n{ width: 253px;position: absolute; z-index: 1000; left: 202px; top: 454px ;border: 1px solid #bac4ce; border-top:none; display: none}
+.contribute_800 #xiala_n li{ height: 25px; background: #e6eaed;line-height: 25px; cursor: pointer;}
+.contribute_800 #xiala_n li span{ position: relative; left: 10px;font-size: 12px; color: #999999;}

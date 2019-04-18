@@ -1,0 +1,226 @@
+[#ftl]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>${title}</title>
+	<link rel="stylesheet" href="${basecss}/css/default/pages/msg.css"/>
+</head>
+<body>
+	<div class="wraper centerbox">
+		<div class="main">
+			<div class="newsContainer searchResult">
+				<div class="newsLeft">
+					<h3>搜索页面</h3>
+					<ul class="newsnav">
+						<li class="curSelect">
+							<a href="${base}/searchr/art">文章<span>24</span></a>
+						</li>
+						<li>
+							<a href="${base}/searchr/topic">话题<span>26</span></a>
+						</li>
+						<li>
+							<a href="${base}/searchr/debate">论战<span>12</span></a>
+						</li>
+						<li>
+							<a href="${base}/searchr/user">用户<span>12</span></a>
+						</li>
+					</ul>
+				</div>
+				<div class="newsRight searchResultright">
+					<h4>与<em>“搜索词”</em>相关的文章&nbsp;<b class="keyword">12</b>&nbsp;个
+						<form class="ritform">
+						    <input type="text" />
+						    <a href="#">
+								<img src="/imgs/default/search.png">
+							</a>
+						</form>
+					</h4>
+					<ul class="artilelist">
+						<li>
+							<a href="#"><img src="${baseimg}/imgs/default/myarticle01.png" class="artileimg" /></a>
+							<div class="artdetail">
+								<div class="artTitlebox">
+									<a href="#" class="artTitle">如何基于<em>微信开放接口开发企业的微</em></a>
+									<span class="collectTime">2015.08.18&nbsp;12.34</span>
+								</div>
+								<p>新华网转央广网-国家元首在外交活动中的言行举止折射出这个国家的文化底蕴、外交导向乃至民族气魄。折射出这个国家的文化底蕴、外交导</p>
+								<div class="iconsbox">
+									<span class="look" title="查看次数">
+										<img src="${baseimg}/imgs/default/blueviewicon.png">
+										10010
+									</span>
+									<span class="look" title="点赞次数">
+										<img src="${baseimg}/imgs/default/bluezanicon.png">
+										1234
+									</span>
+									<span class="look" title="评论次数">
+										<img src="${baseimg}/imgs/default/bluemsg.png">
+										67
+									</span>
+									<span class="look" title="分享">
+										<img src="${baseimg}/imgs/default/blueshareicon.png">
+									</span>
+								</div>
+							</div>
+						</li>
+						<li>
+							<a href="#"><img src="${baseimg}/imgs/default/myarticle02.png" class="artileimg" /></a>
+							<div class="artdetail">
+								<div class="artTitlebox">
+									<a href="#" class="artTitle">“习式外交”的<em>国学课：</em>扬帆但信风</a>
+									<span class="collectTime">2015.08.18&nbsp;12.34</span>
+								</div>
+								<p>新华网转央广网-十八大以来，习大大的“外交成绩单”让人印象深刻。仅在2014年，他就进行了7次出访，足迹遍布亚洲、欧洲、拉美和大洋洲的18个国</p>
+								<div class="iconsbox">
+									<span class="look" title="查看次数">
+										<img src="${baseimg}/imgs/default/blueviewicon.png">
+										10010
+									</span>
+									<span class="look" title="点赞次数">
+										<img src="${baseimg}/imgs/default/bluezanicon.png">
+										1234
+									</span>
+									<span class="look" title="评论次数">
+										<img src="${baseimg}/imgs/default/bluemsg.png">
+										67
+									</span>
+									<span class="look" title="分享">
+										<img src="${baseimg}/imgs/default/blueshareicon.png">
+									</span>
+								</div>
+							</div>
+						</li>
+						<li>
+							<a href="#"><img src="${baseimg}/imgs/default/myarticle03.png" class="artileimg" /></a>
+							<div class="artdetail">
+								<div class="artTitlebox">
+									<a href="#" class="artTitle">如<em>何基于微信开放接口</em>开发企业的微</a>
+									<span class="collectTime">2015.08.18&nbsp;12.34</span>
+								</div>
+								<p>在这张“习式外交”的成绩单中，习大大亲和、优雅的举止，以及对中华文化的宣扬，无不让各国人民眼前一亮。新华网转央广网-国家元首在</p>
+								<div class="iconsbox">
+									<span class="look" title="查看次数">
+										<img src="${baseimg}/imgs/default/blueviewicon.png">
+										10010
+									</span>
+									<span class="look" title="点赞次数">
+										<img src="${baseimg}/imgs/default/bluezanicon.png">
+										1234
+									</span>
+									<span class="look" title="评论次数">
+										<img src="${baseimg}/imgs/default/bluemsg.png">
+										67
+									</span>
+									<span class="look" title="分享">
+										<img src="${baseimg}/imgs/default/blueshareicon.png">
+									</span>
+								</div>
+							</div>
+						</li>
+						<li>
+							<a href="#"><img src="${baseimg}/imgs/default/myarticle01.png" class="artileimg" /></a>
+							<div class="artdetail">
+								<div class="artTitlebox">
+									<a href="#" class="artTitle">如何基于微信开放<em>接口</em>开发企业的微</a>
+									<span class="collectTime">2015.08.18&nbsp;12.34</span>
+								</div>
+								<p>新华网转央广网-国家元首在外交活动中的言行举止折射出这个国家的文化底蕴、外交导向乃至民族气魄。折射出这个国家的文化底蕴、外交导</p>
+								<div class="iconsbox">
+									<span class="look" title="查看次数">
+										<img src="${baseimg}/imgs/default/blueviewicon.png">
+										10010
+									</span>
+									<span class="look" title="点赞次数">
+										<img src="${baseimg}/imgs/default/bluezanicon.png">
+										1234
+									</span>
+									<span class="look" title="评论次数">
+										<img src="${baseimg}/imgs/default/bluemsg.png">
+										67
+									</span>
+									<span class="look" title="分享">
+										<img src="${baseimg}/imgs/default/blueshareicon.png">
+									</span>
+								</div>
+							</div>
+						</li>
+						<li>
+							<a href="#"><img src="${baseimg}/imgs/default/myarticle02.png" class="artileimg" /></a>
+							<div class="artdetail">
+								<div class="artTitlebox">
+									<a href="#" class="artTitle">如何基于<em>微信</em>开放接口开发企业的微</a>
+									<span class="collectTime">2015.08.18&nbsp;12.34</span>
+								</div>
+								<p>新华网转央广网-国家元首在外交活动中的言行举止折射出这个国家的文化底蕴、外交导向乃至民族气魄。折射出这个国家的文化底蕴、外交导</p>
+								<div class="iconsbox">
+									<span class="look" title="查看次数">
+										<img src="${baseimg}/imgs/default/blueviewicon.png">
+										10010
+									</span>
+									<span class="look" title="点赞次数">
+										<img src="${baseimg}/imgs/default/bluezanicon.png">
+										1234
+									</span>
+									<span class="look" title="评论次数">
+										<img src="${baseimg}/imgs/default/bluemsg.png">
+										67
+									</span>
+									<span class="look" title="分享">
+										<img src="${baseimg}/imgs/default/blueshareicon.png">
+									</span>
+								</div>
+							</div>
+						</li>
+						<li>
+							<a href="#"><img src="${baseimg}/imgs/default/topiclist01.png" class="artileimg" /></a>
+							<div class="artdetail">
+								<div class="artTitlebox">
+									<a href="#" class="artTitle">如何基于<em>微信</em>开放接口开发企业的微</a>
+									<span class="collectTime">2015.08.18&nbsp;12.34</span>
+								</div>
+								<p>新华网转央广网-国家元首在外交活动中的言行举止折射出这个国家的文化底蕴、外交导向乃至民族气魄。折射出这个国家的文化底蕴、外交导</p>
+								<div class="iconsbox">
+									<span class="look" title="查看次数">
+										<img src="${baseimg}/imgs/default/blueviewicon.png">
+										10010
+									</span>
+									<span class="look" title="点赞次数">
+										<img src="${baseimg}/imgs/default/bluezanicon.png">
+										1234
+									</span>
+									<span class="look" title="评论次数">
+										<img src="${baseimg}/imgs/default/bluemsg.png">
+										67
+									</span>
+									<span class="look" title="分享">
+										<img src="${baseimg}/imgs/default/blueshareicon.png">
+									</span>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		$(function(){
+			$(".deletelink").click(function(){
+				$(this).parents("li").remove();
+			});
+
+			//页面内搜索框获得焦点状态
+			$(".ritform input").focus(function(){
+				$(this).parent().css({'border':'none','outline': '-webkit-focus-ring-color auto 5px'});
+			});
+			//页面内搜索框失去焦点状态
+			$(".ritform input").blur(function(){
+				$(this).parent().css({'border':'1px solid #D5D5D5','outline': 'none'});
+			});
+		});
+	</script>
+</body>
+</html>
+
+

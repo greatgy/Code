@@ -1,0 +1,34 @@
+package com.supergenius.server.common.helper;
+
+import java.util.List;
+
+import org.bson.Document;
+
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+
+/**
+ * 
+ * @author liubin
+ * @date 2016-4-19 下午4:41:15
+ */
+public class RecommendHP {
+
+	/**
+	 * 返回相似文章的uid集合
+	 * 
+	 * @param dbbase
+	 * @param colltion
+	 * @param uid
+	 */
+	@SuppressWarnings({ "resource", "unchecked" })
+	public static List<String> getUids(String dbbase, String colltion, String uid) {
+		MongoClient mongoClient = new MongoClient("localhost", 27017);
+		MongoDatabase database = mongoClient.getDatabase(dbbase);
+		MongoCollection<Document> coll = database.getCollection(colltion);
+		Document document = coll.find().first();
+		return (List<String>) document.get(uid);
+	}
+
+}

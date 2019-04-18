@@ -1,0 +1,267 @@
+.hd {
+    display: none;
+}
+
+.newsnotice .number {
+    color: red;
+}
+.newsnum .rdot {
+    display: block;
+    width: 6px;
+    height: 6px;
+    background: red;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    right: -4px;
+    overflow: hidden;
+}
+.newsnotice .newsection {
+    position: absolute;
+    background: #fff;
+    z-index: 1000;
+    width: 235px;
+    margin-top: 15px;
+    margin-left: -75px;
+    border: 1px solid #E2E2E2;
+    display:none;
+}
+.newsection .trangle {
+    height: 24px;
+    margin-left: 58%;
+    position: absolute;
+    display: block;
+    top: -23px;
+}
+.trangle em , .trangle i {
+    width: 0;
+    height: 0;
+    font-size: 0;
+    line-height: 0;
+    display: block;
+    position: absolute;
+    border: 12px solid transparent;
+    border-style: dashed dashed solid dashed;
+}
+.trangle em {
+    border-bottom-color: #CACACA;
+    top: -1px;
+}
+.trangle i {
+    border-bottom-color: #fff;
+    top: 0;
+}
+.newsection .msglist {
+    background: #fff;
+}
+.newsection .msglist li {
+    height: 40px;
+    text-align: left;
+    width: 215px;
+    line-height: 40px;
+    padding: 0 10px;
+    border-bottom: 1px solid #ddd;
+    color: #535353;
+    overflow: hidden;
+}
+.newsection .msglist li:last-child {
+    border-bottom: none;
+}
+.msglist li a {
+    display: inline-block;
+    margin: 0;
+    color: #535353;
+}
+.msglist li .del {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    overflow: hidden;
+    text-align: center;
+    line-height: 20px;
+    float: right;
+    margin-top: 10px;
+}
+.msglist .del img {
+    width: 20px;
+    height: 20px;
+    overflow: hidden;
+}
+.newsection .msglist li:hover {
+    background: #F1F1F1;
+}
+.newsection .msglist li:hover a {
+    color: #A6A6A6;
+}
+.msglist pre {
+    color: #535353;
+    font-size: 12px;
+    text-align: left;
+    padding: 10px;
+    font-family: "Microsoft Yahei";
+    white-space: normal;
+    overflow: hidden;
+}
+.msglist pre p {
+    line-height: 20px;
+    margin-bottom: 5px;
+}
+.msglist pre .authorname {
+    display: block;
+    text-align: right;
+}
+.msglist .nonews {
+    font-size: 12px;
+    color: #AEAEAE;
+    margin-bottom: 10px;
+}
+
+.top_left .firstnavlist {
+    position: absolute;
+    z-index: 10001;
+    text-align: center;
+    width: 102px;
+    display: none;
+}
+.firstnavlist .trangle {
+    width: 0px;
+    height: 0px;
+    border-style: solid;
+    border-width: 0px 10px 12px 10px;
+    border-color: transparent transparent #DB5656 transparent;
+    margin-left: 30%;
+}
+.firstnavlist .navlink {
+    display: block;
+    float: left;
+    background-color: #DB3E3E;
+}
+.top_left .firstnavlist .navlink li a {
+    color: #fff;
+}
+
+/* 一级导航样式 */
+.top {
+    width: 100%;
+    background: #4d4d4d;
+}
+.top_main1 {
+    width: 100%;
+    padding: 5px 12px;
+    min-height: 40px;
+    text-align: left;
+    line-height: 40px;
+}
+.tl_act {
+    display: inline-block;
+    width: 5%;
+    overflow: hidden;
+    vertical-align: top;
+    max-height: 42px;
+}
+.tl_act img {
+    width: 100%;
+    height: auto;
+    margin-top: 8px;
+    overflow: hidden;
+}
+.top_left {
+    display: inline-block;
+    width: 74%;
+    margin-bottom: 0;
+    min-height: 22px;
+    max-height: 44px;
+    /* overflow: hidden; */
+    vertical-align: middle;
+}
+.top_left li {
+    float: left;
+    margin: 0 0 0 0.75%;
+    line-height: 22px
+}
+.top_left li a {
+    font-size: 15px;
+    color: #cccccc;
+}
+.top_right {
+    display: inline-block;
+    min-width:20%;
+    max-width: 23%;
+    vertical-align: middle;
+    margin-bottom: 0;
+    text-align: right;
+    float: right;
+    margin-top: 5px;
+}
+.top_right li {
+	float:right;
+    margin-left: 3%;
+    line-height: 22px
+}
+.top_right li a {
+    font-size: 14px;
+    color: #cccccc;
+}
+.login {
+    background: #d33520;
+    height: 100%;
+    padding: 5px 5%;
+    color: #fff;
+}
+.register, .member {
+    padding: 5px 0;
+}
+/* .top_right .login {
+    margin-left: 26%;
+} */
+.top_right .register {
+    margin: 0 8%;
+}
+.top_main1 a:hover {
+    color: #fff;
+    text-decoration: none;
+}
+.top .top_left .selectlink:hover .firstnavlist {
+    display: block;
+}
+
+.top .navlink li {
+    float: none;
+    text-align: center;
+    font-size: 1.2rem;
+    width:98px;
+    line-height:25px;
+}
+
+.top_left .current_li{
+	color: #fff;
+}
+@media screen and (max-width: 1320px) {
+    /* .top_right .login {
+        margin-left: 5%;
+    }*/
+    .top_left li {
+        margin: 0 1%;
+    } 
+    .top_right li {
+        margin-left: 1.5%;
+    }
+}
+@media screen and (min-width: 767px) and (max-width: 820px){
+    .top_right .login {
+        margin-left: 0;
+    }
+}
+
+
+@media screen and (min-width: 768px) and (max-width: 960px){
+    .navlist li {
+        font-size: 1.6rem;
+        margin: 0 1.48%;
+    }
+}
+@media screen and (max-width: 767px) {
+    .top {
+       display:none;
+    }
+}

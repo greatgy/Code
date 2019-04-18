@@ -1,0 +1,88 @@
+package com.supergenius.web.front.user.helper;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import com.genius.server.base.helper.BaseHP;
+import com.supergenius.xo.user.entity.SafeQA;
+import com.supergenius.xo.user.enums.EQuestion;
+import com.supergenius.xo.user.service.SafeQASO;
+
+/** 
+ * 安全问题HP
+ * @author chenminchang
+ * @date 2016-4-20 下午4:39:18 
+ */
+public class SafeQAHP extends BaseHP {
+	
+	private static SafeQASO so;
+	
+	public static SafeQASO getSO() {
+		if (so == null) {
+			so = spring.getBean(SafeQASO.class);
+		}
+		return so;
+	}
+	
+	/**
+	 * 得到指定范围密保问题
+	 * @param min
+	 * @param max
+	 * @return
+	 */
+	public static Map<String, String> getESafeqa(int min, int max) {
+		Map<String, String> map = new TreeMap<>(new Comparator<String>() {
+			public int compare(String k1, String k2) {
+				return k1.compareTo(k2);
+			}
+		});
+		for (EQuestion e : EQuestion.values()) {
+			if (Integer.valueOf(e.toString()) >= min && Integer.valueOf(e.toString()) < max) {
+				map.put(e.toString(), e.getName());
+			}
+		}
+		return map;
+	}
+	
+	/**
+	 * 根据useruid获取已排序的密保问题,按EQuestion的数值升序
+	 * @param useruid
+	 * @return
+	 */
+	public static List<SafeQA> getUserQuestionAsc(String useruid) {
+		List<SafeQA> list = getSO().getList(useruid);
+		if (list == null || list.size() ==0)
+			return null;
+		SafeQA safe1  = list.get(0);
+		SafeQA safe2  = list.get(1);
+		List<SafeQA> list2 = new ArrayList<>();
+		if (Integer.valueOf(safe1.getQuestion().toString()) < Integer.valueOf(safe2.getQuestion().toString())) {
+			list2.add(safe1);
+			list2.add(safe2);
+		} else {
+			list2.add(safe2);
+			list2.add(safe1);
+		}
+		return list2;
+	}
+	
+	/**
+	 * 更新密保
+	 * @param safeqa
+	 * @return
+	 */
+	public static boolean update(SafeQA safeqa) {
+		return getSO().update(safeqa);
+	}
+	/**
+	 * 添加密保
+	 * @param safeqa
+	 * @return
+	 */
+	public static boolean add(SafeQA safeqa) {
+		return getSO().add(safeqa);
+	}
+}

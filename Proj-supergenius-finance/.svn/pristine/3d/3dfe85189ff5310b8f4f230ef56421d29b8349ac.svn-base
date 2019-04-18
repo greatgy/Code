@@ -1,0 +1,16 @@
+package com.supergenius.global.constants;
+
+import com.genius.core.base.constant.BaseViewKeyDict;
+
+/**
+ * 天才评论页面常量
+ * 
+ * @author YangGuang
+ * @date 2018年1月2日16:53:37
+ */
+public class ViewKeyDict extends BaseViewKeyDict {
+	public static final String goldlanguage = "goldlanguage";
+	public static final String FinanceArticle = "FinanceArticle";
+	public static final String RecommendArticle = "RecommendArticle";
+
+}

@@ -1,0 +1,147 @@
+package com.supergenius.web.front.life.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.genius.server.base.controller.BaseController;
+import com.supergenius.global.conf.SysConf;
+import com.supergenius.global.constants.ViewKeyDict;
+import com.supergenius.server.life.util.TopicRedisUtil;
+import com.supergenius.server.user.helper.BaseUserHP;
+import com.supergenius.web.front.life.helper.CollectHP;
+import com.supergenius.web.front.life.helper.CommentsHP;
+import com.supergenius.web.front.life.helper.TopicHP;
+import com.supergenius.xo.life.entity.Catalogue;
+import com.supergenius.xo.life.entity.Topic;
+import com.supergenius.xo.life.enums.ECollectType;
+import com.supergenius.xo.life.service.CatalogueSO;
+import com.supergenius.xo.user.entity.User;
+import com.supergenius.xo.user.entity.Visitor;
+
+/**
+ * 首页controller
+ * 
+ * @author: YangGuang
+ * @date 2018年5月16日12:03:43
+ */
+@Controller
+public class TopicController extends BaseController {
+
+	@Autowired
+	private CatalogueSO catalogueSO;
+
+	/**
+	 * 话题查看详情页面
+	 * 
+	 * @param model
+	 * @param cid
+	 * @return
+	 * @author YangGuang
+	 * @date 2018年5月15日14:41:09
+	 */
+	@RequestMapping(value = "/topic/{cid:\\d+}/{oid:\\d+}", method = RequestMethod.GET)
+	public String article_detial(Map<String, Object> model, @PathVariable int cid, @PathVariable int oid, HttpServletRequest request, HttpServletResponse response) {
+		User user = BaseUserHP.getCurrUser(request);
+		Topic topic = TopicHP.getTopic(oid);
+		Catalogue catalogue = catalogueSO.getOneByCid(cid);
+		if (catalogue == null || topic == null) {
+			return response404(response);
+		}
+		if (user != null) {// 设置是否赞过
+			if (CommentsHP.isPrise(topic.getUid(), user.getUid())) {
+				topic.setIsprize(true);
+			}
+			topic.setIscollect(CollectHP.isCollect(user.getUid(), topic.getUid(), ECollectType.topic));// 是否收藏过
+		} else {
+			Visitor visitor = CommentsHP.getVisitor(request, response);
+			if (CommentsHP.isPrise(topic.getUid(), visitor.getUid())) {
+				topic.setIsprize(true);
+			}
+		}
+		TopicHP.incrClickCount(request, response, topic.getUid());// 增加计数
+		topic.setClickcount(TopicRedisUtil.getInt(topic.getUid(), ViewKeyDict.clickcount));
+		topic.setCollectcount(TopicRedisUtil.getInt(topic.getUid(), ViewKeyDict.collectcount));
+		topic.setPrizecount(TopicRedisUtil.getInt(topic.getUid(), ViewKeyDict.prizecount));
+		topic.setCommentscount(TopicRedisUtil.getInt(topic.getUid(), ViewKeyDict.commentscount));
+		List<Topic> relateList = TopicHP.getRelateTopic(0, SysConf.RelateSize, cid);
+		model.put(ViewKeyDict.relateList, relateList);
+		model.put(ViewKeyDict.bean, topic);
+		model.put(ViewKeyDict.catalogue, catalogue);
+		model.put(ViewKeyDict.cid, cid);
+		model.put(ViewKeyDict.pcid, catalogue.getPcid());
+		return "topicdetail";
+	}
+	
+	/**
+	 * 按照话题热度加载
+	 * 
+	 * @param model
+	 * @param pagenum
+	 * @param request
+	 * @return
+	 * @author 杨光
+	 */
+	@RequestMapping(value = "/ajax/topic/hot", method = RequestMethod.GET)
+	public String ajax_hotTopic(Map<String, Object> model, int pagenum, int cid, HttpServletRequest request) {
+		List<Topic> list = TopicHP.getTeaseHot(pagenum, SysConf.TopicLoadSize, cid);
+		model.put(ViewKeyDict.list, list);
+		return "ajaxtopic";
+	}
+	
+	/**
+	 * 加载更多话题
+	 * 
+	 * @param model
+	 * @param pagenum
+	 * @param request
+	 * @return
+	 * @author 杨光
+	 */
+	@RequestMapping(value = "/ajax/topic/moretopic", method = RequestMethod.GET)
+	public String ajax_moreTopic(Map<String, Object> model, int pagenum, int cid, HttpServletRequest request) {
+		List<Topic> list = TopicHP.getTopics(cid, pagenum, SysConf.TopicLoadSize);
+		model.put(ViewKeyDict.list, list);
+		return "ajaxtopic";
+	}
+	
+	/**
+	 * 往期话题换一批
+	 * 
+	 * @param model
+	 * @param pagenum
+	 * @param request
+	 * @return
+	 * @author 杨光
+	 */
+	@RequestMapping(value = "/ajax/topic/relatetopic", method = RequestMethod.GET)
+	public String ajax_relateTopic(Map<String, Object> model, int pagenum, int cid, HttpServletRequest request) {
+		List<Topic> list = TopicHP.getRelateTopic(pagenum, SysConf.RelateSize, cid);
+		model.put(ViewKeyDict.list, list);
+		return "ajaxrelatetopic";
+	}
+	
+	/**
+	 * 加载更多备选话题
+	 * 
+	 * @param model
+	 * @param pagenum
+	 * @param request
+	 * @return
+	 * @author 杨光
+	 */
+	@RequestMapping(value = "/ajax/topic/review/moretopic", method = RequestMethod.GET)
+	public String ajax_reviewTopic(Map<String, Object> model, int pagenum, int cid, HttpServletRequest request) {
+		List<Topic> list = TopicHP.getReview(pagenum, SysConf.ReviewTopicSize, cid);
+		model.put(ViewKeyDict.list, list);
+		return "ajaxreviewtopic";
+	}
+}

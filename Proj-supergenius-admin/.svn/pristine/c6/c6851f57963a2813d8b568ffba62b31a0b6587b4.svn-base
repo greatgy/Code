@@ -1,0 +1,407 @@
+package com.supergenius.web.admin.finance.controller;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.genius.core.base.annotation.Json;
+import com.genius.core.base.annotation.Maps;
+import com.genius.core.base.constant.BaseStrDict;
+import com.genius.core.base.utils.MapsUtil;
+import com.genius.core.base.utils.StrUtil;
+import com.genius.core.base.utils.WebUtil;
+import com.genius.core.search.constant.MapperSearchDict;
+import com.genius.model.base.enums.EStatus;
+import com.genius.model.baseadmin.entity.AdminLog;
+import com.genius.server.base.controller.BaseController;
+import com.genius.server.baseadmin.helper.AdminHP;
+import com.supergenius.global.conf.SysConf;
+import com.supergenius.global.conf.UriConf;
+import com.supergenius.global.conf.WebConf;
+import com.supergenius.server.common.constants.MsgKeyDict;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.web.admin.finance.helper.FinanceHP;
+import com.supergenius.web.admin.finance.helper.InboxHP;
+import com.supergenius.web.admin.manager.helper.MsgHP;
+import com.supergenius.web.admin.user.helper.ScoreDetailHP;
+import com.supergenius.xo.admin.enums.EAdminLog;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.common.enums.ESite;
+import com.supergenius.xo.finance.entity.Contributor;
+import com.supergenius.xo.finance.entity.Finance;
+import com.supergenius.xo.finance.entity.UserStatistics;
+import com.supergenius.xo.finance.enums.EFinance;
+import com.supergenius.xo.finance.service.ContributorSO;
+import com.supergenius.xo.finance.service.FinanceSO;
+import com.supergenius.xo.finance.service.UserStatisticsSO;
+import com.supergenius.xo.manager.enums.EMsg;
+import com.supergenius.xo.manager.enums.EMsgGroup;
+import com.supergenius.xo.user.service.ScoreDetailSO;
+
+/**
+ * 天财评论controller
+ * 
+ * @author liushaomin
+ */
+@Controller
+@RequestMapping(value = UriConf.baseAdminPath)
+public class FinanceAdminer extends BaseController {
+
+	@Autowired
+	private FinanceSO so;
+
+	@Autowired
+	private ContributorSO contributorSO;
+
+	@Autowired
+	private UserStatisticsSO statisticsSO;
+	
+	@Autowired
+	private ScoreDetailSO scoredetailSO;
+
+	/**
+	 * 进入后台finance管理页面
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = { "/finance" }, method = RequestMethod.GET)
+	public String finance(Map<String, Object> model, HttpServletRequest request) {
+		model.put(ViewKeyDict.enumstype, FinanceHP.getEFinanceMap());
+		model.put(ViewKeyDict.channel, EChannel.finance.name());
+		model.put(ViewKeyDict.channelname, EChannel.getName(EChannel.finance, Locale.CHINA));
+		return "dofinance";
+	}
+
+	/**
+	 * 得到financelist
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = { "/ajax/finance/list" }, method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> finance_list(Map<String, Object> model, HttpServletRequest request) {
+		cloneParamsToModel(model, request);
+		Map<String, Object> searchMap = FinanceHP.query(model);
+		return json(searchMap, Json.webStrategy);
+	}
+
+	/**
+	 * 添加功能暂时隐藏掉，目前不需要 add
+	 * 
+	 * @param finance
+	 * @param file
+	 * @return
+	 */
+	@Deprecated
+	@RequestMapping(value = "/ajax/finance/add", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> finance_add(Finance finance, String file, String[] financetype) {
+		if (file != null && finance != null) {
+			String[] imgs = file.split(BaseStrDict.comma);
+			finance.setEFinanceType(financetype);
+			finance.setAdminuid(AdminHP.getAdminUid());
+			finance.setimgs(imgs);
+			if (so.add(finance)) {
+				return success();
+			}
+		}
+		return result(MsgKeyDict.addFailed);
+	}
+
+	/**
+	 * 编辑finance
+	 * 
+	 * @param file
+	 * @param finance
+	 * @return
+	 */
+	@RequestMapping(value = "/ajax/finance/edit", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> finance_edit(String file, String avatarimg, Finance newfinance, String[] financetype, String usersummary, int score,HttpServletRequest request) {
+		for (String item : financetype) {
+			newfinance.plusType(EFinance.get(item));
+		}
+		if (file != null) {
+			String[] imgs = file.split(BaseStrDict.comma);
+			newfinance.setimgs(imgs);
+		}
+		Finance finance = so.get(newfinance.getUid());
+		Contributor contributor = contributorSO.get(finance.getAuthoruid());
+		if (finance.getIsGeniusfocus() || newfinance.getIsGeniusfocus()) {
+			FinanceHP.SerialFile(request);
+		}
+		finance.set(newfinance);
+		String summary = WebUtil.clearHtml(finance.getContent()).toString();
+		if (summary.length() > 600) {
+			summary = summary.substring(0, 600);
+		}
+		finance.setSummary(summary);
+		finance.setScore(score);
+		if (so.update(finance)) {
+			FinanceHP.removeCache(new String[] { finance.getUid() });
+			FinanceHP.serializeToJson(finance);
+			if (contributor != null) {
+				if (avatarimg != null) {
+					String[] imgs = avatarimg.split(BaseStrDict.comma);
+					contributor.set(imgs);
+				}
+				contributor.setSummary(usersummary);
+				contributorSO.update(contributor);
+			} else {// 数据迁移时，游客表和投稿表没有数据，无useruid关联，重新添加
+				// Contributor newbutor = new Contributor();
+				// newbutor.setName(finance.getAuthor());
+				// newbutor.setSummary(usersummary);
+				// newbutor.setUid(finance.getAuthoruid());
+				// contributorSO.add(newbutor);
+			}
+			if (!finance.getStatus().equals(EStatus.enable)) {
+				FinanceHP.getEngine().deleteByID(finance.getUid());
+			} else {
+				Map<String, Object> map = MapsUtil.toMap(finance, Maps.searchStrategy);
+				map.put(MapperSearchDict.table, EChannel.finance.name());
+				FinanceHP.getEngine().add(map);
+			}
+			return success();
+		}
+		return result(MsgKeyDict.updateFailed);
+	}
+
+	/**
+	 * 删除文章
+	 * 
+	 * @param ids
+	 * @return
+	 */
+	@RequestMapping(value = "/ajax/finance/delete", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> finance_delete(String[] ids, HttpServletRequest request) {
+		FinanceHP.removeCache(ids);
+		FinanceHP.deleteFile(ids);
+		Finance[] finances = new Finance[ids.length];
+		for (int i = 0; i < ids.length; i++) {
+			Finance finance = so.get(ids[i]);
+			if (EStatus.enable.equals(finance.getStatus()) && StrUtil.isNotEmpty(finance.getAuthoruid())) {
+				UserStatistics statistics = statisticsSO.obtainOne(finance.getAuthoruid());
+				int number = statistics.getArticlecount();
+				if (statistics.getArticlecount() <= 0) {
+					number = so.getAuthorArticleCount(finance.getAuthoruid());
+				}
+				number = (number - ids.length) >= 0 ? (number - ids.length) : 0;
+				statisticsSO.update(statistics.getUid(), number, MapperDict.articlecount);
+			}
+			finances[i] = finance;
+		}
+		if (so.deleteByUids(ids)) {
+			InboxHP.sendInboxByMsg(InboxHP.sendDeletedMsg(null, finances));
+			FinanceHP.SerialFile(request);
+			for (Finance finance : finances) {
+				Map<String, Object> map = new HashMap<>();
+				map.put(MapperDict.id, finance.getId());
+				FinanceHP.getEngine().delete(map);
+			}
+			return success();
+		}
+		return result(MsgKeyDict.deleteFailed);
+	}
+
+	/**
+	 * 发布文章（在前台显示）
+	 * 
+	 * @param ids
+	 * @param status
+	 * @param statusLog
+	 * @param dopwd
+	 * @return
+	 */
+	@RequestMapping(value = "/ajax/finance/status/{status:\\d+}", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> finance_status(String[] ids, @PathVariable int status, AdminLog adminLog, String dopwd, HttpServletRequest request) {
+		if (AdminHP.isDopwd(dopwd)) {
+			adminLog.setChannel(EChannel.finance.toInt());
+			adminLog.setOperation(EAdminLog.updateFinanceStatus.getName());
+			adminLog.setData(EAdminLog.updateFinanceStatus.getName());
+			List<Map<String, Object>> maps = new ArrayList<>();
+			if (so.update(adminLog, EStatus.get(status), ids)) {
+				for (int i = 0; i < ids.length; i++) {
+					Finance finance = so.get(ids[0]);
+					FinanceHP.serializeToJson(finance);
+					if (finance.getIsGeniusfocus()) {// 如果是天财焦点的文章 序列化文件 官网首页显示用到
+						FinanceHP.SerialFile(request);
+					}
+					if (StrUtil.isNotEmpty(finance.getAuthoruid())) {
+						UserStatistics statistics = statisticsSO.obtainOne(finance.getAuthoruid());
+						int number = statistics.getArticlecount();
+						if (statistics.getArticlecount() <= 0) {
+							number = so.getAuthorArticleCount(finance.getAuthoruid());
+						} else {
+							if (EStatus.enable.equals(EStatus.get(status))) {
+								number = number + ids.length;
+							} else {
+								number = (number - ids.length) >= 0 ? (number - ids.length) : 0;
+							}
+						}
+						statisticsSO.update(statistics.getUid(), number, MapperDict.articlecount);
+					}
+					if (scoredetailSO.getOne(finance.getUid()) == null) {
+						if (finance.getStatus().equals(EStatus.enable)) {
+							InboxHP.sendInboxByMsg(FinanceHP.sendFinanceMsg(finance));
+							if (ScoreDetailHP.add(finance.getAuthoruid(), finance.getScore(), ESite.finance, finance.getUid(), finance.getScoreType())) {//增加一条积分明细
+								if(MsgHP.sendFinanceMsg(WebConf.ClickSeeDetail, WebConf.baseFinancePath + SysConf.MyArticlePath, finance.getScore(), finance.getAdminuid(), finance.getAuthoruid(), EMsgGroup.notify, EMsg.financeScore)){
+									if (ScoreDetailHP.isCanLevelUpByScore(finance.getAuthoruid())) {//判断是否可以积分晋级
+										MsgHP.sendCanUpWithScoreMsg(AdminHP.getAdminUid(), finance.getAuthoruid());
+									}
+								}
+							}
+						}
+					}
+					Map<String, Object> map = MapsUtil.toMap(finance, Maps.searchStrategy);
+					map.put(MapperSearchDict.table, EChannel.finance.name());
+					maps.add(map);
+				}
+				FinanceHP.publishremove(ids);
+				if (EStatus.enable.equals(EStatus.get(status))) {
+					FinanceHP.getEngine().addBatch(maps);
+				} else {
+					FinanceHP.getEngine().deleteByID(ids);
+				}
+				return success();
+			} else {
+				return result(MsgKeyDict.updateFailed);
+			}
+		} else {
+			return result(MsgKeyDict.updateFailed);
+		}
+	}
+
+	/**
+	 * 设置置顶
+	 * 
+	 * @param id
+	 * @return
+	 * @author liushaomin
+	 */
+	@RequestMapping(value = "/ajax/finance/enable", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> finance_top(String[] ids) {
+		if (so.setTop(ids, true)) {
+			return success();
+		}
+		return result(MsgKeyDict.updateFailed);
+	}
+
+	/**
+	 * 取消置顶
+	 * 
+	 * @param id
+	 * @return
+	 * @author liushaomin
+	 */
+	@RequestMapping(value = "/ajax/finance/disable", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> finance_untop(String[] ids) {
+		if (so.setTop(ids, false)) {
+			return success();
+		}
+		return result(MsgKeyDict.updateFailed);
+	}
+
+	/**
+	 * 设置为公开
+	 * 
+	 * @param ids
+	 * @return
+	 * @author liushaomin
+	 */
+	@RequestMapping(value = "/ajax/finance/ispublic", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> finance_ispublic(String[] ids) {
+		if (so.setPublic(ids, true)) {
+			return success();
+		}
+		return result(MsgKeyDict.updateFailed);
+	}
+
+	/**
+	 * 取消公开
+	 * 
+	 * @param ids
+	 * @return
+	 * @author liushaomin
+	 */
+	@RequestMapping(value = "/ajax/finance/unpublic", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> finance_unpublic(String[] ids) {
+		if (so.setPublic(ids, false)) {
+			return success();
+		}
+		return result(MsgKeyDict.updateFailed);
+	}
+
+	/**
+	 * 设置为推荐
+	 * 
+	 * @param ids
+	 * @return
+	 * @author liushaomin
+	 */
+	@RequestMapping(value = "/ajax/finance/isrecommend", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> finance_isrecommend(String[] ids) {
+		if (so.setRecommend(ids, true)) {
+			return success();
+		}
+		return result(MsgKeyDict.updateFailed);
+	}
+
+	/**
+	 * 取消推荐
+	 * 
+	 * @param ids
+	 * @return
+	 * @author liushaomin
+	 */
+	@RequestMapping(value = "/ajax/finance/unrecommend", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> finance_unrecommend(String[] ids) {
+		if (so.setRecommend(ids, false)) {
+			return success();
+		}
+		return result(MsgKeyDict.updateFailed);
+	}
+
+	/**
+	 * 进入打印页面
+	 * 
+	 * @param model
+	 * @param ids
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/ajax/finance/print", method = RequestMethod.GET)
+	public String contribute_download(Map<String, Object> model, String[] ids, HttpServletRequest request, HttpServletResponse response) {
+		Finance finance = so.get(ids[0]);
+		model.put(ViewKeyDict.bean, finance);
+		model.put(ViewKeyDict.type, "finance");
+		return "doprint";
+	}
+
+}

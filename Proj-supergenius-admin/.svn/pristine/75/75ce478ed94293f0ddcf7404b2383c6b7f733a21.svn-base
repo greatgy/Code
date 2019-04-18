@@ -1,0 +1,83 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------------------
+Svn Revision:636
+Engineer:liubin
+DataTime:2017-02-07 17:01
+Comment:修改user项目会员列表中搜索条件默认为正常状态
+
+--------------------------------------------------------
+Svn Revision:624
+Engineer:chenminchang
+DataTime:2016-12-20 19:03
+Comment:升级ckeditor
+
+--------------------------------------------------------
+Svn Revision:619
+Engineer:liubin
+DataTime:2016-12-14 14:30
+Comment:增加企业家培训中后台报名的功能
+
+--------------------------------------------------------
+Svn Revision:616
+Engineer:chenminchang
+DataTime:2016-12-12 11:06
+Comment:升级admin增加manager管理
+
+--------------------------------------------------------
+Svn Revision:359
+Engineer:yuyingjie
+DataTime:2015-11-06 10:50
+Comment:升级编辑器和修改模块,实现adminlog的插入
+
+--------------------------------------------------------
+Svn Revision:268
+Engineer:liushaomin
+DataTime:2015-05-11 18:36
+Comment:修改生成文件的bug
+
+--------------------------------------------------------
+Svn Revision:266
+Engineer:liushaomin
+DataTime:2015-05-07 15:09
+Comment:升级官网banner编辑功能
+
+--------------------------------------------------------
+Svn Revision:230
+Engineer:liushaomin
+DataTime:2015-04-29 18:20
+Comment:增加官网移动端后台功能
+
+--------------------------------------------------------
+Svn Revision:228
+Engineer:liushaomin
+DataTime:2015-04-13 18:14
+Comment:修改管理后台查询bug，将评论管理和顾雏军专栏的评论管理分开，配置权限
+
+--------------------------------------------------------
+Svn Revision:1
+Engineer:architect.bian
+DataTime:2015-03-13 12:39
+Comment:修改了xxbug。。。注释说明

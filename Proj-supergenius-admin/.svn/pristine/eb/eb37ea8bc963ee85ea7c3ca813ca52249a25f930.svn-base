@@ -1,0 +1,259 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/Admin.ftl" as a]
+[#assign security=JspTaglibs["http://www.springframework.org/security/tags"] /]
+<html>
+<head>
+<title>全站文章管理</title>
+<script type="text/javascript" src="${basejs}/ckeditor/ckeditor.js"></script>
+<script type="text/javascript">
+
+/*重写add的表单提交方法*/ 
+function submitHandler(obj) {
+
+        if ($("#add_title").val().length < 1) {
+        err("您未填写标题！");
+        $("#add_title").focus();
+        return false;
+       };         
+	   if ($("input[name='imgdata']").val() == undefined) {
+        err("您未上传图片！");
+        return false;
+       };
+       if (CKEDITOR.instances.content.getData().trim().length < 1) {
+        err("正文未填写！");
+        return false;
+       }; 
+	 var r=document.getElementsByName("cids");
+	 var arr = [] ; 
+          for(var i=0;i<r.length;i++){
+             if(r[i].checked){
+             arr.push(r[i].value)
+             }
+          }
+         if(arr.length == 0){
+         alert("您必须选择模块");
+         return false ;
+         } 
+          var fin = []; 
+        for(var a = 0; a<arr.length; a=a+1){
+          if(arr[a].split(",")[0]== "finance"){  
+             fin.push(arr[a].split(",")[1])
+          } else if(arr[a].split(",")[0]== "gupage"){
+             var gu = arr[a].split(",")[1];
+             if(gu == 10){ gu = "gupagearticle"}
+             if(gu == 11){ gu = "gupagenews"}
+             $.ajax({
+             type:"post",
+             url:"${base}/supergeniusadmin/gupagearticle/ajax/"+gu+"/add",     
+             data:{title: $("input[name='title']").val(), booktime : $("input[name='publishtime']").val(), author: $("input[name='author']").val(), summary : $("input[name='summary']").val(), content: CKEDITOR.instances.content.getData().trim(), imgdata : $("input[name='imgdata']").val(), type_radio : $("input[name='type_radio']").val(), keywords: $("input[name='SEOkeywords']").val()},            
+             dataType:"json",
+             });
+            } else if(arr[a].split(",")[0]== "enterpriser"){
+               $.ajax({
+               type:"post",
+               traditional : true,
+               url:"${base}/supergeniusadmin/enterpriser/ajax/enterpriserarticle/add",     
+               data:{cid : arr[a].split(",")[1], title : $("input[name='title']").val(), booktime : $("input[name='publishtime']").val(), summary : $("input[name='summary']").val(), author: $("input[name='author']").val(), content: CKEDITOR.instances.content.getData().trim(), imgdata : $("input[name='imgdata']").val(), origin :$("input[name='origin']").val(), type_radio : $("input[name='type_radio']").val(), keywords: $("input[name='SEOkeywords']").val()},            
+               dataType:"json",
+               });
+              } else if(arr[a].split(",")[0]== "career"){
+                 $.ajax({
+                 type:"post",
+                 url:"${base}/supergeniusadmin/career/ajax/careerarticle/add",     
+                 data:{cataloguetype : arr[a].split(",")[1], labelcontent : $("input[name='labelcontent']").val(), title : $("input[name='title']").val(), booktime : $("input[name='publishtime']").val(), author: $("input[name='author']").val(), summary : $("input[name='summary']").val(), content: CKEDITOR.instances.content.getData().trim(), imgdata : $("input[name='imgdata']").val(), origin : $("input[name='origin']").val(), origin_radio :$("input[name='origin_radio']").val(), type_radio : $("input[name='type_radio']").val(), keywordscontent: $("input[name='SEOkeywords']").val()},            
+                 dataType:"json",
+                 });
+                } else if(arr[a].split(",")[0]== "startup"){
+                   $.ajax({
+                   type:"post",
+                   url:"${base}/supergeniusadmin/startup/ajax/startuparticle/add",     
+                   data:{cataloguetype : arr[a].split(",")[1], labelcontent : $("input[name='labelcontent']").val(), title : $("input[name='title']").val(), booktime : $("input[name='publishtime']").val(), author: $("input[name='author']").val(), summary : $("input[name='summary']").val(), content: CKEDITOR.instances.content.getData().trim(), imgdata : $("input[name='imgdata']").val(), origin : $("input[name='origin']").val(), origin_radio :$("input[name='origin_radio']").val(), type_radio : $("input[name='type_radio']").val(), keywords: $("input[name='SEOkeywords']").val(), isflash : $("input[name='isflash']").val() },            
+                   dataType:"json",
+                   });
+                  } 
+        } 
+        if(fin.length != 0){ 
+        $.ajax({
+           type:"post",
+           traditional : true,
+           url:"${base}/supergeniusadmin/finance/ajax/financearticle/add",     
+           data:{title: $("input[name='title']").val(), labelcontent : $("input[name='labelcontent']").val(), author: $("input[name='author']").val(), publishtime : $("input[name='publishtime']").val(), content: CKEDITOR.instances.content.getData().trim(), summary : $("input[name='summary']").val() ,cids : fin, imgdata : $("input[name='imgdata']").val(), origin_radio :$("input[name='origin_radio']").val(), origin :$("input[name='origin']").val(), type_radio : $("input[name='type_radio']").val(), SEOkeywords: $("input[name='SEOkeywords']").val()},            
+           dataType:"json",
+           });
+        }
+        alert("文章添加成功,请到相应页面查看");
+        window.location.reload();
+}
+$(function(){
+ $("#toggle,#toggle1").click(function() {
+      var x = "channel"+$(this).attr('value');
+     if($("div[class="+x+"]").css('display') == "none") {
+        $("div[class="+x+"]").css('display','block');
+     } else {
+       $("div[class="+x+"]").css('display','none');
+       }  
+ });
+});
+</script> 
+<style>
+
+section:first-of-type table tr td:FIRST-CHILD {
+    color: #999;
+}
+</style>	
+</head>
+<body>
+  <section>
+    <form id="formt" method= post >
+	  <table class="ftable">
+        <tr>
+            <td>标题：</td>
+            <td><input class="easyui-validatebox" type="text" name="title" data-options="required:true" id = "add_title" /></td>
+        </tr>
+        <br>
+        <tr>
+            <td>标题图：</td>
+            <td class="addimgdata">[@a.imgupload multiple=false imgpath="${photopath}" name="imgdata" /]</td>
+        </tr>
+        <tr>
+            <td>SEO关键字：</td>
+            <td><input class="easyui-validatebox" type="text" name="SEOkeywords" /></td>
+        </tr>
+        <tr>
+            <td>标签：</td>
+            <td><input class="easyui-validatebox" type="text" name="labelcontent" placeholder="添加多个请以空格隔开" /></td>
+        </tr>
+        <tr>
+            <td>作者：</td>
+            <td><input class="easyui-validatebox" name="author"/></td>
+        </tr>
+        <tr>
+            <td>来源：</td>            
+            <td><input class="easyui-validatebox" name="origin"/></td>
+        </tr>
+        <tr>
+	        <td>摘要：</td>            
+	        <td>
+	        <input class="easyui-validatebox" name="summary" ></input>
+	        </td>
+	    </tr>
+        <tr>
+            <td>是否原创：</td>            
+            <td>
+            <input name="origin_radio" type="radio" id="add_origin_yes" value="1"><label for="add_origin_yes">是</label>
+            <input name="origin_radio" type="radio" id="add_origin_no" value="0" checked="checked"><label for="add_origin_no">否</label>
+            </td>
+        </tr>
+        <tr>
+            <td>类别：</td>            
+            <td>
+            <input name="type_radio" type="radio" id="add_type_article" value="0" checked="checked"><label for="add_type_article">文章</label>
+            <input name="type_radio" type="radio" id="add_type_video" value="1"><label for="add_type_video">视频</label>
+            <input name="type_radio" type="radio" id="add_type_photo" value="2"><label for="add_type_photo">图片</label>
+            </td>
+        </tr>
+         <tr>
+          <td>板块：</td>
+          <td>
+           <a  href="javascript:void(0);" id="toggle" value = "1">引资购商   &nbsp; &nbsp;</a>
+            <a  href="javascript:void(0);" id="toggle" value = "2">顾雏军专栏  &nbsp; &nbsp;</a>
+            <a  href="javascript:void(0);" id="toggle" value = "3">天才评论   &nbsp; &nbsp;</a>
+            <a  href="javascript:void(0);" id="toggle" value = "4">天才职场   &nbsp; &nbsp;</a>
+            <a  href="javascript:void(0);" id="toggle" value = "5">天才创业  </a>
+            </td>
+         </tr> 
+        [@security.authorize url="${base}${baseAdminPath}/enterpriser/enterpriserarticle"]
+        <tr>
+         <td>引资购商:</td>
+            <td>
+      	    <div class="channel1" style="display: none;">
+      		  [#if enterprisercatalog??]
+			    [#list enterprisercatalog as item] 
+			    <input name="cids" type="checkbox"  id="catalogues_${item.cid}"  value="enterpriser,${item.cid}"><label for="add_catalogue${item.cid}" >${item.name}</label>
+				[/#list]
+				[/#if]
+      	    </div>
+            </td>
+         </tr>
+        [/@security.authorize] 
+        [@security.authorize url="${base}${baseAdminPath}/gupagearticle/gupagearticle"]
+         <tr>
+            <td>顾雏军专栏:</td>
+            <td>
+      		 <div class="channel2" style="display: none;">
+			    <input name="cids" type="checkbox" class="catelogue add sign" id="add_catalogue" value="gupage,10"><label for="add_catalogue10" >个人文章</label>
+			     <input name="cids" type="checkbox" class="catelogue add sign" id="add_catalogue" value="gupage,11"><label for="add_catalogue11" >动态</label>
+      		 </div>
+            </td>
+         </tr>
+        [/@security.authorize]
+         [@security.authorize url="${base}${baseAdminPath}/finance/financearticle"]
+         <tr>
+            <td>天才评论:</td>
+            <td>
+      		 <div class="channel3" style="display: none;">
+      		  [#if financecataloglist??]
+			    [#list financecataloglist as item] 
+			    [#if item.cid!=0]
+			    <input name="cids" type="checkbox" class="catelogue add${item.cid} sign${item.pcid}" id="add_catalogue${item.cid}" value="finance,${item.cid}"><label for="add_catalogue${item.cid}" >${item.name}</label>
+				[/#if]
+				[/#list]
+				[/#if]
+      		 </div>
+            </td>
+         </tr>
+         [/@security.authorize]
+         <tr>
+            <td>天才职场:</td>
+            <td>
+      		 <div class="channel4" style="display: none;">
+      		  [#if careercataloglist??]
+			    [#list careercataloglist as item] 
+			    <input name="cids" type="checkbox" class="catelogue add${item.cid} sign${item.pcid}" id="add_catalogue${item.cid}" value="career,${item.cid}"><label for="add_catalogue${item.cid}" >${item.name}</label>
+				[/#list]
+				[/#if]
+      		 </div>
+            </td>
+         </tr>
+         [@security.authorize url="${base}${baseAdminPath}/startup/startuparticle"]
+         <tr>
+            <td>天才创业:</td>
+            <td>
+      		 <div class="channel5" style="display: none;">
+      		  [#if startupcataloglist??]
+			    [#list startupcataloglist as item] 
+			    <input name="cids" type="checkbox" class="catelogue add${item.cid} sign${item.pcid}" id="add_catalogue${item.cid}" value="startup,${item.cid}"><label for="add_catalogue${item.cid}" >${item.name}</label>
+				[/#list]
+			  [/#if]
+      		 </div>
+            </td>
+         </tr>
+         [/@security.authorize]
+        <br>
+        <tr class="hdcatatory">
+        	<td>是否快讯</td>
+        	<td>
+	        	<input class="catatory yeahflash" name="isflash" type="radio" id="type_flash_add" value="1"><label for="type_flash_add">是</label>
+	            <input class="catatory notflash" name="isflash" type="radio" id="type_notflash_add" value="0" checked="checked"><label for="type_notflash_add">否</label>
+            </td>
+        </tr>
+        <tr>
+            <td>内容：</td>
+            <td>
+                [@a.ckeditor name="content" id="content" /]
+            </td>
+        </tr>
+        <tr>
+            <td>定时发布：</td>
+            <td><input name="publishtime" type="text" editable="false" class="easyui-datetimebox" /></td>
+        </tr>
+      </table>
+        <div class="formbtns">
+          <a href="javascript:void(0)" class="easyui-linkbutton l-btn" data-options="iconCls:'icon-ok'" onclick="submitHandler(this)" group="" id="">提交</a>
+          <a href="javascript:void(0)" class="easyui-linkbutton l-btn" data-options="iconCls:'icon-undo'" onclick="resetForm(this)" group="" id="">重置</a>
+          <a href="javascript:void(0)" class="easyui-linkbutton l-btn" data-options="iconCls:'icon-back'" data-crumbreturn="" group="" id="">返回</a>
+        </div>
+   </form>
+  </section>
+</body>
+</html>

@@ -1,0 +1,244 @@
+[#ftl]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>${title}</title>
+	<link rel="stylesheet" href="${basecss}/css/default/pages/mycenter.css"/>
+</head>
+<body>
+	<div class="wraper centerbox">
+		<div class="mycenterTop">
+			<div class="opacitybot"></div>
+			<div class="mybaseinfor">
+				<img src="${baseimg}/imgs/default/myimg.png" class="myimg" />
+				<div class="myinforright">
+					<h3>
+						王老吉
+						<span class="positions">公司-部门-职位</span>
+						<div class="editinfor subs">
+							<a href="javascript:;" class="addSubsbtn"><img src="${baseimg}/imgs/default/addsubs.png" />
+							订阅</a>
+							<a href="javascript:;" class="cancelSubsbtn hd">已订阅<img src="${baseimg}/imgs/default/cancelsubs.png" /></a>
+						</div>
+					</h3>
+					<p>丁一，首都经济贸易大学劳动经济学博士研究生，天才纵横国际企业管理（北京）有限公司微观经济分析师。目前主要从事企业人力资源管理方面的研究。人生格言：是非审之于心，毁誉听之于人，得失安之于数。</p>
+					<ul class="mycenterlist">
+						<li><a href="${base}/his/art">TA的文章</a></li>
+						<li><a href="${base}/his/topic" class="activeblock">TA的话题</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="mainleft">
+				<h3>TA的话题</h3>
+				<ul class="allists topiclist histopics">
+					<li class="tpcitem">
+						<div class="newjudger">
+							<a href="#" class="newjudgerimg"><img src="${baseimg}/imgs/default/topicuser01.png" /></a>
+							<a href="#" class="newNamelink"><span class="newname">丹尼</span></a>
+							<span class="newtime hisnewtime">2015年09月25日12:34</span>
+						</div>
+						<a href="#" class="topicTitlink">
+							<span class="topictit">混合所有制改革真的能实现“国民共进”吗？</span>
+						</a>
+						<a href="#" class="imgcontainer" class="imgcontainer">
+							<img src="${baseimg}/imgs/default/topiclist01.png" class="topicimg" />
+						</a>
+						<div class="iconsbox">
+							<span class="look" title="查看次数">
+								<img src="${baseimg}/imgs/default/blueviewicon.png" />
+								10010
+							</span>
+							<span class="look" title="点赞次数">
+								<img src="${baseimg}/imgs/default/bluezanicon.png" />
+								1234
+							</span>
+							<span class="look" title="评论次数">
+								<img src="${baseimg}/imgs/default/msgimg.png" />
+								67
+							</span>
+							<span class="notlook" title="分享">
+								<img src="${baseimg}/imgs/default/shareicon.png" />
+							</span>
+						</div>
+					</li>
+					<li class="tpcitem">
+						<div class="newjudger">
+							<a href="#" class="newjudgerimg"><img src="${baseimg}/imgs/default/topicuser02.png" /></a>
+							<a href="#" class="newNamelink"><span class="newname">吴迪</span></a>
+							<span class="newtime hisnewtime">2015年09月25日12:34</span>
+						</div>
+						<a href="#" class="topicTitlink">
+							<span class="topictit">混合所有制改革真的能实现“国民共进”吗？</span>
+						</a>
+						<a href="#" class="imgcontainer">
+							<img src="${baseimg}/imgs/default/topiclist02.png" class="topicimg" />
+						</a>
+						<div class="iconsbox">
+							<span class="look" title="查看次数">
+								<img src="${baseimg}/imgs/default/blueviewicon.png" />
+								10010
+							</span>
+							<span class="look" title="点赞次数">
+								<img src="${baseimg}/imgs/default/bluezanicon.png" />
+								1234
+							</span>
+							<span class="look" title="评论次数">
+								<img src="${baseimg}/imgs/default/msgimg.png" />
+								67
+							</span>
+							<span class="notlook" title="分享">
+								<img src="${baseimg}/imgs/default/shareicon.png" />
+							</span>
+						</div>
+					</li>
+					<li class="tpcitem">
+						<div class="newjudger">
+							<a href="#" class="newjudgerimg"><img src="${baseimg}/imgs/default/topicuser03.png" /></a>
+							<a href="#" class="newNamelink"><span class="newname">吧啦啦</span></a>
+							<span class="newtime hisnewtime">2015年09月25日12:34</span>
+						</div>
+						<a href="#" class="topicTitlink">
+							<span class="topictit">混合所有制改革真的能实现“国民共进”吗？</span>
+						</a>
+						<a href="#" class="imgcontainer">
+							<img src="${baseimg}/imgs/default/topiclist03.png" class="topicimg" />
+						</a>
+						<div class="iconsbox">
+							<span class="look" title="查看次数">
+								<img src="${baseimg}/imgs/default/blueviewicon.png" />
+								10010
+							</span>
+							<span class="look" title="点赞次数">
+								<img src="${baseimg}/imgs/default/bluezanicon.png" />
+								1234
+							</span>
+							<span class="look" title="评论次数">
+								<img src="${baseimg}/imgs/default/msgimg.png" />
+								67
+							</span>
+							<span class="notlook" title="分享">
+								<img src="${baseimg}/imgs/default/shareicon.png" />
+							</span>
+						</div>
+					</li>
+					<li class="tpcitem">
+						<div class="newjudger">
+							<a href="#" class="newjudgerimg"><img src="${baseimg}/imgs/default/topicuser02.png" /></a>
+							<a href="#" class="newNamelink"><span class="newname">顾里</span></a>
+							<span class="newtime hisnewtime">2015年09月25日12:34</span>
+						</div>
+						<a href="#" title="混合所有制改革真的能实现“国民共进”吗？" class="topicTitlink">
+							<span class="topictit">混合所有制改革真的能实现“国民共进”吗？</span>
+						</a>
+						<a href="#" class="imgcontainer">
+							<img src="${baseimg}/imgs/default/topiclist04.png" class="topicimg" />
+						</a>
+						<div class="iconsbox">
+							<span class="look" title="查看次数">
+								<img src="${baseimg}/imgs/default/blueviewicon.png" />
+								10010
+							</span>
+							<span class="look" title="点赞次数">
+								<img src="${baseimg}/imgs/default/bluezanicon.png" />
+								1234
+							</span>
+							<span class="look" title="评论次数">
+								<img src="${baseimg}/imgs/default/msgimg.png" />
+								67
+							</span>
+							<span class="notlook" title="分享">
+								<img src="${baseimg}/imgs/default/shareicon.png" />
+							</span>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div class="mainright">
+				<div class="countbox">
+					<div class="totcontainer">
+						<span class="totarticles">
+							<b>256</b>
+							话题
+						</span>
+						<span class="totvisited">
+							<b>1280679</b>
+							参与数
+						</span>
+					</div>
+					<a href="#" class="votebtn">发起话题</a>
+				</div>
+				<div class="myartranks">
+					<h3>TA的话题排行榜</h3>
+					<ul class="myarticlelist">
+						<li>
+							<span class="bluenum num">1</span>
+							<a href="#">如何基于微信开放接口开发企业的微</a>
+						</li>
+						<li>
+							<span class="bluenum num">2</span>
+							<a href="#">移动营销革命中的新策略</a>
+						</li>
+						<li>
+							<span class="bluenum num">3</span>
+							<a href="#">从植物大战僵尸看产品的本土化</a>
+						</li>
+						<li>
+							<span class="num">4</span>
+							<a href="#">习大大亲和优雅的举止</a>
+						</li>
+						<li>
+							<span class="num">5</span>
+							<a href="#">开放接口开发企业</a>
+						</li>
+						<li>
+							<span class="num">6</span>
+							<a href="#">开展煤气化装置大型气化炉、喷嘴、开工</a>
+						</li>
+						<li>
+							<span class="num">7</span>
+							<a href="#">紧密围绕电力产业的安全、高效</a>
+						</li>
+						<li>
+							<span class="num">8</span>
+							<a href="#">增强我国相关领域竞争力为目标</a>
+						</li>
+						<li>
+							<span class="num">9</span>
+							<a href="#">国神集团和丰煤电公司</a>
+						</li>
+						<li>
+							<span class="num">10</span>
+							<a href="#">黄骅港务公司顺利通过河北省安全生产</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		$(function(){
+			<!-- 订阅状态切换-->
+			$(".addSubsbtn").click(function(){
+				$(this).toggleClass("hd");
+				$(".cancelSubsbtn").toggleClass("hd");
+			});
+			$(".cancelSubsbtn").click(function(){
+				$(this).toggleClass("hd");
+				$(".addSubsbtn").toggleClass("hd");
+			});
+			<!-- 话题状态切换-->
+			$(".topictab a").click(function(){
+				$(this).siblings().removeClass("curtopic");
+				$(this).addClass("curtopic");
+			});
+		});
+	</script>
+</body>
+</html>
+
+
+
+

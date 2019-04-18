@@ -1,0 +1,35 @@
+[#ftl]
+<div class="side_right">
+	[#list list as item]
+		[#if item_index == 0]
+			<div class="focus_lf">
+				<img src="${webimg}${item.imgoriginal}" class="mark_img" />
+				<div class="mark_big">
+					<a class="mark" href="${baseFinancePath}/topic/${item.oid}" target="_blank"></a>
+					<a class="mark_content">
+						<h3>${item.title}</h3>
+						[#if (item.content)?length > 30]
+							<p>${(item.content)?substring(0,30)}...</p>
+						[#else]
+							<p>${item.content}</p>
+						[/#if]
+					</a>
+				</div>
+			</div>
+		[/#if]
+	[/#list]
+		
+	<div class="debate_right hotpic_right">
+		[#list list as item]
+			[#if item_index > 0]	
+				<div class="hotpic01">
+					<img src="${webimg}${item.imgoriginal!}" alt="${item.title}" />
+					<div class="mark_small mark_sm0${item_index}">
+						<a class="mark_lit" href="${baseFinancePath}/topic/${item.oid}" target="_blank"></a>
+						<a class="mark_m" target="_blank">${item.title}</a>
+					</div>
+				</div>
+			[/#if]
+		[/#list]
+	</div>
+</div>

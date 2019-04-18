@@ -1,0 +1,564 @@
+/*.contentLeft {
+    margin-top: 28px;
+}*/
+.articleBox h3 {
+	margin: 0 auto 15px;
+    font-size: 1.4rem;
+    text-align: left;
+    line-height: 1.8rem;
+}
+.detailTips {
+    margin: 20px auto;
+    text-align: left;
+    font-size: 0.8rem;
+    color: #6d6d6d;
+}
+.detailTips span {
+    display: inline-block;
+    margin-right: 3%;
+    line-height: 22px;
+}
+.shareBox {
+    /* margin: 20px 0; */
+    margin-top: 55px;
+    border: 1px solid #ddd;
+}
+.shareBox .littleicon {
+	display: inline-block;
+	margin: 8px 2%;
+	color: #333;
+}
+.littleicon img {
+    width: 24px;
+    height: 20px;
+    overflow: hidden;
+    vertical-align: middle;
+}
+.shareBox .littleicon img {
+  /*   width: 31px;
+    height: 32px; */
+}
+.share {
+    display: inline-block;
+    float: right;
+    margin: 4px 1%;
+    font-size: 0.8rem;
+    color: #333;
+}
+.isnick {
+	display: inline-block;
+	float: right;
+	margin-right: 2%;
+}
+
+.isnick label {
+	vertical-align: 20%;
+}
+.bdsharebuttonbox {
+	display: inline-block;
+    margin-left: 5px;
+    height: 30px;
+    overflow: hidden;
+    vertical-align: middle;
+}
+.say {
+    margin: 30px auto 40px;
+}
+.say h4 {
+    font-size: 16px;
+    color: #666666;
+    background: url(/imgs/default/leftbg.png) no-repeat left 6px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    margin-bottom: 6px;
+    height: 41px;
+    line-height: 32px;
+}
+textarea {
+    border: 1px solid #ff8800;
+    width: 99%;
+    padding: 8px 15px;
+    height: 80px;
+    resize: none;
+    font-size: 0.94rem;
+    color: #333;
+}
+.wordpiece {
+    margin: 5px 5px 40px;
+}
+
+.delete {
+	float: right;
+	margin-right: 15px;
+}
+.face {
+    display: inline-block;
+    margin-right: 5px;
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+}
+.face img {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.submitBtn {
+    float: right;
+    margin-top: 8px;
+    width: 80px;
+    height: 35px;
+    line-height: 34px;
+    background: #ff8800;
+    border-radius: 8px;
+    color: #fafafa;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    text-align: center;
+}
+.submitBtn:hover {
+    background: #ff6600;
+    color: #fff;
+}
+.testRoom img {
+    width: 100%;
+    overflow: hidden;
+}
+.rightItemBox {
+    margin-top: 30px;
+}
+.rightItemBox h3 {
+    padding-bottom: 10px;
+    padding-left: 20px;
+    margin-bottom: 23px;
+    height: 41px;
+    line-height: 35px;
+    border-bottom: 2px solid #fe6f20;
+    font-size: 18px;
+    color: #333333;
+    background: url(/imgs/default/leftbg.png) no-repeat left 6px;
+}
+
+.userimg {
+    display: inline-block;
+    width: 8%;
+    vertical-align: top;
+    position:relative;
+}
+.userimg img {
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+    border-radius: 50%;
+}
+.userimg .princeimg{
+	position: absolute;
+    top: 0;
+    right: 0;
+}
+.commentRt {
+    display: inline-block;
+    width: 89%;
+}
+.name {
+    font-size: 1rem;
+    color: #1d71b6;
+}
+.name a {
+    color: #1d71b6;
+}
+.name a:hover {
+    color: #0066a7;
+}
+.commentTime {
+    margin-left: 5%;
+    font-size: 13px;
+    color: #999999;
+}
+.comment {
+    margin: 10px 0;
+    font-size: 0.9rem;
+    line-height: 1.3rem;
+}
+.comment span {
+	margin-right: 12px;
+}
+.operate {
+    margin-bottom: 15px;
+}
+.operate a {
+    font-size: 0.9rem;
+    color: #053cb5;
+}
+.leftcomments img {
+    padding-left: 5px;
+    width: 20px;
+    height: 20px;
+    overflow: hidden;
+    vertical-align: middle;
+}
+.operate .zan {
+    float: right;
+    color: #999;
+}
+.zan img {
+	margin-right: 3px;
+    width: 18px;
+    height: 18px;
+    overflow: hidden;
+    vertical-align: bottom;
+}
+.replyBox textarea {
+	height: 50px;
+}
+.replyBox .submitBtn {
+    margin-right: 2%;
+	padding: 0;
+    font-size: 1rem;
+}
+.secondComment {
+    margin: 40px 0 15px
+}
+.secondComment .userimg img {
+	width: 35px;
+    height: 35px;
+    overflow: hidden;
+}
+.secondComment .name {
+	font-size: 0.9rem;
+}
+.commentitem {
+	margin-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+}
+.replyBox {
+    /* display: none; */
+    padding-bottom: 10px;
+}
+.secondComment li {
+	margin-bottom: 15px;
+}
+
+.rightItem {
+    margin-bottom: 20px;
+}
+.rightItem h4 {
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+.rightItem i {
+	display: inline-block;
+    margin-right: 8px;
+    width: 5px;
+    height: 18px;
+    background: #1d71b6;
+    vertical-align: middle;
+}
+.tags li {
+	display: inline-block;
+    margin: 2px 5% 15px 5px;
+    font-size: 0.96rem;
+    padding: 10px;
+    border: 1px solid #d8d8d8;
+    border-radius: 20px;
+    color: #333;
+    overflow: hidden;
+}
+.tags li:hover {
+	border: 1px solid #1d71b6;
+	color: #1d71b6;
+}
+.relateArticles li {
+	margin-bottom: 15px;
+}
+.relateArticles a {
+	display: block;
+    font-size: 0.9rem;
+    color: #363636;
+    line-height: 1.3rem;
+}
+.relateArticles a img {
+	width: 26%;
+	height: 54px;
+    overflow: hidden;
+    vertical-align: top;
+}
+.title {
+    display: inline-block;
+    width: 70%;
+    margin-left: 2%;
+}
+.pictype {
+    color: #ff7500;
+    font-weight: bold;
+}
+.videotype {
+    color: #9900ff;
+    font-weight: bold;
+}
+.original {
+    color: #00cc00;
+    font-weight: bold;
+}
+.relateArticles a:hover {
+	color: #1d71b6;
+}
+
+.leadNav {
+    margin: 0 auto 20px;
+}
+.leadNav li {
+    display: inline-block;
+    line-height: 30px;
+    font-size: 0.92rem;
+}
+.leadNav li a {
+	color: #666;
+}
+.leadNav li a:hover {
+	color: #00cc00;
+	font-size: 1rem;
+}
+.authorbox {
+    margin-bottom: 30px;
+    margin-top: 47px;
+    padding: 20px 20px 10px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+}
+.author {
+    padding-bottom: 15px;
+    margin-top: -38px;
+}
+.author a {
+    color: #363636;
+    font-size: 0.94rem;
+}
+.author a:hover {
+    color: #1d71b6;
+}
+.authorimg {
+    width: 55px;
+    height: 55px;
+    overflow: hidden;
+    vertical-align: middle;
+    margin-right: 15px;
+    border-radius: 50%;
+}
+.authorName {
+    display: inline-block;
+    margin-top: 25px;
+    vertical-align: middle;
+    font-size: 1rem;
+    color: #333;
+}
+.author p {
+    margin: 15px auto;
+    color: #949494;
+    font-size: 0.88rem;
+    line-height: 20px;
+}
+.totalArt {
+    color: #949494;
+    font-size: 1rem;
+}
+.newArticle {
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+}
+.newArticle h5 {
+    font-size: 0.96rem;
+    color: #6B6B6B;
+    margin-bottom: 15px;
+}
+.newArticles li {
+    margin-bottom: 15px;
+    line-height: 20px;
+}
+.newArticles li a {
+    color: #363636;
+    font-size: 0.94rem;
+}
+.newArticles li a:hover {
+    color: #1d71b6;
+}
+
+/* 人生定位 */
+.articleContent {
+    text-align: center;
+}
+.articleContent h2 {
+    margin: 20px 0;
+    font-size: 30px;
+    color: #fe6816;
+}
+.articleContent p {
+    text-indent: 2em;
+}
+.special {
+    color: #f5721a;
+    font-size: 18px;
+}
+.littleTag {
+    margin: 20px auto;
+    text-align: left;
+    font-size: 20px;
+    color: #333;
+}
+.labelicon {
+    display: inline-block;
+    background: url(/imgs/default/squre.png) no-repeat left center;
+    width: 35px;
+    height: 35px;
+    text-align: center;
+    line-height: 35px;
+    color: #fff;
+    font-size: 18px;
+}
+.middlebox {
+    text-align: center;
+}
+.middlebox span {
+    display: block;
+    margin: 15px 0 25px;
+    color: #333;
+    font-size: 16px;
+}
+.skillList {
+    margin-left: 2em;
+    text-align: left;
+    font-size: 17px;
+    color: #f5721a;
+}
+.skillList li {
+    line-height: 25px;
+    margin: 10px 0;
+}
+.numicon {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    background: #1bbc9b;
+    text-align: center;
+    line-height: 25px;
+    border-radius: 50%;
+    color: #fff;
+    overflow: hidden;
+    vertical-align: middle;
+}
+.lifeshare {
+    margin: 30px auto;
+    text-align: left;
+}
+.lifeshare .littleicon {
+  /*   margin: 0 2%; */
+}
+.lifesay {
+    text-align: left;
+}
+.judgement {
+    text-align: left;
+    margin: 30px 0;
+}
+.judgement li {
+    display: inline-block;
+    font-size: 18px;
+    padding-left: 8px;
+    color: #333;
+    cursor: pointer;
+}
+.judgement .curjudge {
+    color: #fe6816;
+}
+.judgement .border {
+    border-right: 3px solid #999;
+    padding-right: 8px;
+}
+.lifeCommentList {
+    text-align: left;
+}
+.lifeCommentList .userimg {
+    width: 6%;
+}
+.lifeCommentList .commentRt {
+    width: 93%;
+}
+.lifeCommentList .commentitem {
+    padding-bottom: 5px;
+}
+/* 人生路径 */
+.roadItem {
+    text-align: left;
+}
+.roadp {
+    display: inline-block;
+    margin-right: 2.5%;
+    max-width: 66%;
+    vertical-align: top;
+}
+.roadItem .littleTag{
+  margin: 20px auto 40px;  
+}
+.roadItem .positionImg {
+    display: inline-block;
+    max-width: 31%;
+    margin: -3% 0 5px;
+    vertical-align: middle;
+}
+.roadItem1 .roadp {
+    margin-right: 2.5%;
+}
+.roadItem2 .roadp {
+    margin-left: 2.5%;
+    margin-right: 0;
+}
+/* 人生宗旨 */
+.aimList {
+    margin: 30px auto;
+    text-align: left;
+}
+.aimList li {
+    margin: 10px auto;
+    line-height: 22px;
+    font-size: 17px;
+    color: #333;
+}
+.aimList .labelicon {
+    background: url(/imgs/default/bluesqure.png) no-repeat left center;
+}
+.aimItem {
+    clear: both;
+    margin: 0 0 10px;
+    padding-top: 25px;
+    text-align: left;
+}
+.aimContent h2 {
+    color: #333;
+}
+.aimContent h2 span {
+    color: #fe6816;
+}
+.junior, .senior, .university, .work {
+    margin: 5px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #fe6816;
+    letter-spacing: 2px;
+}
+.senior {
+    color: #2c66e9;
+}
+.university {
+    color: #1fbd9d;
+}
+.work {
+    color: #04d11c;
+}
+.aimItem .inlineimg {
+    margin: 5px 0 5px 2%;
+}
+.articleContent .theorem {
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-family: monospace;
+}

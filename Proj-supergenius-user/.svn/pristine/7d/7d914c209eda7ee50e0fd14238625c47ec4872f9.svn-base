@@ -1,0 +1,106 @@
+[#ftl]
+<html>
+<head>
+	<title>会员注册第二步--验证注册邮箱</title>
+	<meta name="Keywords" content="会员中心，会员注册第二步，验证注册邮箱" />
+	<meta name="Description" content="会员中心，会员注册第二步，验证注册邮箱" />
+	<script type="text/javascript" src="${basejs}/js/libs/validator-1.0.0.js"></script>
+	<link rel="stylesheet" type="text/css" href="${basecss}/css/default/register.css">
+	<script type="text/javascript">
+<!--
+    function registerValidHandler(){
+		var pwd = $("#txtpassword").val();
+		var pwd2 = $("#txtconfigpwd").val();
+		if(pwd != pwd2 || pwd2 == ""){
+		    return false;
+		} else {
+		   $("#regform").submit();
+		}
+	}
+	
+		$(function() {
+			$(".changemail").click(function(){
+				$(".changebox").toggle();
+			});
+		});
+//-->
+</script>
+</head>
+<body>
+		<div class="container">
+			<div class="main">
+				<div class="topcommon">
+					<img src="${baseimg}/imgs/default/findpw01.png" alt="" />
+					<h2>从这里，找到更好的自己！</h2>
+				</div>
+				<div class="midcommon">
+					<div class="logotop">
+						<img src="${baseimg}/imgs/default/login_logo.png" alt="" />
+						会员注册
+					</div>
+					<div class="registercontainer">
+						<div class="steps">
+							<div class="stepitem curstepitem">
+								<span class="rectbg">1</span>
+								<span>填写账户信息</span>
+							</div>
+							<div class="linebg redlinebg"></div>
+							<div class="stepitem curstepitem">
+								<span class="rectbg">2</span>
+								<span>验证注册邮箱</span>
+							</div>
+							<div class="linebg"></div>
+							<div class="stepitem">
+								<span class="rectbg">3</span>
+								<span>基本信息</span>
+							</div>
+							<div class="linebg"></div>
+							<div class="stepitem">
+								<span class="rectbg">4</span>
+								<span>支付会员费</span>
+							</div>
+						</div>
+						<div class="registercontmiddle">
+							<div class="goemail">
+								<div class="mailtip">
+									<img src="${baseimg}/imgs/default/yes.png" alt="" />
+									验证邮件已发送至您的邮箱(${(user.email)!})，请登录邮箱并点击确认链接以完成注册！
+								</div>
+								<a href="${url}" class="toemail submit" target="_blank">进入邮箱</a>
+							</div>
+							<div class="moretest">
+								<h2>没有收到确认邮件怎么办？</h2>
+								<ul class="questionlist">
+									<li>1.看看是否在邮箱的回收站中、垃圾邮件中</li>
+									<li>2.确认没有收到，点此<a href="${base}/register_resendemail/${(user.uid)!}" class="moremail">重发一封</a></li>
+									<li>
+										3.也可以试试更换邮箱地址，点击这里<a href="javascript:;" class="changemail">更换邮箱</a>
+										<div class="changebox">
+											<form class="changeboxcontent" action="${base}/register_changeemail/${(user.uid)!}">
+												<ul class="inputs">
+													<li>
+													     <input type="text" id="txtemail" name="nemail" isnotempty="" isemail="" ajaxvalid="${base}/ajax/user/emailvalid|该邮箱已被注册，请直接登录|请输入163/qq/sina等常用邮箱" maxlength="100" value="${(nemail)!}" placeholder="请填写常用邮箱"/>
+										                 <div id="focustxtemail" class="tips tipsright hd"><i></i><span id="focusmsgtxtemail" style="padding-left: 20px;">请输入您新的注册邮箱</span></div> 
+                    	                                 <div id="errtxtemail" class="tips tipswrong hd"><i></i><span id="errmsgtxtemail" style="padding-left: 20px;">请输入正确的邮箱格式</span></div>
+                    	                                 <div id="oktxtemail" class="tips tipsright hd"><i></i><span id="okmsgtxtemail" style="padding-left: 20px;">邮箱正确</span></div>
+													</li>
+													<li>
+									 					<input type="password" id="txtpassword" name="password" isnotempty="" ispwd="请输入原密码" placeholder="请输入密码"  ajaxvalid="${base}/ajax/user/pwdvalid/${(user.uid)!}|请输入原密码"/>
+									                  	<div id="focustxtpassword" class="tips tipsright hd"><i></i><span id="focusmsgtxtpassword" style="padding-left: 20px;">请输入原密码</span></div> 
+									                  	<div id="errtxtpassword" class="tips tipswrong hd"><i></i><span id="errmsgtxtpassword" style="padding-left: 20px;">请输入原密码</span></div>
+	                       	                            <div id="oktxtpassword" class="tips tipsright hd"><i></i><span id="oktxtpassword" style="padding-left: 20px;">密码正确</span></div>
+													</li>
+												</ul>
+												<button class="submit">提交</button>
+											</form>
+										</div>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+	</div>
+</body>
+</html>

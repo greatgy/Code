@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+     http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<!-- dbcp pool -->
+	<bean id="dbcpDataSourceUserDB" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${UserDB.jdbc.driverClassName}" />
+		<property name="url" value="${UserDB.jdbc.url}" />
+		<property name="username" value="${UserDB.jdbc.username}" />
+		<property name="password" value="${UserDB.jdbc.password}" />
+		<property name="initialSize" value="2" />
+		<property name="maxActive" value="20" />
+		<property name="maxIdle" value="10" />
+		<property name="maxWait" value="30000" />
+		<property name="poolPreparedStatements" value="true" />
+		<property name="maxOpenPreparedStatements" value="30" />
+		<property name="removeAbandoned" value="true" />
+		<property name="removeAbandonedTimeout" value="300" />
+		<property name="logAbandoned" value="false" />
+		<property name="minEvictableIdleTimeMillis" value="30000" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="true" />
+		<property name="testOnReturn" value="false" />
+		<property name="validationQuery" value="select 1 from dual" />
+		<property name="validationQueryTimeout" value="1" />
+		<property name="timeBetweenEvictionRunsMillis" value="30000" />
+		<property name="numTestsPerEvictionRun" value="20" />
+	</bean>
+
+	<!-- 配置sqlSessionFactory工厂 -->
+	<bean id="sqlSessionFactoryUserDB" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dbcpDataSourceUserDB" />
+		<property name="configLocation" value="classpath:conf/sqlMapConfig.xml" />
+		<property name="mapperLocations" value="classpath*:com/supergenius/xo/user/dao/*.xml" />
+		<property name="typeAliasesPackage" value="com.supergenius.xo.user.entity,com.supergenius.xo.common.entity" />
+		<property name="typeHandlersPackage" value="com.genius.xo.base.mybatis.handler,com.supergenius.core.mybatis.handlers" />
+	</bean>
+
+	<!-- scan for mappers and let them be autowired -->
+	<bean id="mapperScannerUserDB" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.supergenius.xo.user.dao,com.supergenius.xo.common.dao" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryUserDB" />
+	</bean>
+
+	<!-- transaction manager, use JtaTransactionManager for global tx -->
+	<bean id="transactionManagerUserDB" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dbcpDataSourceUserDB" />
+	</bean>
+
+	<bean id="transactionInterceptorUserDB" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+		<property name="transactionManager">
+			<ref bean="transactionManagerUserDB" />
+		</property>
+		<!-- PROPAGATION_REQUIRED是事务传播机制，即如果没有事务就创建事务，如果事务存在则加入事务 -->
+		<!-- ISOLATION_DEFAULT是事务的隔离级别是数据库默认的隔离级别 -->
+		<!-- -Exception中“-”表示哪些异常发生事务将回滚，如果是“+”则表示即使异常该事务仍旧被提交 -->
+		<property name="transactionAttributes" ref="transactionProps" />
+	</bean>
+
+	<bean id="txAutoCreatorUserDB" class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+		<property name="beanNames" ref="beanNameList" />
+		<property name="interceptorNames">
+			<list>
+				<value>transactionInterceptorUserDB</value>
+			</list>
+		</property>
+	</bean>
+
+</beans>

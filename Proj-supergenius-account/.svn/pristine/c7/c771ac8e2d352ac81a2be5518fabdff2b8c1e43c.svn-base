@@ -1,0 +1,13 @@
+#\u7f51\u7ad9\u7f51\u5740
+baseRootPath=
+baseCssRootPath=
+#\u7f51\u7ad9\u9759\u6001\u56fe\u7247
+baseImgRootPath=
+baseJsRootPath=
+baseFileRootPath=
+#\u7f51\u7ad9\u6570\u636e\u56fe\u7247
+WebImgRootPath=http://localhost:8080
+#\u767b\u5f55\u5730\u5740
+LoginURL=http://localhost:9082/login?usersn=testusersn&password=123456
+SnsRootPath=http://sns.supergenius.cn
+DefaultAnonymousName=\u6e38\u5ba2

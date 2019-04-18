@@ -1,0 +1,309 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/Admin.ftl" as a]
+<html>
+<head>
+<title>文章管理</title>
+<script type="text/javascript" src="${basejs}/ckeditor/ckeditor.js"></script>
+<script type="text/javascript">
+<!--
+function initDGData(row) {
+	for(var i in row) {
+		if(row[i].istop) {
+			row[i].istopName = "置顶";
+		} else {
+			row[i].istopName = "未置顶";
+		}
+		if (row[i].score == "" || row[i].score == undefined) {
+			row[i].score = 0;
+		}
+		if(row[i].status == 1) {
+			row[i].financeStatusName = "已发布";
+		} else if(row[i].status == 0) {
+			row[i].financeStatusName = "取消发布";
+		} else {
+			row[i].financeStatusName = "未发布";
+		}
+		if(row[i].isrecommend) {
+			row[i].isrecommendName = "推荐";
+		} else {
+			row[i].isrecommendName = "未推荐";
+		}
+		if(row[i].ispublic) {
+			row[i].ispublicName = "已公开";
+		} else {
+			row[i].ispublicName = "未公开";
+		}
+		if(row[i].contributor != null){
+		  row[i].usersummary = row[i].contributor.summary;
+		  if(row[i].contributor.useruid != null){
+		  	  row[i].contributortype = "会员";
+		  }else{
+		  	  row[i].contributortype = "游客";
+		  }
+		}
+	}
+}
+
+//编辑时初始化
+function initFormData(form, data) {
+    if(data.avatarbig == null) {
+       $("#avatarbig").remove();
+    }
+	form.form('load', data);
+	form.set(data);
+	if(data.contributor && data.contributor.useruid){
+		$("#classcontributor").hide();
+		$("#classcontributor1").hide();    
+	}
+}
+	
+//-->
+</script>
+</head>
+<body>
+	<section>
+		[@a.search]
+	        <tr>
+	        	<td colspan="10">
+		        	<label for="stitle">标题: </label><input id="stitle" type="text" name="title" />&nbsp;&nbsp;&nbsp;
+		        	<label for="sshorttitle">副标题: </label><input id="sshorttitle" type="text" name="shorttitle" />&nbsp;&nbsp;&nbsp;
+		        	<label for="sauthor">作者: </label><input id="sauthor" type="text" name="author" style="width: 100px;"/>&nbsp;&nbsp;&nbsp;
+		        	<label for="sorigin">来源: </label><input id="sorigin" type="text" name="origin" style="width: 100px;"/>&nbsp;&nbsp;&nbsp;
+		        	<label for="skeywords">关键词: </label><input id="skeywords" type="text" name="keywords" style="width: 100px;"/>
+	        	</td>
+	        </tr>
+	        <tr>	
+	        	<td colspan="5">
+	        	<font style="font-weight:bold;">置顶:</font> 
+	        		<input id="sistopall" name="istop" value="" type="radio" class="radio" /><label for="sistopall">全部</label>
+		            <input id="sistop" name="istop" value="1" type="radio" class="radio" /><label for="sistop">置顶</label>
+		            <input id="suntop" name="istop" value="0" type="radio" class="radio" /><label for="suntop">未置顶</label>
+		            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		        <font style="font-weight:bold;">公开:</font>  
+	        		<input id="sispublicall" name="ispublic" value="" type="radio" class="radio" /><label for="sispublicall">全部</label>
+		            <input id="sispublic" name="ispublic" value="1" type="radio" class="radio" /><label for="sispublic">公开</label>
+		            <input id="sunpublic" name="ispublic" value="0" type="radio" class="radio" /><label for="sunpublic">未公开</label>
+		           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		        <font style="font-weight:bold;">状态:</font>  
+		            <input id="sall" name="status" value="" type="radio" class="radio" /><label for="sall">全部</label>
+		            <input id="senable" name="status" value="1" type="radio" class="radio" /><label for="senable">已发布</label>
+		            <input id="sdisable" name="status" value="10" type="radio" class="radio" /><label for="sdisable">未发布</label>
+		            <input id="scancel" name="status" value="0" type="radio" class="radio" /><label for="scancel">取消发布</label>
+	        	</td>
+            </tr>
+            <tr>
+	            <td>起始发布时间: <input name="createtimestart" type="text" editable="false" class="easyui-datebox" /></td>
+                <td>结束发布时间: <input name="createtimeend" type="text" editable="false" class="easyui-datebox" /></td>
+                <td>
+	        		<label for="stype">版块: </label>
+	        		<select id="stype" name="type">
+					    <option value="">全部</option>
+					    [#assign financetype = enumstype?keys]
+					    	[#list financetype as item]
+						    	<option value="${item}">${enumstype[item]}</option>
+						    [/#list]
+		            </select>
+				<script type="text/javascript">
+				<!--
+					$("#slttype2").val("${channelfrom}");
+				//-->
+				</script>
+	        	</td>
+	        </tr>
+		[/@a.search]
+		
+		[@a.datagrid]
+            <th data-options="field:'title',width:500">标题</th>
+            <th data-options="field:'author',width:100">作者</th>
+            <th data-options="field:'score',width:100">积分</th>
+            <th data-options="field:'typeName',width:100">版块</th>
+            <th data-options="field:'financeStatusName',width:100">状态</th>
+            <th data-options="field:'createtimeStr',width:150">创建时间</th>
+	    [/@a.datagrid]
+	    
+	    [@a.toolbar canadd=false]
+	    	[@a.status namedisable="取消发布" nameenable="发布"/]
+	    	[@a.state /]
+	    	[@a.state nameenable="设置公开" namedisable="取消公开" statefield="ispublic" actionenable="${base}${baseAdminPath}/ajax/${channel}/ispublic" actiondisable="${base}${baseAdminPath}/ajax/${channel}/unpublic"/]
+	    	[@a.state nameenable="设置推荐" namedisable="取消推荐" statefield="isrecommend" actionenable="${base}${baseAdminPath}/ajax/${channel}/isrecommend" actiondisable="${base}${baseAdminPath}/ajax/${channel}/unrecommend"/]
+	    	[@a.doaction id="download" name="展开打印" onclick="window.open('${base}${baseAdminPath}/ajax/finance/print?ids=' + getSelectedIDs())" /]
+	    [/@a.toolbar]
+	    [@a.tools /]
+	    
+	</section>
+ 
+ 	[@a.addsection canuploadfile=true]
+		 <tr>
+            <td>标题:</td>
+            <td><input class="easyui-validatebox long" type="text" name="title" data-options="required:true"></input></td>
+        </tr>
+        <tr>
+            <td>副标题:</td>
+            <td><input class="easyui-validatebox long" type="text" name="shorttitle"></input></td>
+        </tr>
+        <tr>
+            <td>关键词:</td>
+            <td><input class="easyui-validatebox long" type="text" name="keywords" data-options="required:true"></input></td>
+        </tr>
+        <tr>
+            <td>作者:</td>
+            <td><input class="easyui-validatebox long" type="text" name="author" data-options="required:true"></input></td>
+        </tr>
+        <tr>
+            <td>来源:</td>
+            <td><input class="easyui-validatebox long" type="text" name="origin" data-options="required:true"></input></td>
+        </tr>
+        <tr>
+	        <td>版块:</td>
+		    [#assign typelist = enumstype?keys]
+		    	[#list typelist as item]
+		    		<input name="financetype" type="checkbox" value="${item}">${enumstype[item]}
+			    [/#list]
+        </tr>
+        <tr>
+            <td>效果图:</td>
+            <td>[@a.imgupload multiple=false imgpath="/imgs/webdata/finance/finance" /]</td>
+        </tr>
+        <tr>
+            <td>内容:</td>
+            <td>[@a.ckeditor name="content" /]</td>
+        </tr>
+    [/@a.addsection]
+	
+	[@a.editsection canuploadfile=true]
+		<tr>
+            <td>标题:<input type="hidden" name="uid"/></td>
+            <td><input class="easyui-validatebox long" type="text" name="title" data-options="required:true"></input></td>
+        </tr>
+        <tr>
+            <td>副标题:</td>
+            <td><input class="easyui-validatebox long" type="text" name="shorttitle" ></input></td>
+        </tr>
+        <tr>
+            <td>关键词:</td>
+            <td><input class="easyui-validatebox long" type="text" name="keywords" data-options="required:true"></input></td>
+        </tr>
+        <tr>
+            <td>投稿人身份:</td>
+            <td><span set-key="contributortype"></span></td>
+        </tr>
+        <tr>
+            <td>作者:</td>
+            <td><input class="easyui-validatebox long" type="text" name="author" data-options="required:true"></input></td>
+        </tr>
+        <tr id="classcontributor">
+           <td>作者头像:</td>
+           <td><img id="avatarbig" style="width:150px; height:150px" src="" set-format="${webimg}{0}" set-key="contributor.avatarbig"/>
+                [@a.imgupload multiple=false imgpath="/imgs/webdata/finance/avatar" name="avatarimg"/]
+           </td>
+        </tr>
+        
+        <tr>
+            <td>作者简介:</td>
+            <td><input class="easyui-validatebox long" type="text" name="usersummary" data-options="required:true"></input></td>
+        </tr>
+        <tr>
+            <td>来源:</td>
+            <td><input class="easyui-validatebox long" type="text" name="origin" data-options="required:true"></input></td>
+        </tr>
+        <tr>
+ 			<td>版块:</td>
+ 			<td>
+	        	<input name="financetype" type="checkbox" set-key="isGeniusfocus" value="1073741824" id="finance1"><label for="finance1">天才焦点</label>
+	        	<input name="financetype" type="checkbox" set-key="isGoldlanguage" value="4194304" id="finance2"><label for="finance2">醒世金语</label>
+	        	<input name="financetype" type="checkbox" set-key="isEconomicobservation" value="1048576" id="finance3"><label for="finance3">经济观察</label>
+	        	<input name="financetype" type="checkbox" set-key="isIndustries" value="134217728" id="finance4"><label for="finance4">产业</label>
+	        	<input name="financetype" type="checkbox" set-key="isCorporations" value="67108864" id="finance5"><label for="finance5">企业</label>
+	        	<input name="financetype" type="checkbox" set-key="isMergerandacquisition" value="33554432" id="finance6"><label for="finance6">并购</label>
+	        	<input name="financetype" type="checkbox" set-key="isGoodarticle" value="2097152" id="finance7"><label for="finance7">文萃</label>
+	        	<input name="financetype" type="checkbox" set-key="isCareerexecutives" value="536870912" id="finance8"><label for="finance8">职场新观点</label>
+	        	<input name="financetype" type="checkbox" set-key="isLegalandeconomic" value="8388608" id="finance9"><label for="finance9">法治与经济</label>
+	        	<input name="financetype" type="checkbox" set-key="isOfficecafe" value="268435456" id="finance10"><label for="finance10">职场夜话</label>
+	        	<input name="financetype" type="checkbox" set-key="isDabate" value="16777216" id="finance11"><label for="finance11">论战</label>
+        	</td>
+        </tr>
+        <tr>
+            <td>获得积分:</td>
+            <td><input class="easyui-validatebox" type="text" name="score" style="width:50px" /></td>
+        </tr>
+        <tr>
+           <td>效果图:</td>
+           <td><img style="width:200px; height:200px" src="" set-format="${webimg}{0}" set-key="imglittle"/>
+           		[@a.imgupload multiple=false imgpath="/imgs/webdata/finance/avatar" /]
+           	</td>
+        </tr>
+        <tr>
+            <td>内容:</td>
+            <td>[@a.ckeditor name="content" /]</td>
+        </tr>
+	[/@a.editsection]
+	
+	[@a.viewsection]
+		<tr>
+            <td>标题:</td>
+            <td><span set-key="title"></span></td>
+        </tr>
+        <tr>
+            <td>副标题:</td>
+            <td><span set-key="shorttitle"></span></td>
+        </tr>
+        <tr>
+            <td>关键字:</td>
+            <td><span set-key="keywords"></span></td>
+        </tr>
+        <tr>
+            <td>投稿人身份:</td>
+            <td><span set-key="contributortype"></span></td>
+        </tr>
+        
+        <tr>
+            <td>作者:</td>
+            <td><span set-key="author"></span></td>
+        </tr>
+        <tr>
+            <td>作者简介:</td>
+            <td><span set-key="usersummary"></span></td>
+        </tr>
+        <tr id="classcontributor1">
+           <td>作者头像:</td>
+           <td><img src="" set-format="${webimg}{0}" set-key="contributor.avatarbig" ></td>
+        </tr>
+        <tr>
+            <td>来源:</td>
+            <td><span set-key="origin"></span></td>
+        </tr>
+        <tr>
+            <td>版块:</td>
+            <td><span set-key="typeName"></span></td>
+        </tr>
+        <tr>
+            <td>获得积分:</td>
+            <td><span set-key="score"></span></td>
+        </tr>
+        <tr>
+            <td>是否公开:</td>
+            <td><span set-key="ispublicName"></span></td>
+        </tr>
+        <tr>
+            <td>是否置顶:</td>
+            <td><span set-key="istopName"></span></td>
+        </tr>
+        <tr>
+            <td>是否推荐:</td>
+            <td><span set-key="isrecommendName"></span></td>
+        </tr>
+        <tr>
+            <td>状态:</td>
+            <td><span set-key="financeStatusName"></span></td>
+        </tr>
+        <tr>
+            <td>效果图</td>
+            <td><img src="" set-format="${webimg}{0}" set-key="imglittle" ></td>
+        </tr>
+       <tr>
+            <td>内容:</td>
+            <td><span set-key="content"></span></td>
+        </tr>
+	[/@a.viewsection]
+</body>
+</html>

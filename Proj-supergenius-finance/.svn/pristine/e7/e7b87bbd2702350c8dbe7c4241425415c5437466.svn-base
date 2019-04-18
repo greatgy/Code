@@ -1,0 +1,609 @@
+package com.supergenius.web.finance.controller;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.genius.model.base.entity.Pager;
+import com.genius.model.base.enums.EStatus;
+import com.genius.server.base.controller.BaseController;
+import com.supergenius.global.conf.WebConf;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.server.user.helper.BaseUserHP;
+import com.supergenius.web.finance.helper.CollectDetailHP;
+import com.supergenius.web.finance.helper.CommentsHP;
+import com.supergenius.web.finance.helper.FinanceHP;
+import com.supergenius.web.finance.helper.SubscribeHP;
+import com.supergenius.web.finance.helper.TopicHP;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.finance.entity.Contribute;
+import com.supergenius.xo.finance.entity.Contributor;
+import com.supergenius.xo.finance.entity.Finance;
+import com.supergenius.xo.finance.entity.Topic;
+import com.supergenius.xo.finance.entity.UserStatistics;
+import com.supergenius.xo.finance.enums.ECollectType;
+import com.supergenius.xo.finance.enums.EContributeState;
+import com.supergenius.xo.finance.enums.ETopicState;
+import com.supergenius.xo.finance.service.ContributeSO;
+import com.supergenius.xo.finance.service.ContributorSO;
+import com.supergenius.xo.finance.service.FinanceSO;
+import com.supergenius.xo.finance.service.TopicSO;
+import com.supergenius.xo.finance.service.UserStatisticsSO;
+import com.supergenius.xo.user.entity.Comments;
+import com.supergenius.xo.user.entity.User;
+import com.supergenius.xo.user.enums.EComment;
+import com.supergenius.xo.user.service.CommentsSO;
+import com.supergenius.xo.user.service.ScoreSO;
+import com.supergenius.xo.user.service.UserSO;
+
+/**
+ * 进入和个人相关的页面：我的文章、我的话题等。
+ * @author LiJiacheng
+ */
+@Controller
+public class MycenterController extends BaseController {
+
+	private static String mycenter = "mycenter";
+	private static String ajaxmycenter = "ajaxmycenter";
+	
+	@Autowired
+	private TopicSO topicSO;
+
+	@Autowired
+	private UserStatisticsSO statisticsSO;
+
+	@Autowired
+	private ContributorSO contributorSO;
+
+	@Autowired
+	private ContributeSO contributeSO;
+
+	@Autowired
+	private CommentsSO commentsSO;
+
+	@Autowired
+	private UserSO userSO;
+	
+	@Autowired
+	private FinanceSO financeSO;
+	
+	@Autowired
+	private ScoreSO scoreSO;
+
+	/**
+	 * 进入我的个人中心
+	 * @param model
+	 * @param channel
+	 * @param request
+	 * @param response
+	 * @return
+	 * @author YuYingJie
+	 */
+	@RequestMapping(value = { "/my/{channel:\\w+}" }, method = RequestMethod.GET)
+	public String mycenter(Map<String, Object> model, @PathVariable String channel, HttpServletRequest request, HttpServletResponse response) {
+		User user = BaseUserHP.getCurrUser(request);
+		if (channel == null) {
+			response404(response);
+		}
+		if (user != null) {
+			if (EChannel.article.name().equals(channel)) {
+				return my_article(model, user, mycenter, 1, request);
+			} else if (EChannel.topic.name().equals(channel)) {
+				return my_topic(model, user, mycenter, request);
+			} else if (EChannel.collect.name().equals(channel)) {
+				return my_collect(model, user, mycenter, request);
+			} else if (EChannel.comment.name().equals(channel)) {
+				return my_comment(model, user, mycenter, request);
+			} else {
+				return my_subscribe(model, user, mycenter, request);
+			}
+		}
+		return redirectPrefix + WebConf.LoginURL;
+	}
+
+	/**
+	 * 我的个人中心模块切换
+	 * @param model
+	 * @param channel
+	 * @param request
+	 * @param response
+	 * @return
+	 * @author YuYingJie
+	 */
+	@RequestMapping(value = { "/ajax/my/center/{channel:\\w+}" }, method = RequestMethod.GET)
+	public String ajax_mycenter(Map<String, Object> model, @PathVariable String channel, HttpServletRequest request, HttpServletResponse response) {
+		User user = BaseUserHP.getCurrUser(request);
+		if (channel == null) {
+			response404(response);
+		}
+		if (user != null) {
+			if (EChannel.article.name().equals(channel)) {
+				return my_article(model, user, ajaxmycenter, 1, request);
+			} else if (EChannel.topic.name().equals(channel)) {
+				return my_topic(model, user, ajaxmycenter, request);
+			} else if (EChannel.collect.name().equals(channel)) {
+				return my_collect(model, user, ajaxmycenter, request);
+			} else if (EChannel.comment.name().equals(channel)) {
+				return my_comment(model, user, ajaxmycenter, request);
+			} else {
+				return my_subscribe(model, user, ajaxmycenter, request);
+			}
+		}
+		return redirectPrefix + WebConf.LoginURL;
+	}
+
+	/**
+	 * 我的文章主页
+	 * @param model
+	 * @param user
+	 * @param resultpage(mycenter, ajaxmycenter)
+	 * @param pagenum
+	 * @param request
+	 * @return
+	 * @author YuYingJie
+	 */
+	private String my_article(Map<String, Object> model, User user, String resultpage, Integer pagenum, HttpServletRequest request) {
+		if (pagenum == null) {
+			pagenum = 1;
+		}
+		Pager pager = new Pager(pagenum > 0 ? pagenum : 1, WebConf.MyArticlePageSize);
+		if (user == null) {
+			return redirectPrefix + WebConf.LoginURL;
+		}
+		// 所有投稿
+		List<Contribute> list = contributeSO.getList(user.getUid(), pager);
+		List<Finance> financeList = FinanceHP.getAcceptedFinances(list);
+		int articleCount = FinanceHP.getAuthorArticleCount(user.getUid());
+		int count2 = FinanceHP.getReadCount(user.getUid());
+		if (count2 < 0) {
+			count2 = 0;
+		}
+		List<Finance> rankList = FinanceHP.getMyRankList(user.getUid());
+		Contributor contributor = contributorSO.get(user.getUid());
+		model.put(ViewKeyDict.list, list);
+		model.put(ViewKeyDict.score, scoreSO.getTotal(user.getUid()));
+		model.put(ViewKeyDict.list2, financeList);
+		model.put(ViewKeyDict.count, articleCount);
+		model.put(ViewKeyDict.count2, count2);
+		model.put(ViewKeyDict.ranklist, rankList);
+		model.put(ViewKeyDict.author, contributor);
+		model.put(ViewKeyDict.channel, EChannel.article.name());
+		return resultpage;
+	}
+
+	/**
+	 * 我的全部文章（加载更多）
+	 * @param model
+	 * @param request
+	 * @return
+	 * @author ShangJianguo
+	 */
+	@RequestMapping(value="ajax/my/article", method=RequestMethod.GET)
+	public String finance_article_ajax(Map<String, Object> model, HttpServletRequest request, Integer pagenum){
+		User user = BaseUserHP.getCurrUser(request); 
+		if (pagenum == null) {
+			pagenum = 1;
+		}
+		Pager pager = new Pager(pagenum>0?pagenum:1, WebConf.MyArticlePageSize);
+		if (user == null) {
+			return "ajaxarticle";
+		}
+		List<Contribute> list = contributeSO.getList(user.getUid(), pager);// 所有投稿
+		List<Finance> financeList = FinanceHP.getAcceptedFinances(list);
+		model.put(ViewKeyDict.type, ViewKeyDict.all);
+		model.put(ViewKeyDict.list, list);
+		model.put(ViewKeyDict.list2, financeList);
+		return "ajaxarticle";
+	}
+	
+	/**
+	 * 已发布的文章列表
+	 * @param state
+	 * @return
+	 * @author ShangJianguo
+	 */
+	@RequestMapping(value="ajax/my/article/publish", method=RequestMethod.GET)
+	public String finance_article_publish(Map<String, Object> model, Integer pagenum, HttpServletRequest request){
+		User user = BaseUserHP.getCurrUser(request);
+		List<Finance> list = new ArrayList<>();
+		if (user == null) {
+			return "ajaxarticle";
+		}
+		if (pagenum == null) {
+			pagenum = 1;
+		}
+		Pager pager = new Pager(pagenum>0?pagenum:1, WebConf.MyArticlePageSize);
+		if (user != null) {
+			list = financeSO.getList(user.getUid(), EStatus.enable, pager);
+		}
+		model.put(ViewKeyDict.type, ViewKeyDict.publish);
+		model.put(ViewKeyDict.list, list);
+		return "ajaxarticle";
+	}
+	
+	/**
+	 * 获取审核中和审核不通过的文章列表
+	 * @param model
+	 * @param state
+	 * @param pagenum
+	 * @param request
+	 * @return
+	 * @author ShangJianguo
+	 */
+	@RequestMapping(value="ajax/my/article/{state:\\d+}", method=RequestMethod.GET)
+	public String finane_article(Map<String, Object> model, @PathVariable int state, Integer pagenum, HttpServletRequest request) {
+		User user = BaseUserHP.getCurrUser(request);
+		EContributeState eState = EContributeState.get(state);
+		if (pagenum == null) {
+			pagenum = 1;
+		}
+		Pager pager = new Pager(pagenum>0?pagenum:1, WebConf.MyArticlePageSize);
+		if (eState == EContributeState.init) {// 审核中
+			List<EContributeState> states = new ArrayList<>();
+			states.add(EContributeState.init);
+			states.add(EContributeState.accept);
+			List<Contribute> contributeList = contributeSO.getInitList(user.getUid(), new Pager(pagenum, WebConf.MyArticlePageSize));
+			List<String> ids = new ArrayList<>();
+			for (Contribute item : contributeList) {
+				if (item.getState() == EContributeState.accept) {
+					ids.add(item.getUid());
+				}
+			}
+			// 已经接受未发布的文章
+			model.put(ViewKeyDict.type, EContributeState.init.name());
+			model.put(ViewKeyDict.list, contributeList);
+		} else if (eState == EContributeState.refuse) {// 审核不通过
+			List<Contribute> contributeList = contributeSO.getList(user.getUid(), EContributeState.refuse, pager);
+			model.put(ViewKeyDict.type, EContributeState.refuse.name());
+			model.put(ViewKeyDict.list, contributeList);
+		}
+		return "ajaxarticle";
+	}
+
+	/**
+	 * 我的话题列表页
+	 * @param model
+	 * @param user
+	 * @param resultpage(mycenter, ajaxmycenter)
+	 * @param request
+	 * @return
+	 * @author YuYingJie
+	 */
+	private String my_topic(Map<String, Object> model, User user, String resultpage, HttpServletRequest request) {
+		Pager pager = Pager.getNewInstance(1, WebConf.MyTopicPageSize);
+		List<Topic> list = topicSO.getList(user.getUid(), pager);
+		TopicHP.getUsersFromTopics(list);
+		model.put(ViewKeyDict.list, list);
+		model.put(ViewKeyDict.topicrank, TopicHP.getListByTopicRankFromDB(user.getUid(), EChannel.topic, EComment.comment));
+		model.put(ViewKeyDict.count, TopicHP.getAuthorTopicCount(user.getUid()));
+		model.put(ViewKeyDict.count2, TopicHP.getAuthorTopicJoinCount(user.getUid()));
+		model.put(ViewKeyDict.user, user);
+		model.put(ViewKeyDict.channel, EChannel.topic.name());
+		return resultpage;
+	}
+
+
+	/**
+	 * ajax获取会员参与的话题
+	 * 
+	 * @param model
+	 * @param oid
+	 * @param pagenum
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/ajax/my/topic/join/{oid:\\d+}", method = RequestMethod.GET)
+	public String ajaxtopic_join(Map<String, Object> model, @PathVariable Integer oid, Integer pagenum, HttpServletRequest request, HttpServletResponse response) {
+		User user = userSO.get(oid);
+		if (user == null || oid == 0) {
+			return response404(response);
+		}
+		if (pagenum == null) {
+			pagenum = 1;
+		}
+		Pager pager = Pager.getNewInstance(pagenum, WebConf.MyTopicPageSize);
+		List<String> topicuids = commentsSO.getFromuidList(user.getUid(), EChannel.topic, EComment.comment, pager);
+		List<Topic> topics = new ArrayList<>();
+		for (String item : topicuids) {
+			Topic topic = topicSO.get(item);
+			if (topic != null) {
+				topics.add(topic);
+			}
+		}
+		TopicHP.getUsersFromTopics(topics);
+		model.put(ViewKeyDict.list, topics);
+		model.put(ViewKeyDict.type, ViewKeyDict.join);
+		return "ajaxtopics";
+	}
+
+	/**
+	 * ajax 获取全部的话题（加载更多）
+	 * 
+	 * @param model
+	 * @param oid
+	 * @param pagenum
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/ajax/my/topic/all/{oid:\\d+}", method = RequestMethod.GET)
+	public String ajaxtopic_all(Map<String, Object> model, @PathVariable Integer oid, Integer pagenum, HttpServletRequest request, HttpServletResponse response) {
+		User user = userSO.get(oid);
+		if (user == null || oid == 0) {
+			return response404(response);
+		}
+		if (pagenum == null) {
+			pagenum = 1;
+		}
+		Pager pager = Pager.getNewInstance(pagenum, WebConf.MyTopicPageSize);
+		List<Topic> topics = topicSO.getList(user.getUid(), pager);
+		model.put(ViewKeyDict.list, topics);
+		model.put(ViewKeyDict.type, ViewKeyDict.all);
+		return "ajaxtopics";
+	}
+
+	/**
+	 * ajax 获取不同state的话题
+	 * 
+	 * @param model
+	 * @param state
+	 * @param pagenum
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/ajax/my/topic/state/{state:\\d+}", method = RequestMethod.GET)
+	public String ajaxtopic_state(Map<String, Object> model, @PathVariable int state, Integer pagenum, HttpServletRequest request) {
+		User user = BaseUserHP.getCurrUser(request);
+		if (user == null) {
+			return redirectPrefix + WebConf.LoginURL;
+		}
+		Pager pager = Pager.getNewInstance(pagenum, WebConf.MyTopicPageSize);
+		List<Topic> topics = topicSO.getList(user.getUid(), ETopicState.get(state), pager);
+		TopicHP.getUsersFromTopics(topics);
+		model.put(ViewKeyDict.list, topics);
+		model.put(ViewKeyDict.type, ETopicState.get(state).name());
+		return "ajaxtopics";
+	}
+
+	/**
+	 * ajax 获取不同status的话题(已撤销)
+	 * 
+	 * @param model
+	 * @param status
+	 * @param pagenum
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/ajax/my/topic/status/{status:\\d+}", method = RequestMethod.GET)
+	public String ajaxtopic_status(Map<String, Object> model, @PathVariable int status, Integer pagenum, HttpServletRequest request) {
+		User user = BaseUserHP.getCurrUser(request);
+		if (user == null) {
+			return redirectPrefix + WebConf.LoginURL;
+		}
+		Pager pager = Pager.getNewInstance(pagenum, WebConf.MyTopicPageSize);
+		List<Topic> topics = topicSO.getList(user.getUid(), EStatus.get(status), pager);
+		model.put(ViewKeyDict.list, topics);
+		model.put(ViewKeyDict.type, EStatus.get(status).name());
+		return "ajaxtopics";
+	}
+	
+	/**
+	 * 我的收藏列表页
+	 * @param model
+	 * @param user
+	 * @param resultpage(mycenter, ajaxmycenter)
+	 * @param request
+	 * @return
+	 * @author YuYingJie
+	 */
+	private String my_collect(Map<String, Object> model, User user, String resultpage, HttpServletRequest request) {
+		List<Map<String, Object>> details = CollectDetailHP.getCollects(BaseUserHP.getCurrUser(request), ECollectType.article, 1, WebConf.MyCollectPageSize, model, request);
+		model.put(ViewKeyDict.list, details);
+		model.put(ViewKeyDict.channel, EChannel.collect.name());
+		return resultpage;
+	}
+
+	/**
+	 * 我的收藏切换
+	 * @param model
+	 * @param type
+	 * @param request
+	 * @param response
+	 * @return
+	 * @author YuYingJie
+	 */
+	@RequestMapping(value = { "/ajax/my/collect/change/{type:\\w+}" })
+	public String ajax_collectbar(Map<String, Object> model, @PathVariable String type, HttpServletRequest request, HttpServletResponse response) {
+		ECollectType typeObj = ECollectType.getByName(type);
+		if (typeObj == null) {
+			response404(response);
+		}
+		List<Map<String, Object>> details = CollectDetailHP.getCollects(BaseUserHP.getCurrUser(request), typeObj, 1, WebConf.MyCollectPageSize, model, request);
+		model.put(ViewKeyDict.list, details);
+		return "ajaxcollect";
+	}
+
+	/**
+	 * 我的收藏加载更多
+	 * @param model
+	 * @param pagenum
+	 * @param type
+	 * @param request
+	 * @return
+	 * @author YuYingJie
+	 */
+	@RequestMapping(value = { "/ajax/my/collect_{pagenum:\\d+}_{type:\\w+}" })
+	public String ajax_collect(Map<String, Object> model, @PathVariable int pagenum, @PathVariable String type, HttpServletRequest request) {
+		ECollectType type2 = ECollectType.getByName(type);
+		List<Map<String, Object>> details = CollectDetailHP.getCollects(BaseUserHP.getCurrUser(request), type2, pagenum, WebConf.MyCollectPageSize, model, request);
+		model.put(ViewKeyDict.list, details);
+		return "ajaxcollect";
+	}
+
+	/**
+	 * 我的评论列表页
+	 * @param model
+	 * @param user
+	 * @param resultpage(mycenter, ajaxmycenter)
+	 * @param request
+	 * @return
+	 * @author YuYingJie
+	 */
+	private String my_comment(Map<String, Object> model, User user, String resultpage, HttpServletRequest request) {
+		UserStatistics statistics = statisticsSO.obtainOne(user.getUid());
+		boolean needupdate = false;
+		if (statistics.getMycommentcount() <= 0) {
+			int mycommentcount = CommentsHP.getMyCommentsCount(user.getUid());
+			statistics.setMycommentcount(mycommentcount);
+			if (mycommentcount > 0) {
+				needupdate = true;
+			}
+		}
+		if (statistics.getTomeprizecount() <= 0) {
+			int tomeprizecount = CommentsHP.getMyReceivedPrizeCount(user.getUid());
+			statistics.setTomeprizecount(tomeprizecount);
+			if (tomeprizecount > 0) {
+				needupdate = true;
+			}
+		}
+		if (needupdate) {
+			statisticsSO.update(statistics);
+		}
+		model.put(ViewKeyDict.list, CommentsHP.getMyPublishComment(user.getUid(), 1, WebConf.MyPublishCommentCount));
+		model.put(ViewKeyDict.newestcomments, CommentsHP.getNewestComments(EComment.comment, 1, WebConf.AllNewestComments));
+		model.put(ViewKeyDict.channel, EChannel.comment.name());
+		model.put(ViewKeyDict.userstatistics, statistics);
+		return resultpage;
+	}
+
+	/**
+	 * ajax我发表的评论加载更多
+	 * @param model
+	 * @param request
+	 * @return
+	 * @author YuYingJie
+	 */
+	@RequestMapping(value = { "/ajax/my/comment/mine/{pagenum:\\d+}" }, method = RequestMethod.GET)
+	public String ajax_mycomment(Map<String, Object> model, @PathVariable int pagenum, HttpServletRequest request) {
+		User user = BaseUserHP.getCurrUser(request);
+		if (user == null) {
+			return redirectPrefix + WebConf.LoginURL;
+		}
+		model.put(ViewKeyDict.list, CommentsHP.getMyPublishComment(user.getUid(), pagenum, WebConf.MyPublishCommentCount));
+		model.put(ViewKeyDict.loadmoretype, EChannel.comment.name());
+		return "ajaxloadmore";
+	}
+
+	/**
+	 * ajax我收到的评论
+	 * 
+	 * @param model
+	 * @param pagenum
+	 * @param request
+	 * @return
+	 * @author YuYingJie
+	 */
+	@RequestMapping(value = { "/ajax/my/comment/tome/{pagenum:\\d+}" }, method = RequestMethod.GET)
+	public String ajax_tomecomment(Map<String, Object> model, @PathVariable int pagenum, HttpServletRequest request) {
+		User user = BaseUserHP.getCurrUser(request);
+		if (user == null) {
+			return redirectPrefix + WebConf.LoginURL;
+		}
+		model.put(ViewKeyDict.list, CommentsHP.getToMeComment(user.getUid(), pagenum, WebConf.MyPublishCommentCount));
+		model.put(ViewKeyDict.loadmoretype, EChannel.comment.name());
+		return "ajaxloadmore";
+	}
+
+	/**
+	 * 我的评论删除
+	 * 
+	 * @param model
+	 * @param uid
+	 * @param request
+	 * @return
+	 * @author YuYingJie
+	 */
+	@RequestMapping(value = { "/ajax/my/comment/delete/{uid:.{32}}" })
+	public @ResponseBody
+	boolean ajax_deletemycomment(Map<String, Object> model, @PathVariable String uid, HttpServletRequest request) {
+		Comments comment = commentsSO.get(uid);
+		CommentsHP.removeMemcache(comment);
+		CommentsHP.deleteSerialFile(comment.getChannel().name(), comment.getFromuid());
+		return commentsSO.delete(uid);
+	}
+
+	/**
+	 * 我的订阅列表页
+	 * 
+	 * @param model
+	 * @param user
+	 * @param resultpage(mycenter, ajaxmycenter)
+	 * @param request
+	 * @return
+	 * @author YuYingJie
+	 */
+	private String my_subscribe(Map<String, Object> model, User user, String resultpage, HttpServletRequest request) {
+		List<Map<String, Object>> subscribes = SubscribeHP.getMySubscribe(user, WebConf.MySubscribeCount, 1);
+		List<Map<String, Object>> list = SubscribeHP.getHotSubscribes(1, WebConf.MySubscribeCount);
+		model.put(ViewKeyDict.list, subscribes); // 我的订阅
+		model.put(ViewKeyDict.userstatistics, statisticsSO.obtainOne(user.getUid()));
+		model.put(ViewKeyDict.beanlist, list); // 热门订阅
+		model.put(ViewKeyDict.channel, EChannel.subscribe.name());
+		return resultpage;
+	}
+
+	/**
+	 * ajax我的订阅加载更多
+	 * 
+	 * @param model
+	 * @param pagenum
+	 * @param request
+	 * @return
+	 * @author YuYingJie
+	 */
+	@RequestMapping(value = "/ajax/my/substribe/{pagenum:\\d+}", method = RequestMethod.GET)
+	public String ajax_subscribe(Map<String, Object> model, @PathVariable int pagenum, HttpServletRequest request) {
+		User user = BaseUserHP.getCurrUser(request);
+		List<Map<String, Object>> list = SubscribeHP.getMySubscribe(user, WebConf.MySubscribeCount, pagenum);
+		model.put(ViewKeyDict.list, list);
+		model.put(ViewKeyDict.loadmoretype, EChannel.subscribe.name());
+		return "ajaxloadmore";
+	}
+
+	/**
+	 * 编辑个人信息
+	 * @param user
+	 * @param request
+	 * @return
+	 * @author LiJiacheng
+	 */
+	@RequestMapping(value = "/ajax/my/edit", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> editInfo(User user, HttpServletRequest request) {
+		User oldUser = BaseUserHP.getCurrUser(request);
+		Map<String, Object> map = new HashMap<>();
+		if (oldUser != null) {
+			oldUser.setCompany(user.getCompany());
+			oldUser.setDepartment(user.getDepartment());
+			oldUser.setJob(user.getJob());
+			oldUser.setSummary(user.getSummary());
+			boolean result = userSO.update(oldUser);
+			if (result) {
+				map.put(ViewKeyDict.success, result);
+				BaseUserHP.freshSessUser(request, oldUser);
+			}
+		}
+		return map;
+	}
+
+}

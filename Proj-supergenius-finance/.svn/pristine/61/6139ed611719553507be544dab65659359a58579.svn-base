@@ -1,0 +1,117 @@
+[#ftl]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>${title}</title>
+	<link rel="stylesheet" href="${basecss}/css/default/pages/msg.css"/>
+</head>
+<body>
+	<div class="wraper centerbox">
+		<div class="main">
+			<div class="newsContainer">
+				<div class="newsLeft">
+					<h3>消息中心</h3>
+					<ul class="newsnav">
+						<li class="curSelect">
+							<a href="${base}/msg/comment">评论<span>24</span></a>
+						</li>
+						<li>
+							<a href="${base}/msg/notify">通知<span>26</span></a>
+						</li>
+						<li>
+							<a href="${base}/msg/system">系统消息<span>12</span></a>
+						</li>
+					</ul>
+				</div>
+				<div class="newsRight">
+					<h4>
+						<span class="valtit">我收到的评论</span>
+						<span class="pagebtn">
+							<a href="javascript:;" class="" id="prev" data-dir="up">&lt;</a>
+							<a href="javascript:;" class="" id="next" data-dir="down">&gt;</a>
+						</span>
+					</h4>
+					<ul class="getJudgelist">
+						<li>
+							<a href="#" class="getuserimg">
+								<img src="${baseimg}/imgs/default/subsimg03.png" class="judgeuser" />
+								<span class="newtip">N</span>
+							</a>
+							<div class="judgeContent">
+								<div class="nametime">
+									<a href="#" class="judgename"><em>哇咔咔</em></a>
+									<a href="javascript:;" class="deletelink"><img src="${baseimg}/imgs/default/deleteimg.png" class="deleteimg" /></a>
+									<span class="outtime">2014年12月14日12:34</span>
+								</div>
+								<p>改革开放三十多年以来，中国企业，尤其是民营企业迅速发展壮大，中国职业经理人队伍也。。。。。</p>
+								<div class="source">
+									评论我的帖子：<a href="#" class="from">魔方2012微信公众平台管理系统</a>
+								</div>
+							</div>
+						</li>
+						<li>
+							<a href="#" class="getuserimg">
+								<img src="${baseimg}/imgs/default/subsimg01.png" class="judgeuser" />
+								<span class="newtip">N</span>
+							</a>
+							<div class="judgeContent">
+								<div class="nametime">
+									<a href="#" class="judgename"><em>比巴卜</em></a>
+									<a href="javascript:;" class="deletelink"><img src="${baseimg}/imgs/default/deleteimg.png" class="deleteimg" /></a>
+									<span class="outtime">2014年12月14日12:34</span>
+								</div>
+								<p>也不能说这篇文章写得不正确，只是有些问题没有交代清楚，对于这个问题，我是这么看待的，发动机可发送的境况，不知道大家对我的看法有</p>
+								<div class="source">
+									评论我的帖子：<a href="#" class="from">魔方2012微信公众平台管理系统</a>
+								</div>
+							</div>
+						</li>
+						<li>
+							<a href="#" class="getuserimg">
+								<img src="${baseimg}/imgs/default/subsimg04.png" class="judgeuser" />
+							</a>
+							<div class="judgeContent">
+								<div class="nametime">
+									<a href="#" class="judgename"><em>张利投资</em></a>
+									<a href="javascript:;" class="deletelink"><img src="${baseimg}/imgs/default/deleteimg.png" class="deleteimg" /></a>
+									<span class="outtime">2014年12月14日12:34</span>
+								</div>
+								<p>你好呀，么么哒哈哈哈呵呵的评论融资融券业务迎来宽松政策 合约到期或可展期评论融资融券业务迎来宽松政策 </p>
+								<div class="source">
+									回复我的评论：<a href="#" class="from">魔方2012微信公众平台管理系统</a>
+								</div>
+							</div>
+						</li>
+						<li>
+							<a href="#" class="getuserimg">
+								<img src="${baseimg}/imgs/default/subsimg05.png" class="judgeuser" />
+							</a>
+							<div class="judgeContent">
+								<div class="nametime">
+									<a href="#" class="judgename"><em>露西</em></a>
+									<a href="javascript:;" class="deletelink"><img src="${baseimg}/imgs/default/deleteimg.png" class="deleteimg" /></a>
+									<span class="outtime">2014年12月14日12:34</span>
+								</div>
+								<p>你好呀，融资融券业务迎来宽松政策 合约到期或可展期</p>
+								<div class="source">
+									回复我的评论：<a href="#" class="from">魔方2012微信公众平台管理系统</a>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		$(function(){
+			$(".deletelink").click(function(){
+				$(this).parents("li").remove();
+			});
+		});
+	</script>
+</body>
+</html>
+
+

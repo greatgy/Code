@@ -1,0 +1,1 @@
+$(function(){var c=$(".bottom").offset().top+220,a=$(window).innerHeight(),b=$(".maskcontent").height(),a=(a-b-20)/2,b=($(window).outerWidth()-420)/2;$(".mask").height(c);$(".maskcontent").offset({top:a,left:b});$(".cancel").click(function(){$(".maskcontent").hide("fast","linear");$(".mask").hide()});$(".mask").click(function(){$(".maskcontent").hide();$(this).hide()})});

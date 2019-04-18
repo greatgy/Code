@@ -1,0 +1,42 @@
+@charset "utf-8";
+/* CSS Document */
+
+.contro_banner{width: 100%;height: 41px;background: #000;}
+.contro_banner .lz_one_01{width: 1000px;height: 40px;line-height: 40px;font-family: "Microsoft Yahei";}
+.contro_banner .lz_one_01 span{display: inline-block;background: #3399cc;padding: 0 20px;width: 110px;text-align: center;height: 40px;line-height: 40px;font-size: 18px;font-family: "Microsoft Yahei";color: #fff;font-weight: 700;}
+.contro_banner .lz_one_01 a{color: #fff;font-size: 22px;margin-left: 35px;}
+
+.tp_midd{ width:1000px; height:330px; overflow:hidden;}
+.tp_img{position:relative; width:1000px; height:215px;overflow:hidden; }
+.tp_img h4{font-size:30px; color:#344353; position:absolute;top:160px;left:475px;}
+.tp_img .tp_lt{position:absolute; top:75px; left:110px;}
+.tp_red{ position: absolute; top:125px; left:50px; font-size: 35px; color: #fff;  display:block; text-align:center;background:url(../../../imgs/default/lunzh2_le.png); width:154px; height:96px; line-height:96px; }
+.tp_img .tp_rt{position:absolute; top:75px; right:110px;}
+.tp_bule{position: absolute;top:125px; right:50px; color: #fff;font-size: 35px; display:block; text-align:center;background:url(../../../imgs/default/lunzh2_ri.png); width:154px; height:96px; line-height:96px;  }
+.tp_midd .tp_tiao{ margin-top:5px; width:1000px; height:auto;}
+.tp_midd .tp_tiao .tiao_lt{width:300px; height:20px; background-color:#b92727; margin-left:50px; float:left;}
+.tp_midd .tp_tiao .tiao_rt{width:595px; height:20px;background-color:#0966c8;float:left; margin-left:5px;}
+
+
+.contro_vs{  width: 998px; height: 63px; margin-top: 20px;margin-bottom: 40px; position: relative;}
+.vs_red,.vs_blue{position: absolute;top: 30px;font-size: 24px;font-weight: bold;font-family: "Microsoft Yahei";  padding-bottom: 5px;}
+.vs_red{ left: 10%;color: #ff4d4f;border-bottom: 1px solid #F7EAEA;}
+.vs_blue{right:10%;color: #0000cc;border-bottom: 1px solid #D4E8F0;}
+.contro_red,.contro_bule{ font-size: 18px;color: #333;margin-left: 20px;font-family: "Microsoft Yahei";font-weight: normal;  }
+.contro_vs img{width: 150px;height: 103px;margin-top: -30px;}
+
+.viewcomment{width: 1000px;height: 30px;margin-bottom: 40px;}
+.viewcomment a{ display: block;width: 130px;height: 30px;background: #55CCF0;color: #fff;text-align: center;line-height: 30px;font-size: 14px;font-family: "Microsoft Yahei";float: right;}
+.viewcomment a:hover{ box-shadow: inset 0 1px 5px 0 #C4F8F2;}
+
+/* 遮罩层样式 */
+.cover_comment_m{width: 460px;height: 230px;border: 1px solid #ff9900;position: fixed;left: 35%;top: 35%;background: #fff;}
+.close{width: 100%;height: 30px;background: #f2f2f2;}
+.close a{ cursor: pointer;display: block;width: 40px;height: 30px;text-align: center;line-height: 30px;font-size: 22px;font-family: "Microsoft Yahei"; color: #0d7aff;float: right;}
+#cover_form{width: 370px;}
+#cover_form h3{width: 370px;height: 40px;line-height: 30px;text-align: left;margin-top: 10px;font-size: 15px;font-weight: normal;font-family: "Microsoft Yahei";border-bottom: 1px solid #e3e3e3;}
+#cover_form h3 img{width: 22px;height: 22px;margin-right: 20px;vertical-align: middle;}
+#cover_form em{text-align: left;display: block;margin: 10px 0;font-size: 14px;font-family: "Microsoft Yahei";font-style: normal;color: #333;}
+#cover_form em span{color: #1375df;font-size: 14px;}
+#cover_form textarea{width: 365px;height: 40px;padding: 5px;font-size: 12px;font-family: "Microsoft Yahei";}
+.submit{font-size: 13px;font-family: "Microsoft Yahei";display: block;width: 70px;height: 25px;background: #1375df;text-align: center;line-height: 25px;color: #fff;border-radius: 3px;float: right;margin: 10px 0;}

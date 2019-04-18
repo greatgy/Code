@@ -1,0 +1,112 @@
+[#ftl]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>账号管理--账户保护设置密保问题</title>
+	<meta name="Keywords" content="会员中心账号管理，账户保护设置密保问题" />
+	<meta name="Description" content="会员中心账号管理，账户保护设置密保问题" />
+	<link rel="stylesheet" type="text/css" href="${basecss}/css/default/account.css">
+<script type="text/javascript">
+	$(function() {
+		$(".save").click(function() {
+			if ( $("#answertxt").val() == "" || $("#answer2txt").val() == "" ) {
+				return false;
+			}	
+			$("#answerform").submit();
+		});
+		
+		$("#answer2txt").keydown(function (event) {
+		    if (event.keyCode == 13) {
+		        $("#answerform").submit();
+		    }
+		})
+	});
+
+</script>
+</head>
+<body>
+	<div class="wraper">
+		<div class="container">
+			<div class="containerleft">
+				<h2>账号管理</h2>
+				<ul class="accountlist">
+					<li class="accountitem01">
+						<a href="${base}/my/user/info"><span>个人信息</span></a>
+					</li>
+					<li class="accountitem02">
+						<a href="${base}/my/user/setpwd"><span>修改登录密码</span></a>
+					</li>
+					<li class="accountitem03">
+						<a href="${base}/my/user/setpaypwd"><span>修改支付密码</span></a>
+					</li>
+					<li class="accountitem04">
+						<a href="${base}/my/user/setemail"><span>修改绑定邮箱</span></a>
+					</li>
+					<li class="accountitem05 activeli">
+						<a href="${base}/my/user/safeqa"><span>账户保护</span></a>
+					</li>
+				</ul>
+			</div>
+			<div class="containerright">
+				<h2>账户保护</h2>
+				<div class="setquestioncontent">
+					<div class="stepprogress">
+						<div class="step checked">
+							<span class="circle">1</span>
+							<span>验证密保答案</span>
+						</div>
+						<img src="${baseimg}/imgs/default/grayarrow.png" alt="" />
+						<div class="step">
+							<span class="circle">2</span>
+							<span>重新选择密保问题</span>
+						</div>
+						<img src="${baseimg}/imgs/default/grayarrow.png" alt="" />
+						<div class="step">
+							<span class="circle">3</span>
+							<span>确认密保答案</span>
+						</div>
+						<img src="${baseimg}/imgs/default/grayarrow.png" alt="" />
+						<div class="step">
+							<span class="circle">4</span>
+							<span>完成</span>
+						</div>
+					</div>
+					<div class="stepinfo">
+						<form id="answerform" action="${base}/my/user/safeqa" method="post">
+							<h3>请输入当前密保问题的答案</h3>
+							<ul class="securitylist">
+								<li>
+									<span>密保问题1</span>
+									<div class="keys safequestion">${question}</div>
+								</li>
+								<li>
+									<span>密保问题答案</span>
+									<input id="answertxt" type="text" class="keys" name="answer" value="${answer}" />
+									[#if err_answer??]
+										<span style="color:#f00;">&nbsp&nbsp&nbsp回答错误！</span>
+									[/#if]
+								</li>
+								<li>
+									<span>密保问题2</span>
+									<div class="keys safequestion">${question2}</div>
+								</li>
+								<li>
+									<span>密保问题答案</span>
+									<input id="answer2txt" type="text" class="keys" name="answer2" value="${answer2}" />
+									[#if err_answer2??]
+										<span style="color:#f00;">&nbsp&nbsp&nbsp回答错误！</span>
+									[/#if]
+								</li>
+							</ul>
+							<div class="checkbtns checkposition">
+								<a href="javascript:;" class="save">确定</a> 
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

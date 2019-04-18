@@ -1,0 +1,727 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+[#import "/WEB-INF/FtlLib/Macro/Public.ftl" as p]
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>${title!'论战详情页'}</title>
+    <link href="${basecss}/css/default/pages/debateoid.css" type="text/css" rel="stylesheet" />
+    <link href="${basecss}/css/default/pages/has_vote_box.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="${basejs}/js/libs/comment-1.0.0.js"></script>
+    <script type="text/javascript" src="${basejs}/js/libs/scroll.js"></script>
+    <script type="text/javascript" src="${basejs}/js/pages/vote.js"></script>
+    <script type="text/javascript" src="${basejs}/js/libs3/jquery.qqface.min.js"></script>
+	<script src="${basejs}/js/libs3/ejs.min.js"></script>
+	<script type="text/ejs" id="balance-template">
+		<div class="balance">
+			<div class="balance-lever">
+				<div class="left-lever">
+			  		<div class="left-data data_red" style="top: -64px;">
+						<a class="left-arrow debate_vote debate_vote_red" id="debate_vote_two_${bean.uid}_blue" data-support="red" data-id="${bean.uid}" href="javascript:void(0);">
+							<img src="<%= g.baseimg %>/imgs/default/redzan.png" data-isvoted="${voted.voted!'false'}" data-isme="${voted.isred!'false'}">
+						</a>
+						<a class="number-area left-number number num_${bean.uid}_red debate_vote" data-support="red"><%= this.left %></a>
+					</div>
+				</div>
+				<div class="right-lever">
+			  		<div class="right-data data_blue" style="top: -64px;">
+						<a class="right-arrow debate_vote debate_vote_blue" id="debate_vote_two_${bean.uid}_blue" data-support="blue" data-id="${bean.uid}" href="javascript:void(0);">
+							<img src="<%= g.baseimg %>/imgs/default/bluezan.png" data-isvoted="${voted.voted!'false'}" data-isme="${voted.isblue!'false'}">
+						</a>
+						<a class="number-area right-number number num_${bean.uid}_blue debate_vote" data-support="blue"><%= this.right %></a>
+					</div>
+			  	</div>
+			</div>
+			<img class="balance-pivot" src="<%= g.baseimg %>/imgs/default/lunzh2_db.png">
+		</div>
+	</script>
+    <style type="text/css">	
+    	.has_vote_box {
+    		z-index: 1015;
+    		display: none;
+    	}
+    	.contro_nei, .reply_detail .contro_nei{width:88%;word-break:break-all;margin-bottom:10px;}
+    	.reply_detail .contro_nei{width:100%;}
+    	.contro_red{left:85}
+    	.contro_blue{left:90}
+    </style>
+    <script type="text/javascript">
+	var debateuid = "${bean.uid}";
+	var hasvote = -1;// 用来在页面级别存储已经投过票，防止多次请求后台
+	var isred ;
+	(function() {
+		$(document).ready(function() {
+			var balancePanel = new Components.BalancePanel($('.tp_midd'), {
+				left : ${(bean.countred)?c},
+				right : ${(bean.countblue)?c}
+			});
+		});
+	})();
+	function alertvote(isred){
+		if(isred){
+			alert("你已经投票给红方");
+		}else{
+			alert("你已经投票给蓝方");
+		}
+		handleHasvote(isred);
+	}
+	
+	function alertisred(isred){
+	}
+	
+	function handleHasvote(isred){
+		if(isred){
+			hasvote = 1;
+		}else{
+			hasvote = 0;
+		}
+		//$(".has_vote_box").css("display", "block");
+	}
+	
+	$(function($) {
+		// 为评论按钮注册点击事件
+		InitDebateVoteStyleEvent();
+		$(".submit_comment").bind("click", function(){
+			submitCommentHandler(this);
+		});  
+		
+	 	//表情
+    	$('.emotion').qqFace({ 
+	        assign:'content', //给输入框赋值 
+	        path:'${baseimg}/imgs/face/qq/' //表情图片存放的路径 
+	    });
+	});
+	
+	var params = {
+		content: "",
+		fromuid: "",
+		channel: ""
+	}
+	
+	var commentdefault = {
+		maxlength: 300
+	}
+	
+	var me = {
+		showname: "${me.showname!'游客'}",
+		imglittle: "${me.imglittle}",
+		oid:"${(me.oid?c)!"0"}",
+		defaultImg: ""
+	}
+	
+	function beforeSubmitHandler(obj){
+		params = {};
+		var vote = $(obj).data("vote");
+		if(vote == "red"){
+			isred = true;
+			params.isreply = false;
+		} else if (vote == "blue"){
+			params.isreply = false;
+			isred = false;
+		} else {
+			params.isreply = true;
+			isred = false;
+		}
+		var commenttext = $(obj).parent().siblings(".comment_textarea").val();
+		params.isred = isred;
+		params.fromuid = '${bean.uid}';
+		params.channel = "debate";
+		params.content = commenttext;
+		var touid = $(obj).parent().parent().parent().data("uid");
+		if(typeof touid != "undefined"){
+			params.touid = touid;
+		}
+		var topuid = $(obj).parent().parent().parent().data("topuid");
+		if(typeof topuid != "undefined"){
+			params.topuid = topuid;
+		}
+		var touseruid = $(obj).parent().parent().parent().data("touseruid");
+		if(typeof touseruid != "undefined"){
+			params.touseruid = touseruid;
+		}
+		
+		var tousername = $(obj).parent().parent().parent().data("tousername");
+		if(typeof tousername != "undefined"){
+			params.tousername = tousername;
+		}
+	    var fromusername = $("input[name='fromusername']").last().val();
+        if(fromusername != ""){
+            params.fromusername = fromusername;
+        }
+	}
+	
+	function afterSubmitHandler(result, obj){
+		if(result.success){
+			$(".nothing").hide();
+			$(".comment_textarea").val("")
+			if (typeof params.touid != "undefined") {
+				addListComment(obj, result.bean);  //对评论或者回复的回复
+			} else { //对论战的评论
+				$(".comments").html(getCommentHtml(result.bean, obj) + $(".comments").html());
+			}
+			$(".replybox1").remove();
+			unRegisterPraise();
+			registerPraise();
+		}else{
+			alert("添加失败");
+		}
+	}
+	
+	function getMeOrHisUrl(meoid, hisoid) {
+		var url = "javascript:void(0);"
+		if (meoid == hisoid) {
+			url = "${base}/my/article"
+		} else {
+			url = "${base}/his/article/" + hisoid;
+		}
+		if (hisoid == 0 || typeof hisoid == "undefined") {
+			url = "javascript:void(0);"
+		}
+		return url;
+	}
+	
+	function getAvatar(comment, isfrom) {
+		var content = "";
+		var hisoid = comment.fromuseroid;
+		if (!isfrom) {
+			hisoid = comment.touseroid;
+		}
+		content += '<a href="' + getMeOrHisUrl("${(me.oid?c)!"0"}", hisoid) + '" target="_blank">';
+		content += '<img class="nameimg" ';
+		if (isfrom) {
+			if ("${me.avatar}" != null && "${me.avatar}" != "") {
+				content += 'src="${userimg}${me.avatar}"';
+			} else {
+				content += 'src="${baseimg}/imgs/web/noavatar.png"';
+			}
+		} else {
+			if (comment.toUser != null && comment.toUser.avatarlittle != null && comment.toUser.avatarlittle != "") {
+				content += 'src="${userimg}' + comment.toUser.avatarlittle +'"';
+			} else {
+				content += 'src="${baseimg}/imgs/web/noavatar.png"';
+			}
+		}
+        content += '></a>';
+	    return content;
+	}
+	
+	function getdetail(comment) {
+		comment.content = replaceContent(comment.content);
+		var topuid = "";
+		if(typeof params.topuid == "undefined"){
+			topuid = comment.touid;
+		}else{
+			topuid = params.topuid;
+		}
+		var content = "";
+		content += '<div class="secondright" data-uid="' + comment.uid + '" data-topuid="' + topuid + '" data-touseruid="' + params.touseruid + '"  data-tousername="'+ comment.fromusername +'">';
+		content += '<div class="secondrtop">';
+		if (params.isred) {
+			if (comment.fromuseroid != 0) {
+				content += '<a href="' + getMeOrHisUrl("${(me.oid?c)!"0"}", comment.fromuseroid) + '" class="name" target="_blank">';
+				
+			} else {
+				content += '<a href="javascript:void(0);" style="font-size: 14px; color: #1d71b6; font-weight: bold;" target="_blank">';
+			}
+			content += comment.fromusername + '</a><span class="answer">回复</span>';
+			if (comment.touseroid != 0) {
+				content += '<a href="' + getMeOrHisUrl("${(me.oid?c)!"0"}", comment.touseroid) + '" class="name" target="_blank">';
+			} else {
+				content += '<a href="javascript:void(0);" style="font-size: 14px; color: #1d71b6; font-weight: bold;" target="_blank">';
+			}
+			content += '&nbsp;' + comment.tousername + '</a>';
+			content += '<span class="time">&nbsp;&nbsp;刚刚</span>';
+		} else {
+			content += '<span class="time">刚刚&nbsp;&nbsp;</span>';
+			if (comment.fromuseroid != 0) {
+				content += '<a href="' + getMeOrHisUrl("${(me.oid?c)!"0"}", comment.fromuseroid) + '" class="name" target="_blank">';
+				
+			} else {
+				content += '<a href="javascript:void(0);" style="font-size: 14px; color: #1d71b6; font-weight: bold;" target="_blank">';
+			}
+			content += comment.fromusername + '</a><span class="answer">回复&nbsp;</span>';
+			if (comment.touseroid != 0) {
+				content += '<a href="' + getMeOrHisUrl("${(me.oid?c)!"0"}", comment.touseroid) + '" class="name" target="_blank">';
+			} else {
+				content += '<a href="javascript:void(0);" style="font-size: 14px; color: #1d71b6; font-weight: bold;" target="_blank">';
+			}
+			content += comment.tousername + '&nbsp;</a>';
+		}
+		content += '</div>';
+		content += '<p class="gray comment_debate">' + comment.content + '</p>';
+		content += '<div class="reply">';
+		content += '<a href="javascript:void(0);" id="btnprizecomments_${(me.oid?c)!"0"}_' + comment.uid + '" data-counter=".prizecounter">';
+		content += '<img src="${baseimg}/imgs/default/heart_02.png" data-isprize="false"/>';
+		content += '<span class="zancountjs">(0)</span>';
+		content += '</a>';
+		content += '<a href="javascript:;" class="replylik" onclick="reply(this);"><img src="${baseimg}/imgs/default/msgimg.png" />&nbsp;回复</a>';
+		content += '</div>';
+		content += '</div>';
+		return content;
+	}
+	
+	// 对评论的回复
+	function addListComment(obj, comment){
+		if($(obj).parent().parent().parent().parent().hasClass("commentred") || $(obj).parent().parent().parent().parent().parent().parent().hasClass("commentred")) {
+			params.isred=true;
+		}
+		var content = "";
+		content += '<div class="secondcomment" >';
+    	if(params.isred){
+	  		content += getAvatar(comment, true);
+	  		content += getdetail(comment);
+	  	}else{
+	  		content += getdetail(comment);
+	  		content += getAvatar(comment, false);
+	  	}
+    	content += '</div>';
+		// 对评论的回复
+		if($(obj).parent().parent().parent().hasClass("commentright")){
+			if ($(obj).parent().parent().siblings(".more_comment").length > 0) {
+				$(obj).parent().parent().siblings(".more_comment").after(content.toString());
+			} else {
+				$(obj).parent().parent().after(content.toString());					
+			}
+		} else {
+			// 对评论的回复的回复
+			$(obj).parent().parent().parent().parent().after(content.toString());					
+		}
+	}
+	
+	//对论战的评论
+	function getCommentHtml(bean, obj){
+		bean.content = replaceContent(bean.content);
+		var result = "";
+		if (isred) {
+			result += '<div class="commentitem commentred">';
+			result += getAvatar(bean, true);
+		} else {
+		 	result += '<div class="commentitem commentblue">';
+		}
+		result += '<div class="commentright" data-uid="' + bean.uid + '" data-touseruid="' + bean.fromuseruid + '" data-tousername="' + bean.fromusername + '">';
+		result += '<div class="commentrtop">';
+		if (bean.fromuseroid != 0) {
+			result += '<a href="' + getMeOrHisUrl("${(me.oid?c)!"0"}", bean.fromuseroid) + '" target="_blank" class="name">'
+		} else {
+			result += '<a href="javascript:void(0);" target="_blank" style="font-size: 14px; color: #1d71b6; font-weight: bold;">'
+		}
+		
+		result += '</div>';
+		if (isred) {
+			result += '&nbsp;' + bean.fromusername + '</a>';
+			result += '<span class="time">&nbsp;&nbsp;刚刚</span>';
+			result += '\n\r<p class="reditem comment_debate">&nbsp;' + bean.content + '</p>';
+		} else {
+			result += '<span class="time">&nbsp;&nbsp;刚刚</span>';
+			result += '&nbsp;' + bean.fromusername + '&nbsp;</a>';
+		 	result += '<p class="blueitem comment_debate">&nbsp;' + bean.content + '</p>';
+		}
+		result += '<div class="reply">';
+		result += '<a href="javascript:void(0);" id="btnprizecomments_${(me.oid?c)!"0"}_' + bean.uid + '" data-counter=".prizecounter">';
+		result += '<img src="${baseimg}/imgs/default/heart_02.png" data-isprize="false" />';
+		result += '<span class="zancountjs">(0)</span>';
+		result += '</a>';
+		result += '<a href="javascript:void(0)" onclick="reply(this);" class="replylik"><img src="${baseimg}/imgs/default/msgimg.png" />&nbsp;回复</a>';
+		result += '</div>';
+		result += '</div>';
+		if (!isred) {
+			result += getAvatar(bean, true);
+		}
+		result += '</div>';
+  		return result;	
+	}
+	
+	function submitCommentHandler(obj){
+		beforeSubmitHandler(obj);
+		if(params.content == ""){
+			alert("评论内容不能为空");
+			return;
+		}
+		if(params.content.length >= commentdefault.maxlength){
+			alert("评论内容最多" + commentdefault.maxlength +　"个字");
+			return;
+		}
+		$.post("${base}/ajax/comment/{0}_{1}".format(params.channel, params.fromuid), params,function(data){
+			afterSubmitHandler(data, obj);
+		});
+	}
+	
+	function reply(obj){
+		if($(".replybox1").length != 0) {
+			if(!confirm("您确定要放弃现在的评论吗？")){
+				$(".comment_textarea1")[0].focus();
+				return;
+			}else{
+				$(".replybox1").remove();
+			}
+		}
+		var html = "";
+		html += '<div class="replybox replybox1">';
+		html += '<textarea class="contro_text comment_textarea comment_textarea1" id="replay" data-suffix="replay"></textarea>';
+		html += '<div class="suport">';
+		html += '<a href="javascript:void(0);" class="submit_comment judgebtn right" title="">评论</a>';
+		html += '<p style="text-align: left; margin-top: 0px; padding:0;"><span class="emotion">表情</span></p>';
+		html += '</div>';
+		html += '</div>';
+		$(obj).parent().after(html);
+		$(".comment_textarea1").focus();
+		/*$(".comment_textarea1").bind("blur", function(event){
+			if($(this).val() == ""){
+				$(this).parent().remove();
+			}
+		});*/
+		initReplyClickEvent();
+		initBindEvent();
+	} 
+	
+	//为回复按钮绑定提交事件
+	function initReplyClickEvent() {
+		$(".judgebtn").unbind("click");
+        $(".judgebtn").bind("click", function(){
+			submitCommentHandler(this);
+		});
+	}
+	
+	// 对评论的回复的加载更多
+	function loadlist(obj){
+		var replys = $(obj).parent().siblings(".hd");
+		for(var i=replys.length;i>=replys.length-5;i--){
+			if(i>=0){
+				$(replys[i]).removeClass("hd");
+			}
+		}
+		replys = $(obj).siblings(".hd");
+		if(replys.length == 0) {
+			$(obj).addClass("hd");
+		}
+	}
+	
+	/*重写点赞的事件绑定*/
+	function registerPraise(){
+		$(".reply a[id^='btnprize']").each(function(){$(this).prize();});
+		prizeBindEvent();
+	}
+	
+	//将[em_*]替换为img标签
+	function replaceContent(str) {
+		str = str.replace(/\[em_([0-9]*)\]/g,'<img src="' + g.baseimg + '/imgs/face/qq/$1.gif" border="0" />');
+		return str;
+	}
+	
+	function initBindEvent() {
+		$('.emotion').unbind( "click" );
+		$('.emotion').qqFace({ 
+	        assign:'content', 
+	        path: g.baseimg + '/imgs/face/qq/'
+	    });
+	}
+	
+	/*生成页面表情*/
+	function initPage() {
+		$(".comment_debate").each(function(){
+			var content = replaceContent($(this).html());
+			$(this).html(content);
+		});
+	}
+	
+	/*返回要赋值的输入框*/
+	function initData(obj) {
+		var assign=$(obj).parent().parent().parent().find("textarea").data("suffix");
+		return assign;
+	}
+    </script>
+    <script src="${basejs}/js/libs/components.js"></script>
+    <style type="text/css">
+    	.con_rt_circle1{top:78px;}
+    	.contro_bule{left:auto;}
+    	.right .comment_detail{float:right;} 
+    	.left .comment_detail{float:left;}
+    	.contro_bule_hui, .contro_red_hui{width:100%;}   
+    	.reply_detail{margin-bottom:20px;}
+    	.contro_pnei_z, .contro_pnei{width:91%;}
+    	.reply_detail .commentform{width:100%;}
+    	.comment_detail{margin-bottom:5px;}
+    	.contr_pic_t{width:48px;height:48px;}
+    	.contro_a{top:0;}
+    	
+    	span.emotion{width:42px; height:20px;margin-left: 0px;background:url("${baseimg}/imgs/face/icon.gif") no-repeat 2px 2px; padding-left:20px; cursor:pointer}
+		span.emotion:hover{background-position:2px -28px}
+		.qqFace{margin-top:4px;background:#fff;padding:2px;border:1px #dfe6f6 solid;}
+		.qqFace table td{padding:0px;}
+		.qqFace table td img{cursor:pointer;border:1px #fff solid;}
+		.qqFace table td img:hover{border:1px #0066cc solid;}
+    </style>
+</head>
+<body>
+<div class="centerbox">
+	<div class="main">
+		<div class="contro_banner">
+			<a href="javascript:void(0);" class="bgimg"><img src="${webimg}${bean.imgbig}" /></a>
+			<div class="lz_one_01" style="text-align: left;">
+				<a href="" title="${bean.title!''}">[@f.TrimSubstring content="${bean.title!''}" mylength=45 /]</a>
+			</div>
+			<span class="contro_icon">${bean.periods}</span>
+		</div>
+		<!-- banner结束 -->
+		<div class="contro_cont">
+		   	<ul class="showays">
+				<li>
+					<a href="javascript:;"  id="btnprizedebate_${(me.oid?c)!"0"}_${bean.uid}" data-counter=".prizecounter">
+						<span>+<i class="zanumber zancountjs">${bean.prizecount!'0'}</i></span>
+						<img src="${baseimg}/imgs/default/zan.png" data-notcomment="true" data-isprize="${bean.isprize!'false'}" class="liwaysimg liwaysimg01" />
+					</a>
+				</li>
+				<li>
+					<a [#if me??] href="javascript:;" id="btncollect${collect}_${typename}_${bean.uid}" data-iscollect="${bean.iscollect!'false'}" [#else] href="javascript:;" class="pop-up" [/#if]>
+						<span class="collect">收藏</span>
+						<img src="${baseimg}/imgs/default/collected.png" data-iscollect="${bean.iscollect!'false'}" alt="" class="liwaysimg liwaysimg02" />
+					</a>
+				</li>
+				<li>
+					<a href="javascript:;">
+						<span>分享</span>
+					</a>
+					[@p.share /]
+				</li>
+				<li>
+					<a href="#commentform">
+						<span>评论</span>
+						<img src="${baseimg}/imgs/default/discuss.png" alt="" class="liwaysimg liwaysimg04" />
+					</a>
+				</li>
+			</ul>
+			<div class="contro_vs">
+				<span class="contro_red" title="${bean.titlered}">${bean.titlered}</span>
+				<span class="contro_bule" title="${bean.titleblue}">${bean.titleblue}</span>
+			</div>
+			<div class="controbox">
+				<!-- 左边开始 -->
+				<div class="conleftbox">
+					[#list bean.redArticles as item]
+					[#assign url="${base}/debate/article/${item.finaceuid}?doid=${bean.oid?c}&dperioid=${bean.periods}&disred=1&dviewpoint=${bean.titlered}"]
+						<div class="contro_left">
+							<img src="${baseimg}/imgs/default/circle.png" class="con_rt_circle1" />
+							<div class="controversy">
+								<a href="${url}" target="_blank"><h3 class="contro_title">${item.finance.title}</h3></a>
+								<div class="contro_cont_1">
+									<a href="${url}" target="_blank"><img src="${webimg}${item.finance.imglittle}" width="145px" height="110px"></a>
+									<p class="contro_p1">[@f.TrimSubstring content='${item.finance.summary}' mylength=116 /]</p>
+									<p class="contro_p1">${item.finance.author}&nbsp;&nbsp;${item.finance.publishDateStr}<a href="${url}" class="contro_a" target="_blank">阅读全文>></a></p>
+								</div>
+							</div>
+						</div>
+					[/#list]
+				</div>
+				<!-- 左边结束 -->
+				<!-- 右边开始 -->
+				[#assign maxlength = (bean.redArticles?size>=bean.blueArticles?size)?string(bean.redArticles?size,bean.blueArticles?size) ]
+				<div class="conrightbox">
+					[#if maxlength>0 ]
+					[#list 0..maxlength?number-1 as index]
+						<div class="mid_right">
+							<img src="${baseimg}/imgs/default/circle.png" class="con_rt_circle1">
+							[#if bean.blueArticles?size>0 && index<bean.blueArticles?size]
+								[#assign item=bean.blueArticles[index] /]
+								<div class="controversy">
+									[#assign url="${base}/debate/article/${item.finaceuid}?doid=${bean.oid?c}&dperioid=${bean.periods}&disred=0&dviewpoint=${bean.titleblue}" /]
+									<a href="${url}" target="_blank"><h3 class="contro_title">${item.finance.title}</h3></a>
+									<div class="contro_cont_1">
+										<a href="${url}"  target="_blank"><img src="${webimg}${item.finance.imglittle}" width="145px" height="110px"></a>
+										<p class="contro_p1">[@f.TrimSubstring content='${item.finance.summary}' mylength=116 /]</p>
+										<p class="contro_p1">${item.finance.author}&nbsp;&nbsp;${item.finance.publishDateStr}<a href="${url}" class="contro_a" target="_blank">阅读全文>></a></p>
+									</div>
+								</div>
+							[#else]
+								<div class="controversy" style="border-bottom:none;"></div>
+							[/#if]
+						</div>
+					[/#list]
+					[/#if]
+				</div>
+				<!-- 右边结束 -->
+			</div>
+		</div>
+		<div class="tp_midd"></div>
+		<div class="newuser">
+			<h3 class="mb">最新参与的用户</h3>
+			<div class="mtb_10">
+				<div class="rside">红方阵营</div>
+				<div class="user">
+					[#list map.listred as item]
+						<a href="" title="${item.showname}">
+							<img [#if "${item.avatar}" == ""]src="${baseimg}/imgs/web/noavatar.png"[#else]src="${userimg}${item.avatar}"[/#if] />
+						</a>
+					[/#list]
+				</div>
+			</div>
+			<div class="mtb_10 bluebox">
+				<div class="bside">蓝方阵营</div>
+				<div class="user">
+					[#list map.listblue as item]
+						<a href="" title="${item.showname}">
+							<img [#if "${item.avatar}" == ""]src="${baseimg}/imgs/web/noavatar.png"[#else]src="${userimg}${item.avatar}"[/#if] />
+						</a>
+					[/#list]
+				</div>
+			</div>
+			<div class="options">
+				<span class="contro_l">红方发言（${bean.redcommentcount}）</span>
+				<span class="contro_m"></span>
+				<span class="contro_r">蓝方发言（${bean.bluecommentcount}）</span>
+			</div>
+			[#if bean.state == 0]
+			<div class="commentbox" id="commentform">
+			  	<textarea class="contro_text comment_textarea" id="content" style="width: 910px;"></textarea>
+			  	<div class="txtbottom" style="text-align: left;">	
+			  		<p style="text-align: left; margin-top: 4px; margin-left: 15px;margin-right: 10px; display: inline-block;"><span class="emotion">表情</span></p>
+				  	<a href="" class="submit_comment contro_abule right" data-vote="blue" title="${bean.titleblue!''}">支持蓝方</a>
+				  	<a href="" class="submit_comment contro_ared right" data-vote="red" title="${bean.titlered!''}">支持红方</a>
+				  	[#if !me??]
+				  		<span class="idtip">您当前身份为游客，可自定义昵称：<input type="text" value="" name="fromusername" placeholder="选填" autocomplete="off"  maxlength="5"></span>
+				  	[/#if]
+				</div>
+		 	</div>
+		 	[/#if]
+		</div>
+		
+		<script type="text/javascript">
+			var pagenum = 1;
+			var state = '${bean.state}';
+			function loadmore(){
+				pagenum += 1 ;
+				var url = "${base}/ajax/comment/debate_${bean.uid}_{0}".format(pagenum - 1);
+				$.ajax({
+					type:"GET",
+					url:url,
+					beforeSend:function(XMLHttpRequest) {
+						$("#loading").show();
+					},
+					success:function(data){
+						$("#loading").hide();
+						if(data.trim() == ""){
+							pagenum -= 1 ;
+							$(window).unbind("scroll", defaultScrollHandler);
+							$("#loading").hide();
+							if(pagenum == 1) {
+								$(".nothing").removeClass("hd");
+								$(".loadmore").hide();
+							} else {
+								if($(".comments .commentitem").length > 20) {
+									$(".loadmore a").html("无更多评论").unbind("click");
+									$(".loadmore").show();
+								}
+							}
+						}else{
+							$(".comments").append(data);
+							if($(".comments .commentitem").length < 20 && pagenum == 2){
+								$(window).unbind("scroll", defaultScrollHandler);
+							}
+		                    initPage();
+		                    unRegisterPraise();
+							registerPraise();
+						}
+					}
+				});
+			}
+			
+			/*重写更新点赞的数量*/
+			function updatePrizeCount(obj, isprize) {
+				var countstr = $(obj).find(".zancountjs").html();
+				if ($(obj).parent().hasClass("reply")) {
+					countstr = countstr.substring(1, countstr.length - 1);
+					if (isprize) {
+						$(obj).find(".zancountjs").html("(" + (parseInt(countstr)+1) + ")");
+					} else {
+						$(obj).find(".zancountjs").html("(" + (parseInt(countstr)-1) + ")");
+					}
+					
+				} else {
+					if (isprize) {
+						$(obj).find(".zancountjs").html(parseInt(countstr)+1);
+					} else {
+						$(obj).find(".zancountjs").html(parseInt(countstr)-1);
+					}
+				}
+			}
+			
+			$(function($) {
+				$(".judgebtn").bind("click", function(){
+					submitReplyHandle(this);
+				});
+				$(".loadmore").bind("click", function(){
+					loadmore();	
+				});
+				$.fn.scrollHandle({
+					obj: window,
+					fun: loadmore
+				})
+				$(".loadmore").click();
+				$(".loadmore").unbind("click");
+				collectBindEvet();
+				prizeBindEvent();
+			});
+			
+			function dealDate(){
+			  $("span").each(function(){
+	                 var str = $(this).html();
+	                 var date = null;
+	                 var nowdate = new Date();
+	                 try{
+	                     date = new Date(str);
+	                 }catch(e){
+	                     console.log("not a date");
+	                 }
+	                 if(date != null){
+	                    if(date != "Invalid Date"){
+	                        if(date.toDateString() == nowdate.toDateString()){
+	                            $(this).html(getTime24(date));
+	                        }else if(date.getFullYear() == nowdate.getFullYear()){
+	                            $(this).html((date.getMonth()+1) + "月" + date.getDate() + "日&nbsp;" + getTime24(date));
+	                        }
+	                    }
+	                 }
+	            });
+			}
+			
+			function getTime24(date){
+			  return date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+			}
+			// JQuery load
+			
+		</script>
+		<div class="comments">
+			
+	  	</div>
+	  	<div class="nothing hd">
+            <img src="${baseimg}/imgs/default/prompt.png" style="width:481px;heigth:211px">
+        </div>
+	  	<div class="tab_bottom loadmore hd" style="margin-bottom:25px;width:900px;">
+			<a href="javascript:void(0)">加载更多&darr;</a>
+		</div>
+		<div class="loading" id="loading" style="display:none">
+			<img src="${baseimg}/imgs/default/loading.gif" />
+			loading...
+		</div>
+	</div>
+</div>
+	<script type="text/javascript">
+		$(function(){
+			$("#zanli").click(function(){
+				$(this).find(".liwaysimg01").attr("src","${baseimg}/imgs/default/zaned.png");
+				$(".zanumber").html(parseInt($(".zanumber").html())+1);
+			});
+			/*$("#collectli").click(function(){
+				$(this).find(".liwaysimg02").attr("src","${baseimg}/imgs/default/collects.png");
+				$(".collect").html("已收藏");
+			});*/
+			$(".zanmore").click(function(){
+				var inum = parseInt($(this).children("i").html());
+				$(this).children("i").html(parseInt(inum+1));
+				$(this).children("img").attr("src","${baseimg}/imgs/default/zaned.png").css("width","20").css("height","17");
+			});
+		});
+	</script>
+</body>
+</html>
+

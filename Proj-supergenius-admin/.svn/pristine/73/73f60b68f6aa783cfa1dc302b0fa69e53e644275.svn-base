@@ -1,0 +1,142 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/Admin.ftl" as a]
+<html>
+<head>
+<title>话题管理</title>
+<script type="text/javascript" src="${basejs}/ckeditor/ckeditor.js"></script>
+<script type="text/javascript">
+<!--
+function getFreshRowUrl(dg) {
+		var row = getSelected(dg);
+		var url = new Array();
+		url.push("${base}${baseAdminPath}/ajax/topic/guest/list?topicuid={0}".format(row.uid));
+		if(row != null) {
+			return url;
+		} else {
+			return null;
+		}
+	}
+	
+function freshRow(row, data, i) {
+    row.roles = data.rows;
+}
+	
+function initFormData(form, data) {
+	form.form('load', data);
+	form.set(data);
+	if(data.roles) {
+		$("#dgguest").datagrid("loadData", data.roles);
+	}
+}
+//-->
+</script>
+</head>
+<body>
+	<section>
+		[@a.search]
+	        <tr>
+	        	<td><label for="stitle">标题: </label><input id="stitle" type="text" name="title" /></td>
+	        	<td><label for="sauthor">发起人: </label><input id="sauthor" type="text" name="author" /></td>
+	        </tr>
+	        <tr>
+	        	<td>起始发布时间: <input name="createtimestart" type="text" editable="false" class="easyui-datebox" /></td>
+                <td>结束发布时间: <input name="createtimeend" type="text" editable="false" class="easyui-datebox" /></td>
+			</tr>
+			<tr>
+	            <td>状态: 
+		            <input id="sall" name="status" value="" type="radio" class="radio" /><label for="sall">全部</label>
+		            <input id="senable" name="status" value="1" type="radio" class="radio" /><label for="senable">正常</label>
+		            <input id="sdisable" name="status" value="0" type="radio" class="radio" /><label for="sdisable">冻结</label>
+	            </td>
+	        </tr>   
+	        <tr>
+	            <td>进度: 
+		            <input id="sstateall" name="state" value="" type="radio" class="radio" /><label for="sstateall">全部</label>
+		            <input id="sinit" name="state" value="0" type="radio" class="radio" /><label for="sinit">审核中</label>
+		            <input id="ssucceed" name="state" value="1" type="radio" class="radio" /><label for="ssucceed">已发布</label>
+		            <input id="sfailed" name="state" value="2" type="radio" class="radio" /><label for="sfailed">未通过</label>
+	            </td>
+	        </tr>                
+		[/@a.search]
+		
+		[@a.datagrid]
+            <th data-options="field:'title',width:500">标题</th>
+            <th data-options="field:'author',width:100">发起人</th>
+            <th data-options="field:'topicStateName',width:100">进度</th>
+            <th data-options="field:'statusName',width:100">状态</th>
+            <th data-options="field:'createtimeStr',width:150">提交时间</th>
+	    [/@a.datagrid]
+	    
+	    [@a.toolbar canadd=false]
+	    	[@a.status /]
+	    	[@a.state /]
+	    [/@a.toolbar]
+	    [@a.tools /]
+	    
+	</section>
+	
+	[@a.editsection canuploadfile=true]
+		<tr>
+            <td>标题:<input type="hidden" name="uid"/><input type="hidden" name="useruid"/></td>
+            <td><input class="easyui-validatebox long" type="text" name="title" data-options="required:true"></input></td>
+        </tr>
+        <tr>
+           <td>效果图:</td>
+           <td><img style="width:200px; height:200px" src="" set-format="${webimg}{0}" set-key="imglittle"/>
+           		[@a.imgupload multiple=false imgpath="/imgs/webdata/finance/topic" /]
+           	</td>
+        </tr>
+        <tr>
+            <td>话题说明:</td>
+            <td>[@a.ckeditor name="content" /]</td>
+        </tr>
+        <tr>
+        	<td></td>
+            <td>
+            	通过:<input id="sresult1" name="result" value="1" type="radio" class="radio" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+            	不通过:<input id="sresult0" name="result" value="0" type="radio" class="radio" checked="checked"/>
+        	</td>
+        </tr>
+	[/@a.editsection]
+	
+	[@a.viewsection]
+		<tr>
+            <td>话题标题:</td>
+            <td><span set-key="title"></span></td>
+        </tr>
+        <tr>
+            <td>发起人:</td>
+            <td><span set-key="author"></span></td>
+        </tr>
+        <tr>
+            <td>话题说明:</td>
+            <td><span set-key="content"></span></td>
+        </tr>
+        <tr>
+            <td>话题图片</td>
+            <td><img src="" set-format="${webimg}{0}" set-key="imglittle" ></td>
+        </tr>
+        <tr>
+            <td>话题进度:</td>
+            <td><span set-key="topicStateName"></span></td>
+        </tr>
+        <tr>
+            <td>话题状态:</td>
+            <td><span set-key="statusName"></span></td>
+        </tr>
+        <tr>
+            <td>发布时间:</td>
+            <td><span set-key="publishtimeStr"></span></td>
+        </tr>
+        <tr>
+            <td>提交时间:</td>
+            <td><span set-key="createtimeStr"></span></td>
+        </tr>
+        [@a.datagrid id="dgguest" title="话题嘉宾" options="width:600,fitColumns:true,resizeHandle:'right',singleSelect:true,method:'get'"]
+			<th data-options="field:'name',width:50">姓名</th>
+            <th data-options="field:'guestStateName',width:50">状态</th>
+            <th data-options="field:'createtimeStr',width:150">创建时间</th>
+		[/@a.datagrid]
+	[/@a.viewsection]
+</body>
+</html>

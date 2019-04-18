@@ -1,0 +1,35 @@
+[#ftl]
+<div id="maskcover"></div>
+<div class="editContainer" id="editContainer">
+	<a href="javascript:;" id="cancelbtn"><img src="${baseimg}/imgs/default/closeimg.png" class="closeimg" /></a>
+	<div class="opacitybg"></div>
+	<form action="">
+		<ul class="editInforbox">
+			<li>
+				<span>用户名：</span>
+				<div class="editable" contenteditable>张晓宇</div>
+			</li>
+			<li>
+				<span>公司：</span>
+				<div class="editable" contenteditable>超天才</div>
+			</li>
+			<li>
+				<span>部门：</span>
+				<div class="editable" contenteditable>技术开发部</div>
+			</li>
+			<li>
+				<span>职位：</span>
+				<div class="editable" contenteditable>技术开发部</div>
+			</li>
+			<li style="border-bottom: none;">
+				<span>简介：</span>
+				<textarea>日本立命馆大学工学博士。主要研究方向：镍基合金材料的寿命评价与预测。目前就职于天才纵横集团旗下的诺尔顿精密机械（北京）</textarea>
+			</li>
+		</ul>
+		<div class="buttons">
+			<button class="cancel">取消</button>
+			<button class="save">保存修改</button>
+		</div>
+	</form>
+</div>
+<script src="${basejs}/js/pages/mask.js"></script>

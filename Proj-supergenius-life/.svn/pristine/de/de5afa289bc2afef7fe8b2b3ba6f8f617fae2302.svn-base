@@ -1,0 +1,122 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/Public.ftl" as p]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="referrer" content="never" />
+	<title>${title!'天才人生话题详情页'}</title>
+	<link href="${basecss}/css/mobile/default/index.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="${basecss}/css/default/ckeditor.css" type="text/css">
+	<script type="text/javascript" src="${basejs}/js/pages/scroll.js"></script>
+	
+</head>
+<body>
+	<ul class="judgement topicTab">
+		<li onclick="review(this)" class="curjudge">备选话题</li>
+		<li onclick="last(this)">往期话题</li>
+	</ul>
+	<div class="choseTopic">
+		<img src="${baseimg}/imgs/mobile/default/topicbg.png" alt="" />
+		<ul class="hotArticleList reviewlist">
+			[#if list??]
+				[#assign i=1]
+				[#list list as item]
+					<li>
+						<div class="topicRt">
+							<a href="${base}/topic/review/${(item.cid)?c}/${item.oid}" title="${item.title}">
+								${item.title}
+							</a>
+							<p>[@p.TrimSubstring content="${item.content}" mylength=60 /]</p>
+							<div class="topicbottom">
+								<span class="time">[@p.mytime datetime="${item.createtimeStr}"/]</span>
+								<span class="topicnews"><img src="${baseimg}/imgs/default/dthumb.png" alt="">${item.prizecount}</span>
+							</div>
+						</div>
+					</li>
+					[#assign i=i+1]
+				[/#list]
+			[/#if]
+		</ul>
+	</div>
+	<div class="oldsTopic hd">
+		<img src="${baseimg}/imgs/mobile/default/topicbg.png" alt="" />
+		<ul class="hotArticleList oldTopicsList">
+		</ul>
+	</div>
+<script>
+		$(function(){
+			$.fn.scrollHandle({
+				obj: window,
+				fun: loadmore
+			})
+		})
+		var pagenum = 2;
+		var num=0;
+		//加载更多 
+		function loadmore() {
+			var	url = "";
+			if(num == 0){
+				url="${base}/m/ajax/topic/review/moretopic";
+			} else{
+				url = "${base}/m/ajax/topic/thinking/relatetopic";
+			}
+			var json ={};
+			json.pagenum=pagenum;
+			json.cid='${cid?c}';
+			$.get(url, json, function(data){
+				if(data.trim() == ""){// 没有更多内容
+					$(window).unbind("scroll", defaultScrollHandler);
+					return false;
+				}
+				if(num == 0){
+					$(".reviewlist").html(data);
+				} else{
+					$(".oldTopicsList").html(data);
+				}
+				pagenum+=1;
+			});
+		}
+		
+		//备选话题
+		function review(obj){
+			pagenum=1;
+			num=0;
+			$(obj).addClass("curjudge").siblings().removeClass("curjudge");
+			$(".choseTopic").removeClass("hd");
+			$(".oldsTopic").addClass("hd");
+			var url = "${base}/m/ajax/topic/review/moretopic";
+			var json = {};
+			json.cid='${cid?c}';
+			json.pagenum=pagenum;
+			$.get(url, json,function(data){
+			console.log(data);
+				if(data != ''){
+					$(".reviewlist").html(data);
+					pagenum+=1;
+				}
+			});
+		}
+		
+		//往期话题
+		function last(obj){
+			pagenum=1;
+			num=1;
+			$(obj).addClass("curjudge").siblings().removeClass("curjudge");
+			$(".oldsTopic").removeClass("hd");
+			$(".choseTopic").addClass("hd");
+			var url = "${base}/m/ajax/topic/thinking/relatetopic";
+			var json = {};
+			json.cid='${cid?c}';
+			json.pagenum=pagenum;
+			$.get(url, json,function(data){
+				if(data != ''){
+					$(".oldTopicsList").html(data);
+					pagenum+=1;
+				}
+			});
+		}	
+	</script>
+</body>
+</html>
+

@@ -1,0 +1,150 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+[#import "/WEB-INF/FtlLib/Macro/Public.ftl" as p]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>${title!'论战文章'}</title>
+	<link href="${basecss}/css/default/pages/debatearticleuid.css" rel="stylesheet" type="text/css">
+	<script type="text/javascript" src="${basejs}/js/libs/comment-1.0.0.js"></script>
+	<script type="text/javascript" src="${basejs}/js/pages/financecomment.js"></script>
+	<script type="text/javascript">
+		var me = {
+			showname: "${me.showname!'游客'}",
+			imglittle: "${me.avatar}",
+			oid:"${(me.oid)!'0'}",
+			defaultImg: "${baseimg}/imgs/web/noavatar.png"
+		}
+		var fromuid = '${bean.uid}';
+	</script>
+</head>
+<body>
+
+<div class="debate_th_box">
+    <div class="db_leftbox">
+        <div class="crumbs" style="position:relative;">
+            <img src="${baseimg}/imgs/default/home.png" />
+            <a href="${base}">首页</a><span class="crumbs_arrow"> ></span>
+            <a href="${base}/debate">论战</a><span class="crumbs_arrow"> ></span>
+            <a href="">${bean.title?html}</a>
+        </div><!--面包屑-->
+        <div class="db_article">
+			<h2>${bean.title}</h2>
+			<p class="db_artime db_artmargin">
+			${bean.createtimeStr}&nbsp; &nbsp; &nbsp; 来源：${bean.origin}   &nbsp; &nbsp; &nbsp;作者：${bean.author}   
+			</p>
+			<p class="db_artime">
+			来自：论战<a href="${base}/debate/${doid}">${dperioid}</a>&nbsp;&nbsp;  <a href="">支持观点：${dviewpoint}</a>
+			</p>
+			<div class="db_artcon" style="text-align:left;">
+			${bean.content}
+			</div>
+			[@p.share /]
+			<div class="xiu_1">
+				<a href="" id="btnprizefinance_${(me.oid)!"0"}_${bean.uid}" data-counter=".prizecounter">
+					<img src="${baseimg}/imgs/default/heart_01.png" data-isprize="${bean.isprize!'false'}">
+					<span class="prizecounter">(${bean.prizecount})</span>
+				</a>
+			</div>
+				<br/>
+			<hr style=" clear:both;margin-top:14px; width:670px; margin-left:25px;">
+			</div><!--db_article-->
+			<div class="db_discuss">
+				<span class="db_distitle">有话要说</span>
+				<p class="db_discon">
+					<span><span>${bean.commentcount!'0'}</span>人讨论</span>&nbsp;
+					<span><span>${bean.clickcount!'0'}</span>人阅读</span>
+				</p>
+				<div id="comment_form">
+					<textarea class="db_textarea comment_textarea"></textarea>
+					<div class="db_btnposi">
+						<div class="db_btn db_btn2"  onclick="submitCommentHandler(this)"><a href="">发表评论</a></div>
+					[#if !me??]
+						<div class="db_btn "><a href="${loginurl}" target="_blank">登录后发言</a></div>
+						<span style="font-size:14px;">您当前身份为游客，可自定义昵称：<input type="text" value="" name="fromusername" placeholder="选填" autocomplete="off" style="width:60px;margin-top:6px;" maxlength="5"></span>
+					[/#if]
+					</div>
+				</div>
+           </div>
+               <div class="comment">
+	<p class="com_title">
+        <span id="one1" class="current" onclick="setTab('one',1,2)">全部评论</span>
+        <span id="one2"  onclick="setTab('one',2,2)">精彩评论</span>    </p>
+
+	<div class="com_all" id="list_one_1">
+		<img class="nothing hd" src="${baseimg}/imgs/default/prompt.png" width="481px" heigth="211px"/>
+ 	</div>
+	<div class="com_all" id="list_one_2" style="display:none">
+		[#if wonderfullist?size>0]
+			[#list wonderfullist as item]
+				<div class="com_list">
+					[#if item.fromUser??]
+                        <a href="${basesns}/p/${item.fromUser.oid}/home" target="_blank">
+                    [#else]
+                    <a href="javascript:void(0);">
+                    [/#if]
+						<img width="45px" height="45px" class="left" [#if "${item.fromUser.avatar}" == ""]src="${baseimg}/imgs/web/noavatar.png"[#else]src="${userimg}${item.fromUser.avatar}"[/#if]>
+					</a>
+					<div class="com_info right" >
+						<h3>
+                        [#if item.fromUser??]
+                            <a href="${basesns}/p/${item.fromUser.oid}/home" target="_blank">
+                        [#else]
+                        <a href="javascript:void(0);">
+                        [/#if]
+                            ${item.fromusername}
+                        </a>
+                                                                        ：${item.content?html}</h3>
+						<p class="com_reply"><span>${item.createtimeStr}</span>
+							<span>
+								<img src="${baseimg}/imgs/default/heart_01.png"/>(${item.prizecount!'0'})
+							</span>
+						</p>
+					</div>
+					<div class="clear"></div>
+				</div>
+			[/#list]
+		[#else]
+			<img src="${baseimg}/imgs/default/prompt.png" width="481px" heigth="211px"/>
+		[/#if]
+	</div>
+</div><!--评论-->
+    </div>
+    <div class="db_rightbox tp_07_right">
+     <table class="db_table">
+       <tr>
+         <td>
+            [#if bean.contributor.user.showname??]
+                <a href="${basesns}/p/${bean.contributor.user.oid}/home" target="_blank">
+            [#else]
+                <a href="">
+            [/#if]
+               <img width="45px" height="45px" class="left" [#if "${bean.contributor.user.avatar}" == ""]src="${baseimg}/imgs/web/noavatar.png"[#else]src="${userimg}${bean.contributor.user.avatar}"[/#if]>
+           </a>
+           <div class="db_tablecon">
+             <a href=""><p class="db_name">${bean.author}</p></a>
+             <a href=""><p class="db_num" title="文章数量">${count}</p></a>
+             [#if '${me.uid}' == '${bean.authoruid}']
+             	<a href="${base}/my/article"><p class="db_ti">我的文章</p></a>
+             [#else]
+             	<a href="${base}/article/${bean.authoruid}"><p class="db_ti">TA的文章</p></a>
+             [/#if]
+           </div>
+         </td>
+       </tr>
+       <tr>
+         <td class="db_td">
+          <p class="db_pre">${bean.contributor.summary!'暂无作者简介！'}</p>
+         </td>
+       </tr>
+     </table>
+     [#-- 热门文章排行榜 --]
+	 [@f.DebateRank list2 /]
+	 [@f.ArticleRank list /]
+    </div><!--db_rightbox-->
+ 	<div class="db_add"><a href="" class="loadmore">加载更多</a></div>
+</div>
+
+</body>
+</html>

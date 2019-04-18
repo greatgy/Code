@@ -1,0 +1,101 @@
+package com.supergenius.web.admin.life.helper;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.genius.core.base.constant.BaseMapperDict;
+import com.genius.core.base.utils.StrUtil;
+import com.genius.model.base.entity.Pager;
+import com.genius.model.base.enums.EStatus;
+import com.genius.model.baseadmin.entity.Admin;
+import com.genius.server.base.helper.BaseHP;
+import com.genius.xo.baseadmin.service.AdminSO;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.life.entity.Subject;
+import com.supergenius.xo.life.entity.Video;
+import com.supergenius.xo.life.service.SubjectSO;
+import com.supergenius.xo.life.service.VideoSO;
+
+/** 
+ * 视频管理HP
+ * @author YangGuang
+ * @date 2018年5月11日16:39:46
+ */
+public class LifeVideoHP extends BaseHP {
+
+	private static VideoSO so;
+	private static AdminSO adminSO;
+	private static SubjectSO subjectSO;
+	
+	private static VideoSO getSO() {
+		if (so == null) {
+			so = spring.getBean(VideoSO.class);
+		}
+		return so;
+	}
+	
+	private static AdminSO getAdminSO() {
+		if (adminSO == null) {
+			adminSO = spring.getBean(AdminSO.class);
+		}
+		return adminSO;
+	}
+	
+	private static SubjectSO getSubjectSO() {
+		if (subjectSO == null) {
+			subjectSO = spring.getBean(SubjectSO.class);
+		}
+		return subjectSO;
+	}
+	
+	/**
+	 * 加载数据
+	 * @param model
+	 * @return
+	 * @author YangGuang
+	 * @createtime 2018年5月10日11:54:48
+	 * @return Map<String,Object>
+	 */
+	public static Map<String, Object> query(Map<String, Object> model) {
+		Pager pager = Pager.getNewInstance(model.get("page"), model.get("rows"));
+		Map<String, Object> map = getParamMap(pager, model);
+		Map<String, Object> result = new HashMap<String, Object>();
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.name))) {
+			map.put(BaseMapperDict.name + MapperDict.suffix_like_key, model.get(BaseMapperDict.name).toString().trim());
+		}
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.status))) {
+			map.put(MapperDict.status, model.get(ViewKeyDict.status).toString());
+		}
+		if (StrUtil.isNotEmpty(model.get(MapperDict.grade))) {
+			map.put(MapperDict.grade, model.get(MapperDict.grade).toString().trim());
+		}
+		if (StrUtil.isNotEmpty(model.get(MapperDict.cid))) {
+			map.put(MapperDict.cid, model.get(MapperDict.cid).toString().trim());
+		}
+		if (StrUtil.isNotEmpty(model.get(MapperDict.sid))) {
+			map.put(MapperDict.sid, model.get(MapperDict.sid).toString().trim());
+		}
+		List<EStatus> liststatus = new ArrayList<>();
+		liststatus.add(EStatus.enable);
+		liststatus.add(EStatus.disable);
+		map.put(MapperDict.statuslist, liststatus);
+		List<Video> list = getSO().getList(map);
+		for(Video video : list){
+			if (StrUtil.isNotEmpty(video.getAdminuid())) {
+				Admin admin = getAdminSO().get(video.getAdminuid());
+				if (admin != null) {
+					video.setAdminname(admin.getName());
+				}
+			}
+			/*Subject subject = getSubjectSO().get(video.getSid());
+			video.setSubjectname(subject.getName());*/
+		}
+		result.put(ViewKeyDict.total, getSO().getCount(map));
+		result.put(ViewKeyDict.rows, list);
+		return result;
+	}
+	
+}

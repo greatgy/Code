@@ -1,0 +1,202 @@
+package com.supergenius.web.finance.helper;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.genius.model.base.entity.Pager;
+import com.supergenius.global.conf.WebConf;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.server.finance.helper.BaseCollectDetailHP;
+import com.supergenius.server.user.helper.BaseUserHP;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.finance.entity.CollectDetail;
+import com.supergenius.xo.finance.entity.Topic;
+import com.supergenius.xo.finance.entity.UserStatistics;
+import com.supergenius.xo.finance.enums.ECollectType;
+import com.supergenius.xo.finance.enums.EFinance;
+import com.supergenius.xo.finance.service.CollectDetailSO;
+import com.supergenius.xo.finance.service.DebateSO;
+import com.supergenius.xo.finance.service.FinanceSO;
+import com.supergenius.xo.finance.service.TopicSO;
+import com.supergenius.xo.finance.service.UserStatisticsSO;
+import com.supergenius.xo.user.entity.User;
+
+/**
+ * 收藏明细hp
+ * @author YuYingJie
+ */
+public class CollectDetailHP extends BaseCollectDetailHP {
+
+	@Autowired
+	private static CollectDetailSO so;
+	
+	@Autowired
+	private static TopicSO topicSO;
+	
+	@Autowired
+	private static DebateSO debateSO;
+	
+	@Autowired
+	private static FinanceSO financeSO;
+	
+	@Autowired
+	private static UserStatisticsSO statisticsSO;
+	
+	private static CollectDetailSO getSO() {
+		if (so == null) {
+			so = (CollectDetailSO) spring.getBean(CollectDetailSO.class);
+		}
+		return so;
+	}
+	
+	private static TopicSO getTopicSO() {
+		if (topicSO == null) {
+			topicSO = (TopicSO) spring.getBean(TopicSO.class);
+		}
+		return topicSO;
+	}
+	
+	private static DebateSO getDebateSO() {
+		if (debateSO == null) {
+			debateSO = (DebateSO) spring.getBean(DebateSO.class);
+		}
+		return debateSO;
+	}
+	
+	private static FinanceSO getFinanceSO() {
+		if (financeSO == null) {
+			financeSO = (FinanceSO) spring.getBean(FinanceSO.class);
+		}
+		return financeSO;
+	}
+	
+	private static UserStatisticsSO getUserStatisticsSO() {
+		if (statisticsSO == null) {
+			statisticsSO = (UserStatisticsSO) spring.getBean(UserStatisticsSO.class);
+		}
+		return statisticsSO;
+	}
+
+	/**
+	 * 获取我的收藏
+	 * @param type
+	 * @return
+	 * @author YuYingJie
+	 */
+	public static List<Map<String, Object>> getCollects(User u, ECollectType type, int pagenum, int pagesize, Map<String, Object> model, HttpServletRequest request) {
+		if (pagenum <= 0) {
+			pagenum = 1;
+		}
+		if (pagesize <= 0) {
+			pagesize = WebConf.MyCollectPageSize;
+		} 
+		List<CollectDetail> collectDetails = getSO().getList(u.getUid(), type, Pager.getNewInstance(pagenum, pagesize));
+		List<Map<String, Object>> list = new ArrayList<>(); 
+		Map<String, Object> map;
+		if (type.equals(ECollectType.article)) {
+			for (CollectDetail collectDetail : collectDetails) {
+				map = new HashMap<>();
+				map.put(ViewKeyDict.bean, getFinanceSO().get(collectDetail.getRefuid()));
+				map.put(ViewKeyDict.collect, type.name());
+				map.put(ViewKeyDict.type, collectDetail.getFinance().name());
+				list.add(map);
+				model.put(ViewKeyDict.loadmoretype, type.name());
+			}
+		} else if (type.equals(ECollectType.topic)) {
+			for (CollectDetail collectDetail : collectDetails) {
+				Topic topic = getTopicSO().get(collectDetail.getRefuid());
+				if (topic != null) {
+					topic.setAuthorUser(BaseUserHP.get(topic.getUseruid()));
+				}
+				map = new HashMap<>();
+				map.put(ViewKeyDict.bean, topic);
+				map.put(ViewKeyDict.collect, type.name());
+				map.put(ViewKeyDict.type, collectDetail.getType().name());
+				list.add(map);
+				model.put(ViewKeyDict.loadmoretype, type.name());
+			}
+		} else {
+			for (CollectDetail collectDetail : collectDetails) {
+				map = new HashMap<>();
+				map.put(ViewKeyDict.bean, getDebateSO().get(collectDetail.getRefuid()));
+				map.put(ViewKeyDict.collect, type.name());
+				map.put(ViewKeyDict.type, collectDetail.getType().name());
+				map.put(ViewKeyDict.voted, DebateHP.isVoted(u, collectDetail.getRefuid(), request));
+				list.add(map);
+				model.put(ViewKeyDict.loadmoretype, type.name());
+			}
+		}
+		return list;
+	}
+
+	/**
+	 * 添加收藏
+	 * @param user
+	 * @param type
+	 * @param financeType
+	 * @param id
+	 * @author YuYingJie
+	 */
+	public static boolean add(User user, ECollectType type, EFinance financeType, String refuid) {
+		if (getSO().add(user.getUid(), type, financeType, refuid)) {
+			UserStatistics statistics = getUserStatisticsSO().obtainOne(user.getUid());
+			String field = "";
+			int number = 0;
+			if (statistics != null) {
+				if (type.equals(ECollectType.article)) {
+					field = MapperDict.collectarticlecount;
+					number = statistics.getCollectarticlecount() + 1;
+				} else if (type.equals(ECollectType.topic)) {
+					field = MapperDict.collecttopiccount;
+					number = statistics.getCollecttopiccount() + 1;
+				} else {
+					field = MapperDict.collectdebatecount;
+					number = statistics.getCollectdebatecount() + 1;
+				}
+				return getUserStatisticsSO().update(statistics.getUid(), number, field);
+			} else {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 取消收藏
+	 * @param uid
+	 * @param collectType
+	 * @param id
+	 * @author YuYingJie
+	 */
+	public static boolean cancleCollect(User user, ECollectType type, String refuid) {
+		if (getSO().cancleCollect(user.getUid(), type, refuid)) {
+			UserStatistics statistics = getUserStatisticsSO().obtainOne(user.getUid());
+			String field = "";
+			int number = 0;
+			if (statistics != null) {
+				if (type.equals(ECollectType.article)) {
+					field = MapperDict.collectarticlecount;
+					number = statistics.getCollectarticlecount() - 1;
+				} else if (type.equals(ECollectType.topic)) {
+					field = MapperDict.collecttopiccount;
+					number = statistics.getCollecttopiccount() - 1;
+				} else {
+					field = MapperDict.collectdebatecount;
+					number = statistics.getCollectdebatecount() - 1;
+				}
+				if (number < 0) {
+					number = 0;
+				}
+				return getUserStatisticsSO().update(statistics.getUid(), number, field);
+			}
+		}
+		return false;
+	}
+	
+}

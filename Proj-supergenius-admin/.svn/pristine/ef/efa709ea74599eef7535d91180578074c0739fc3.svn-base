@@ -1,0 +1,22 @@
+[#ftl]
+[#list bean as item]
+	<li class="col-6 col-xs-6">
+		<a href="${baseTpiPath}/project/${item.uid}">
+			<img src="${webimg}${item.img}" alt="${item.name}" class="img-responsive" />
+		</a>
+		<div class="caption">
+			<h4><a href="${baseTpiPath}/project/${item.uid}">
+				[#if item.name?length gt 6]
+					${item.name?substring(0,5)}
+				[#else]
+					${item.name}
+				[/#if]
+				</a>
+			</h4>
+			<div class="merge_type">${item.channelName}-${item.typeName!}</div>
+		</div>
+	</li>
+	[#if item_index == 1 ]
+		<div class="clearfix"></div>
+	[/#if]
+[/#list]

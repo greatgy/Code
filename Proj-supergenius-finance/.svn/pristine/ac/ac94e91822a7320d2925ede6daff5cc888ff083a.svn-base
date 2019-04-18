@@ -1,0 +1,196 @@
+[#ftl]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>${title}</title>
+	<link rel="stylesheet" href="${basecss}/css/default/pages/msg.css"/>
+</head>
+<body>
+	<div class="wraper centerbox">
+		<div class="main">
+			<div class="newsContainer searchResult">
+				<div class="newsLeft">
+					<h3>搜索页面</h3>
+					<ul class="newsnav">
+						<li>
+							<a href="${base}/searchr/art">文章<span>24</span></a>
+						</li>
+						<li>
+							<a href="${base}/searchr/topic">话题<span>26</span></a>
+						</li>
+						<li class="curSelect">
+							<a href="${base}/searchr/debate">论战<span>12</span></a>
+						</li>
+						<li>
+							<a href="${base}/searchr/user">用户<span>12</span></a>
+						</li>
+					</ul>
+				</div>
+				<div class="newsRight searchResultright">
+					<h4>与<span class="keyword">“搜索词”</span>相关的论战&nbsp;<b class="keyword">12</b>&nbsp;个</h4>
+					<ul class="mctTopiclist mctDebatelist">
+						<li>
+							<div class="mctDebate">
+								<a href="#" class="mctTopicimg"><img src="${baseimg}/imgs/default/topiclist04.png" /></a>
+								<div class="mctDebatetitbg"></div>
+								<a href="#" class="mctDebatetit">美国经济GDP在今后两年能保持3%以上的高速增长吗？</a>
+							</div>
+							<div class="dbtSupport">
+								<div class="dbtTitle">
+									<span>美国经济会<b class="keyword">高速增长</b>美国经济</span>
+									<img src="${baseimg}/imgs/default/vs.png" />
+									<span>美国经济不<b class="keyword">会高速增长</b>美国经济不会</span>
+								</div>
+								<div class="dbtvote">
+									<a href="javascript:;" class="redside redvote">
+										<img src="${baseimg}/imgs/default/redzan.png" />
+									</a>
+									<div class="voteprogress">
+										<div class="rprogress">
+											<div class="redbar"></div>
+										</div>
+										<div class="bprogress">
+											<div class="bluebar"></div>
+										</div>
+										<div class="numberbox">
+											<span class="rednum">370</span>
+											<span class="bluenum">630</span>
+										</div>
+									</div>
+									<a href="javascript:;" class="redside bluevote">
+										<img src="${baseimg}/imgs/default/bluezan.png" />
+									</a>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="mctDebate">
+								<a href="#" class="mctTopicimg"><img src="${baseimg}/imgs/default/debateimg.png" /></a>
+								<div class="mctDebatetitbg"></div>
+								<a href="#" class="mctDebatetit">美国经济GDP在今后两年能保持3%以上的高速增长吗？</a>
+							</div>
+							<div class="dbtSupport">
+								<div class="dbtTitle">
+									<span><b class="keyword">美国经济</b>会高速增长美国经济</span>
+									<img src="${baseimg}/imgs/default/vs.png" />
+									<span><b class="keyword">美国经济不会高速增长</b>美国经济不会</span>
+								</div>
+								<div class="dbtvote">
+									<a href="javascript:;" class="redside redvote">
+										<img src="${baseimg}/imgs/default/redzan.png" />
+									</a>
+									<div class="voteprogress">
+										<div class="rprogress">
+											<div class="redbar"></div>
+										</div>
+										<div class="bprogress">
+											<div class="bluebar"></div>
+										</div>
+										<div class="numberbox">
+											<span class="rednum">370</span>
+											<span class="bluenum">630</span>
+										</div>
+									</div>
+									<a href="javascript:;" class="redside bluevote">
+										<img src="${baseimg}/imgs/default/bluezan.png" />
+									</a>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="mctDebate">
+								<a href="#" class="mctTopicimg"><img src="${baseimg}/imgs/default/topiclist03.png" /></a>
+								<div class="mctDebatetitbg"></div>
+								<a href="#" class="mctDebatetit">美国经济GDP在今后两年能保持3%以上的高速增长吗？</a>
+							</div>
+							<div class="dbtSupport">
+								<div class="dbtTitle">
+									<span>美国经济会高速增长</span>
+									<img src="${baseimg}/imgs/default/vs.png" />
+									<span>美国经济不会高速增长</span>
+								</div>
+								<div class="dbtvote">
+									<a href="javascript:;" class="redside redvote">
+										<img src="${baseimg}/imgs/default/redzan.png" />
+									</a>
+									<div class="voteprogress">
+										<div class="rprogress">
+											<div class="redbar"></div>
+										</div>
+										<div class="bprogress">
+											<div class="bluebar"></div>
+										</div>
+										<div class="numberbox">
+											<span class="rednum">370</span>
+											<span class="bluenum">630</span>
+										</div>
+									</div>
+									<a href="javascript:;" class="redside bluevote">
+										<img src="${baseimg}/imgs/default/bluezan.png" />
+									</a>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="mctDebate">
+								<a href="#" class="mctTopicimg"><img src="${baseimg}/imgs/default/topiclist01.png" /></a>
+								<div class="mctDebatetitbg"></div>
+								<a href="#" class="mctDebatetit">美国经济GDP在今后两年能保持3%以上的高速增长吗？</a>
+							</div>
+							<div class="dbtSupport">
+								<div class="dbtTitle">
+									<span>美国经济会高速增长美国经济</span>
+									<img src="${baseimg}/imgs/default/vs.png" />
+									<span>美国经济不会高速增长美国经济不会</span>
+								</div>
+								<div class="dbtvote">
+									<a href="javascript:;" class="redside redvote">
+										<img src="${baseimg}/imgs/default/redzan.png" />
+									</a>
+									<div class="voteprogress">
+										<div class="rprogress">
+											<div class="redbar"></div>
+										</div>
+										<div class="bprogress">
+											<div class="bluebar"></div>
+										</div>
+										<div class="numberbox">
+											<span class="rednum">370</span>
+											<span class="bluenum">630</span>
+										</div>
+									</div>
+									<a href="javascript:;" class="redside bluevote">
+										<img src="${baseimg}/imgs/default/bluezan.png" />
+									</a>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		$(function(){
+			/*论战投票*/
+			$(".redvote").click(function(){
+				$(this).find("img").attr("src","${baseimg}/imgs/default/redzaned.png");
+				$(this).parent().find(".bluevote img").attr("src","${baseimg}/imgs/default/grayzan.png");
+				var redNum = $(this).next().find(".rednum",".rprogress");
+				var nowNum = parseInt(redNum.html()) + 1;
+				redNum.html(nowNum);
+			});
+			$(".bluevote").click(function(){
+				$(this).find("img").attr("src","${baseimg}/imgs/default/bluezaned.png");
+				$(this).parent().find(".redvote img").attr("src","${baseimg}/imgs/default/grayzan.png");
+				var blueNum = $(this).prev().find(".bluenum",".bprogress");
+				var nowNum = parseInt(blueNum.html()) + 1;
+				blueNum.html(nowNum);
+			});
+		});
+	</script>
+</body>
+</html>
+
+

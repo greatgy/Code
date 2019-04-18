@@ -1,0 +1,157 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>热门话题</title>
+<link rel="stylesheet" href="${basecss}/css/default/pages/mytopic.css"/>
+<script type="text/javascript">
+var TOPIC_PAGE = [
+		{
+			tab:"all",
+			pagenum:1,
+			url:"${base}/ajax/mytopic/all/${user.oid!0}",
+			isfirst:false
+		},
+		{
+			tab:"join",
+			pagenum:1,
+			url:"${base}/ajax/mytopic/join/${user.oid!0}",
+			isfirst:true
+		}
+	];
+$(function($) {
+	$(".tab_bottom").click(loadmore);
+});
+</script>
+<script type="text/javascript">
+// 加载更多事件处理
+function loadmore() {
+	var tab = $(this).data("tab");
+	var pagenum = -1;
+	var url = "";
+	for(var i=0;i<TOPIC_PAGE.length;i++){
+		if(TOPIC_PAGE[i].tab == tab){
+			TOPIC_PAGE[i].pagenum += 1;
+			pagenum = TOPIC_PAGE[i].pagenum;
+			url = TOPIC_PAGE[i].url;
+			break;
+		}
+	}
+	loadData(pagenum, url, tab, false);
+}
+// 从后台加载数据
+function loadData(pagenum, url, tab, isfirst){
+		$.get(url, {pagenum:pagenum}, function(data){
+		if(data.trim() == ""){
+			if(isfirst){
+				$("#topic_"+tab+" .notopic").removeClass("hd");
+				$(".more_"+tab).addClass("hd");
+			}else{
+				alert("没有更多话题");
+			}
+			return;
+		}
+		$("#topic_"+tab + " .tab_topicmore").append(data);
+	});
+}
+</script>
+</head>
+<body>
+<div class="topic_07_box">
+	<div class="tp_07_left">
+		<div class="crumbs" style="margin-left:0;margin-top:0;">
+    		<img src="${baseimg}/imgs/default/home.png" />
+    		<a href="${base}">首页</a><span class="crumbs_arrow"> ></span>
+    		<a href="${base}/topic">话题</a><span class="crumbs_arrow"> ></span>
+    		<a href="${base}/mytopic">我的话题</a>
+		</div><!--面包屑-->
+		<div class="tp_07_one">
+			<div class="tp_07_imgs">
+				<a href="#">
+					<img [#if "${user.avatar}" == ""]src="${baseimg}/imgs/web/noavatar132x130.png"[#else]src="${userimg}${(user.avatar)}"[/#if]/>
+				</a>
+			</div>
+			<div class="one_r">
+			<h1><a href="#">${user.showname}</a></h1>
+			<p>${user.summary}</p>
+			</div>
+			<div class="onr_rr">
+				<p><a href="#">${count}</a><br><span><a href="">TA发起</a></span></p>
+				<p class="rrtb"></p>
+				<p><a href="#">${count2}</a><br><span><a href="">TA参与</a></span></p>
+			</div>
+		</div>
+		<!--tab-->
+		<div class="comment">
+			<p class="com_title"><span id="one1" class="current" onclick="setTab('one',1,2)">TA发起</span><span id="one2" data-topic="first" onclick="setTab('one',2,2)">TA参与</span></p>
+			<div class="com_all" id="list_one_1">
+				<div id="topic_all" class="content">
+					[#if list?size == 0]
+						<div><img src="${baseimg}/imgs/default/prompt.png" width="481px" heigth="211px"/></div>
+					[#else]
+						<div class="tab_topicmore">
+							[#list list as item]
+								<div class="tab_one">
+									<a href="${base}/topic/${item.oid}" target="_blank"><img src="${webimg}${item.imglittle}" style="width:212px;height:140px;"></a>
+									<div class="tab_one_r">
+										<h3>${item.title}</h3>
+										<p>发布于 ${item.publishtime.toString("YYYY-MM-dd")}<br>
+											[@f.TrimSubstring content="${item.content!''}" mylength=70 /]
+											[#if item.isTopicStateSucceed]<a href="${base}/topic/${item.oid}" target="_blank">[详情]</a>[/#if]
+				                        </p>
+									</div>
+									<div class="tab_one_bt">
+										<img src="${baseimg}/imgs/default/heart_01.png">${item.prizecount!0}&nbsp;&nbsp;|&nbsp;&nbsp;评论  ${item.commentcount!0}</a>
+									</div>
+								</div>
+							[/#list]
+						</div>
+					<div class="tab_bottom more_all" data-tab="all">加载更多</div>
+				[/#if]
+			</div>
+		</div>
+			
+			<div class="com_all" id="list_one_2" style="display:none">
+				<div id="topic_join" class="hd content">
+					<div class="notopic hd">
+						<img src="${baseimg}/imgs/default/prompt.png" width="481px" heigth="211px"/>
+					</div>			
+					<div class="tab_topicmore">
+					</div>
+					<div class="clear"></div>
+					<div class="tab_bottom more_join"  data-tab="join">加载更多</div>
+				</div>
+			</div>
+		</div>
+		<!--tab end-->
+	</div>
+	<!--右侧 开始-->
+	<div class="tp_07_right">
+		<a class="tp_07_onel" href="${base}/topic/apply">发起话题</a>
+		<a class="tp_07_oner" href="${base}/topic/random">随机穿越</a>
+		<div class="clear"></div>
+		[@f.TopicRank topicrank /]
+	</div>
+</div>
+<div class="clear"></div>
+<script>
+function setTab(name,cursel,n){	
+	for(i=1;i<=n;i++){	  
+		var menu=document.getElementById(name+i);
+		var con=document.getElementById("list_"+name+"_"+i);
+		menu.className=i==cursel?"current":"";
+		con.style.display=i==cursel?"block":"none";
+	}
+	var topic = $("#" + name + cursel).data("topic");
+	if(cursel == 2){
+		if(topic == "first"){
+			$("#topic_join").removeClass("hd");
+			loadData(1, "${base}/ajax/mytopic/join/${user.oid!0}", "join", true);
+		}
+		$("#" + name + cursel).data("topic","");
+	}
+}
+</script>
+</body>
+</html>

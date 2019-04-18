@@ -1,0 +1,44 @@
+package com.supergenius.web.admin.finance.helper;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.genius.core.base.utils.StrUtil;
+import com.genius.model.base.entity.Pager;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.finance.service.TopicGuestSO;
+
+/**
+ * 话题嘉宾HP（管理后台用到）
+ * @author liushaomin
+ */
+public class TopicGuestHP extends com.supergenius.server.finance.helper.BaseTopicGuestHP{
+
+	
+	private static TopicGuestSO so;
+
+	private static TopicGuestSO getSO() {
+		if (so == null) {
+			so = (TopicGuestSO) spring.getBean(TopicGuestSO.class);
+		}
+		return so;
+	}
+	
+	/**
+	 * 话题嘉宾显示
+	 * @return
+	 * @author liushaomin
+	 */
+	public static Map<String, Object> query(Map<?, ?> model) {
+		Pager pager = Pager.getNewInstance(model.get("page"), model.get("rows"));
+		Map<String, Object> map = getParamMap(pager, model, MapperDict.title);
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.topicuid))) {
+			map.put(MapperDict.topicuid, model.get(ViewKeyDict.topicuid).toString().trim());
+		}
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(ViewKeyDict.total, getSO().getCount(map));
+		result.put(ViewKeyDict.rows, getSO().getList(map));
+		return result;
+	}
+}

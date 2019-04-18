@@ -1,0 +1,750 @@
+package com.supergenius.web.finance.helper;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.genius.core.base.utils.FileUtil;
+import com.genius.core.base.utils.JsonUtil;
+import com.genius.core.cache.rule.Rule;
+import com.genius.core.cache.utils.MemcacheUtil;
+import com.genius.core.cache.utils.RedisUtil;
+import com.genius.core.serial.utils.SerialUtil;
+import com.genius.model.base.entity.Pager;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
+import com.supergenius.core.rule.CommentCountArticleRule;
+import com.supergenius.core.rule.CommentCountDebateRule;
+import com.supergenius.core.rule.CommentCountTopicRule;
+import com.supergenius.core.rule.CountDebateVoteRule;
+import com.supergenius.core.rule.PrizeCountArticleRule;
+import com.supergenius.core.rule.PrizeCountCommentRule;
+import com.supergenius.core.rule.PrizeCountDebateRule;
+import com.supergenius.core.rule.PrizeCountTopicRule;
+import com.supergenius.core.rule.TopicJoinUserRule;
+import com.supergenius.core.rule.TopicLatestRule;
+import com.supergenius.core.rule.TopicMaxCommentRule;
+import com.supergenius.core.rule.TopicRankRule;
+import com.supergenius.core.rule.TopicRecommendRule;
+import com.supergenius.core.rule.UserTopicCommentRule;
+import com.supergenius.global.conf.SysConf;
+import com.supergenius.global.conf.WebConf;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.server.finance.helper.BaseCommentsHP;
+import com.supergenius.server.user.helper.BaseUserHP;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.finance.entity.Debate;
+import com.supergenius.xo.finance.entity.Finance;
+import com.supergenius.xo.finance.entity.Message;
+import com.supergenius.xo.finance.entity.Topic;
+import com.supergenius.xo.finance.enums.EFinance;
+import com.supergenius.xo.finance.enums.EFinanceMsg;
+import com.supergenius.xo.finance.service.DebateSO;
+import com.supergenius.xo.finance.service.FinanceSO;
+import com.supergenius.xo.finance.service.MessageSO;
+import com.supergenius.xo.finance.service.TopicSO;
+import com.supergenius.xo.user.entity.Comments;
+import com.supergenius.xo.user.enums.EComment;
+import com.supergenius.xo.user.service.CommentsSO;
+import com.supergenius.xo.user.service.UserSO;
+
+/**
+ * 评论（赞）HP，前台使用
+ * @author liushaomin
+ */
+public class CommentsHP extends BaseCommentsHP {
+
+	private static Logger log = LoggerFactory.getLogger(CommentsHP.class);
+
+	private static CommentsSO so;
+
+	private static FinanceSO financeSO;
+
+	private static DebateSO debateSO;
+
+	private static TopicSO topicSO;
+
+	private static MessageSO messageSO;
+
+	private static UserSO userSO;
+
+	public static FinanceSO getFinanceSO() {
+		if (financeSO == null) {
+			financeSO = (FinanceSO) spring.getBean(FinanceSO.class);
+		}
+		return financeSO;
+	}
+
+	private static DebateSO getDebateSO() {
+		if (debateSO == null) {
+			debateSO = (DebateSO) spring.getBean(DebateSO.class);
+		}
+		return debateSO;
+	}
+
+	private static TopicSO getTopicSO() {
+		if (topicSO == null) {
+			topicSO = (TopicSO) spring.getBean(TopicSO.class);
+		}
+		return topicSO;
+	}
+
+	private static CommentsSO getSO() {
+		if (so == null) {
+			so = (CommentsSO) spring.getBean(CommentsSO.class);
+		}
+		return so;
+	}
+
+	private static MessageSO getMessageSO() {
+		if (messageSO == null) {
+			messageSO = (MessageSO) spring.getBean(MessageSO.class);
+		}
+		return messageSO;
+	}
+
+	private static UserSO getUserSO() {
+		if (userSO == null) {
+			userSO = (UserSO) spring.getBean(UserSO.class);
+		}
+		return userSO;
+	}
+
+	/**
+	 * 根据频道和fromuid获取分页数据
+	 * @param channel 频道
+	 * @param fromuid 来源的uid（文章、话题、论战）
+	 * @param pagesize 每页的大小，如果小于等于0，则为默认的大小
+	 * @param pagenum 当前页数
+	 * @return List<Comments> 评论的列表
+	 * @author ShangJianguo
+	 */
+	public static List<Comments> getCommentList(EChannel channel, String fromuid, int pagesize, int pagenum) {
+		LinkedHashMap<String, Comments> seriallist = getMapFromSerialOrDB(channel.name(), fromuid);
+		seriallist = refreshCommentsUser(seriallist);
+		if (seriallist == null) {
+			return new ArrayList<>();
+		}
+		List<Comments> list = new ArrayList<Comments>();
+		pagesize = pagesize <= 0 ? SysConf.DebateCommentPageSize : pagesize;
+		List<Comments> values = new ArrayList<>();
+		for (Comments item : seriallist.values()) {
+			values.add(item);
+		}
+		int startindex = (values.size() - pagesize * pagenum);
+		if (startindex + pagesize < 0) {
+			return list;
+		}
+		startindex = startindex < 0 ? 0 : startindex;
+		int endindex = values.size() - (pagesize * (pagenum - 1));
+		endindex = endindex > (values.size()) ? values.size() : endindex;
+		for (; startindex < endindex; startindex++) {
+			list.add(values.get(startindex));
+		}
+		return list;
+	}
+
+	/**
+	 * 获取评论时刷新评论中的用户信息
+	 * @param result
+	 * @return
+	 */
+	private static LinkedHashMap<String, Comments> refreshCommentsUser(LinkedHashMap<String, Comments> result) {
+		if (result != null && result.size() != 0) {
+			for (Comments comments : result.values()) {
+				setCommentsUser(comments);
+				if (comments.getReplys().size() > 0) {
+					for (Comments comments2 : comments.getReplys()) {
+						setCommentsUser(comments2);
+					}
+				}
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * 设置评论中的用户信息
+	 * @param comments
+	 * @return
+	 */
+	private static Comments setCommentsUser(Comments comments) {
+		if (comments != null) {
+			if (StringUtils.isNotEmpty(comments.getFromuseruid()) && !SysConf.DefaultAnonymousUid.equals(comments.getFromuseruid())) {
+				comments.setFromUser(BaseUserHP.get(comments.getFromuseruid()));
+			}
+			if (StringUtils.isNotEmpty(comments.getTouseruid()) && !SysConf.DefaultAnonymousUid.equals(comments.getTouseruid())) {
+				comments.setToUser(BaseUserHP.get(comments.getTouseruid()));
+			}
+		}
+		return comments;
+	}
+	
+	
+	/**
+	 * 插入数据（赞、评论） 修改相应的redis和序列化（仅评论用到序列化） 插入数据赞 redis中对应的赞数+1
+	 * @param comment
+	 * @return
+	 */
+	public static boolean add(Comments comments, HttpServletRequest request) {
+		String directory = comments.getChannel().name();
+		if (getSO().add(comments)) {
+			if (comments.getType() == EComment.comment) {// 评论需要序列化
+				LinkedHashMap<String, Comments> seriallist = getMapFromSerialOrDB(directory, comments.getFromuid());
+				if (seriallist == null) {
+					seriallist = new LinkedHashMap<>();
+				}
+//				if (StringUtils.isNotEmpty(comments.getFromuseruid()) && !SysConf.DefaultAnonymousUid.equals(comments.getFromuseruid())) {
+//					comments.setFromUser(BaseUserHP.get(comments.getFromuseruid()));
+//				}
+//				if (StringUtils.isNotEmpty(comments.getTouseruid()) && !SysConf.DefaultAnonymousUid.equals(comments.getTouseruid())) {
+//					comments.setToUser(BaseUserHP.get(comments.getTouseruid()));
+//				}
+				if (StringUtils.isEmpty((comments.getTouid()))) {
+					seriallist.put(comments.getUid(), comments);
+				} else {
+					Comments comments2 = seriallist.get(comments.getTouid());
+					if (comments2 != null) {
+						comments2.getReplys().add(comments);
+					} else {
+						String topuid = (String) JsonUtil.fromJson(comments.getData(), Map.class).get(ViewKeyDict.topuid);
+						comments2 = seriallist.get(topuid);
+						comments2.getReplys().add(comments);
+					}
+				}
+				if (!serialMap(directory, seriallist)) {// 序列化,若失败
+					deleteSerialFile(directory, comments.getFromuid());
+				}
+				if (!SysConf.DefaultAnonymousUid.equals(comments.getFromuseruid()) && comments.getChannel().equals(EChannel.topic)) {
+					Rule topicJoinUserRule = new TopicJoinUserRule(comments.getFromuid());
+					MemcacheUtil.remove(topicJoinUserRule);// 清空话题最新参与用户缓存
+					Rule topicCommentRule = new UserTopicCommentRule(comments.getFromuseruid());
+					MemcacheUtil.remove(topicCommentRule);// 清空用户参与话题的缓存
+					MemcacheUtil.remove(new TopicMaxCommentRule());
+				}
+			} else if (comments.getType() == EComment.praise) {// 赞的序列化
+				if (comments.getFromuseroid() != SysConf.DefaultAnonymousOid) {
+					List<String> praiseuids = deserializeFromJson(SysConf.SerialPraisePath, comments.getFromuseroid());
+					if (praiseuids == null) {
+						praiseuids = new ArrayList<>();
+					}
+					praiseuids.add(comments.getFromuid());
+					SerialUtil.serializeToJson(praiseuids, SysConf.SerialBasePath + SysConf.SerialPraisePath + SysConf.Separator_Directory + comments.getFromuseroid());
+				}
+			}
+			return incrCommentCount(comments, request);
+		}
+		return false;
+	}
+
+	/**
+	 * 对评论、赞、分享计数加1
+	 * @param comment
+	 * @return
+	 */
+	public static boolean incrCommentCount(Comments comments, HttpServletRequest request) {
+		Rule rule = null;
+		if (comments.getType() == EComment.comment) {
+			if (comments.getChannel() == EChannel.topic) {
+				rule = new CommentCountTopicRule(comments.getFromuid());
+				return RedisUtil.incr(rule) >= 0;
+			} else if (comments.getChannel() == EChannel.finance) {
+				rule = new CommentCountArticleRule(comments.getFromuid());
+				return RedisUtil.incr(rule) >= 0;
+			} else if (comments.getChannel() == EChannel.debate) {
+				rule = new CommentCountDebateRule(comments.getFromuid());
+				boolean isreply = Boolean.valueOf(request.getParameter(ViewKeyDict.isreply));
+				if (!isreply) {
+					RedisUtil.incr(new CountDebateVoteRule(comments.getFromuid() + comments.getIsred()));
+				}
+				return RedisUtil.incr(rule) >= 0;
+			}
+		} else if (comments.getType() == EComment.praise) {
+			if (comments.getChannel() == EChannel.topic) {
+				rule = new PrizeCountTopicRule(comments.getFromuid());
+				return RedisUtil.incr(rule) >= 0;
+			} else if (comments.getChannel() == EChannel.finance) {
+				rule = new PrizeCountArticleRule(comments.getFromuid());
+				return RedisUtil.incr(rule) >= 0;
+			} else if (comments.getChannel() == EChannel.comments) {
+				rule = new PrizeCountCommentRule(comments.getFromuid());
+				return RedisUtil.incr(rule) >= 0;
+			} else if (comments.getChannel() == EChannel.debate) {
+				rule = new PrizeCountDebateRule(comments.getFromuid());
+				return RedisUtil.incr(rule) >= 0;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 取消赞 对redis中对应的赞数-1
+	 * @param fromuseroid
+	 * @param fromuid
+	 * @param channel
+	 * @return
+	 */
+	public static boolean cancelPrize(int fromuseroid, String fromuid, String channel) {
+		if (getSO().deleteByPraise(fromuseroid, fromuid, EChannel.get(channel))) {
+			if (fromuseroid != SysConf.DefaultAnonymousOid) {// 修改序列化文件
+				List<String> praiseuids = deserializeFromJson(SysConf.SerialPraisePath, fromuseroid);
+				if (praiseuids != null) {
+					for (int i = 0; i < praiseuids.size(); i++) {
+						if (praiseuids.get(i).equals(fromuid)) {
+							praiseuids.remove(i);
+						}
+					}
+				}
+				SerialUtil.serializeToJson(praiseuids, SysConf.SerialBasePath + SysConf.SerialPraisePath + SysConf.Separator_Directory + fromuseroid);
+			}
+			Rule rule = null;
+			if (EChannel.get(channel) == EChannel.topic) {
+				rule = new PrizeCountTopicRule(fromuid);
+				return RedisUtil.decr(rule) >= 0;
+			} else if (EChannel.get(channel) == EChannel.finance) {
+				rule = new PrizeCountArticleRule(fromuid);
+				return RedisUtil.decr(rule) >= 0;
+			} else if (EChannel.get(channel) == EChannel.comments) {
+				rule = new PrizeCountCommentRule(fromuid);
+				return RedisUtil.decr(rule) >= 0;
+			} else if (EChannel.get(channel) == EChannel.debate) {
+				rule = new PrizeCountDebateRule(fromuid);
+				return RedisUtil.decr(rule) >= 0;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 反序列化list 赞
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<String> deserializeFromJson(String serialpath, int useroid) {
+		String fullpath = SysConf.SerialBasePath + serialpath + SysConf.Separator_Directory + useroid;
+		List<String> praiseuids = (List<String>) SerialUtil.deserializeFromJson(fullpath, List.class);
+		return praiseuids;
+	}
+
+	/**
+	 * 删除序列化文件
+	 * @param directory
+	 * @param fromuid
+	 */
+	public static void deleteSerialFile(String directory, String fromuid) {
+		FileUtil.delete(getSerialPath(directory, fromuid));
+	}
+
+	/**
+	 * 序列化对象
+	 * @param directory
+	 * @param map
+	 * @return
+	 * @author ShangJianguo
+	 */
+	private static boolean serialMap(String directory, LinkedHashMap<String, Comments> map) {
+		Comments first = Iterables.getFirst(map.values(), null);
+		if (first != null) {
+			String uid = first.getFromuid();
+			return SerialUtil.serialize(map, getSerialPath(directory, uid));
+		}
+		return false;
+	}
+
+	/**
+	 * 评论序列化
+	 * @param fromuseroid
+	 * @param fromuid
+	 * @param channel
+	 */
+	private static LinkedHashMap<String, Comments> getMapFromSerialOrDB(String directory, String fromuid) {
+		LinkedHashMap<String, Comments> result = getSerialMap(directory, fromuid);
+		if (result == null || result.size() == 0) {
+			List<Comments> list = getSO().getList(fromuid, EComment.comment, null, MapperDict.asc);
+			if (list != null && list.size() > 0) {
+				result = organizeList(list);
+				serialMap(directory, result);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * 组织数据
+	 * @param list
+	 * @return
+	 */
+	private static LinkedHashMap<String, Comments> organizeList(List<Comments> list) {
+		LinkedHashMap<String, Comments> map = new LinkedHashMap<>();
+		for (Comments item : list) {
+			if (StringUtils.isEmpty(item.getTouid())) {
+				map.put(item.getUid(), item);
+			} else {
+				Comments comments2 = map.get(item.getTouid());
+				if (comments2 != null) {
+					comments2.getReplys().add(0, item);
+				} else {
+					if (item.getData() == null) {
+						getSO().delete(item.getUid());
+						break;
+					}
+					String topuid = (String) JsonUtil.fromJson(item.getData(), Map.class).get(ViewKeyDict.topuid);
+					comments2 = map.get(topuid);
+					if (comments2 != null) {
+						comments2.getReplys().add(item);
+					}
+				}
+			}
+		}
+		list = ImmutableList.copyOf(map.values());
+		return map;
+	}
+
+	/**
+	 * 反序列化
+	 * @param directory
+	 * @param uid
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private static LinkedHashMap<String, Comments> getSerialMap(String directory, String uid) {
+		return (LinkedHashMap<String, Comments>) SerialUtil.deserialize(getSerialPath(directory, uid));
+	}
+
+	/**
+	 * topic 获取与我相关的评论（仅用于话题中 与我相关的评论）
+	 * @param pager
+	 * @param useruid
+	 * @param topicuid
+	 * @return
+	 */
+	public static List<Comments> getTopicComments(Pager pager, String useruid, String topicuid) {
+		List<Comments> listcomments = getSO().getList(useruid, topicuid, pager);
+		return listcomments;
+	}
+
+	/**
+	 * 获取精彩发言（话题 or 文章、论战文章） 赞数最多的N条评论
+	 * @param fromuid
+	 * @param channel
+	 * @param type
+	 * @param ranknum
+	 * @return
+	 */
+	public static List<Comments> getCommentsFromPraise(String fromuid, EChannel channel, EComment type, int ranknum) {
+		List<Map<?, ?>> listpraises = getSO().getCommentsFromPraise(fromuid, channel, type, ranknum);
+		List<Comments> listcomments = new ArrayList<>();
+		for (Map<?, ?> map : listpraises) {
+			listcomments.add(so.get(map.get(ViewKeyDict.fromuid).toString()));
+		}
+		if (listcomments != null && listcomments.size() > 0) {
+			for (Comments item : listcomments) {
+				if (StringUtils.isNotEmpty(item.getFromuseruid()) && !SysConf.DefaultAnonymousUid.equals(item.getFromuseruid())) {
+					item.setFromUser(BaseUserHP.get(item.getFromuseruid()));
+				}
+				if (StringUtils.isNotEmpty(item.getTouseruid()) && !SysConf.DefaultAnonymousUid.equals(item.getTouseruid())) {
+					item.setToUser(BaseUserHP.get(item.getTouseruid()));
+				}
+			}
+		}
+		return listcomments;
+	}
+
+	/**
+	 * 获取序列化文件的路径
+	 * @param directory
+	 * @param uid 记录的uid
+	 * @return
+	 * @author ShangJianguo
+	 */
+	private static String getSerialPath(String directory, String uid) {
+		if (StringUtils.isEmpty(directory)) {
+			directory = "others";
+		}
+		return SysConf.SerialBasePath + SysConf.SerialCommentPath + SysConf.Separator_Directory + directory + SysConf.Separator_Directory + uid + SysConf.dot + SysConf.SerialCommentsExt;
+	}
+
+	/**
+	 * 获取排行榜的uid
+	 * @param channel
+	 * @param type 赞或评论
+	 * @param prisehour 多少小时内的点赞数
+	 * @param listnum
+	 * @return
+	 * @author ShangJianguo
+	 */
+	public static List<String> getRankUid(EChannel channel, EComment type, int prisehour, int listnum, List<String> nofromuids) {
+		List<Map<?, ?>> uids = getSO().getPraisecurr(channel, type, prisehour, listnum, nofromuids);
+		List<String> fromuid = new ArrayList<>();
+		for (Map<?, ?> map : uids) {
+			fromuid.add(map.get(ViewKeyDict.fromuid).toString());
+		}
+		return fromuid;
+	}
+
+	/**
+	 * 获取不同频道的最新条评论
+	 * 
+	 * @param financeType 文章类别
+	 * @param channel 频道
+	 * @param commentType 评论类别
+	 * @param number
+	 * @return
+	 * @author YuYingJie
+	 */
+	public static List<Map<String, Object>> getNewestComments(EFinance financeType, EChannel channel, EComment commentType, int number) {
+		int config = 0;
+		if (financeType != null) {
+			config = Integer.parseInt(financeType.toString());
+		}
+		if (number <= 0) {
+			number = WebConf.NewestCommentsCount;
+		}
+		Pager pager = Pager.getNewInstance(1, number);
+		List<Comments> listcomments = getSO().getNewestComments(config, channel, commentType, pager);
+		return commentAnalytical(listcomments);
+	}
+
+	/**
+	 * 获取最新评论(所有评论)
+	 * 
+	 * @param type
+	 * @param pagenum
+	 * @param pagesize
+	 * @return
+	 * @author YuYingJie
+	 */
+	public static List<Map<String, Object>> getNewestComments(EComment type, int pagenum, int pagesize) {
+		if (pagenum <= 0) {
+			pagenum = 1;
+		}
+		if (pagesize <= 0) {
+			pagesize = WebConf.NewestCommentsCount;
+		}
+		List<Comments> listcomments = getSO().getList(null, null, type, Pager.getNewInstance(pagenum, pagesize));
+		return commentAnalytical(listcomments);
+	}
+
+	/**
+	 * 获取我发布的评论
+	 * 
+	 * @param useruid
+	 * @author YuYingJie
+	 */
+	public static List<Map<String, Object>> getMyPublishComment(String useruid, int pagenum, int pagesize) {
+		if (pagenum <= 0) {
+			pagenum = 1;
+		}
+		if (pagesize <= 0) {
+			pagesize = WebConf.MyPublishCommentCount;
+		}
+		List<Comments> listcomments = getSO().getList(useruid, null, EComment.comment, Pager.getNewInstance(pagenum, pagesize));
+		return commentAnalytical(listcomments);
+	}
+
+	/**
+	 * 获取我收到的评论
+	 * 
+	 * @param useruid
+	 * @author YuYingJie
+	 */
+	public static List<Map<String, Object>> getToMeComment(String useruid, int pagenum, int pagesize) {
+		if (pagenum <= 0) {
+			pagenum = 1;
+		}
+		if (pagesize <= 0) {
+			pagesize = WebConf.MyPublishCommentCount;
+		}
+		List<Comments> listcomments = getSO().getList(null, useruid, EComment.comment, Pager.getNewInstance(pagenum, pagesize));
+		return commentAnalytical(listcomments);
+	}
+
+	/**
+	 * 评论的文章解析
+	 * 
+	 * @param list
+	 * @return
+	 * @author YuYingJie
+	 */
+	private static List<Map<String, Object>> commentAnalytical(List<Comments> list) {
+		List<Map<String, Object>> maps = new ArrayList<>();
+		Map<String, Object> map;
+		for (Comments comment : list) {
+			// 文章
+			if (EChannel.finance.equals(comment.getChannel())) {
+				map = new HashMap<>();
+				map.put(ViewKeyDict.bean, comment);
+				Finance finance = getFinanceSO().get(comment.getFromuid());
+				map.put(ViewKeyDict.finance, finance);
+				if (finance != null) {
+					map.put(ViewKeyDict.typename, finance.getFirstTypeName());
+				}
+				map.put(ViewKeyDict.channel, EChannel.finance.name());
+				maps.add(map);
+			} else if (EChannel.debate.equals(comment.getChannel())) {
+				map = new HashMap<>();
+				map.put(ViewKeyDict.bean, comment);
+				map.put(ViewKeyDict.debate, getDebateSO().get(comment.getFromuid()));
+				map.put(ViewKeyDict.typename, EChannel.debate.name());
+				map.put(ViewKeyDict.channel, EChannel.debate.name());
+				maps.add(map);
+			} else if (EChannel.topic.equals(comment.getChannel())) {
+				map = new HashMap<>();
+				map.put(ViewKeyDict.bean, comment);
+				map.put(ViewKeyDict.topic, getTopicSO().get(comment.getFromuid()));
+				map.put(ViewKeyDict.typename, EChannel.topic.name());
+				map.put(ViewKeyDict.channel, EChannel.topic.name());
+				maps.add(map);
+			}
+		}
+		return maps;
+	}
+
+	/**
+	 * 获取我收到的赞的数量
+	 * 
+	 * @param useruid
+	 * @return
+	 * @author YuYingJie
+	 */
+	public static int getMyReceivedPrizeCount(String useruid) {
+		int count = getSO().getMyReceivedPrizeCount(useruid);
+		return count >= 0 ? count : 0;
+	}
+
+	/**
+	 * 判断是否需要发消息
+	 * 
+	 * @param comments
+	 * @return
+	 * @author LiJiacheng
+	 */
+	public static boolean IsSend(Comments comments) {
+		if (comments.getTouid() == null && !comments.getChannel().equals(EChannel.debate)) {
+			if (comments.getChannel().equals(EChannel.finance) && !comments.getFromuseruid().equals(getFinanceSO().get(comments.getFromuid()).getAuthoruid())) {
+				return true;
+			} else if (comments.getChannel().equals(EChannel.topic) && !comments.getFromuseruid().equals(getTopicSO().get(comments.getFromuid()).getUseruid())) {
+				return true;
+			}
+		} else if (comments.getTouid() != null) {
+			if (!comments.getFromuseruid().equals(comments.getTouseruid()) && !SysConf.DefaultAnonymousUid.equals(comments.getTouseruid())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 评论之后发送消息
+	 * 
+	 * @param comment
+	 * @return
+	 * @author LiJiacheng
+	 */
+	public static Message sendMsg(Comments comment) {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.sender, getUserSO().get(comment.getFromuseruid()));
+		if (comment.getTouid() != null) {
+			map.put(MapperDict.type, EFinanceMsg.replycomment);
+		} else {
+			if (comment.getChannel().equals(EChannel.finance)) {
+				map.put(MapperDict.type, EFinanceMsg.commentarticle);
+			} else if (comment.getChannel().equals(EChannel.topic)) {
+				map.put(MapperDict.type, EFinanceMsg.commenttopic);
+			}
+		}
+		map.put(MapperDict.content, comment.getContent());
+		if (comment.getChannel().equals(EChannel.finance)) {
+			Finance finance = getFinanceSO().get(comment.getFromuid());
+			if (comment.getTouid() != null) {
+				map.put(MapperDict.title, getSO().get(comment.getTouid()).getContent());
+			} else {
+				map.put(MapperDict.title, finance.getTitle());
+			}
+			map.put(MapperDict.href, getHrefByComments(comment, finance.getFirstTypeName(), finance.getOid()));
+		} else if (comment.getChannel().equals(EChannel.debate)) {
+			Debate debate = getDebateSO().get(comment.getFromuid());
+			map.put(MapperDict.title, getSO().get(comment.getTouid()).getContent());
+			map.put(MapperDict.href, getHrefByComments(comment, null, debate.getOid()));
+		} else if (comment.getChannel().equals(EChannel.topic)) {
+			Topic topic = getTopicSO().get(comment.getFromuid());
+			if (comment.getTouid() != null) {
+				map.put(MapperDict.title, getSO().get(comment.getTouid()).getContent());
+			} else {
+				map.put(MapperDict.title, topic.getTitle());
+			}
+			map.put(MapperDict.href, getHrefByComments(comment, null, topic.getOid()));
+		}
+		Message message = getMessageSO().addMsg(map);
+		if (message != null) {
+			return message;
+		} else {
+			log.info("The collectMsg send failed.");
+			return null;
+		}
+	}
+
+	/**
+	 * 根据评论的类型不同，获取消息题目的链接
+	 * 
+	 * @param comments
+	 * @return
+	 * @author LiJiacheng
+	 */
+	public static String getHrefByComments(Comments comments, String financeType, int... oid) {
+		if (oid.length == 0) {
+			if (comments.getChannel().equals(EChannel.finance)) {
+				Finance finance = getFinanceSO().get(comments.getFromuid());
+				return WebConf.baseRootPath + MapperDict.slash + finance.getFirstTypeName() + MapperDict.slash + finance.getOid();
+			} else if (comments.getChannel().equals(EChannel.debate)) {
+				return WebConf.baseRootPath + MapperDict.slash + MapperDict.debate + MapperDict.slash + getDebateSO().get(comments.getFromuid()).getOid();
+			} else if (comments.getChannel().equals(EChannel.topic)) {
+				return WebConf.baseRootPath + MapperDict.slash + MapperDict.topic + MapperDict.slash + getTopicSO().get(comments.getFromuid()).getOid();
+			}
+			return null;
+		} else {
+			if (financeType != null) {
+				return WebConf.baseRootPath + MapperDict.slash + financeType + MapperDict.slash + oid[0];
+			}
+			return WebConf.baseRootPath + MapperDict.slash + comments.getChannel().name() + MapperDict.slash + oid[0];
+		}
+	}
+
+	/**
+	 * 获取我发表的评论的数量
+	 * 
+	 * @param useruid
+	 * @return
+	 * @author YuYingJie
+	 */
+	public static int getMyCommentsCount(String useruid) {
+		int count = getSO().getMyCommentsCount(useruid);
+		return count >= 0 ? count : 0;
+	}
+	
+	/**
+	 * 刷新和话题相关缓存
+	 * 
+	 * @author liushaomin
+	 */
+	public static void removeMemcache(Comments comments) {
+		MemcacheUtil.remove(new TopicJoinUserRule(comments.getFromuid()));
+		MemcacheUtil.remove(new UserTopicCommentRule(comments.getFromuseruid()));
+		if (comments.getChannel().equals(EChannel.topic)) {
+			MemcacheUtil.remove(new TopicLatestRule());
+			MemcacheUtil.remove(new TopicRankRule());
+			MemcacheUtil.remove(new TopicRecommendRule());
+			RedisUtil.decr(new CommentCountTopicRule(comments.getFromuid()));
+		}
+	}
+
+}

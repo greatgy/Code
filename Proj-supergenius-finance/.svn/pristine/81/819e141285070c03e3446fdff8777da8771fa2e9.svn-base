@@ -1,0 +1,17 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+[#list list as item]
+    <div class="main01" >
+    	<a href="${base}/debate/${item.oid}">
+    		<div style="width:350px;height:229px;overflow:hidden;">
+    			<img src="${webimg}${item.imgbig}">
+    		</div>
+    	</a>
+    	<a class="yc" href="${base}/debate/${item.oid}">
+    		${item.title}
+        	<br /><br />
+        	<img src="${baseimg}/imgs/default/lzh1_jt.png">
+    	</a>
+    </div>
+[/#list]
+

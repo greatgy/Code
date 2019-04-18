@@ -1,0 +1,718 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+[#import "/WEB-INF/FtlLib/Macro/Public.ftl" as p]
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>${title!'论战详情页'}</title>
+    <link href="${basecss}/css/default/pages/debateoid.css" type="text/css" rel="stylesheet" />
+    <link href="${basecss}/css/default/pages/has_vote_box.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="${basejs}/js/libs/comment-1.0.0.js"></script>
+	<script src="${basejs}/js/libs3/ejs.min.js"></script>
+	<script type="text/ejs" id="balance-template">
+		<div class="balance">
+			<div class="balance-lever">
+				<div class="left-lever">
+			  		<div class="left-data data_red">
+						<a class="left-arrow debate_vote debate_vote_red" id="debate_vote_two_0985cd37703d4601ae3253ecb91e8cc7_blue" data-support="red" data-id="0985cd37703d4601ae3253ecb91e8cc7" href="javascript:void(0);">
+							<img src="http://218.247.144.126:8091/imgs/default/redzan.png" data-isvoted="" data-isme="false">
+						</a>
+						<a class="number-area left-number number num_0985cd37703d4601ae3253ecb91e8cc7_red debate_vote" data-support="red">6</a>
+					</div>
+				</div>
+				<div class="right-lever">
+			  		<div class="right-data data_blue">
+						<a class="right-arrow debate_vote debate_vote_blue" id="debate_vote_two_0985cd37703d4601ae3253ecb91e8cc7_blue" data-support="blue" data-id="0985cd37703d4601ae3253ecb91e8cc7" href="javascript:void(0);">
+							<img src="http://218.247.144.126:8091/imgs/default/bluezan.png" data-isvoted="" data-isme="false">
+						</a>
+						<a class="number-area right-number number num_0985cd37703d4601ae3253ecb91e8cc7_blue debate_vote" data-support="blue">10000</a>
+					</div>
+			  	</div>
+			</div>
+			<img class="balance-pivot" src="http://218.247.144.126:8091/imgs/default/lunzh2_db.png">
+		</div>
+	</script>
+    <style type="text/css">	
+    	.has_vote_box {
+    		z-index: 1015;
+    		display: none;
+    	}
+    	.contro_nei, .reply_detail .contro_nei{width:88%;word-break:break-all;margin-bottom:10px;}
+    	.reply_detail .contro_nei{width:100%;}
+    	.contro_red{left:85}
+    	.contro_blue{left:90}
+    </style>
+    <script type="text/javascript">
+	var debateuid = "${bean.uid}";
+	var hasvote = -1;// 用来在页面级别存储已经投过票，防止多次请求后台
+	var isred ;
+	(function() {
+		$(document).ready(function() {
+			var balancePanel = new Components.BalancePanel($('.tp_midd'), {
+				left : ${(bean.countred)?c},
+				right : ${(bean.countblue)?c}
+			});
+		});
+	})();
+	function alertvote(isred){
+		if(isred){
+			alert("你已经投票给红方");
+		}else{
+			alert("你已经投票给蓝方");
+		}
+		handleHasvote(isred);
+	}
+	
+	function alertisred(isred){
+	}
+	
+	function handleHasvote(isred){
+		if(isred){
+			hasvote = 1;
+		}else{
+			hasvote = 0;
+		}
+		//$(".has_vote_box").css("display", "block");
+	}
+	
+	$(function($) {
+		// 为评论按钮注册点击事件
+		$(".submit_comment").bind("click", function(){
+			submitCommentHandler(this);
+		});  
+		
+	});
+	
+	var params = {
+		content: "",
+		fromuid: "",
+		channel: ""
+	}
+	
+	var commentdefault = {
+		maxlength: 300
+	}
+	
+	var me = {
+		showname: "${me.showname!'游客'}",
+		imglittle: "${me.imglittle}",
+		oid:"${me.oid}",
+		defaultImg: ""
+	}
+	
+	function beforeSubmitHandler(obj){
+		params = {};
+		var vote = $(obj).data("vote");
+		if(vote == "red"){
+			isred = true;
+		}else{
+			isred = false;
+		}
+		var commenttext = $(obj).siblings(".comment_textarea").val();
+		params.isred = isred;
+		params.fromuid = '${bean.uid}';
+		params.channel = "debate";
+		params.content = commenttext;
+		var touid = $(obj).parent().parent().data("uid");
+		if(typeof touid != "undefined"){
+			params.touid = touid;
+		}
+		var topuid = $(obj).parent().parent().data("topuid");
+		if(typeof topuid != "undefined"){
+			params.topuid = topuid;
+		}
+		var touseruid = $(obj).parent().parent().data("touseruid");
+		if(typeof touseruid != "undefined"){
+			params.touseruid = touseruid;
+		}
+		
+		var tousername = $(obj).parent().parent().data("tousername");
+		if(typeof tousername != "undefined"){
+			params.tousername = tousername;
+		}
+	    var fromusername = $("input[name='fromusername']").last().val();
+        if(fromusername != ""){
+            params.fromusername = fromusername;
+        }
+	}
+	
+	function afterSubmitHandler(result, obj){
+		if(result.success){
+			$(".comment_textarea").val("")
+			if(typeof params.touid != "undefined"){
+				addListComment(obj, result.bean);
+			}else{
+				$(".comments").html(getCommentHtml(result.bean, obj) + $(".comments").html());
+			}
+			$(".commentform").remove();
+			registerPraise();
+		}else{
+			alert("添加失败");
+		}
+	}
+	
+	// 对评论的回复
+	function addListComment(obj, comment){
+		var content = "";
+		// 还没有回复
+		if($(obj).parent().parent().siblings(".contro_pnei_z").length == 0 && $(obj).parent().parent().attr("class").indexOf("reply_detail") == -1){
+			content += '<div class="contro_pnei_z">';
+		  	content += '<div class="contro_borer">';
+		  	if(params.isred){
+		  		content += '<img src="${baseimg}/imgs/default/lzh_02_1.jpg">';
+		  	}else{
+		  		content += '<img src="${baseimg}/imgs/default/lzh_02_2.jpg">';
+		  	}
+		  	content += '</div>';
+		  	content += '<div class="contro_pnei">';
+			content += '<div class="left contro_red_hui comment_detail">';
+			content += getdetail(comment);
+			content += '</div></div></div>';
+			$(obj).parent().parent().parent().append(content.toString());					
+		}else{// 已经有回复
+			if($(obj).parent().parent().attr("class").indexOf("comment_detail") != -1){
+				// 直接回复的评论
+				content += $(obj).parent().parent().siblings(".contro_pnei_z").children(".contro_pnei").html() + getdetail(comment);
+				$(obj).parent().parent().siblings(".contro_pnei_z").children(".contro_pnei").html(content);
+			}else{
+				// 对评论的回复的回复
+				content += $(obj).parent().parent().parent().html() + getdetail(comment);
+				$(obj).parent().parent().parent().html(content);				
+			}		
+		}
+	}
+	
+	function getdetail(comment){
+		var topuid = "";
+		if(typeof params.topuid == "undefined"){
+			topuid = comment.touid;
+		}else{
+			topuid = params.topuid;
+		}
+		var content = "";
+		content += '<div class="reply_detail" data-uid="'+ comment.uid +'" data-topuid="'+ topuid +'" data-touseruid="'+ params.touseruid +'" data-tousername="'+ comment.fromusername +'" >';
+		if(params.isred){
+		    content += '<span class="contro_red_name">'+comment.fromusername+'&nbsp;回复&nbsp;'+comment.tousername+'<span>&nbsp;&nbsp;刚刚</span></span><br/>';
+			content += '<span class="contro_nei">'+comment.content+'</span><br />';
+			content += '<span class="reply"><a href="javascript:void(0)" id="btnprizecomments_${(me.oid)!"0"}_'+comment.uid+'" data-counter=".prizecounter">'
+				    + '<img src="${baseimg}/imgs/default/heart_02.png"/><span class="prizecounter">(0)</span></a></span>';
+		}else{
+			content += '<span class="contro_bule_name">' + comment.fromusername+'&nbsp;回复&nbsp;'+comment.tousername+'<span>&nbsp;&nbsp;刚刚</span></span><br/>';						    
+		  	content += '<span class="contro_nei">'+comment.content+'</span><br />';
+			content += '<span class="reply"><a href="javascript:void(0)" id="btnprizecomments_${(me.oid)!"0"}_'+comment.uid+'" data-counter=".prizecounter">'
+				    + '<img src="${baseimg}/imgs/default/heart_02.png"/><span class="prizecounter">(0)</span></a></span>';
+		}
+		content += '<span class="reply"><a href="javascript:void(0)" onclick="reply(this);">回复</a></span>';						  	
+		content += '</div>';
+		return content;
+	}
+	
+	//对论战的评论
+	function getCommentHtml(bean, obj){
+		 var result = "";
+		 if(isred){
+		 	result += "<div class='contro_pl text_left'>";
+		 	result += '<div class="comment_detail" data-uid="'+ bean.uid +'" data-touseruid="' + bean.fromuseruid +'" data-tousername="'+bean.fromusername+'">';
+		 	if(me.imglittle == ""){
+		 		result += '<img class="contr_pic_t left" src="${baseimg}/imgs/web/noavatar.png" />';
+		 	}else{
+		 		result += '<img class="contr_pic_t left" src="${userimg}'+ me.imglittle + '">';
+		 	}
+	  		result += "<span class='contro_red_name'>"+bean.fromusername+" </span>";
+	  		result += "<span>刚刚</span>";
+	  		result += "<br /><span class='contro_nei'>"+params.content+"</span><br />";
+	  		result += '<span class="reply"><a href="javascript:void(0)" id="btnprizecomments_${(me.oid)!"0"}_'+bean.uid+'" data-counter=".prizecounter">'
+				    + '<img src="${baseimg}/imgs/default/heart_02.png"/><span class="prizecounter">(0)</span></a></span>';
+	  	}else{
+		 	result += "<div class='contro_pl text_right'>";
+		 	result += '<div class="comment_detail" data-uid="'+ bean.uid +'" data-touseruid="' + bean.fromuseruid +'" data-tousername="'+bean.fromusername+'">';
+	 		if(me.imglittle == ""){
+		 		result += '<img class="contr_pic_t right" src="${baseimg}/imgs/web/noavatar.png" />';
+		 	}else{
+		 		result += '<img class="contr_pic_t right" src="${userimg}'+ me.imglittle + '">';
+		 	}
+	  		result += "<span class='contro_blue_name'>"+bean.fromusername+" </span>";
+	  		result += "<span>刚刚</span>";
+	  		result += "<br /><span class='contro_nei'>"+params.content+"</span><br />";
+	  		result += '<span class="reply"><a href="javascript:void(0)" id="btnprizecomments_${(me.oid)!"0"}_'+bean.uid+'" data-counter=".prizecounter">'
+				    + '<img src="${baseimg}/imgs/default/heart_02.png"/><span class="prizecounter">(0)</span></a></span>';
+	  	}
+  		result += "<span class='reply'><a href='javascript:void(0)' onclick='reply(this);'>回复</a></span><br/>"
+  		result += "</div></div>";
+  		return result;	
+	}
+	
+	function submitCommentHandler(obj){
+		beforeSubmitHandler(obj);
+		if(params.content == ""){
+			alert("评论内容不能为空");
+			return;
+		}
+		if(params.content.length >= commentdefault.maxlength){
+			alert("评论内容最多" + commentdefault.maxlength +　"个字");
+			return;
+		}
+		$.post("${base}/ajax/comment/{0}_{1}".format(params.channel, params.fromuid), params,function(data){
+			afterSubmitHandler(data, obj);
+		});
+	}
+	
+	function reply(obj){
+		if($(".commentform").length != 0) {
+			if(!confirm("您确定要放弃现在的评论吗？")){
+				$(".commentform")[0].focus();
+				return;
+			}else{
+				$(".commentform").remove();
+			}
+		}
+		$(obj).parent().parent().append($("#commentform").clone().addClass("commentform"));
+		$(".comment_textarea", $(".commentform")).focus();
+		$(".comment_textarea", $(".commentform")).bind("blur", function(event){
+			if($(this).val() == ""){
+				$(this).parent().remove();
+			}
+		});
+		$(".submit_comment").bind("click", function(){
+			submitCommentHandler(this);
+		});
+	}
+	
+	// 对评论的回复的加载更多
+	function loadlist(obj){
+		var replys = $(obj).siblings(".hd");
+		for(var i=replys.length;i>=replys.length-5;i--){
+			if(i>=0){
+				$(replys[i]).removeClass("hd");
+			}
+		}
+		replys = $(obj).siblings(".hd");
+		if(replys.length == 0) {
+			$(obj).addClass("hd");
+		}
+	}
+	
+	function registerPraise(){
+		$(".reply a[id^='btnprize']").each(function(){$(this).prize()});
+	}
+	
+    </script>
+    <script src="${basejs}/js/libs/components.js"></script>
+    <style type="text/css">
+    	.con_rt_circle1{top:78px;}
+    	.contro_bule{left:auto;}
+    	.right .comment_detail{float:right;} 
+    	.left .comment_detail{float:left;}
+    	.contro_bule_hui, .contro_red_hui{width:100%;}   
+    	.reply_detail{margin-bottom:20px;}
+    	.contro_pnei_z, .contro_pnei{width:91%;}
+    	.reply_detail .commentform{width:100%;}
+    	.comment_detail{margin-bottom:5px;}
+    	.contr_pic_t{width:48px;height:48px;}
+    	.contro_a{top:0;}
+    </style>
+</head>
+<body>
+	<div class="centerbox">
+		<div class="main">
+			<div class="contro_banner">
+				<a href="#" class="bgimg"><img src="${baseimg}/imgs/default/debateoidbg.png" /></a>
+				<div class="lz_one_01" style="text-align: left;">
+					<a href="#" title="美国经济GDP在今后两年能保持3%以上的高速增长吗？">美国经济GDP在今后两年能保持3%以上的高速增长吗？</a>
+				</div>
+				<span class="contro_icon">第六期</span>
+			</div>
+			<!-- banner结束 -->
+			<div class="contro_cont">
+			   	<ul class="showays">
+					<li>
+						<a href="javascript:;" id="zanli">
+							<span>+<i class="zanumber">123</i></span>
+							<img src="${baseimg}/imgs/default/zan.png" alt="" class="liwaysimg liwaysimg01" />
+						</a>
+					</li>
+					<li>
+						<a href="javascript:;" id="collectli">
+							<span class="collect">收藏</span>
+							<img src="${baseimg}/imgs/default/collected.png" alt="" class="liwaysimg liwaysimg02" />
+						</a>
+					</li>
+					<li>
+						<a href="javascript:;">
+							<span>分享</span>
+							<img src="${baseimg}/imgs/default/share.png" alt="" class="liwaysimg liwaysimg03" />
+						</a>
+					</li>
+					<li>
+						<a href="javascript:;">
+							<span>评论</span>
+							<img src="${baseimg}/imgs/default/discuss.png" alt="" class="liwaysimg liwaysimg04" />
+						</a>
+					</li>
+				</ul>
+				<div class="contro_vs">
+					<span class="contro_red" title="专车势必走向合法">专车势必走向合法</span>
+					<span class="contro_bule" title="专车很难走向合法">专车很难走向合法</span>
+				</div>
+				<div class="controbox">
+					<!-- 左边开始 -->
+					<div class="conleftbox">
+						<div class="contro_left">
+							<img src="${baseimg}/imgs/default/circle.png" class="con_rt_circle1" />
+							<div class="controversy">
+								<a href="#" target="_blank"><h3 class="contro_title">专车势必走向合法</h3></a>
+								<div class="contro_cont_1">
+									<a href="#"><img src="${baseimg}/imgs/default/myarticle02.png" width="145px" height="110px"></a>
+									<p class="contro_p1">什么是专车？谁在中国玩专车？ “专车”是与出租车相应而生的一种用车服务。究其本质，专车服务无非是一种载人交通运输服务，专车服务提供商同时提供车和驾驶服务，但不是有计价器和顶灯的出租车。顾客只要有...</p>
+									<p class="contro_p1">丁一&nbsp;&nbsp;2015-06-09<a href="#" class="contro_a" target="_blank">阅读全文>></a></p>
+								</div>
+							</div>
+						</div>
+						<div class="contro_left">
+							<img src="${baseimg}/imgs/default/circle.png" class="con_rt_circle1" />
+							<div class="controversy">
+								<a href="#" target="_blank"><h3 class="contro_title">专车势必走向合法</h3></a>
+								<div class="contro_cont_1">
+									<a href="#"><img src="${baseimg}/imgs/default/myarticle02.png" width="145px" height="110px"></a>
+									<p class="contro_p1">什么是专车？谁在中国玩专车？ “专车”是与出租车相应而生的一种用车服务。究其本质，专车服务无非是一种载人交通运输服务，专车服务提供商同时提供车和驾驶服务，但不是有计价器和顶灯的出租车。顾客只要有...</p>
+									<p class="contro_p1">丁一&nbsp;&nbsp;2015-06-09<a href="#" class="contro_a" target="_blank">阅读全文>></a></p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- 左边结束 -->
+					<!-- 右边开始 -->
+					<div class="conrightbox">
+						<div class="mid_right">
+							<img src="http://192.168.1.131:9082/imgs/default/circle.png" class="con_rt_circle1">
+							<div class="controversy">
+								<a href="#" target="_blank"><h3 class="contro_title">专车很难走向合法</h3></a>
+								<div class="contro_cont_1">
+									<a href="#"><img src="${baseimg}/imgs/default/myarticle03.png" width="145px" height="110px"></a>
+									<p class="contro_p1">2014年下半年，美国学霸Uber率先来中国开疆拓土，中国新贵滴滴快的迅速砸钱对抗Uber，本是稳扎稳打的前辈易到和神州也按耐不住，纷纷选择高调强势介入，一时间各种专车APP漫天飞舞，专车服务业务在各大城市全面爆发。似乎这场&...</p>
+									<p class="contro_p1">吴慧曼&nbsp;&nbsp;2015-07-03<a href="#" class="contro_a" target="_blank">阅读全文>></a></p>
+								</div>
+							</div>
+							<div class="controversy" style="border-bottom:none;"></div>
+						</div>
+						<div class="mid_right">
+							<img src="http://192.168.1.131:9082/imgs/default/circle.png" class="con_rt_circle1">
+							<div class="controversy">
+								<a href="#" target="_blank"><h3 class="contro_title">专车很难走向合法</h3></a>
+								<div class="contro_cont_1">
+									<a href="#"><img src="${baseimg}/imgs/default/myarticle03.png" width="145px" height="110px"></a>
+									<p class="contro_p1">2014年下半年，美国学霸Uber率先来中国开疆拓土，中国新贵滴滴快的迅速砸钱对抗Uber，本是稳扎稳打的前辈易到和神州也按耐不住，纷纷选择高调强势介入，一时间各种专车APP漫天飞舞，专车服务业务在各大城市全面爆发。似乎这场&...</p>
+									<p class="contro_p1">吴慧曼&nbsp;&nbsp;2015-07-03<a href="#" class="contro_a" target="_blank">阅读全文>></a></p>
+								</div>
+							</div>
+							<div class="controversy" style="border-bottom:none;"></div>
+						</div>
+						<div class="mid_right">
+							<img src="${baseimg}/imgs/default/circle.png" class="con_rt_circle1">
+							<div class="controversy">
+								<a href="#" target="_blank"><h3 class="contro_title">专车很难走向合法</h3></a>
+								<div class="contro_cont_1">
+									<a href="#"><img src="${baseimg}/imgs/default/myarticle03.png" width="145px" height="110px"></a>
+									<p class="contro_p1">2014年下半年，美国学霸Uber率先来中国开疆拓土，中国新贵滴滴快的迅速砸钱对抗Uber，本是稳扎稳打的前辈易到和神州也按耐不住，纷纷选择高调强势介入，一时间各种专车APP漫天飞舞，专车服务业务在各大城市全面爆发。似乎这场&...</p>
+									<p class="contro_p1">吴慧曼&nbsp;&nbsp;2015-07-03<a href="#" class="contro_a" target="_blank">阅读全文>></a></p>
+								</div>
+							</div>
+							<div class="controversy" style="border-bottom:none;"></div>
+						</div>
+					</div>
+					<!-- 右边结束 -->
+				</div>
+			</div>
+			<div class="tp_midd"></div>
+			<div class="newuser">
+				<h3 class="mb">最新参与的用户</h3>
+				<div class="mtb_10">
+					<div class="rside">红方阵营</div>
+					<div class="user">
+						<a href="" title="${item.showname}">
+							<img src="${baseimg}/imgs/default/subsimg03.png" />
+						</a>
+						<a href="" title="${item.showname}">
+							<img src="${baseimg}/imgs/default/subsimg01.png" />
+						</a>
+						<a href="" title="${item.showname}">
+							<img src="${baseimg}/imgs/default/subsimg04.png" />
+						</a>
+					</div>
+				</div>
+				<div class="mtb_10 bluebox">
+					<div class="bside">蓝方阵营</div>
+					<div class="user">
+						<a href="" title="${item.showname}">
+							<img src="${baseimg}/imgs/default/subsimg05.png" />
+						</a>
+						<a href="" title="${item.showname}">
+							<img src="${baseimg}/imgs/default/subsimg04.png" />
+						</a>
+					</div>
+				</div>
+				<div class="options">
+					<span class="contro_l">红方发言（${bean.redcommentcount}）</span>
+					<span class="contro_m"></span>
+					<span class="contro_r">蓝方发言（${bean.bluecommentcount}）</span>
+				</div>
+				<div class="commentbox" id="commentform">
+				  	<textarea class="contro_text"></textarea>
+				  	<div class="txtbottom">
+				  		<a href="" class="submit_comment contro_abule right" data-vote="blue" title="">支持蓝方</a>
+				  		<a href="" class="submit_comment contro_ared right" data-vote="red" title="">支持红方</a>
+				  		[#if !me??]
+					  		<span class="idtip">您为游客，可自定义昵称：<input type="text" value="" name="fromusername" placeholder="选填" autocomplete="off"  maxlength="5"></span>
+					  	[/#if]
+				  	</div>
+			 	</div>
+			</div>
+			
+			<script type="text/javascript">
+				var pagenum = 1;
+				var state = '${bean.state}';
+				function loadmore(){
+					$.get("${base}/ajax/comment/debate_${bean.uid}_{0}".format(pagenum),function(data){
+						if(data.trim() == ""){
+							if(pagenum != 1){
+								$(".loadmore a").html("无更多评论");
+								$(".loadmore").unbind("click");
+							}
+						}else{
+							pagenum += 1;
+							$(".comments").append(data);
+							if($(".contro_pl").length < 20 ){
+								$(".loadmore").css("visibility", "hidden");
+							}else{
+							   $(".loadmore").css("visibility", "visible");
+							}
+							registerPraise();
+							if(state == 1){
+		                        $(".comment_detail, .reply_detail").each(function(){
+		                            $(this).children(".reply:last").remove();
+		                        });
+		                        $(".reply a[id^='btnprize']").unbind();
+		                        $(".debate_vote").unbind();                    
+		                    }
+		                    
+		                    dealDate();
+						}
+					});
+				}
+				$(function($) {
+					$(".loadmore").bind("click", function(){
+						loadmore();	
+					});
+					$(".loadmore").click();
+				});
+				
+				function dealDate(){
+				  $("span").each(function(){
+		                 var str = $(this).html();
+		                 var date = null;
+		                 var nowdate = new Date();
+		                 try{
+		                     date = new Date(str);
+		                 }catch(e){
+		                     console.log("not a date");
+		                 }
+		                 if(date != null){
+		                    if(date != "Invalid Date"){
+		                        if(date.toDateString() == nowdate.toDateString()){
+		                            $(this).html(getTime24(date));
+		                        }else if(date.getFullYear() == nowdate.getFullYear()){
+		                            $(this).html((date.getMonth()+1) + "月" + date.getDate() + "日&nbsp;" + getTime24(date));
+		                        }
+		                    }
+		                 }
+		            });
+				}
+				
+				function getTime24(date){
+				  return date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+				}
+				// JQuery load
+				
+			</script>
+			<div class="comments">
+				<div class="commentitem commentred">
+					<a href="#"><img src="${baseimg}/imgs/default/subsimg05.png" class="nameimg" /></a>
+					<div class="commentright">
+						<div class="commentrtop">
+							<a href="#" class="name">吧啦啦</a>
+							<span class="time">5月27日&nbsp;&nbsp;12&nbsp;:&nbsp;58&nbsp;:&nbsp;22</span>
+						</div>
+						<p class="reditem">网友微博爆料，井柏然的清秀字体被资本市场看中，某知名字库将以1000元/字的价格买断其版权。微博爆料，井柏然的清秀字体被资本市场看中，某知名字库将以1000元/字的价格买断其版权。</p>
+						<div class="reply">
+							<a href="javascript:;">
+								<img src="${baseimg}/imgs/default/zanicon.png" />
+								(0)
+							</a>
+							<a href="javascript:;" class="replylik">回复</a>
+							<a class="openmore" href="javascript:;">
+								查看更多评论
+								<img src="${baseimg}/imgs/default/morejg.png" class="openimg" />
+							</a>
+						</div>
+						<div class="replybox">
+							<textarea class="contro_text comment_textarea"></textarea>
+							<div class="suport">
+								<a href="#" class="submit_comment contro_abule right" data-vote="blue" title="">支持蓝方</a>
+				  				<a href="#" class="submit_comment contro_ared right" data-vote="red" title="">支持红方</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="commentitem commentblue">
+					<div class="commentright">
+						<div class="commentrtop">
+							<span class="time">5月27日&nbsp;&nbsp;12&nbsp;:&nbsp;58&nbsp;:&nbsp;22</span>
+							<a href="#" class="name">哈哈</a>
+						</div>
+						<p class="blueitem">网友微博爆料，井柏然的清秀字体被资本市场看中，某知名字库将以1000元/字的价格买断其版权。微博爆料，井柏然的清秀字体被资本市场看中，某知名字库将以1000元/字的价格买断其版权。</p>
+						<div class="reply">
+							<a href="javascript:;">
+								<img src="${baseimg}/imgs/default/zanicon.png" />
+								(0)
+							</a>
+							<a href="javascript:;" class="replylik">回复</a>
+							<a class="openmore" href="javascript:;">
+								查看更多评论
+								<img src="${baseimg}/imgs/default/morejg.png" class="openimg" />
+							</a>
+						</div>
+						<div class="replybox">
+							<textarea class="contro_text comment_textarea"></textarea>
+							<div class="suport">
+								<a href="#" class="submit_comment contro_abule right" data-vote="blue" title="">支持蓝方</a>
+				  				<a href="#" class="submit_comment contro_ared right" data-vote="red" title="">支持红方</a>
+							</div>
+						</div>
+						<div class="secondcomment">
+							<div class="secondright">
+								<div class="secondrtop">
+									<span class="time">5月27日&nbsp;&nbsp;12&nbsp;:&nbsp;58&nbsp;:&nbsp;22</span>
+									<a href="#" class="name">刘星</a><span class="answer">回复</span><a href="#" class="name">申冬奥</a>
+								</div>
+								<p class="gray">他是徘徊于“天才”与“疯人”之间的学者，是诺贝尔经济学奖得主、博弈论创始人，还是电影《美丽心灵》的原型，他就是传奇的约翰·纳什</p>
+								<div class="reply">
+									<a href="javascript:;">
+										<img src="${baseimg}/imgs/default/zanicon.png" />
+										(0)
+									</a>
+									<a href="javascript:;" class="replylik">回复</a>
+								</div>
+								<div class="replybox">
+									<textarea class="contro_text comment_textarea"></textarea>
+									<div class="suport">
+										<a href="#" class="submit_comment judgebtn right" title="">评论</a>
+									</div>
+								</div>
+							</div>
+							<a href="#"><img src="${baseimg}/imgs/default/subsimg02.png" class="nameimg" /></a>
+						</div>
+					</div>
+					<a href="#"><img src="${baseimg}/imgs/default/subsimg03.png" class="nameimg" /></a>
+					
+				</div>
+				<div class="commentitem commentred">
+					<a href="#"><img src="${baseimg}/imgs/default/subsimg05.png" class="nameimg" /></a>
+					<div class="commentright">
+						<div class="commentrtop">
+							<a href="#" class="name">吧啦啦</a>
+							<span class="time">5月27日&nbsp;&nbsp;12&nbsp;:&nbsp;58&nbsp;:&nbsp;22</span>
+						</div>
+						<p class="reditem">网友微博爆料，井柏然的清秀字体被资本市场看中，某知名字库将以1000元/字的价格买断其版权。微博爆料，井柏然的清秀字体被资本市场看中，某知名字库将以1000元/字的价格买断其版权。</p>
+						<div class="reply">
+							<a href="javascript:;">
+								<img src="${baseimg}/imgs/default/zanicon.png" />
+								(0)
+							</a>
+							<a href="javascript:;" class="replylik">回复</a>
+						</div>
+						<div class="replybox">
+							<textarea class="contro_text comment_textarea"></textarea>
+							<div class="suport">
+								<a href="#" class="submit_comment contro_abule right" data-vote="blue" title="">支持蓝方</a>
+				  				<a href="#" class="submit_comment contro_ared right" data-vote="red" title="">支持红方</a>
+							</div>
+						</div>
+						<div class="secondcomment">
+							<a href="#"><img src="${baseimg}/imgs/default/subsimg02.png" class="nameimg" /></a>
+							<div class="secondright">
+								<div class="secondrtop">
+									<a href="#" class="name">刘星</a><span class="answer">回复</span><a href="#" class="name">申冬奥</a>
+									<span class="time">5月27日&nbsp;&nbsp;12&nbsp;:&nbsp;58&nbsp;:&nbsp;22</span>
+								</div>
+								<p class="gray">他是徘徊于“天才”与“疯人”之间的学者，是诺贝尔经济学奖得主、博弈论创始人，还是电影《美丽心灵》的原型，他就是传奇的约翰·纳什</p>
+								<div class="reply">
+									<a href="javascript:;">
+										<img src="${baseimg}/imgs/default/zanicon.png" />
+										(0)
+									</a>
+									<a href="javascript:;" class="replylik">回复</a>
+								</div>
+								<div class="replybox">
+									<textarea class="contro_text comment_textarea"></textarea>
+									<div class="suport">
+										<a href="#" class="submit_comment judgebtn right" title="">评论</a>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="secondcomment">
+							<a href="#"><img src="${baseimg}/imgs/default/subsimg01.png" class="nameimg" /></a>
+							<div class="secondright">
+								<div class="secondrtop">
+									<a href="#" class="name">申冬奥</a><span class="answer">回复</span><a href="#" class="name">刘星</a>
+									<span class="time">5月27日&nbsp;&nbsp;12&nbsp;:&nbsp;58&nbsp;:&nbsp;22</span>
+								</div>
+							
+								<p class="gray">他是徘徊于“天才”与“疯人”之间的学者，是诺贝尔经济学奖得主、博弈论创始人，还是电影《美丽心灵》的原型，他就是传奇的约翰·纳什</p>
+								<div class="reply">
+									<a href="javascript:;">
+										<img src="${baseimg}/imgs/default/zanicon.png" />
+										(0)
+									</a>
+									<a href="javascript:;" class="replylik">回复</a>
+								</div>
+								<div class="replybox">
+									<textarea class="contro_text comment_textarea"></textarea>
+									<div class="suport">
+										<a href="#" class="submit_comment judgebtn right" title="">评论</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="tab_bottom loadmore" style="margin-bottom:25px;width:900px;">
+				<a href="javascript:void(0)">加载更多&darr;</a>
+			</div>
+		  </div>
+		  </div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		$(function(){
+
+			$("#zanli").click(function(){
+				$(this).find(".liwaysimg01").attr("src","${baseimg}/imgs/default/zaned.png");
+				$(".zanumber").html(parseInt($(".zanumber").html())+1);
+			});
+			$("#collectli").click(function(){
+				$(this).find(".liwaysimg02").attr("src","${baseimg}/imgs/default/collects.png");
+				$(".collect").html("已收藏");
+			});
+			$(".zanmore").click(function(){
+				var inum = parseInt($(this).children("i").html());
+				$(this).children("i").html(parseInt(inum+1));
+				$(this).children("img").attr("src","${baseimg}/imgs/default/zaned.png").css("width","20").css("height","17");
+			});
+		});
+	</script>
+</body>
+</html>
+

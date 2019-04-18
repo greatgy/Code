@@ -1,0 +1,5 @@
+1.在需要调试的项目如proj-supergenius-admin上右键->propeties
+2.java build path->source->Link Source->选择所依赖的项目的源码，比如E:\MyWork2\Proj-supergenius-XO\Finance\src\main\java 并命名为java-xo-finance等
+3.Order and Export调整顺序
+
+即可修改其他项目时直接调试，tomcat直接重启不需执行mvn

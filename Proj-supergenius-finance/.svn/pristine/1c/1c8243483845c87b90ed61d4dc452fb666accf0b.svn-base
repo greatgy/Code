@@ -1,0 +1,75 @@
+[#ftl]
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>${title}</title>
+    <link rel="stylesheet" href="${basecss}/css/default/pages/msg.css"/>
+    <script type="text/javascript" src="${basejs}/js/pages/msg.js"></script>
+    <script type="text/javascript">
+        var Pagemax = {
+            comment_max : ${commentnum},
+            notify_max : ${noticenum},
+            sys_max : ${sysnum}
+        };
+    </script>
+</head>
+<body>
+    <div class="wraper">
+        <div class="main">
+            <div class="newsContainer">
+                <div class="newsLeft">
+                    <h3>消息中心</h3>
+                    <ul class="newsnav">
+                        <li class="curSelect">
+                            <a href="javascript:;" data-type="comment" onclick="typeupdown(this)">评论<span>${uncomment}</span></a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" data-type="notify" onclick="typeupdown(this)">通知<span>${unnotice}</span></a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" data-type="system" onclick="typeupdown(this)">系统消息<span>${unsys}</span></a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="newsRight">
+                    <h4>
+                        <span class="valtit">我收到的评论</span>
+                        <span class="pagebtn">
+                            <a href="javascript:;" class="" id="prev" data-dir="up">&lt;</a>
+                            <a href="javascript:;" class="" id="next" data-dir="down">&gt;</a>
+                        </span>
+                    </h4>
+                    <ul class="getJudgelist" id="content">
+                        [#list inboxs as inbox]
+                            <li>
+                                <a href="[#if inbox.sender.oid?? && inbox.sender.oid !=""]${base}/his/article/${inbox.sender.oid} [#else]javascript:void(0); [/#if]" class="getuserimg">
+                                    <img [#if inbox.sender.avatar?? && inbox.sender.avatar != ""] src="${userimg}${inbox.sender.avatar}" [#else] src="${baseimg}/imgs/web/noavatar.png" [/#if] class="judgeuser" />
+                                    [#if inbox.isread==false]
+                                        <span class="newtip">N</span>
+                                    [/#if]
+                                </a>
+                                <div class="judgeContent">
+                                    <div class="nametime">
+                                        <a href="[#if inbox.sender.oid?? && inbox.sender.oid !=""]${base}/his/article/${inbox.sender.oid} [#else]javascript:void(0); [/#if]" class="judgename"><em>${inbox.sender.showname}</em></a>
+                                        <a href="javascript:;" class="deletelink" data-uid="${inbox.uid}" onclick="delMessage(this)"><img src="${baseimg}/imgs/default/deleteimg.png" class="deleteimg" /></a>
+                                        <span class="outtime">${inbox.createtimeStr}</span>
+                                    </div>
+                                    <p>${inbox.message.content}</p>
+                                    <div class="source">
+                                        [#if inbox.type==1]评论我的文章：
+                                        [#elseif inbox.type==2]评论我的话题：
+                                        [#elseif inbox.type==3]回复我的评论：
+                                        [/#if]
+                                        ${inbox.message.title}
+                                    </div>
+                                </div>
+                            </li>
+                        [/#list]
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

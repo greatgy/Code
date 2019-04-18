@@ -1,0 +1,48 @@
+[#ftl]
+[#if list?size > 0]
+	<div class="side_right">
+		[#list list as item]
+			[#if item_index == 0]
+				<div class="debate_left topic_lf">
+					<img src="${webimg}${item.imgoriginal}" />
+					<div class="lz_one_01 topic_left">
+						<a href="${baseFinancePath}/article/${item.firstCid}/${(item.oid)?c}" title="${item.title}" target="_blank">${item.title}</a>
+					</div>
+				</div>
+			[/#if]	
+		[/#list]	
+		<div class="debate_right">
+			[#list list as item]
+				[#if item_index > 0]
+					<div class="topic01">
+						<img src="${webimg}${item.imgoriginal}" alt="" /> 
+						<div class="topic_detail">
+							<a href="${baseFinancePath}/article/${item.firstCid}/${(item.oid)?c}" class="t_title" target="_blank">${item.title}</a>
+							<p>[@TrimSubstring content="${item.content}" mylength=20 /]<a href="${baseFinancePath}/article/${item.firstCid}/${(item.oid)?c}" class="edetail" target="_blank">[阅读全文]</a></p>
+						</div>
+					</div>
+				[/#if]
+			[/#list]	
+		</div>
+	</div>
+[/#if]
+	
+[#--
+ * 字符串清空html并截取一定的字数
+ * @content 要处理的文字	
+ * @length 要截取的长度	
+ * @since 1.0
+ --]
+[#macro TrimSubstring content mylength]
+	[#if mylength<=0]
+		[#local mylength=100]
+	[/#if]
+	[#local con=content?replace("<[^>]*>", "", "r")]
+	[#local con=con?replace("&nbsp;", "", "r")]
+	[#local apostrophe=true /]
+	[#if (con?length)<='${mylength}'?number]
+		[#local mylength='${con?length}']
+		[#local apostrophe=false /]
+	[/#if]
+	${con?substring(0,'${mylength}'?number)}[#if apostrophe]...[/#if] 
+[/#macro]	

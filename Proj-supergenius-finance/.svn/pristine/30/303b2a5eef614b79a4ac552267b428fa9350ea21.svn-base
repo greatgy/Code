@@ -1,0 +1,335 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+[#import "/WEB-INF/FtlLib/Macro/Public.ftl" as p]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>${bean.title!'天财评论详情页'}</title>
+	<link href="${basecss}/css/default/pages/financeoid.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="${basecss}/css/default/pages/attentionus.css"/>
+	<script type="text/javascript" src="${basejs}/js/libs/comment-1.0.0.js"></script>
+	<script type="text/javascript" src="${basejs}/js/libs/scroll.js"></script>
+	<script type="text/javascript" src="${basejs}/js/libs3/jquery.qqface.min.js"></script>
+	<script type="text/javascript" src="${basejs}/js/pages/financecomment.js"></script>
+	<style type="text/css">
+		.db_article {
+			margin-top: 25px;
+		}
+		.db_article h2 {
+			text-align: center;
+			font-size: 24px;
+			color: #333333;
+			overflow: hidden;
+		}
+		.vtitle {
+			font-size: 20px;
+			color: #333333;
+			text-align: center;
+			display: block;
+			margin-top: 6px;
+		}
+		.db_artime {
+			text-align: center;
+			margin: 10px auto 15px;
+		}
+		.db_artime span {
+			font-size: 13px;
+			color: #666666;
+			margin-right: 8px;
+		}
+		.db_artime .ranks {
+			color: #cf704b;
+		}
+		.ranks em {
+			font-size: 13px;
+			font-style: normal;
+			font-weight: bold;
+			color: #ff0000;
+			margin-right: 5px;
+		}
+		.db_artcon p {
+			font-size: 18px;
+			color: #333333;
+			text-indent: 2em;
+			line-height: 26px;
+			font-family: "黑体";
+		}
+		.db_artcon strong {
+			font-weight: bold;
+		}
+		.db_artcon img {
+			max-width: 100%!important;
+			height: auto!important;
+		}
+		table p {text-indent:0 !important;}
+		span.emotion{width:42px; height:20px;margin-left: 0px;background:url("${baseimg}/imgs/face/icon.gif") no-repeat 2px 2px; padding-left:20px; cursor:pointer}
+		span.emotion:hover{background-position:2px -28px}
+		.qqFace{margin-top:4px;background:#fff;padding:2px;border:1px #dfe6f6 solid;}
+		.qqFace table td{padding:0px;}
+		.qqFace table td img{cursor:pointer;border:1px #fff solid;}
+		.qqFace table td img:hover{border:1px #0066cc solid;}
+	</style>
+	<script type="text/javascript">
+		var me = {
+			showname: "${me.showname!'游客'}",
+			imglittle: "${me.avatar}",
+			oid:"${(me.oid?c)!'0'}",
+			defaultImg: "${baseimg}/imgs/web/noavatar.png"
+		}
+		var fromuid = '${bean.uid}';
+		
+		$(function(){
+        	$('.emotion').qqFace({ 
+		        assign:'content', //给输入框赋值 
+		        path:'${baseimg}/imgs/face/qq/' //表情图片存放的路径 
+		    });
+		});
+	</script>
+</head>
+<body>
+	<div class="centerbox">
+		<div class="debate_th_box">
+		    <div class="db_leftbox">
+		        <div class="crumbs">
+		          	<img src="${baseimg}/imgs/default/home.png" />
+					<a href="${base}">首页</a><span class="crumbs_arrow"> ></span>
+					<a href="${base}/${typename}">${type}</a><span class="crumbs_arrow"> ></span>
+					<span class="crumbtitle">正文</span>
+		        </div><!--面包屑-->
+		        <div class="db_article">
+					<h2 tittle="${bean.title}">${bean.title}</h2>
+					[#if bean.shorttitle?? && bean.shorttitle != ""]
+						<span class="vtitle">——${bean.shorttitle}</span>
+					[/#if]
+					<p class="db_artime">
+						<span>${bean.createtimeStr}</span><span>来源：${bean.origin} </span><span>作者：${bean.author}</span><span class="ranks"></span>
+					</p>
+					<div class="db_artcon">
+						${bean.content}
+						[#if typename != "debate"]
+							[@p.Pager pager /]
+						[/#if]
+					</div>
+					<ul class="showays" style="text-align: center;">
+						<li>
+							<a href="javascript:;" id="btnprizefinance_${(me.oid?c)!"0"}_${bean.uid}" data-counter=".prizecounter">
+								<span>+<i class="zanumber zancountjs">${bean.prizecount!'0'}</i></span>
+								<img src="${baseimg}/imgs/default/heart_01.png" alt="" data-notcomment="true" data-isprize="${bean.isprize!'false'}" class="liwaysimg liwaysimg01" />
+							</a>
+						</li>
+						<li>
+							<a [#if me??] href="javascript:;" id="btncollect${collect}_${typename}_${bean.uid}" data-iscollect="${bean.iscollect!'false'}" [#else] href="javascript:;" class="pop-up" [/#if]>
+								<span class="collect">收藏</span>
+								<img src="${baseimg}/imgs/default/collected.png" data-iscollect="${bean.iscollect!'false'}" alt="" class="liwaysimg liwaysimg02" />
+							</a>
+						</li>
+						<li>
+							<a href="javascript:;">
+								<span>分享</span>
+							</a>
+							[@p.share /]
+						</li>
+						<li>
+							<a href="#say" onclick="wantComment();">
+								<span>评论</span>
+								<img src="${baseimg}/imgs/default/discuss.png" alt="" class="liwaysimg liwaysimg04" />
+							</a>
+						</li>
+					</ul>
+					<div class="announce">(此文章只代表作者个人观点不代表超天才网站观点)</div>
+					<div class="prevnext">
+						<p class="db_lflink">
+							上一篇：
+							[#if map.last??]
+								<a href="${base}/${typename}/${map.last.oid?c}">[@f.TrimSubstring content="${map.last.title}" mylength=30 /]</a>
+							[#else]
+								无上一篇文章
+							[/#if]
+						</p>
+						<p class="db_lflink">
+							下一篇：
+							[#if map.next??]
+								<a href="${base}/${typename}/${map.next.oid?c}">[@f.TrimSubstring content="${map.next.title}" mylength=30 /]</a>
+							[#else]
+								无下一篇文章
+							[/#if]
+						</p>
+					</div>
+				</div><!--db_article-->
+				<div class="db_discuss iscomment" id="say">
+					<div class="mb">
+						有话要说
+						<span class="readtimes">${bean.commentcount!'0'}&nbsp;人讨论&nbsp;&nbsp;&nbsp;&nbsp;${bean.clickcount!'0'}&nbsp;人阅读</span>
+					</div>
+					<div class="commentbox" id="comment_form">
+					  	<textarea class="comment_textarea contro_text" id="content"></textarea>
+					  	<div class="txtbottom">
+					  		<p style="text-align: left; margin-top: 4px; margin-left: 15px;margin-right: 10px; display: inline-block;"><span class="emotion">表情</span></p>
+					  		<a href="javascript:void(0);" class="submit_comment logafter right" title="" onclick="submitCommentHandler(this);" >发表评论</a>
+					  		[#if !me??]
+					  			<a href="javascript:;" class="submit_comment judge right pop-up" title="">登录后发言</a>
+					  			<span class="idtip">您为游客，可自定义昵称:<input type="text" value="" name="fromusername" placeholder="选填" autocomplete="off"  maxlength="5"></span>
+				 			[/#if]
+				 		</div>
+				 	</div>
+				</div>
+				<div class="comment">
+					<div class="com_title">
+						<span class="current" id="one1" onclick="setTab('one',1,2)">全部评论</span>
+						<span class="" id="one2" onclick="setTab('one',2,2)" >精彩评论</span>
+					</div>
+					<div id="list_one_1">
+						<img class="nothing hd" src="${baseimg}/imgs/default/prompt.png" style="width:481px;heigth:211px">
+					</div>
+					<div id="list_one_2" style="display:none">
+						[#if wonderfullist?? && wonderfullist?size>0]
+							[#list wonderfullist as item]
+								[#if item.fromUser.oid == me.oid]
+									[#assign url="${base}/my/article" /]
+								[#else]
+									[#assign url="${base}/his/article/${(item.fromUser.oid?c)!'0'}" /]
+								[/#if]
+								<div class="commentitem">
+			    					[#if item.fromUser??]
+			                            <a href="${url}" target="_blank">
+			                        [#else]
+			                        	<a href="javascript:void(0);">
+			                        [/#if]
+			                            <img class="personimg" [#if "${item.fromUser.avatar}" == ""]src="${baseimg}/imgs/web/noavatar.png"[#else]src="${userimg}${item.fromUser.avatar}"[/#if] />
+			                        </a>
+			                        <div class="itemright">
+										[#if item.fromUser??]
+							                <a href="${url}" class="name" target="_blank">
+							            [#else]
+							                <a href="javascript:void(0);" class="name">
+							            [/#if]
+							            ${item.fromusername}
+							            </a>
+							            <p class="comments">${item.content}</p>
+										<div class="itembottom">
+											<span class="time">${(item.createtime).toString("M月dd日")}</span>
+											<div class="comlinkbox">
+												<a href="javascript:void(0)" id="btnprizefinance_${(me.oid?c)!"0"}_${item.uid}" data-counter=".prizecounter">
+													<img src="${baseimg}/imgs/default/zanicon.png" data-isprize="${item.isprize!'false'}"/>
+													<span style="margin-right:0px" class="zancountjs">赞(${item.prizecount!'0'})</span>
+												</a>
+											</div>
+										</div>
+									</div>
+								</div>
+							[/#list]
+						[#else]
+							<img src="${baseimg}/imgs/default/prompt.png" style="width:481px;heigth:211px">
+						[/#if]
+					</div>
+				</div>
+				<!--评论-->
+				<div class="tip cursel1 loadmorefinance"></div>
+				<div class="tip cursel2 hd"></div>
+				<div class="db_add hd">
+					<a href="javascript:void(0)">加载更多</a>
+				</div>
+				<!--评论-->
+			    <div class="loading hd" id="loading" style="display:none">
+					<img src="${baseimg}/imgs/default/loading.gif" />
+					loading...
+				</div>
+			</div><!--db_leftbox-->
+		    <div class="db_rightbox">
+				<div class="ranklist">
+					<div class="originator">
+						[#if author??]
+						[#if author.oid == me.oid]
+							[#assign url="${base}/my/article" /]
+						[#elseif author.oid != 0]
+							[#assign url="${base}/his/article/${author.oid?c}" /]
+						[/#if]
+						[#else]
+							[#assign url="javascript:void(0);" /]
+						[/#if]
+						[#if author??]
+						[#if author.oid == me.oid]
+							[#assign url2="${base}/my/topic" /]
+						[#elseif author.oid != 0]
+							[#assign url2="${base}/his/topic/${author.oid?c}" /]
+						[/#if]
+						[#else]
+							[#assign url2="javascript:void(0);" /]
+						[/#if]
+						
+						<a [#if author??] href="${url}" [#else] href="javascript:void(0);" [/#if] target="_blank">
+							<img 
+							[#if author??]
+							[#if author.uid != ""]
+		               	   		[#if author.avatar != ""]
+		               	   			src="${userimg}${author.avatar}"
+		               	   		[#else]
+			                   		src="${baseimg}/imgs/web/noavatar.png"
+		               	   		[/#if]
+		               	   	[/#if]
+		                    [#else]
+		                   		[#if author.avatarlittle != ""]
+		               	   			src="${userimg}${author.avatarlittle}"
+		               	   		[#else]
+			                   		src="${baseimg}/imgs/web/noavatar.png"
+		               	   		[/#if]
+		                    [/#if]
+							class="picture" />
+						</a>
+						<div class="originame">
+							<a [#if author??] href="${url}" [#else] href="javascript:void(0);" [/#if] class="specials specname" target="_blank">${author.showname}</a>
+							<span>文章&nbsp;&nbsp;<a [#if author??] href="${url}" [#else] href="javascript:void(0);" [/#if] class="specials" target="_blank">${count!0}</a></span>
+							<span>话题&nbsp;&nbsp;<i class="specials"><a [#if author??] href="${url2}" [#else] href="javascript:void(0);" [/#if] class="specials" target="_blank">${count2!0}</a></i></span>
+						</div>
+						<div class="subs" id="subscribe" data-isubscribe="${issubscribe!'false'}">
+							<a [#if me?? && me.uid != bean.authoruid && author??] href="javascript:void(0);" onclick="subscribeHandle(this, ${author.oid?c});" [#elseif !me??] href="javascript:void(0);" class="pop-up" [#else] href="javascript:void(0);" [/#if]>
+								<img src="${baseimg}/imgs/default/addsubs.png" />
+							</a>
+							<a [#if me?? && me.uid != bean.authoruid && author??] href="javascript:void(0);" onclick="subscribeHandle(this, ${author.oid?c});" class="addsub" [#elseif !me??] href="javascript:void(0);" class="addsub pop-up" [#else] href="javascript:void(0);" class="addsub" [/#if]>订阅</a>
+						</div>
+						<p>${bean.contributor.summary!'暂无简介'}</p>
+					</div>
+				</div>
+		    	<div class="attention">
+		     		[#include "/WEB-INF/Views/Web/attentionus.ftl" /]
+		     	</div>
+				<div class="ranklist">
+		  			<h4>${type}文章排行榜</h4>
+		  			<ul class="hotlist">
+		  				[#list list2 as item]
+			  				<li [#if item_index == 0] class="curshow" [/#if]>
+			  					<span [#if (item_index<3)] class="normalspan ranknum" [#else] class="normalspan"[/#if]>${item_index + 1}</span>
+			  					<div class="rankright">
+			  						<a href="${base}/${typename}/${item.oid?c}" title="${item.title}" target="_blank" class="arttile">[@f.TrimSubstring content="${item.title}" mylength=13 /]</a>
+			  						<p class="titdescribe">
+										[@f.TrimSubstring content="${item.summary}" mylength=40 /] 
+										<a href="${base}/${typename}/${item.oid?c}" target="_blank">[详情]</a>
+									</p>
+			  					</div>
+			  				</li>
+						[/#list]
+		  			</ul>
+		  		</div>
+				<div class="ranklist">
+		  			<h4>热门文章排行榜</h4>
+		  			<ul class="hotlist">
+		  				[#list list as item]
+			  				<li [#if item_index == 0] class="curshow" [/#if]>
+			  					<span [#if (item_index < 3)] class="normalspan ranknum" [#else] class="normalspan"[/#if]>${item_index + 1}</span>
+			  					<div class="rankright">
+									<a href="${base}/${typename}/${item.oid?c}" title="${item.title}" target="_blank" class="arttile">[@f.TrimSubstring content="${item.title}" mylength=13 /]</a>
+									<p class="titdescribe">
+										[@f.TrimSubstring content="${item.summary}" mylength=40 /]  
+										<a href="${base}/${typename}/${item.oid?c}" target="_blank">[详情]</a>
+									</p>
+								</div>
+			  				</li>
+						[/#list]
+		  			</ul>
+		  		</div>[#-- 热门文章排行榜 --]
+		    </div><!--db_rightbox-->
+		</div>
+	</div>
+</body>
+</html>

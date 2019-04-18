@@ -1,0 +1,187 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+[#if ajaxloadmore == "subscribe"][#-- 我的订阅 --]
+	[#list list as item]
+		<li>
+			<div class="subsperson">
+				<a [#if item.refuser.oid?? && item.refuser.oid != ""] href="${base}/his/article/${item.refuser.oid}" [#else] href="javascript:void(0);" [/#if] class="personimg" target="_blank">
+					<img [#if item.refuser.avatar?? && item.refuser.avatar != ""] src="${userimg}${item.refuser.avatar}" [#else] src="${baseimg}/imgs/web/noavatar.png" [/#if] />
+				</a>
+				<div class="personinfor">
+					<h4>
+						<a [#if item.refuser.oid?? && item.refuser.oid != ""] href="${base}/his/article/${item.refuser.oid?c}" [#else] href="javascript:void(0);" [/#if] class="personame" target="_blank">
+							${item.refuser.showname}
+						</a>
+						<div class="subsbtn">
+							<span class="substip redtip">已取消订阅</span>
+							<a href="javascript:void(0);" class="cancelsubs cancelSubs" data-id="${item.refuser.oid?c}" id="cancelsub${item_index}_${item.refuser.oid?c}">
+								<img src="${baseimg}/imgs/default/cancelsubs.png" />
+							</a>
+						</div>
+					</h4>
+					<div class="companyInfor">
+						${item.refuser.company}-${item.refuser.department}-${item.refuser.job}
+					</div>
+					<div class="numcont">
+						<span class="articleNum">
+							文章
+							<a href="${base}/his/article/${item.refuser.oid?c}">${item.userstatistics.articlecount!"0"} 篇</a>
+						</span>
+						<span class="topicNum">
+							话题
+							<a href="#${base}/his/topic/${item.refuser.oid?c}">${item.userstatistics.topiccount!"0"} 个</a>
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class="newaction">
+				<img src="${baseimg}/imgs/default/voiceimg.png" />
+					[#assign link=""]
+					[#if "${item.finance.firstTypeName}" == "debate"]
+						[#assign link="${base}/debate/article/${item.finance.uid}"]
+					[#else]
+						[#assign link="${base}/${item.finance.firstTypeName}/${item.finance.oid?c}"]
+					[/#if]
+					[#if item.finance??]
+						<a href="${link}" class="activity" target="_blank">
+						发表文章:[@f.TrimSubstring content="${item.finance.title}" mylength=40 /]
+					[#elseif item.topic??]
+						<a href="${base}/${item.typename}/${item.topic.oid?c}" class="activity" target="_blank">
+						发布话题:[@f.TrimSubstring content="${item.topic.title}" mylength=40 /]
+					[#else]
+					<a href="javascript:void(0);" class="activity">
+						暂无最新文章...
+					[/#if]
+				</a>
+			</div>
+		</li>
+	[/#list]
+[#elseif ajaxloadmore == "comment"][#-- 我的评论 --]
+	[#list list as item]
+		[#if item.channel == "finance" && item.typename == "debate"]
+			[#assign url = "${base}/debate/article/${item.finance.uid}"]
+			[#assign title = "${item.finance.title}"]
+		[#elseif item.channel == "finance"]
+			[#assign url="${base}/${item.typename}/${item.finance.oid?c}"]
+			[#assign title = "${item.finance.title}"]
+		[#elseif item.channel == "debate"]
+			[#assign url="${base}/${item.typename}/${item.debate.oid?c}"]
+			[#assign title = "${item.debate.title}"]
+		[#elseif item.channel == "topic"]
+			[#assign url="${base}/${item.typename}/${item.topic.oid?c}"]
+			[#assign title = "${item.topic.title}"]
+		[#else]
+			[#assign url="javascript:void(0);"]
+			[#assign title = ""]
+		[/#if]
+		[#if item.bean.touseroid == me.oid && item.bean.fromuseroid != me.oid]
+			[#assign url1="${base}/his/article/${item.bean.fromUser.oid?c}"]
+			[#if item.bean.fromUser.avatar?? && item.bean.fromUser.avatar != ""]
+				[#assign url2="${userimg}${item.bean.fromUser.avatar}"]
+			[#else]
+				[#assign url2="${baseimg}/imgs/web/noavatar.png"]
+			[/#if]
+		[#else]
+			[#assign url1="javascript:void(0);"]
+			[#if me.avatar?? && me.avatar != ""]
+				[#assign url2="${userimg}${me.avatar}"]
+			[#else]
+				[#assign url2="${baseimg}/imgs/web/noavatar.png"]
+			[/#if]
+		[/#if]
+		<li>
+			<a href="${url1}" target="_blank"><img src="${url2}" class="judgeuser" /></a>
+			<div class="judgeContent">
+				<div class="nametime">
+					<a href="${url1}" class="judgename" target="_blank"><em>${item.bean.fromusername}</em></a>
+					<span class="outtime">${(item.bean.createtime).toString("YYYY年MM月dd日HH:mm")}</span>
+					<a href="javascript:;" class="deletelink delete" data-id="${item.bean.uid}"><img src="${baseimg}/imgs/default/deleteimg.png" class="deleteimg" /></a>
+				</div>
+				<p class="comments">${item.bean.content}</p>
+				<div class="source">
+					来自<a href="${url}" class="from" target="_blank">[@f.TrimSubstring content='${title}' mylength=30 /]</a>
+				</div>
+			</div>
+		</li>
+	[/#list]
+[#elseif ajaxloadmore == "article"][#-- 他的文章 --]
+	[#list list as article]
+		<li>
+			<div class="leftime">
+				<b>${article.createtimeStr?substring(0,4)}</b>
+				${article.createtimeStr?substring(5,10)}
+				<img src="${baseimg}/imgs/default/dbcircle.jpg" />
+			</div>
+			<div class="rightcontent">
+				[#assign link=""]
+				[#if "${article.firstTypeName}" == "debate"]
+					[#assign link="${base}/debate/article/${article.uid}"]
+				[#else]
+					[#assign link="${base}/${article.firstTypeName}/${article.oid?c}"]
+				[/#if]
+				<div class="contentleft">
+					<a href="${link}" target="_blank"><img src="${webimg}${article.imglittle}" class="article01" /></a>
+				</div>
+				<div class="contentright">
+					
+					<h5>
+						<a href="${link}" title="${article.title}" target="_blank">${article.title}</a>
+					</h5>
+					<p>[@f.TrimSubstring content="${article.summary}" mylength=100 /]</p>
+					<div class="iconsbox">
+						<span title="查看次数">
+							<img src="${baseimg}/imgs/default/viewicon.png" />
+							${article.clickcount}
+						</span>
+						<span title="点赞次数">
+							<img src="${baseimg}/imgs/default/thumb.png" />
+							${article.prizecount}
+						</span>
+						<span title="评论次数">
+							<img src="${baseimg}/imgs/default/msg01.png" />
+							${article.commentcount}
+						</span>
+						<span title="分享">
+							<img src="${baseimg}/imgs/default/shareicon.png" />
+						</span>
+					</div>
+				</div>
+			</div>
+		</li>
+	[/#list]
+[#elseif ajaxloadmore == "topic"][#-- 他的话题 --]
+	[#list list as tatopic]
+	    <li class="tpcitem">
+	        <div class="newjudger">
+	            <a href="javascript:void(0);" class="newjudgerimg">
+	                <img [#if user.avatar?? && user.avatar != ""] src="${userimg}${user.avatar}" [#else] src="${baseimg}/imgs/web/noavatar.png" [/#if] />
+	            </a>
+	            <a href="javascript:void(0);" class="newNamelink"><span class="newname">${tatopic.author}</span></a>
+	            <span class="newtime hisnewtime">${tatopic.createtimeStr}</span>
+	        </div>
+	        <a href="${base}/topic/${tatopic.oid?c}" class="topicTitlink" target="_blank">
+	            <span class="topictit">${tatopic.title}</span>
+	        </a>
+	        <a href="${base}/topic/${tatopic.oid?c}" class="imgcontainer" target="_blank">
+	            <img src="${webimg}${tatopic.imgoriginal}" class="topicimg" />
+	        </a>
+	        <div class="iconsbox">
+	            <span title="查看次数">
+	                <img src="${baseimg}/imgs/default/viewicon.png" />
+	                ${tatopic.clickcount}
+	            </span>
+	            <span title="点赞次数">
+	                <img src="${baseimg}/imgs/default/thumb.png" />
+	                ${tatopic.prizecount}
+	            </span>
+	            <span title="评论次数">
+	                <img src="${baseimg}/imgs/default/msg01.png" />
+	                ${tatopic.commentcount}
+	            </span>
+	            <span title="分享">
+	                <img src="${baseimg}/imgs/default/shareicon.png" />
+	            </span>
+	        </div>
+	    </li>
+	[/#list]
+[/#if]

@@ -1,0 +1,46 @@
+package com.supergenius.global.conf;
+
+import java.util.Properties;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import com.genius.core.base.conf.BaseSysConf;
+
+/**
+ * @author Architect.bian
+ * 
+ */
+@Component
+public class SysConf extends BaseSysConf {
+	public static final int[][] AvatarSizes = new int[][] { { 300, 300 }, { 180, 180 }, { 50, 50 } };
+	public static final int[][] ImgShowSizes = new int[][] { { 720, 540 }, { 480, 360 }, { 160, 120 } };
+	public static int AliveTime;
+	public static int SummarySize;
+	public static int FirstArticleSize;
+	public static int FirstLoadSize;
+	public static int RecommendArticleSize;	
+	public static float ClickcountPercent;
+	public static float PrizecountPercent;
+	public static float CommentscountPercent;
+	public static float CollectcountPercent;
+	public static String FinanceCatalogueOrder;
+	public static String SerialFinanceArticlePath;
+	public static String SerialFinanceCataloguePath;
+
+	@Value("#{sys}")
+	public void setSysConf(Properties sys) {
+		SysConf.SummarySize = Integer.valueOf(sys.getProperty("SummarySize"));
+		SysConf.AliveTime = Integer.valueOf(sys.getProperty("AliveTime"));
+		SysConf.FirstArticleSize = Integer.valueOf(sys.getProperty("FirstArticleSize"));
+		SysConf.FirstLoadSize = Integer.valueOf(sys.getProperty("FirstLoadSize"));
+		SysConf.RecommendArticleSize = Integer.valueOf(sys.getProperty("RecommendArticleSize"));
+		SysConf.ClickcountPercent = Float.valueOf(sys.getProperty("ClickcountPercent"));
+		SysConf.PrizecountPercent = Float.valueOf(sys.getProperty("PrizecountPercent"));
+		SysConf.CommentscountPercent = Float.valueOf(sys.getProperty("CommentscountPercent"));
+		SysConf.CollectcountPercent = Float.valueOf(sys.getProperty("CollectcountPercent"));
+		SysConf.SerialFinanceCataloguePath = sys.getProperty("SerialFinanceCataloguePath");
+		SysConf.SerialFinanceArticlePath = sys.getProperty("SerialFinanceArticlePath");
+		SysConf.FinanceCatalogueOrder = sys.getProperty("FinanceCatalogueOrder");
+	}
+}

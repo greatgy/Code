@@ -1,0 +1,47 @@
+package com.supergenius.web.finance.controller;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.genius.core.base.utils.CookieUtil;
+import com.genius.core.session.constant.SessDict;
+import com.genius.server.base.controller.BaseController;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.xo.server.helper.BaseUserHP;
+import com.supergenius.xo.user.entity.User;
+import com.supergenius.xo.user.service.UserSO;
+
+
+@Controller
+public class SearchrController extends BaseController {
+		
+	@RequestMapping(value = {"/searchr/art" })
+	public String searchr_art(Map<String, Object> model) {
+		return "searchrart";
+	}
+
+	@RequestMapping(value = { "/searchr/topic" })
+	public String searchr_topic(Map<String, Object> model) {
+		return "searchrtopic";
+	}
+
+	@RequestMapping(value = { "/searchr/debate" })
+	public String searchr_debate(Map<String, Object> model) {
+		return "searchrdebate";
+	}
+
+	@RequestMapping(value = { "/searchr/user" })
+	public String searchr_user(Map<String, Object> model) {
+		return "searchruser";
+	}
+
+}

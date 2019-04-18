@@ -1,0 +1,458 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/Public.ftl" as p]
+<link rel="stylesheet" type="text/css" href="${basecss}/css/default/common.css" class="cssfx" />
+<script type="text/javascript" src="${basejs}/js/pages/login.js"></script>
+[@p.login /]
+<div class="header_tou clear">
+	<div class="top">
+    	<div class="top_main1">
+    	<ul class="top_left">
+            <li><a href="http://www.supergenius.cn">超天才</a></li>
+            <li class="selectlink">
+                    <a href="javascript:;">
+                        “引资购商”专栏
+                    </a>
+                    <div class="navlist">
+                        <div class="trangle"></div>
+                        <ul class="navlink">
+                            <li><a href="http://enterpriser.supergenius.cn/lecture">专题讲座</a></li>
+                            <li><a href="http://enterpriser.supergenius.cn/appcooperation">互助合作平台</a></li>
+                            <li><a href="http://enterpriser.supergenius.cn/index">企业家培训</a></li>
+                            <li><a href="http://book.supergenius.cn/index.html" target="_blank">《引资购商》</a></li>
+                        </ul>
+                    </div>
+            </li>
+            <li><a href="http://manager.supergenius.cn">职业经理人培训</a></li>
+            <li><a href="http://moral.supergenius.cn">职业道德培训</a></li>
+           [#-- <li><a href="http://guchujun.supergenius.cn">顾雏军专栏</a></li>--]
+            <li><a href="http://finance.supergenius.cn/" class="tl_act">天财评论</a></li>
+            <li><a href="http://www.supergenius.cn/wisdom">智慧产业</a></li>
+            [#--<li><a href="http://tpi.supergenius.cn">并购平台</a></li>--]
+            <li><a href="http://sns.supergenius.cn">人间仙境</a></li>
+            <li><a href="http://game.supergenius.cn/" target="_blank">天才数独棋</a></li>
+        </ul>
+	        <ul class="top_right">
+	           [#if me??]
+	        	<li class='welcome'><a href="${userbase}" target="_blank">欢迎您&nbsp;${me.showname}</a></li>
+	        	<li class="newsnotice">
+	        		<a href="javascript:;" class="newsnum hasnews" style="display:none;">
+		        		新消息
+		        		（<b class="number">0</b>）
+                    	<span class="rdot"></span>
+	        		</a>
+	        		<a href="javascript:;" class="newsnum nonews" style="display:none;">
+	        			消息
+	        		</a>
+	        		<div class="newsection" id="sitemsg">
+	        			<div class="trangle">
+						  <em></em>
+						  <i></i>
+						</div>
+	        			<ul class="datalist" style="display:none;">
+	        				<li data-channel="finance">
+                            	<a href="${base}/my/msg" class="newmessage" target="_blank">
+                              		天财评论有新消息
+  									（<b class="number">0</b>）
+								</a>
+                              	<a href="javascript:;" class="del ignore">
+                                	<img src="${baseimg}/imgs/default/delimg.png" />
+                              	</a>
+	        				</li>
+	        				[#--<li data-channel="tpi">
+                            	<a href="${tpibase}/mycenter/message/inbox" class="newmessage" target="_blank">
+                              		并购平台有新消息
+  									（<b class="number">0</b>）
+								</a>
+                              	<a href="javascript:;" class="del ignore">
+                                	<img src="${baseimg}/imgs/default/delimg.png" />
+                              	</a>
+	        				</li>--]
+	        				<li data-channel="moral">
+                            	<a href="${moralbase}/mycenter/message" class="newmessage" target="_blank">
+                              		职业道德培训有新消息
+  									（<b class="number">0</b>）
+								</a>
+                              	<a href="javascript:;" class="del ignore">
+                                	<img src="${baseimg}/imgs/default/delimg.png" />
+                              	</a>
+	        				</li>
+	        				<li data-channel="manager">
+                            	<a href="${managerbase}/mycenter/msg" class="newmessage" target="_blank">
+                              		职业经理人培训有新消息
+  									（<b class="number">0</b>）
+								</a>
+                              	<a href="javascript:;" class="del ignore">
+                                	<img src="${baseimg}/imgs/default/delimg.png" />
+                              	</a>
+	        				</li>
+                      	</ul>
+                      	<div class="datalist nomsg" style="display:none;">
+                      		<pre>
+                      			<p>最纯洁的职业经理人绝不会利用职业生涯中所习得的技能和知识创业或参与行业竞争</p>
+								<span class="authorname">———超天才职业经理人培训学院</span>
+							</pre>
+  							<div class="nonews">暂无新消息</div>
+                      	</div>
+    				</div>
+				</li>
+	        	<li class='offline'><a href="javascript:offline();">退出</a></li>
+	           [#else]
+                <li class="tr_act"><a href="${userbase}/login">登录</a></li>
+                <li><a href="${userbase}/register">注册</a></li>
+	           [/#if]
+                <li><a href="http://www.supergenius.cn/huiyuan" target="_blank">会员特权</a></li>
+	        </ul>
+        </div>
+    </div>
+    <div class="top_02">
+    	<a href="${base}/index"><img src="${baseimg}/imgs/default/logo.png" class="logoicon" /></a>
+    	<div class="logoTitle">
+    		<span class="bgtitle">独特视角</span>
+    		解读国内外财经事件
+    	</div>
+    	<div class="searchUser">
+    		<form id="searchform" action="${base}/search">
+               <input type="text" id="txtsearch" name="keyword" maxlength="20" autocomplete="off" placeholder="搜索文章、论战、话题" /> 
+	           <a href="javascript:void(0);" class="searchimg" id="searchimg"></a>
+	           <input style='display:none' />
+	           <ul class="searchlist" id="searchlist">
+	           		<li class="slistli01" id="search_finance" data-type="finance">
+	           			<span><i>文章</i>搜索：</span>
+	           			<section class="searchkey"></section>
+	           		</li>
+	           		<li class="slistli02" id="search_topic" data-type="topic">
+	           			<span><i>话题</i>搜索：</span>
+	           			<section class="searchkey"></section>
+	           		</li>
+	           		<li class="slistli03" id="search_debate" data-type="debate">
+	           			<span><i>论战</i>搜索：</span>
+	           			<section class="searchkey"></section>
+	           		</li>
+	           		<li class="slistli04" id="search_user" data-type="user">
+	           			<span><i>作者</i>搜索：</span>
+	           			<section class="searchkey"></section>
+	           		</li>
+	           </ul>
+            </form>
+            <a href="${base}/contribute" class="contribute">投稿</a>
+            <div class="userbox">
+            	<div class="yesuser">
+            		<a [#if me??]href="${base}/my/article" [#else] href="javascript:;" class="userimg pop-up" [/#if]><img [#if me?? && me.avatar??] src="${userimg}${me.avatar}" [#else] src="${baseimg}/imgs/web/noavatar.png" [/#if] class="userimg" /></a>
+            		<div class="userselfbox">
+            			<div class="trangle"></div>
+	            		<div class="userselfcontent">
+		            		<ul class="userights">
+		            			<li>
+		            				<a [#if me??] href="${base}/my/article" [#else] href="javascript:;" class="pop-up" [/#if]>我的文章</a>
+		            			</li>
+		            			<li>
+		            				<a [#if me??] href="${base}/my/topic" [#else] href="javascript:;" class="pop-up" [/#if]>我的话题</a>
+		            			</li>
+		            			<li>
+		            				<a  [#if me??]href="${base}/my/collect" [#else] href="javascript:;" class="pop-up" [/#if] data-channel="collect">我的收藏</a>
+		            			</li>
+		            			<li>
+		            				<a [#if me??] href="${base}/my/msg" [#else] href="javascript:;" class="pop-up" [/#if] id="message">消息中心</a>
+		            			</li>
+		            		</ul>
+		            	</div>
+	            	</div>
+            	</div>
+            	<div class="notuser" style="display:none">
+            		<a href="javascript:;"><img src="${baseimg}/imgs/default/contribute.png" class="userimg" /></a>
+            	</div>
+            	
+            </div>
+    	</div>
+    </div>
+    <!--sidenav开始-->
+    <ul class="sidenav" id="box-nav">
+		<li>
+			<a href="${base}/index" class="sidea01">
+				<span>首页</span>
+			</a>
+		</li>
+		<li>
+			<a href="${base}/goldlanguage" class="sidea14">
+				<span>醒世金语</span>
+			</a>
+		</li>
+		<li>
+			<a href="${base}/geniusfocus" class="sidea02">
+				<span>天财焦点</span>
+			</a>
+		</li>
+		<li>
+			<a href="${base}/economicobservation" class="sidea04">
+				<span>经济观察</span>
+			</a>
+		</li>
+		<li>
+			<a href="${base}/industries" class="sidea06">
+				<span>产业</span>
+			</a>
+		</li>
+		<li>
+			<a href="${base}/corporations" class="sidea07">
+				<span>企业</span>
+			</a>
+		</li>
+		<li>
+			<a href="${base}/mergerandacquisition" class="sidea08">
+				<span>并购</span>
+			</a>
+		</li>
+		[#--<li>
+			<a href="${base}/goodarticle" class="sidea09">
+				<span>文萃</span>
+			</a>
+		</li>--]
+		[#--<li>
+			<a href="${base}/legalandeconomic" class="sidea05">
+				<span>经济与法</span>
+			</a>
+		</li>--]
+		<li>
+			<a href="${base}/careerexecutives" class="sidea10">
+				<span>职场新视点</span>
+			</a>
+		</li>
+		<li>
+			<a href="${base}/officecafe" class="sidea11">
+				<span>职场夜话</span>
+			</a>
+		</li>
+		<li>
+			<a href="${base}/topic" class="sidea12">
+				<span>热门话题</span>
+			</a>
+		</li>
+		<li>
+			<a href="${base}/debate" class="sidea13">
+				<span>论战</span>
+			</a>
+		</li>
+	</ul><!--sidenav结束-->
+	[#if me??]
+	<script type="text/javascript" src="${basejs}/js/pages/sitesmsg.js"></script>
+	<script>
+	var msgUrl={
+		"finance":"${base}/ajax/site/message/count?callback=?",
+		"moral":"${moralbase}/ajax/site/message/count?callback=?",
+		"manager":"${managerbase}/ajax/site/message/count?callback=?"
+		[#--"tpi":"${tpibase}/ajax/site/message/count?callback=?"--]
+	}
+	var ignoreMsgUrl={
+	    "finance":"${base}/ajax/site/message/ignore?callback=?",
+	    "moral":"${moralbase}/ajax/site/message/ignore?callback=?",
+	    "manager":"${managerbase}/ajax/site/message/ignore?callback=?"
+	    [#--"tpi":"${tpibase}/ajax/site/message/ignore?callback=?"--]
+	}
+	var quoteUrl = "${officialbase}/ajax/site/quotes/random?callback=?";
+	</script>
+	[/#if]
+	<script type="text/javascript">
+		<!-- 
+		$(function(){
+			 //搜索框获得焦点，选项出现
+			$("#txtsearch").focus(function(){
+				if ($("#txtsearch").val().trim() =="") {
+					return;
+				}
+				$(".searchlist").show();
+				$("li[id^='search_'] section.searchkey").html($("#txtsearch").val().trim());
+			});
+			// 切换导航选中状态
+			$(".sidenav li a").click(function(){
+				$(this).parent().siblings().find("a").removeClass("activelink");
+				$(this).addClass("activelink");
+			});
+			// 滚动条滚动，导航固定位置
+			$(window).scroll(function(){
+				var scrollTop = $(window).scrollTop();
+				if(scrollTop > 42) {
+					$(".header_tou .top").hide();
+					$(".header_tou .top_02").css({position:"fixed",top:"0"});
+					$(".sidenav").css("top","59px");
+				} else {
+					$(".header_tou .top").show();
+					$(".header_tou .top_02").css({position:"static"});
+					$(".sidenav").css("top","96px");
+				}
+				$("#loginmask").css("height", $(document.body).height());
+			});
+			
+			// 消息数量
+			[#if me??]
+    			$.get("${base}/ajax/my/unreads", function(data){
+        			if(data != 0){
+                        $(".userselfbox").before("<span class='reddot'></span>");
+                        $("#message").append("<span>"+data+"</span>");
+        			}
+                });
+            [/#if]
+            //搜索框字符发生改变事件
+            if ((window.navigator.userAgent.indexOf('MSIE') >= 0) && (window.navigator.userAgent.indexOf('Opera') < 0)) {
+				document.getElementById("txtsearch").onpropertychange = function(){
+					$("li[id^='search_'] section.searchkey").html($("#txtsearch").val());
+					$("#txtsearch").focus();
+				};
+            } else {
+	            document.getElementById("txtsearch").addEventListener("keyup", function(){
+	            	$("li[id^='search_'] section.searchkey").html($("#txtsearch").val());
+	            	$("#txtsearch").focus();
+	            });
+            }
+            $("#txtsearch").bind("blur", searchlistStyleHide);
+            //查找的下拉列表样式变化
+            $(".searchlist").mouseenter(function() {
+            	$("#txtsearch").unbind("blur", searchlistStyleHide);
+            });
+            $(".searchlist").mouseleave(function() {
+            	$("#txtsearch").unbind("blur", searchlistStyleHide);
+            	$("#txtsearch").bind("blur", searchlistStyleHide);
+            });
+            //选择查找
+			$("li[id^='search_']").click(function() {
+				var keyword = $("#txtsearch").val().trim();
+				var channel = $(this).data("type");
+				$("#txtsearch").focus();
+				$("#txtsearch").blur();
+				searchlistStyleHide();
+				if (keyword == "") {
+					shakeHandle();
+					return;
+				}
+				window.location.href = "${base}/search/" + channel + "?keyword=" + keyword;
+            });
+            //绑定查找事件
+            $("#txtsearch").bind("keydown", searchHandle);
+            $("#searchimg").bind("click", searchImg);
+            //搜索图片样式变化
+            $("#searchimg").mouseenter(function() {
+            	$("#searchimg").css("background", "url(${baseimg}/imgs/default/bsearch.png) no-repeat center center");
+            });
+            $("#searchimg").mouseleave(function() {
+            	$("#searchimg").css("background", "url(${baseimg}/imgs/default/search.png) no-repeat center center");
+            });
+			
+		});
+		//按搜索图片查找
+		function searchImg() {
+			if ($("#txtsearch").val().trim() == "") {
+					shakeHandle();
+            		return;
+            } else {
+            	$("#searchform").submit();
+            }
+		}
+		
+		//按enter键查找
+		function searchHandle(event){
+			if (event.keyCode==13) {
+				if ($(this).val().trim() == "") {
+					shakeHandle();
+					$(this).blur();
+					return;
+				} else {
+					$("#searchform").submit();			
+				}
+			}
+		}
+		
+		function searchlistStyleHide() {
+			$(".searchlist").hide();
+		}
+		//设置搜索框内容为空时抖动提示
+		function shakeHandle() {
+			$('#txtsearch').addClass("txtsearch");
+			setTimeout("$('#txtsearch').removeClass('txtsearch')",400);
+		}
+		
+	    [#if me??]
+	    function offline(){
+	       $.post("${base}/offline", function(data){
+	           if(data){
+	               $(".welcome").addClass("hd");
+	               $(".offline").addClass("hd");
+	               $(".login").removeClass("hd");
+	               $(".register").removeClass("hd");
+	           }
+	           window.location.reload();
+	       });
+	    }
+	    [/#if]
+	  -->
+	</script>
+	<style>
+		@-webkit-keyframes txtsearch-out {
+          0% {
+            -webkit-transform: translateX(2px);
+          }
+          20% {
+            -webkit-transform: translateX(-2px);
+          }
+          40% {
+            -webkit-transform: translateX(1px);
+          }
+          60% {
+            -webkit-transform: translateX(-1px);
+          }
+          80% {
+            -webkit-transform: translateX(0.3px);
+          }
+          100% {
+            -webkit-transform: translateX(-0.3px);
+          }
+		}
+		
+		@keyframes txtsearch-out{
+		 0% {
+            -webkit-transform: translateX(2px);
+          }
+          20% {
+            -webkit-transform: translateX(-2px);
+          }
+          40% {
+            -webkit-transform: translateX(1px);
+          }
+          60% {
+            -webkit-transform: translateX(-1px);
+          }
+          80% {
+            -webkit-transform: translateX(0.3px);
+          }
+          100% {
+            -webkit-transform: translateX(-0.3px);
+          }
+		}
+		
+		@-moz-keyframes txtsearch-out {
+		  0% {
+            -webkit-transform: translateX(2px);
+          }
+          20% {
+            -webkit-transform: translateX(-2px);
+          }
+          40% {
+            -webkit-transform: translateX(1px);
+          }
+          60% {
+            -webkit-transform: translateX(-1px);
+          }
+          80% {
+            -webkit-transform: translateX(0.3px);
+          }
+          100% {
+            -webkit-transform: translateX(-0.3px);
+          }
+		}
+		.txtsearch {
+            -webkit-animation-name: txtsearch-out;
+            -webkit-animation-duration: 0.35s;
+            -webkit-animation-timing-function: ease-out;
+            -webkit-animation-iteration-count: 1;
+		}
+	</style>
+</div>
+

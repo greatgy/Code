@@ -1,0 +1,417 @@
+package com.supergenius.web.finance.helper;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import com.genius.core.base.utils.CookieUtil;
+import com.genius.core.base.utils.DateUtil;
+import com.genius.core.base.utils.JsonUtil;
+import com.genius.core.cache.rule.Rule;
+import com.genius.core.cache.utils.MemcacheUtil;
+import com.genius.core.cache.utils.RedisUtil;
+import com.genius.core.serial.utils.SerialUtil;
+import com.genius.model.base.entity.Pager;
+import com.supergenius.core.rule.ClickCountTopicRule;
+import com.supergenius.core.rule.TopicJoinUserRule;
+import com.supergenius.core.rule.TopicLatestRule;
+import com.supergenius.core.rule.TopicMaxCommentRule;
+import com.supergenius.core.rule.TopicRankRule;
+import com.supergenius.core.rule.TopicRecommendRule;
+import com.supergenius.core.rule.UserTopicCommentRule;
+import com.supergenius.core.rule.UserTopicCountRule;
+import com.supergenius.global.conf.SysConf;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.common.enums.ECommentType;
+import com.supergenius.xo.finance.entity.CountDetail;
+import com.supergenius.xo.finance.entity.Topic;
+import com.supergenius.xo.finance.enums.ECountType;
+import com.supergenius.xo.finance.enums.ETopicState;
+import com.supergenius.xo.finance.service.CountDetailSO;
+import com.supergenius.xo.finance.service.TopicSO;
+import com.supergenius.xo.user.entity.Comments;
+import com.supergenius.xo.user.entity.User;
+import com.supergenius.xo.user.service.CommentsSO;
+import com.supergenius.xo.user.service.UserSO;
+
+/**
+ * 话题HP（前台使用）
+ * 
+ * @author liushaomin
+ */
+public class TopicHP extends com.supergenius.server.finance.helper.BaseTopicHP {
+
+	private static Logger log = LoggerFactory.getLogger(TopicHP.class);
+	private static TopicSO so;
+	private static CommentsSO commentsSO;
+	private static CountDetailSO countDetailSO;
+	private static UserSO userSO;
+
+	private static TopicSO getSO() {
+		if (so == null) {
+			so = (TopicSO) spring.getBean(TopicSO.class);
+		}
+		return so;
+	}
+
+	private static CommentsSO getCommentsSO() {
+		if (commentsSO == null) {
+			commentsSO = (CommentsSO) spring.getBean(CommentsSO.class);
+		}
+		return commentsSO;
+	}
+
+	public static CountDetailSO getCountDetailSO() {
+		if (countDetailSO == null) {
+			countDetailSO = (CountDetailSO) spring.getBean(CountDetailSO.class);
+		}
+		return countDetailSO;
+	}
+
+	public static UserSO getUserSO() {
+		if (userSO == null) {
+			userSO = (UserSO) spring.getBean(UserSO.class);
+		}
+		return userSO;
+	}
+
+	/**
+	 * 获取评论数最多的话题
+	 * 
+	 * @return
+	 * @author ShangJianguo
+	 */
+	public static Topic getTopicByCommentNumer() {
+		Topic topic = null;
+		List<String> allNoFromuids = new ArrayList<>();
+		Rule rule = new TopicMaxCommentRule("", SysConf.Expire_TopicMaxComment);
+		try {
+			Object object = MemcacheUtil.get(rule);
+			if (object != null) {
+				topic = (Topic) object;
+				return topic;
+			} else {
+				LinkedHashMap<String, Object> map = deserialMap(getIndexHotTopicSerialPath());
+				if (map != null && map.size() > 0) {
+					for (Entry<String, Object> item : map.entrySet()) {
+						allNoFromuids.add(item.getKey());
+					}
+				}
+				List<String> enableNoFromuids = new ArrayList<>();
+					for (String uid : allNoFromuids) {
+						topic = getSO().get(uid.toString());
+						if (topic != null && topic.getIsEnable()) {
+							enableNoFromuids.add(uid);
+						}
+					}
+				// 若24小时内没有评论，则保持原来的72小时，若72小时内还无评论，则取最新的一条
+				List<String> list = CommentsHP.getRankUid(EChannel.topic, ECommentType.comment, SysConf.IndexTopicCommenthour, 1, enableNoFromuids);
+				if (list.size() == 0) {
+					if (enableNoFromuids.size() == 0 || DateUtil.getJodaDateTime(map.get(enableNoFromuids.get(enableNoFromuids.size() - 1)).toString()).plusHours(72).isBeforeNow()) {
+						// 以前没有或者最新的一条已经超过了72小时,获取最新的
+						List<Topic> templist = getSO().getList(new Pager(1));
+						topic = templist.size() == 0 ? null : templist.get(0);
+					} else {
+						topic = getSO().get(enableNoFromuids.get(enableNoFromuids.size() - 1));// 以前的72小时内的一条
+					}
+				} else {
+					topic = getSO().get(list.get(0));
+				}
+				if (map == null) {
+					map = new LinkedHashMap<>();
+				}
+
+				if (topic != null) {
+					map.put(topic.getUid(), DateTime.now());
+					List<Comments> comments = getCommentsSO().getList(topic.getUid(), ECommentType.comment, new Pager(1, 3), null);
+					topic.setComments(comments);
+					MemcacheUtil.set(rule, topic);
+				}
+				serialMap(getIndexHotTopicSerialPath(), map);
+			}
+		} catch (Exception e) {
+			logException(log, e);
+		}
+		return topic;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static LinkedHashMap<String, Object> deserialMap(String path) {
+		LinkedHashMap<String, Object> map = null;
+		try {
+			Object obj = SerialUtil.deserialize(path);
+			if (obj != null) {
+				map = (LinkedHashMap<String, Object>) obj;
+			}
+		} catch (Exception e) {
+			logException(log, e);
+		}
+		return map;
+	}
+
+	/**
+	 * 序列化到文件
+	 * 
+	 * @param path
+	 * @param map
+	 * @return
+	 * @author ShangJianguo
+	 */
+	private static boolean serialMap(String path, LinkedHashMap<String, Object> map) {
+		return SerialUtil.serialize(map, path);
+	}
+
+	/**
+	 * 获取存储首页热门话题出现过的uid的路径
+	 * 
+	 * @return
+	 * @author ShangJianguo
+	 */
+	private static String getIndexHotTopicSerialPath() {
+		return SysConf.SerialBasePath + SysConf.SerialIndexHotTopicPath;
+	}
+
+	/**
+	 * 90天内发布的话题30天评论数最高的6个话题
+	 * 
+	 * @param e
+	 *            评论数
+	 * @return
+	 */
+	public static List<Topic> getListByTopicRankFromComments(EChannel channel, ECommentType e) {
+		List<Topic> listtopic = new ArrayList<>();
+		Rule rule = new TopicRankRule("", SysConf.Expire_TopicRank);
+		listtopic = getTopicListFromMC(rule);
+		if (listtopic == null || listtopic.size() == 0) {
+			List<Map<?, ?>> topicuids = getCommentsSO().getListByCountcurrType(channel, e, SysConf.TopicRankClickDay, SysConf.TopicRankPublishDay, SysConf.TopicRankListNum);
+			List<String> fromuid = new ArrayList<>();
+			for (Map<?, ?> map : topicuids) {
+				fromuid.add(map.get(ViewKeyDict.fromuid).toString());
+			}
+			if (fromuid.size() != 0) {
+				listtopic = getSO().getList(fromuid);
+				Collections.sort(listtopic, new Comparator<Topic>() {
+					@Override
+					public int compare(Topic topic0, Topic topic1) {
+						Integer commentcount = (int) topic0.getCommentcount();
+						Integer commentcount2 = (int) topic1.getCommentcount();
+						return commentcount2.compareTo(commentcount);
+					}
+				});
+				if (listtopic.size() > 0) {
+					MemcacheUtil.set(rule, listtopic);
+				}
+			}
+		}
+		return listtopic;
+	}
+
+	/**
+	 * 获取最新发布的num篇话题,按publishtime排序 从缓存中取，缓存中没有 ，直接取数据库
+	 * 
+	 * @param num
+	 * @return
+	 */
+	public static List<Topic> getList(int num) {
+		Pager pager = Pager.getNewInstance("num", num);
+		Rule rule = new TopicLatestRule();
+		List<Topic> topics = getTopicListFromMC(rule);
+		if (topics != null && topics.size() > 0) {
+			return topics;
+		}
+		topics = getSO().getList(pager, ETopicState.succeed);
+		if (topics != null) {
+			MemcacheUtil.set(rule, topics);
+		}
+		return topics;
+	}
+
+	/**
+	 * 获取瀑布流数据（加载更多用到）
+	 * 
+	 * @param pager
+	 * @return
+	 */
+	public static List<Topic> getList(Pager pager) {
+		return getSO().getList(pager, ETopicState.succeed);
+	}
+
+	/**
+	 * 获取在72个小时之内赞数最多的3篇话题
+	 * 
+	 * @param pager
+	 * @return
+	 */
+	public static List<Topic> getRecommendTopic() {
+		Rule rule = new TopicRecommendRule("", SysConf.Expire_TopicRecommend);
+		List<Topic> listtopic = getTopicListFromMC(rule);
+		if (listtopic != null && listtopic.size() == 2) {
+			return listtopic;
+		}
+		listtopic = new ArrayList<>();
+		List<String> fromuid = CommentsHP.getRankUid(EChannel.topic, ECommentType.praise, SysConf.TopicPraisehour, SysConf.TopicListNum, null);
+		if (fromuid.size() == 0) {
+			listtopic = getSO().getList(Pager.getNewInstance("num", 3), ETopicState.succeed);
+		} else {
+			for (String item : fromuid) {
+				listtopic.add(getSO().get(item));
+			}
+		}
+		MemcacheUtil.set(rule, listtopic);
+		return listtopic;
+	}
+
+	/**
+	 * 获取最新评论会员（最新参与用户）
+	 * 
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<User> getCommentUser(String topicuid) {
+		Rule rule = new TopicJoinUserRule(topicuid);
+		List<User> users = new ArrayList<>();
+		try {
+			Object object = MemcacheUtil.get(rule);
+			if (object != null) {
+				users = (List<User>) object;
+				return users;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		List<String> useruids = getCommentsSO().getLatestFromuseruidList(topicuid, EChannel.topic, ECommentType.comment, null, SysConf.TopicUserCommentNum);
+		for (String useruid : useruids) {
+			User user = getUserSO().get(useruid);
+			if (user != null) {
+				users.add(user);
+			}
+		}
+		MemcacheUtil.set(rule, users);
+		return users;
+	}
+
+	/**
+	 * 增加话题的点击（阅读）数
+	 * 
+	 * @param request
+	 * @param response
+	 * @param topic
+	 * @param user
+	 */
+	public static void incrClickCount(HttpServletRequest request, HttpServletResponse response, Topic topic, User user) {
+		boolean isfirst = true;
+		Cookie cookie = CookieUtil.getCookie(request, topic.getUid());
+		if (cookie != null) {
+			isfirst = false;
+		}
+		if (isfirst) {
+			CookieUtil.addCookieSess(response, topic.getUid(), "topic");
+			CountDetail countDetail = new CountDetail();
+			if (user != null) {
+				countDetail.setUseruid(user.getUid());
+			}
+			countDetail.setRefuid(topic.getUid());
+			countDetail.setChannel(EChannel.topic);
+			countDetail.setType(ECountType.click);
+			countDetail.setCount(1);
+			countDetail.setCountcurr(topic.getClickcount());
+			Map<String, Object> map = new HashMap<>();
+			map.put(ViewKeyDict.createtime, topic.getCreatetime().toString("yyyy-MM-dd HH:mm:ss"));
+			countDetail.setData(JsonUtil.toJson(map));
+			if (getCountDetailSO().add(countDetail)) {
+				incrClickCount(topic);
+			}
+		}
+	}
+
+	/**
+	 * 增加话题点击（阅读）数
+	 * 
+	 * @param topic
+	 * @return
+	 */
+	public static boolean incrClickCount(Topic topic) {
+		Rule rule = new ClickCountTopicRule(topic.getUid());
+		return RedisUtil.incr(rule) >= 0;
+	}
+
+	/**
+	 * 获取会员发起的话题数目
+	 * 
+	 * @param useruid
+	 * @return
+	 */
+	public static int getAuthorTopicCount(String useruid) {
+		int count = 0;
+		Rule rule = new UserTopicCountRule(useruid);
+		try {
+			Object cacheCount = MemcacheUtil.get(rule);
+			if (cacheCount != null) {
+				count = Integer.valueOf(cacheCount.toString());
+				return count;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		count = getSO().getAuthorTopicCount(useruid);
+		MemcacheUtil.set(rule, count);
+		return count;
+	}
+
+	/**
+	 * 获取会员参与的话题
+	 * 
+	 * @param useruid
+	 * @return
+	 */
+	public static int getAuthorTopicJoinCount(String useruid) {
+		int count = 0;
+		Rule rule = new UserTopicCommentRule(useruid);
+		try {
+			Object commentcount = MemcacheUtil.get(rule);
+			if (commentcount != null) {
+				count = Integer.valueOf(commentcount.toString());
+				return count;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		List<String> topicuids = getCommentsSO().getFromuidList(useruid, EChannel.topic, ECommentType.comment);
+		if (topicuids != null) {
+			count = topicuids.size();
+			MemcacheUtil.set(rule, count);
+		}
+		return count;
+	}
+
+	/**
+	 * 缓存中获取topics
+	 * 
+	 * @param rule
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private static List<Topic> getTopicListFromMC(Rule rule) {
+		List<Topic> list = new ArrayList<>();
+		try {
+			Object obj = MemcacheUtil.get(rule);
+			if (obj != null) {
+				list = (List<Topic>) obj;
+			}
+		} catch (Exception e) {
+			logException(log, e);
+		}
+		return list;
+	}
+}

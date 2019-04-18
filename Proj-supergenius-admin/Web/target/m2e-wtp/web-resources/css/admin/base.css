@@ -1,0 +1,32 @@
+@charset "utf-8";
+/* Name:Genius Base Style */
+/* location:http://www.grandgenius.cn */
+/* Description: */
+/*! Copyright © Genius All Rights Reserved. */
+/*CSS reset*/
+html {-webkit-text-size-adjust: none;}/* 禁用iPhone中Safari的字号自动调整 */
+html {-webkit-box-sizing:border-box; -moz-box-sizing:border-box; box-sizing:border-box; -ms-box-sizing:border-box; -o-box-sizing:border-box;}
+body {width:100%; height:100%; color: #000; font-family:微软雅黑,新宋体,Tahoma,verdana,Arial, Helvetica, sans-serif; font-size:12px; margin:0; padding:auto;}
+/*::selection{background:#009933;color:#ffffff;text-shadow:none;}*/
+::-moz-selection{background:#009933;color:#ffffff;text-shadow:none;}
+/* :focus {outline:none;} 去掉虚线框*/
+a{text-decoration:none; outline: none; color: #36C;}
+a:link {text-decoration:none;}
+a:hover {text-decoration:underline;}
+a:active {text-decoration:none}
+a:visited {text-decoration:none}
+a:active, a:focus{ outline:none; }/* 移动超链接的虚线框 */
+img {border:0; max-width: 100%; height: auto; width: auto\9; /* ie8 */ -ms-interpolation-mode: bicubic;}
+textarea{ overflow:auto;}/* 移除ie文本域的垂直滚动条 */
+a,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,p,blockquote,th,td,article,aside,summary,details,figcaption,figure,footer,header,hgroup,menu,nav,section{padding:auto; margin:auto;*margin: 0;}
+ol,ul,menu {list-style:none; padding: 0; list-style-position: inside;}
+table {border-collapse:collapse; border-spacing:0;}
+table,caption,tbody,tfoot,thead,tr,th,td{border:0;outline:0;font-size:100%;}
+div { margin:auto; width:auto; height:auto; text-align:left; text-indent:0;}
+div,span { background-color:Transparent;}
+h1,h2,h3,h4,h5,h6 {font-size:1em; font-weight:normal;}
+address,cite,code,em,th {font-weight:normal; font-style:normal;}
+pre{ white-space:pre-wrap; word-wrap: break-word; word-break: break-all;/*兼容IE*/}
+q:before,q:after {content:'';}
+/* -----------------html5--------------- */
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section { display: block;}

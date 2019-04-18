@@ -1,0 +1,16 @@
+[#ftl]
+<div class="attention">
+	<div class="sayingbox">
+		<div class="saying">
+			<p>${quote.content!"独特视角解读国内外财经事件"}</p>
+			<span class="author">--${quote.author!"天财评论"}</span>
+		</div>
+		<img src="${baseimg}/imgs/default/saybottom.png" class="sayBottomimg" />
+	</div>
+	<div class="attention_top">
+		<div class="focusbox">
+			<a href="http://hexun.com/25922909/default.html" target="_blank"><img src="${baseimg}/imgs/default/hexun_focus.png" /></a>
+			<a href="http://weibo.com/u/5540825128" target="_blank"><img src="${baseimg}/imgs/default/sina_focus.png" /></a>
+		</div>
+    </div>
+</div>

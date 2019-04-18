@@ -1,0 +1,202 @@
+[#ftl]
+<link rel="stylesheet" type="text/css" href="${basecss}/css/default/common.css" class="cssfx" />
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+[#include "/WEB-INF/FtlLib/Web/BaseDecorators/BaseHead.ftl" /]
+<script type="text/javascript">
+<!--
+[#include "/WEB-INF/FtlLib/Web/BaseDecorators/BaseJs.ftl" /]
+//-->
+</script>
+<!DOCTYPE html >
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>${title!'论战'}</title>
+    <link rel="stylesheet" href="${basecss}/css/default/pages/indexdebate.css"/>
+    <script src="${basejs}/js/libs3/ejs.min.js"></script>
+	<script type="text/ejs" id="balance-template">
+		<div class="balance">
+		<div class="left-data">
+			<div class="left-arrow">
+				<img src="<%= g.baseimg %>/imgs/default/lunzh2_hs.png" />
+			</div>
+			<a class="number-area left-number debate_vote" data-support="red"><%= this.left %></a>
+		</div>
+		<h4>投票</h4>
+		<div class="right-data">
+			<div class="right-arrow">
+				<img src="<%= g.baseimg %>/imgs/default/lunzh2_lan.png" />
+			</div>
+			<a class="number-area right-number debate_vote"  data-support="blue"><%= this.right %></a>
+		</div>
+		<div class="balance-lever">
+			<div class="left-lever"></div>
+			<div class="right-lever"></div>
+		</div>
+		<img class="balance-pivot" src="<%= g.baseimg %>/imgs/default/lunzh2_db.png">
+		</div>
+	</script>
+    <style type="text/css">	
+    	.has_vote_box {
+    		z-index: 1015;
+    		display: none;
+    	}
+    	.user{width:81px;height:81px;overflow:hidden;}
+    	.contro_nei, .reply_detail .contro_nei{width:88%;word-break:break-all;margin-bottom:10px;}
+    	.reply_detail .contro_nei{width:100%;}
+    	.contro_red{left:85}
+    	.contro_blue{left:90}
+    </style>
+    
+    
+    <script type="text/javascript">
+		var debateuid = "${bean.uid}";
+		var hasvote = -1;// 用来在页面级别存储已经投过票，防止多次请求后台
+		var isred ;
+		(function() {
+			$(document).ready(function() {
+				var balancePanel = new Components.BalancePanel($('.tp_midd'), {
+					left : ${(bean.countred)?c},
+					right : ${(bean.countblue)?c}
+				});
+			});
+		})();
+		
+	function alertvote(isred){
+	
+	}
+	
+	function alertisred(isred){
+		if(isred){
+			dialogHandle("false", "true");
+		}else{
+			dialogHandle("false", "false");
+		}
+	}
+	
+	function handleHasvote(isred){
+		if(isred){
+			hasvote = 1;
+			dialogHandle("true", "true");
+		}else{
+			hasvote = 0;
+			dialogHandle("true", "false");
+		}
+		
+	}
+    </script>
+    <script src="${basejs}/js/libs/components.js"></script>
+</head>
+<body>
+
+	<div>
+		<div class="contro_banner">
+			<div class="lz_one_01">
+				<span>本期论战</span><a href="" style="margin-left:25px;" title="${bean.title!''}">[@f.TrimSubstring content="${bean.title!''}" mylength=45 /]</a>
+			</div>
+		</div>
+	
+		<div class="tp_midd">
+		</div>	
+		
+		<div class="contro_vs">
+			<span class="vs_red">红方<span class="contro_red">${bean.titlered}</span></span>
+			<img src="${baseimg}/imgs/default/u35.png" alt="" />
+			<span class="vs_blue">蓝方<span class="contro_bule">${bean.titleblue}</span></span>
+		</div>
+		
+		<div class="viewcomment">
+		  	<a href="${base}/debate/${bean.oid}" target="_blank" class="">查看评论</a>
+	 	</div>
+	</div>
+ 	
+ 	[#--弹出框--]
+ 	<div id="mask" style="display:none;"></div>
+	<div class="cover_comment" style="display:none;">
+		<div class="cover_comment_m">
+			<div class="close"><a onclick="dialogHandlenone();">x</a></div>
+			<form name="form" id="cover_form" action="" method="get">
+				<h3><img id="cover_img" src="${baseimg}/imgs/default/vote_true.png" /><span id="cover_img_con">投票成功</span></h3>
+				<em>发表您支持的观点：<span id="cover_title">${bean.titlered}</span></em>
+				<textarea id="cover_textarea" placeholder="我们需要您的智慧......" maxlength="1000" name="content"></textarea>
+				<input class="hd" name="cover_isred" value=""/>
+				<a href="" class="submit">发表评论</a>
+			</form>
+		</div>
+	</div>
+
+<script type="text/javascript"> 
+<!--
+	// 为评论按钮注册点击事件
+	$(function($) {
+		$(".submit").bind("click", function(){
+			submitform(this);
+		});  
+	});
+	
+	// 弹出框组织内容
+	function dialogHandle(isvote, isred){
+		if(isvote == "true"){
+			$("#cover_img").attr("src","${baseimg}/imgs/default/vote_true.png");
+			$("#cover_img_con").text("投票成功");
+		}else{
+			$("#cover_img").attr("src","${baseimg}/imgs/default/vote_false.png");
+			$("#cover_img_con").text("您已投过票");
+		}
+		if(isred == "true"){
+			$("#cover_title").text($(".contro_red").text());
+			$("input[name=cover_isred]").val("true");
+		}else{
+			$("#cover_title").text($(".contro_bule").text());
+			$("input[name=cover_isred]").val("false");
+		}
+		$(".cover_comment").css("display","block");
+	}
+	
+	// 点击隐藏
+	function dialogHandlenone(){
+		$("#cover_textarea").val("");
+		$(".cover_comment").css("display","none");
+	}
+	
+	// 提交评论
+	function submitform(obj){
+		beforeSubmitHandler(obj);
+		if(params.content == ""){
+			alert("评论内容不能为空");
+			return;
+		}
+		$.post("${base}/ajax/comment/{0}_{1}".format(params.channel, params.fromuid), params,function(data){
+			afterSubmitHandler(data, obj);			
+		});
+	}
+	
+	// 组织数据
+	function beforeSubmitHandler(obj){
+		params = {};
+		var cover_isred = $("input[name=cover_isred]").val();
+		if(cover_isred == "true"){
+			params.isred = true;
+		}else{
+			params.isred = false;
+		}
+		params.fromuid = '${bean.uid}';
+		params.channel = "debate";
+		params.content = $("#cover_textarea").val();
+	}
+	
+	//提交之后
+	function afterSubmitHandler(result, obj){
+		if(result.success){
+			$("#cover_textarea").val("");
+			$("#cover_img").attr("src","${baseimg}/imgs/default/judge_true.png");
+			$("#cover_img_con").text("评论成功");
+			setTimeout(dialogHandlenone, 1000);
+		}else{
+			alert("评论失败")
+		}
+	}
+-->
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/Public.ftl" as p]
+[#list list as item]
+	<li>
+		<a href="${base}/topic/${item.cid}/${item.oid}" class="articleTitle">
+			${item.title}
+		</a>
+		<p class="descripe">[@p.TrimSubstring content="${item.content}" mylength=180 /]</p>
+	</li>
+[/#list]

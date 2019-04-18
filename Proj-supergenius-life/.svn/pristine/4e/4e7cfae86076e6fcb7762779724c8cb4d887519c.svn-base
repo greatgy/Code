@@ -1,0 +1,199 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/Public.ftl" as p]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="referrer" content="never" />
+	<title>${title!'天才人生话题详情页'}</title>
+	<link href="${basecss}/css/default/index.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="${basecss}/css/default/ckeditor.css" type="text/css">
+	<script type="text/javascript" src="${basejs}/js/pages/comment-1.0.0.js"></script>
+	<script type="text/javascript" src="${basejs}/js/pages/scroll.js"></script>
+	<script type="text/javascript" src="${basejs}/js/libs3/jquery.qqface.min.js"></script>
+	<script type="text/javascript" src="${basejs}/js/pages/lifesecondcomment.js"></script>
+	<script type="text/javascript" src="${basejs}/js/pages/video.js"></script>
+	<script type="text/javascript" src="${basejs}/js/pages/wxphoto.js"></script>
+	
+	<script type="text/javascript">
+		var me = {
+			showname: "${me.username!'游客'}",
+			useravatar:"${me.useravatar}",
+			oid:"${(me.oid?c)!'0'}",
+			uid:"${me.uid}",
+			defaultImg: "${baseimg}/imgs/default/user.png",
+			isuser: "${me.isUser}"
+		}
+		var fromuid = '${bean.uid}';
+		var cid = '${bean.cid}';
+		var base = '${base}';
+		var baseimg = '${baseimg}';
+		var userimg = '${userimg}';
+		var phone = '${phone}';
+		var phoneurl = '${base}/phonelogin';
+		var channel = 'topiccomments';
+		var href = window.location.href;
+		$(function(){
+        	$('.face').qqFace({ 
+		        assign:'content', //给输入框赋值 
+		        path:'${baseimg}/imgs/face/qq/' //表情图片存放的路径 
+		    });
+		});
+		
+		 
+		$(function(){
+			//适配视频
+			adaptVideo(".articleContent", "${phone}");//传入articleContent的class或者id
+			//处理微信图片
+			adaptWXphoto(".articleContent");//传入articleContent的class或者id
+			
+			$(".imglogin").click(function(){
+				if($(this).parent().parent().hasClass("otherLink")){
+					$("meta[name='referrer']").attr("content", "always");
+				}
+			});
+		});
+		
+	</script>
+	<style type="text/css">
+		.articleContent p {
+			font-size: 1rem;
+		    line-height: 1.8rem;
+		    color: #333;
+		    text-align: left;
+		    margin-bottom: 20px;
+		}
+		.articleContent img {
+			max-width: 100%;
+		    margin: 5px auto;
+		    width: auto !important;
+    		height: auto!important;
+		    text-indent: inherit;
+		}
+		.articleContent table {
+			width: 100%;
+		    max-width: 100%;
+		    margin-bottom: 15px;
+		    border-spacing: 0;
+		    empty-cells: show;
+		    background-color: #fff;
+		    border-collapse: collapse;
+		    font-size: 16px;
+		}
+		.articleContent td {
+			padding: 0 8px;
+		    vertical-align: top;
+		    border: 1px solid #ddd;
+		    text-align: center;
+		    color: #656b79;
+		}
+		
+		.qqFace{margin-top:4px;background:#fff;padding:2px;border:1px #dfe6f6 solid;}
+		.qqFace table td{padding:0px;}
+		.qqFace table td img{cursor:pointer;border:1px #fff solid;}
+		.qqFace table td img:hover{border:1px #0066cc solid;}
+	</style>
+	
+</head>
+<body>
+	<div class="contentLeft">
+		<div class="topicDetailBox">
+			${bean.content}
+			<div class="topictips">
+				<span>${bean.author}</span>
+				<span>${(bean.createtime).toString("yyyy年MM月dd日 ")}</span>
+				<span class="readTimes">阅读&nbsp;&nbsp;${bean.clickcount!'0'}</span>
+			</div>
+		</div>
+		<div class="shareBox">
+			<a class="littleicon" href="javascript:;" id="btnprize_topicpraise_${(me.oid?c)!"0"}_${bean.cid}_${bean.uid}" data-counter=".prizecounter">
+				<img src="${baseimg}/imgs/default/heart.png" data-notcomment="true" data-isprize="${bean.isprize!'false'}"/>
+				<span class="zancountjs">${bean.prizecount!"0"}</span>
+			</a>
+			<a class="littleicon" href="javascript:;" onclick="wantComment();">
+				<img src="${baseimg}/imgs/default/discuss.png" />
+				<span id="articlecommentcount">${bean.commentscount!"0"}</span>
+			</a>
+			<a href="javascript:;" [#if me??]id="btncollecttopic_${bean.uid}" data-iscollect="${bean.iscollect!'false'}" class="littleicon"[#else]class="littleicon pop-up" [/#if]>
+				<img src="${baseimg}/imgs/default/collect.png" data-iscollect="${bean.iscollect!'false'}" class="liwaysimg02"/>
+				<span id="articlecollectcount">${bean.collectcount!"0"}</span>
+			</a>
+			<div class="share">
+				分享:
+				<div class="bdsharebuttonbox bdshare-button-style0-16" data-bd-bind="1503546374732">
+					<a href="#" class="bds_more" data-cmd="more"></a>
+					<a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+					<a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+					<a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+				</div>
+			</div>
+		</div>
+		<form class="wordbox topicWordbox">
+			<textarea id="content" class="comment_textarea"></textarea>
+			<div class="wordpiece">
+				<a href="#" class="face"><img src="${baseimg}/imgs/default/smile.png" alt="" /></a>
+				[#if me??]
+					<button class="submitBtn firstedcomments" onclick="submitCommentHandler(this);">发表</button>
+					<div class="hidename"><input type="checkbox" id="isnick" /><label for="isnick">匿名</label></div>
+				[#else]
+					<button class="pop-up submitBtn firstedcomments" onclick="submitCommentHandler(this);">发表</button>
+				[/#if]
+			</div>
+		</form>
+		<div class="commentBox">
+			<h3 class="allComments">
+				全部评论
+			</h3>
+			<ul class="commentList conCommentlist" id="displayComment">
+			</ul>
+		</div>
+	</div>
+	<div class="contentRight">
+		<div class="workplaceitem">
+			<h3>
+				往期话题
+				<a class="change" href="javascript:;" onclick="loadtopic();">换一换<img src="${baseimg}/imgs/default/refresh.png" alt="换一批" title="换一批"></a>
+			</h3>
+			<ul class="hotArticleList oldTopicsList">
+				[#if relateList??]
+					[#list relateList as item]
+						<li>
+							<a href="${base}/topic/${item.cid}/${item.oic}" title="${item.title}">
+								${item.title}
+							</a>
+							<span class="topicnews"><img src="${baseimg}/imgs/default/topicnews.png" alt="">${item.clickcount}</span>
+						</li>
+					[/#list]
+				[/#if]
+			</ul>
+		</div>
+	</div>
+<script>
+		$(function(){
+			window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+
+			$(".pubopinion").click(function () {
+				$(".topicWordbox").show();
+			});
+			
+		});
+		
+		var topicnum = 2;
+		// 话题换一换
+		function loadtopic() {
+			var	url = "${base}/ajax/topic/relatetopic";
+			var json ={};
+			json.pagenum=topicnum;
+			json.cid='${cid}';
+			$.get(url, json, function(data){
+				if(data.trim() == ""){// 没有更多内容
+					return false;
+				}
+				$(".oldTopicsList").html(data);
+				topicnum+=1;
+			});
+		}
+	</script>
+</body>
+</html>
+

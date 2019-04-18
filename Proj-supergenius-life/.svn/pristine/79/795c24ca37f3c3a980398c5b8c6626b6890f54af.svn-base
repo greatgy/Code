@@ -1,0 +1,119 @@
+package com.supergenius.web.front.life.helper;
+
+import java.util.List;
+import java.util.Map;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
+import com.genius.model.base.entity.Pager;
+import com.genius.server.base.helper.BaseHP;
+import com.supergenius.xo.life.entity.Problem;
+import com.supergenius.xo.life.entity.Topic;
+import com.supergenius.xo.life.entity.Video;
+import com.supergenius.xo.life.service.ArticleSO;
+import com.supergenius.xo.life.service.ProblemSO;
+import com.supergenius.xo.life.service.TopicSO;
+import com.supergenius.xo.life.service.VideoSO;
+
+public class IndexHP extends BaseHP {
+
+	private static ArticleSO so;
+	private static ProblemSO problemSO;
+	private static TopicSO topicSO;
+	private static VideoSO videoSO;
+	private static DateTime cacheTime;
+
+	public static ArticleSO getSO() {
+		if (so == null) {
+			so = (ArticleSO) spring.getBean(ArticleSO.class);
+		}
+		return so;
+	}
+
+	private static ProblemSO getProblemSO() {
+		if (problemSO == null) {
+			problemSO = (ProblemSO) spring.getBean(ProblemSO.class);
+		}
+		return problemSO;
+	}
+
+	private static TopicSO getTopicSO() {
+		if (topicSO == null) {
+			topicSO = (TopicSO) spring.getBean(TopicSO.class);
+		}
+		return topicSO;
+	}
+
+	private static VideoSO getVideoSO() {
+		if (videoSO == null) {
+			videoSO = (VideoSO) spring.getBean(VideoSO.class);
+		}
+		return videoSO;
+	}
+
+	public static int[] catalogues = { 2, 4, 8, 16, 64, 128 };
+
+	/**
+	 * 刷新缓存
+	 * 
+	 * @return
+	 * @author YangGuang
+	 * @date 2017年10月19日10:32:21
+	 * @return List<Article>
+	 */
+	public static void handleCache() {
+		if (cacheTime == null) {
+			cacheTime = getSO().getCacheTime();
+		}
+		if (cacheTime != null) {
+			if (new DateTime(DateTimeZone.forOffsetHours(8)).getMillis() >= cacheTime.getMillis()) {
+				// removeCache();
+				cacheTime = getSO().getCacheTime();
+			}
+		}
+	}
+
+	/**
+	 * 获得首页问答
+	 * 
+	 * @return
+	 * @author yangguang
+	 * @date 2018年5月14日16:23:28
+	 * @return List<Problem>
+	 */
+	public static List<Problem> getIndexProblem(int pagenum, int pagerSize) {
+		Pager pager = Pager.getNewInstance(pagenum, pagerSize);
+		Map<String, Object> map = getParamMap(pager);
+		return getProblemSO().getList(map);
+	}
+
+	/**
+	 * 获得首页话题
+	 * 
+	 * @return
+	 * @author yangguang
+	 * @date 2018年5月14日16:23:28
+	 * @return List<Problem>
+	 */
+	public static List<Topic> getIndexTopic(int pagenum, int pagerSize) {
+		Pager pager = Pager.getNewInstance(pagenum, pagerSize);
+		Map<String, Object> map = getParamMap(pager);
+		return getTopicSO().getList(map);
+	}
+
+	/**
+	 * 获得首页视频
+	 * 
+	 * @return
+	 * @author yangguang
+	 * @date 2018年5月14日16:23:28
+	 * @return List<Problem>
+	 */
+	public static List<Video> getIndexVideo(int pagenum, int pagerSize) {
+		Pager pager = Pager.getNewInstance(pagenum, pagerSize);
+		Map<String, Object> map = getParamMap(pager);
+		return getVideoSO().getList(map);
+	}
+
+}

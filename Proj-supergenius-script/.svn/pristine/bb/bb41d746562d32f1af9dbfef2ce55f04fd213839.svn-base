@@ -1,0 +1,39 @@
+var start = 500000;// 起始ID
+var end = 500100;// 终止ID
+var timer1 = setInterval ("sendMessage()", 10000);
+var array1 = {message:"你好！"};
+var array2 = {message:"你好！你好！"};
+var last = true;
+var lastarr;
+function sendMessage() {
+	if(last == false) {
+		sendmsg(start, lastarr);
+	} else {
+		if(lastarr == array1) {
+			sendmsg(start, array2);
+		} else {
+			sendmsg(start, array1);
+		}
+	}
+	if(start >= end){
+		clearInterval(timer1);
+	}
+	start++;
+}
+
+function sendmsg(id, array) {
+	console.log("id：" + id + "。内容：" + array.message);
+	$.post("http://www.zhongchou.com/message-send/id-" + id, array, function(data){backmsg(data, array)}, "json");
+}
+
+function backmsg(data, array) {
+	if(data.status==0) {
+		last = false;
+		lastarr = array;
+		console.log(data);
+	} else {
+		last = true;
+		lastarr = array;
+		console.log(data);
+	}
+}

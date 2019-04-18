@@ -1,0 +1,389 @@
+package com.supergenius.web.finance.controller;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.genius.core.base.utils.CookieUtil;
+import com.genius.core.base.utils.StrUtil;
+import com.genius.model.base.entity.Pager;
+import com.genius.model.base.enums.EStatus;
+import com.genius.server.base.controller.BaseController;
+import com.supergenius.global.conf.SysConf;
+import com.supergenius.global.conf.WebConf;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.web.finance.helper.CommentsHP;
+import com.supergenius.web.finance.helper.DebateHP;
+import com.supergenius.web.finance.helper.FinanceHP;
+import com.supergenius.web.finance.helper.TopicHP;
+import com.supergenius.web.finance.helper.UserHP;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.common.enums.ECommentType;
+import com.supergenius.xo.common.enums.EFinance;
+import com.supergenius.xo.finance.entity.Contribute;
+import com.supergenius.xo.finance.entity.Contributor;
+import com.supergenius.xo.finance.entity.Debate;
+import com.supergenius.xo.finance.entity.DebateArticle;
+import com.supergenius.xo.finance.entity.Finance;
+import com.supergenius.xo.finance.entity.Topic;
+import com.supergenius.xo.finance.enums.EContributeState;
+import com.supergenius.xo.finance.enums.ECountType;
+import com.supergenius.xo.finance.service.ContributeSO;
+import com.supergenius.xo.finance.service.ContributorSO;
+import com.supergenius.xo.finance.service.DebateArticleSO;
+import com.supergenius.xo.finance.service.DebateSO;
+import com.supergenius.xo.finance.service.FinanceSO;
+import com.supergenius.xo.server.helper.BaseUserHP;
+import com.supergenius.xo.user.entity.User;
+import com.supergenius.xo.user.service.CommentsSO;
+
+/**
+ * 天财评论文章控制器
+ * @author ShangJianguo
+ */
+@Controller
+public class FinanceController extends BaseController{
+	
+	@Autowired
+	FinanceSO so;
+	
+	@Autowired
+	CommentsSO commentsSO;
+	
+	@Autowired
+	ContributeSO contributeSO;
+
+	@Autowired
+	ContributorSO contributorSO;
+	private static String ajaxarticle = "ajaxarticle";
+	
+	@Autowired
+	DebateArticleSO debatearticleSO;
+	
+	@Autowired
+	DebateSO debateSO;
+	
+	/**
+	 * 进入到文章板块首页
+	 * @param model
+	 * @param type
+	 * @return
+	 * @author ShangJianguo
+	 */
+	@RequestMapping(value="/{type:\\w+}", method=RequestMethod.GET)
+	public String finance(Map<String, Object> model, @PathVariable String type, HttpServletResponse response){
+		EFinance typeObj = EFinance.getByName(type);
+		if (typeObj == null) {
+			return response404(response);
+		}
+		List<Finance> latestList = FinanceHP.getLatest(typeObj, 1, WebConf.FinancePageSize);
+		List<Topic> latestTopics = TopicHP.getList(WebConf.TopicIndexRotateSize);
+		List<Finance> rankList = FinanceHP.getRankList(ECountType.click, null);
+		List<Finance> typeRankList = FinanceHP.getRankList(ECountType.click, typeObj);
+		model.put(ViewKeyDict.type, typeObj.getName());// 板块中文
+		model.put(ViewKeyDict.typename, typeObj.name());// 板块枚举的name
+		model.put(ViewKeyDict.latestlist, latestList);// 最新分类文章
+		model.put(ViewKeyDict.topiclist, latestTopics);
+		model.put(ViewKeyDict.debate, DebateHP.getCurDebate());// 当前期论战
+		model.put(ViewKeyDict.list, rankList);
+		model.put(ViewKeyDict.list2, typeRankList);
+		return "finance";
+	}
+
+	/**
+	 * 加载更多文章
+	 * @param model
+	 * @param type
+	 * @return
+	 * @author ShangJianguo
+	 */
+	@RequestMapping(value="/ajax/{type:\\w+}", method=RequestMethod.GET)
+	public String finance_ajax(Map<String, Object> model, @PathVariable String type, Integer pagenum){
+		EFinance typeObj = EFinance.getByName(type);
+		if (pagenum == null) {
+			pagenum = 1;
+		}
+		List<Finance> latestList = FinanceHP.getLatest(typeObj, pagenum<=0?1:pagenum, WebConf.FinancePageSize);
+		model.put(ViewKeyDict.type, "finace_latest");// 板块
+		model.put(ViewKeyDict.typename, typeObj.name());// 板块
+		model.put(ViewKeyDict.channel, typeObj.getName());// 板块
+		model.put(ViewKeyDict.latestlist, latestList);// 最新分类文章
+		return ajaxarticle;
+	}
+	
+	/**
+	 * 文章查看详情页面
+	 * @param model
+	 * @param type
+	 * @return
+	 * @author ShangJianguo
+	 */
+	@RequestMapping(value="/{type:\\w+}/{id:\\d+}", method=RequestMethod.GET)
+	public String finance_view(Map<String, Object> model, @PathVariable String type, @PathVariable int id, HttpServletRequest request, HttpServletResponse respone){
+		User user = BaseUserHP.getCurrUser(request);
+		Finance finance = FinanceHP.getSerialize(id);
+		if (finance == null) {
+			return response404(respone);
+		}
+		if (user == null && !finance.isIspublic()) {
+			return redirectPrefix + WebConf.LoginURL;
+		}
+		EFinance typeObj = EFinance.getByName(type);
+		if (typeObj == null || finance == null) {
+			return response404(respone);
+		}
+		FinanceHP.getPagerContent(model, finance.getContent(), request);
+		if (user != null) {
+			List<String> prizes = UserHP.getListPrize(user);
+			for (String item : prizes) {
+				if (finance.getUid().equals(item)) {
+					finance.setIsprize(true);
+					break;
+				}
+			}
+		}else {
+			Cookie cookie = CookieUtil.getCookie(request, EChannel.finance.name() + finance.getUid() + ViewKeyDict.prizefinance);
+			if (cookie != null) {
+				finance.setIsprize(true);
+			}
+		}
+		FinanceHP.incrClickCount(request, respone, finance, user);// 增加计数
+		List<Finance> rankList = FinanceHP.getRankList(ECountType.click, null);
+		List<Finance> typeRankList = FinanceHP.getRankList(ECountType.click, typeObj);
+		int articleCount = FinanceHP.getAuthorArticleCount(finance.getAuthoruid());
+		Map<String, Object> lastnextMap = so.getLastNext(finance, typeObj);
+		model.put(ViewKeyDict.type, typeObj.getName());// 板块
+		model.put(ViewKeyDict.typename, typeObj.name());// 板块
+		model.put(ViewKeyDict.bean, finance);
+		model.put(ViewKeyDict.list, rankList);
+		model.put(ViewKeyDict.list2, typeRankList);
+		model.put(ViewKeyDict.count, articleCount);
+		model.put(ViewKeyDict.map, lastnextMap);
+		model.put(ViewKeyDict.wonderfullist, CommentsHP.getCommentsFromPraise(finance.getUid(), EChannel.finance, ECommentType.comment, SysConf.TopicCommentRankNum));
+		return "financeoid";
+	}
+	
+	/**
+	 * 得到我的文章列表页（所有）
+	 * @param model
+	 * @param request
+	 * @return
+	 * @author ShangJianguo
+	 */
+	@RequestMapping(value="/my/article", method=RequestMethod.GET)
+	public String finance_article(Map<String, Object> model, HttpServletRequest request, Integer pagenum){
+		User user = BaseUserHP.getCurrUser(request); 
+		if (pagenum == null) {
+			pagenum = 1;
+		}
+		Pager pager = new Pager(pagenum>0?pagenum:1, WebConf.MyArticlePageSize);
+		if (user == null) {
+			return redirectPrefix + WebConf.LoginURL;
+		}
+		// 所有投稿
+		List<Contribute> list = contributeSO.getList(user.getUid(), pager);
+		List<Finance> financeList = FinanceHP.getAcceptedFinances(list);
+		int articleCount = FinanceHP.getAuthorArticleCount(user.getUid());
+		List<Finance> rankList = FinanceHP.getMyRankList(user.getUid());
+		Contributor contributor = contributorSO.get(user.getUid());
+		model.put(ViewKeyDict.list, list);
+		model.put(ViewKeyDict.list2, financeList);
+		model.put(ViewKeyDict.count, articleCount); 
+		model.put(ViewKeyDict.count2, FinanceHP.getReadCount(user.getUid())); 
+		model.put(ViewKeyDict.ranklist, rankList);
+		model.put(ViewKeyDict.author, contributor);
+		return "myarticle";
+	}
+	
+	/**
+	 * 得到我的文章列表页（所有，ajax请求）
+	 * @param model
+	 * @param request
+	 * @return
+	 * @author ShangJianguo
+	 */
+	@RequestMapping(value="ajax/my/article", method=RequestMethod.GET)
+	public String finance_article_ajax(Map<String, Object> model, HttpServletRequest request, Integer pagenum){
+		User user = BaseUserHP.getCurrUser(request); 
+		if (pagenum == null) {
+			pagenum = 1;
+		}
+		Pager pager = new Pager(pagenum>0?pagenum:1, WebConf.MyArticlePageSize);
+		if (user == null) {
+			return ajaxarticle;
+		}
+		// 所有投稿
+		List<Contribute> list = contributeSO.getList(user.getUid(), pager);
+		List<Finance> financeList = FinanceHP.getAcceptedFinances(list);
+		model.put(ViewKeyDict.type, "all");
+		model.put(ViewKeyDict.list, list);
+		model.put(ViewKeyDict.list2, financeList);
+		return ajaxarticle;
+	}
+	
+	/**
+	 * 已发布的文章列表
+	 * @param state
+	 * @return
+	 * @author ShangJianguo
+	 */
+	@RequestMapping(value="ajax/my/article/publish", method=RequestMethod.GET)
+	public String finance_article_publish(Map<String, Object> model, Integer pagenum, HttpServletRequest request){
+		User user = BaseUserHP.getCurrUser(request);
+		List<Finance> list = new ArrayList<>();
+		if (user == null) {
+			return ajaxarticle;
+		}
+		if (pagenum == null) {
+			pagenum = 1;
+		}
+		Pager pager = new Pager(pagenum>0?pagenum:1, WebConf.MyArticlePageSize);
+		if (user != null) {
+			list = so.getList(user.getUid(), EStatus.enable, pager);
+		}
+		model.put(ViewKeyDict.type, "publish");
+		model.put(ViewKeyDict.list, list);
+		return ajaxarticle;
+	}
+	
+	/**
+	 * 获取审核中和审核不通过的文章列表
+	 * @param model
+	 * @param state
+	 * @param pagenum
+	 * @param request
+	 * @return
+	 * @author ShangJianguo
+	 */
+	@RequestMapping(value="ajax/my/article/{state:\\d+}", method=RequestMethod.GET)
+	public String finane_article(Map<String, Object> model, @PathVariable int state, Integer pagenum, HttpServletRequest request) {
+		User user = BaseUserHP.getCurrUser(request);
+		EContributeState eState = EContributeState.get(state);
+		if (pagenum == null) {
+			pagenum = 1;
+		}
+		Pager pager = new Pager(pagenum>0?pagenum:1, WebConf.MyArticlePageSize);
+		if (eState == EContributeState.init) {// 审核中
+			List<EContributeState> states = new ArrayList<>();
+			states.add(EContributeState.init);
+			states.add(EContributeState.accept);
+			// 状态为init和accept的投稿列表
+			List<Contribute> contributeList = contributeSO.getInitList(user.getUid(), new Pager(pagenum, WebConf.MyArticlePageSize));
+			List<String> ids = new ArrayList<>();
+			for (Contribute item : contributeList) {
+				if (item.getState() == EContributeState.accept) {
+					ids.add(item.getUid());
+				}
+			}
+			// 已经接受未发布的文章
+//			List<Finance> financeList = so.getList(user.getUid(), EStatus.disable, ids, pager);
+			model.put(ViewKeyDict.type, EContributeState.init.name());
+			model.put(ViewKeyDict.list, contributeList);
+//			model.put(ViewKeyDict.list2, financeList);
+		} else if (eState == EContributeState.refuse) {// 审核不通过
+			List<Contribute> contributeList = contributeSO.getList(user.getUid(), EContributeState.refuse, pager);
+			model.put(ViewKeyDict.type, EContributeState.refuse.name());
+			model.put(ViewKeyDict.list, contributeList);
+		}
+		return ajaxarticle;
+	}
+	
+	/**
+	 * TA的文章列表
+	 * @param state
+	 * @return
+	 * @author ShangJianguo
+	 */
+	@RequestMapping(value="/article/{useruid:.{32}}", method=RequestMethod.GET)
+	public String finance_article_ta(Map<String, Object> model, @PathVariable String useruid, HttpServletRequest request){
+		List<Finance> list = so.getList(useruid, EStatus.enable, new Pager(WebConf.MyArticlePageSize));
+		int articleCount = FinanceHP.getAuthorArticleCount(useruid);
+		List<Finance> rankList = FinanceHP.getRankList(ECountType.click, null);
+		Contributor contributor = contributorSO.get(useruid);
+		model.put(ViewKeyDict.list, list);
+		model.put(ViewKeyDict.count, articleCount);
+		model.put(ViewKeyDict.count2, FinanceHP.getReadCount(useruid));
+		model.put(ViewKeyDict.list2, rankList);
+		model.put(ViewKeyDict.author, contributor);
+		model.put(ViewKeyDict.useruid, useruid);
+		return "hisarticle";
+	}
+	
+	/**
+	 * TA的文章列表ajax家在更多
+	 * @param state
+	 * @return
+	 * @author ShangJianguo
+	 */
+	@RequestMapping(value="/ajax/article/{useruid:.{32}}_{pagenum:\\d+}", method=RequestMethod.GET)
+	public String finance_article_ta_loadmore(Map<String, Object> model, @PathVariable String useruid, @PathVariable Integer pagenum){
+		if (pagenum == null || pagenum < 1) {
+			pagenum = 1;
+		}
+		List<Finance> list = so.getList(useruid, EStatus.enable, new Pager(pagenum, WebConf.MyArticlePageSize));
+		model.put(ViewKeyDict.type, "his");
+		model.put(ViewKeyDict.list, list);
+		return "ajaxarticle";
+	}
+	
+	/**
+	 * 论战文章查看详情页面
+	 * @param model
+	 * @param type
+	 * @return
+	 * @author ShangJianguo
+	 */
+	@RequestMapping(value="/debate/article/{id:.{32}}", method=RequestMethod.GET)
+	public String finance_debate_view(Map<String, Object> model, @PathVariable String id, HttpServletRequest request, HttpServletResponse respone){
+		cloneParamsToModel(model, request);
+		if (StrUtil.isEmpty(model.get(ViewKeyDict.doid))) {
+			DebateArticle debateArticle = debatearticleSO.getByFinanceuid(id);
+			Debate debate = debateSO.get(debateArticle.getDebateuid());
+			model.put(ViewKeyDict.doid, debate.getOid());
+			model.put(ViewKeyDict.dperioid, debate.getPeriods());
+			if (debateArticle.isIsred()) {
+				model.put(ViewKeyDict.dviewpoint, debate.getTitlered());
+			}
+			model.put(ViewKeyDict.dviewpoint, debate.getTitlered());
+		}
+		User user = BaseUserHP.getCurrUser(request);
+		Finance finance = so.get(id);
+		if (user == null && !finance.isIspublic()) {
+			return redirectPrefix + WebConf.LoginURL;
+		}
+		if (user != null) {
+			List<String> prizes = UserHP.getListPrize(user);
+			for (String item : prizes) {
+				if (finance.getUid().equals(item)) {
+					finance.setIsprize(true);
+					break;
+				}
+			}
+		} else {
+			Cookie cookie = CookieUtil.getCookie(request, EChannel.debatearticle.name() + finance.getUid() + ViewKeyDict.prizefinance);
+			if (cookie != null) {
+				finance.setIsprize(true);
+			}
+		}
+		FinanceHP.incrClickCount(request, respone, finance, user);// 增加计数
+		List<Finance> rankList = FinanceHP.getRankList(ECountType.click, null);
+		int articleCount = FinanceHP.getAuthorArticleCount(finance.getAuthoruid());
+		List<Debate> debaterank = DebateHP.getListByDebateRankFromComments();
+		model.put(ViewKeyDict.bean, finance);
+		model.put(ViewKeyDict.list, rankList);
+		model.put(ViewKeyDict.list2, debaterank);
+		model.put(ViewKeyDict.count, articleCount);
+		model.put(ViewKeyDict.wonderfullist, CommentsHP.getCommentsFromPraise(finance.getUid(), EChannel.finance, ECommentType.comment, SysConf.TopicCommentRankNum));
+		return "debatearticleuid";
+	}
+}

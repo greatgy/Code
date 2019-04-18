@@ -1,0 +1,10 @@
+[#ftl]
+[#if block=='title']
+[#------beautiful splitter for admin--------]尊敬的${judge.showname!}女士/先生，裁判确认[#------beautiful splitter for admin--------]
+[#else]
+[#------beautiful splitter for admin--------]<p>
+	尊敬的${judge.showname!}女士/先生：</p>
+<div style="color:#999">
+	此邮件是由 系统发出，系统不接收回信，请勿直接回复。</div>
+[#------beautiful splitter for admin--------]
+[/#if]

@@ -1,0 +1,249 @@
+    <style type="text/css">
+        .header_tou .top{
+            width:100%; 
+            height:37px; 
+            background-color:#4e4d4d;
+        }
+        .header_tou .top .top_main1 {
+            width:1023px;
+        }
+        .header_tou .top .top_left {
+            list-style:none;
+            float:left;
+        }
+        .header_tou .top .top_left li {
+            float:left;
+        }
+        .header_tou .top .top_left li a {
+            font-size:12px; 
+            color:#b8b8b8; 
+            display:block; 
+            margin:10px 15px;
+        }
+        .header_tou .top .top_left li a:hover {
+            color:#fff;
+        }
+        .top .top_left .tl_act {
+            color:#FFF!important;
+        }
+        .top .top_right {
+            list-style:none; 
+            float:right;
+        }
+        .top_right li {
+            float:left;
+        }
+        .top_right li a {
+            font-size:12px; 
+            color:#ccc; 
+            display:block; 
+            margin:10px 14px;
+        }
+        .top_right .tr_act {
+            width:55px; 
+            height:39px; 
+            background-color:#d93126;
+        }
+        .top_right li a:hover { 
+            color: #fff;
+        }
+        .top_right .welcome a:hover {
+            color: #ccc;
+        }
+        .top_right .welcome a:hover .headerName {
+            color: #fff;
+        }
+        .top_right li .newsnum {
+            position: relative;
+            display: inline-block;
+        }
+        .top_right li .newsnum:hover {
+            text-decoration: underline;
+        }
+        .newsnotice .number {
+            color: red;
+        }
+        .newsnum .rdot {
+            display: block;
+            width: 6px;
+            height: 6px;
+            background: red;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            right: -4px;
+            overflow: hidden;
+        }
+        .newsnotice .newsection {
+            position: absolute;
+            background: #fff;
+            z-index: 10;
+            width: 235px;
+            margin-top: 15px;
+            margin-left: -75px;
+            border: 1px solid #E2E2E2;
+        }
+        .newsection .trangle {
+            height: 24px;
+            margin-left: 58%;
+            position: absolute;
+            display: block;
+            top: -23px;
+        }
+        .trangle em , .trangle i {
+            width: 0;
+            height: 0;
+            font-size: 0;
+            line-height: 0;
+            display: block;
+            position: absolute;
+            border: 12px solid transparent;
+            border-style: dashed dashed solid dashed;
+        }
+        .trangle em {
+            border-bottom-color: #CACACA;
+            top: -1px;
+        }
+        .trangle i {
+            border-bottom-color: #fff;
+            top: 0;
+        }
+        .newsection .datalist {
+            background: #fff;
+        }
+        .newsection .datalist li {
+            height: 40px;
+            text-align: left;
+            width: 215px;
+            line-height: 40px;
+            padding: 0 10px;
+            border-bottom: 1px solid #ddd;
+            color: #535353;
+            overflow: hidden;
+        }
+        .newsection .datalist li:last-child {
+            border-bottom: none;
+        }
+        .datalist li a {
+            display: inline-block;
+            margin: 0;
+            color: #535353;
+        }
+        .datalist li .del {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            overflow: hidden;
+            text-align: center;
+            line-height: 20px;
+            float: right;
+            margin-top: 10px;
+        }
+        .datalist .del img {
+            width: 20px;
+            height: 20px;
+            overflow: hidden;
+        }
+        .newsection .datalist li:hover {
+            background: #F1F1F1;
+        }
+        .newsection .datalist li:hover a {
+            color: #A6A6A6;
+        }
+        .datalist pre {
+            color: #535353;
+            font-size: 12px;
+            text-align: left;
+            padding: 10px;
+            font-family: "Microsoft Yahei";
+            white-space: normal;
+            overflow: hidden;
+        }
+        .datalist pre p {
+            line-height: 20px;
+            margin-bottom: 5px;
+        }
+        .datalist pre .authorname {
+            display: block;
+            text-align: right;
+        }
+        .datalist .nonews {
+            font-size: 12px;
+            color: #AEAEAE;
+            margin-bottom: 10px;
+        }
+    </style>
+    <div class="top">
+        <div class="top_main1">
+            <ul class="top_left">
+                <li><a href="http://www.supergenius.cn"  class="tl_act">超天才</a></li>
+                <li><a href="http://guchujun.supergenius.cn">顾雏军专栏</a></li>
+                <li><a href="http://finance.supergenius.cn/">天财评论</a></li>
+                <li><a href="http://moral.supergenius.cn">职业道德培训</a></li>
+                <li><a href="http://tpi.supergenius.cn">并购平台</a></li>
+                <li><a href="http://www.supergenius.cn/login">人间仙境</a></li>
+            </ul>
+            
+            <ul class="top_right">
+                <!-- <li><a href="http://sns.supergenius.cn/u/home" target="_blank"></a></li>
+                <li class="tr_act"><a href="/login.html" target="_blank">登录</a></li>
+                <li><a href="/register/index.html" target="_blank">注册</a></li>
+                <li><a href="/huiyuan.html" target="_blank">会员特权</a></li> -->
+                <li class='welcome'><a href="" target="_blank">欢迎您&nbsp;<span class="headerName">周义梅</span></a></li>
+                <li class="newsnotice">
+                    <a href="javascript:;" class="newsnum">
+                        新消息
+                        （<b class="number">999</b>）
+                        <span class="rdot"></span>
+                    </a>
+                    <div class="newsection hd">
+                        <div class="trangle">
+                          <em></em>
+                          <i></i>
+                        </div>
+                        <ul class="datalist">
+                            <li>
+                                <a href="http://finance.180800.cn/my/msg">
+                                    天财评论有新消息
+                                    （<b class="number">10</b>）
+                                </a>
+                                <a href="javascript:;" class="del">
+                                    <img src="/imgs/default/delimg.png" />
+                                </a>
+                            </li>
+                            <li>
+                                <a href="http://tpi.supergenius.cn/mycenter/message/inbox">
+                                    并购平台有新消息
+                                    （<b class="number">10</b>）
+                                </a>
+                                <a href="javascript:;" class="del">
+                                    <img src="/imgs/default/delimg.png" />
+                                </a>
+                            </li>
+                            <li>
+                                <a href="http://moral.supergenius.cn/mycenter/message">
+                                    职业道德培训有新消息
+                                    （<b class="number">99+</b>）
+                                </a>
+                                <a href="javascript:;" class="del">
+                                    <img src="/imgs/default/delimg.png" />
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="datalist">
+                            <pre>
+                                <p>没有永远的朋友，只有永远的利益</p>
+                                <span class="authorname">———张伯伦</span>
+                            </pre>
+                            <div class="nonews">暂无新消息</div>
+                        </div>
+                    </div>
+                </li>
+                <li class='offline'><a href="javascript:offline();">退出</a></li>
+                <li class="tr_act login hd"><a href="${loginurl}/login" target="_blank">登录</a></li>
+                <li class="register hd"><a href="${loginurl}/register" target="_blank">注册</a></li>
+                <li><a href="http://www.supergenius.cn/huiyuan" target="_blank">会员特权</a></li>
+            </ul>
+        </div>
+    </div>
+    

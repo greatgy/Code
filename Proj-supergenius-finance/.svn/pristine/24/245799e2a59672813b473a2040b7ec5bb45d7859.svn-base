@@ -1,0 +1,289 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+<!DOCTYPE html >
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>${title!'论战'}</title>
+    <link rel="stylesheet" href="${basecss}/css/default/pages/debate.css"/>
+    <style type="text/css">
+    
+    </style>
+    <script type="text/javascript">
+	<!--
+		var FINANCE_PAGE =
+			{
+				pagenum:1,
+				url:"${base}/ajax/debate/${bean.uid}"
+			};
+		var nomore = false;
+		$(function($) {
+			// 注册事件
+			$(".loadmore").click(loadmore);
+		});
+		
+		// 加载更多事件处理
+		function loadmore() {
+			if(nomore) {
+				$(".loadmore").html("没有更多评论");
+				return;
+			}
+			var pagenum = FINANCE_PAGE.pagenum +　1;
+			var url = FINANCE_PAGE.url;
+			$.get(url, {pagenum:pagenum}, function(data){
+				if(data.trim() == ""){// 没有更多内容
+					alert("没有更多论战");
+					return;
+				}
+				FINANCE_PAGE.pagenum += 1;
+				$(".lz_main").append(data);
+				hoverBind();
+			});
+		}
+	//-->
+	</script>
+</head>
+<body>
+	<div class="centerbox">
+		<div class="topic_07_box">
+			<div class="tp_07_left">
+				<div class="tp_01_one">
+					<a href="#" target="_blank" class="debatebg"><img src="${baseimg}/imgs/default/debatebg.png" /></a>
+					<span class="contro_icon">第六期</span>
+		            <div class="lz_one_01">
+		                <a href="#" title="美国经济GDP在今后两年能保持3%以上的高速增长吗？" target="_blank">美国经济GDP在今后两年能保持3%以上的高速增长吗？<img src="${baseimg}/imgs/default/go.png" /></a>
+		            </div>
+		            <div class="lz_one_02 over_title" title="美国经济会高速增长">美国经济会高速增长</div>
+		            <div class="lz_one_03 over_title" title="美国经济不会高速增长">美国经济不会高速增长</div>
+				</div>
+				<div class="tp_01_two">
+					<div class="mb">
+						&nbsp;&nbsp;往期回顾
+					</div>
+		            <div class="lz_main"  id="lz_main">
+		                <div class="main01 list01" >
+		                	<a class="yc" href="#" title="2015年快递业会不会掀起“并购风”">
+		                		2015年快递业会不会掀起“并购风”
+			                	<img src="${baseimg}/imgs/default/lzh1_jt.png">
+		                	</a>
+		                </div>
+		                <div class="main01 list02" >
+		                	<a class="yc" href="#" title="2015年快递业会不会掀起“并购风”">
+		                		2015年快递业会不会掀起“并购风”
+			                	<img src="${baseimg}/imgs/default/lzh1_jt.png">
+		                	</a>
+		                </div>
+		                <div class="main01 list03" >
+		                	<a class="yc" href="#" title="2015年快递业会不会掀起“并购风”">
+		                		2015年快递业会不会掀起“并购风”
+			                	<img src="${baseimg}/imgs/default/lzh1_jt.png">
+		                	</a>
+		                </div>
+		                <div class="main01 list01" >
+		                	<a class="yc" href="#" title="2015年快递业会不会掀起“并购风”">
+		                		2015年快递业会不会掀起“并购风”
+			                	<img src="${baseimg}/imgs/default/lzh1_jt.png">
+		                	</a>
+		                </div>
+		                <div class="main01 list02" >
+		                	<a class="yc" href="#" title="2015年快递业会不会掀起“并购风”">
+		                		2015年快递业会不会掀起“并购风”
+			                	<img src="${baseimg}/imgs/default/lzh1_jt.png">
+		                	</a>
+		                </div>
+		                <div class="main01 list03" >
+		                	<a class="yc" href="#" title="2015年快递业会不会掀起“并购风”">
+		                		2015年快递业会不会掀起“并购风”
+			                	<img src="${baseimg}/imgs/default/lzh1_jt.png">
+		                	</a>
+		                </div>
+		            </div>
+		            <a href="#" class="lookall">查看全部论战</a>
+				</div>
+			</div>
+			<!--右侧 开始-->
+			<div class="tp_07_right">
+		        <div class="ranklist">
+		          <h4>发起论战</h4>
+		          <p class="detail">如果您希望发起新论战，或希望将自己的观点以文章的形式发表在某一期论战中，请点击“投稿”按钮，并在稿件中说明。谢谢您的支持！</p>
+		        </div>
+		        <!- 论战发言榜 -->
+				<div class="ranklist">
+					<h4>论战发言榜</h4>
+					<ul class="statelist">
+						<li>
+							<a href="#">
+								<img src="${baseimg}/imgs/default/subsimg04.png" />
+							</a>
+							<a href="#">拖拖</a>
+							<span>
+								<img src="${baseimg}/imgs/default/msgimg.png" />
+								88
+							</span>
+						</li>
+						<li>
+							<a href="#">
+								<img src="${baseimg}/imgs/default/subsimg04.png" />
+							</a>
+							<a href="#">拖拖</a>
+							<span>
+								<img src="${baseimg}/imgs/default/msgimg.png" />
+								88
+							</span>
+						</li>
+					</ul>
+				</div>
+				<!- 最新发言 -->
+				<div class="ranklist">
+					<h4>最新发言</h4>
+					<div class="wordslist">
+						<div class="sdot"></div>
+						<ul class="newords">
+							<li>
+								<span class="circledot"></span>
+								<div class="wordright">
+									<div class="justtime">55&nbsp;分钟前</div>
+									<div class="nameimg">
+										<a href="#">
+											<img src="${baseimg}/imgs/default/subsimg04.png" />
+											呼呼 
+										</a>
+									</div>
+									<p> 
+										2002年的法国，曾经是中世纪英法战争古战场的多尔登山谷某处。一个考古小组正在历史学家爱德华曾经是中世纪英法战争古战场的...
+									</p>
+									<div class="source">
+										来自论战：<a href="#">2015快递业会不会掀起“并购风”</a>
+									</div>
+								</div>
+							</li>
+							<li>
+								<span class="circledot"></span>
+								<div class="wordright">
+									<div class="justtime">5&nbsp;小时前</div>
+									<div class="nameimg">
+										<a href="#">
+											<img src="${baseimg}/imgs/default/subsimg04.png" />
+											呼呼 
+										</a>
+									</div>
+									<p> 
+										2002年的法国，曾经是中世纪英法战争古战场的多尔登山谷某处。一个考古小组正在历史学家爱德华曾经是中世纪英法战争古战场的...
+									</p>
+									<div class="source">
+										来自论战：<a href="#">2015快递业会不会掀起“并购风”</a>
+									</div>
+								</div>
+							</li>
+							<li>
+								<span class="circledot"></span>
+								<div class="wordright">
+									<div class="justtime">8&nbsp;小时前</div>
+									<div class="nameimg">
+										<a href="#">
+											<img src="${baseimg}/imgs/default/subsimg04.png" />
+											呼呼 
+										</a>
+									</div>
+									<p> 
+										2002年的法国，曾经是中世纪英法战争古战场的多尔登山谷某处。一个考古小组正在历史学家爱德华曾经是中世纪英法战争古战场的...
+									</p>
+									<div class="source">
+										来自论战：<a href="#">2015快递业会不会掀起“并购风”</a>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<!- 论战排行榜 -->
+				<div class="ranklist">
+		  			<h4>论战排行榜</h4>
+		  			<ul class="hotlist">
+		  				<li>
+		  					<span class="normalspan ranknum">1</span>
+		  					<div class="rankright">
+		  						<a href="#" title="如何基于微信开放接口开发企业的微" class="arttile">如何基于微信开放接口开发企业的微</a>
+		  					</div>
+		  				</li>
+		  				<li>
+		  					<span class="normalspan ranknum">2</span>
+		  					<div class="rankright">
+		  						<a href="#" title="移动营销革命中的新策略" class="arttile">移动营销革命中的新策略</a>
+		  					</div>
+		  				</li>
+		  				<li>
+		  					<span class="normalspan ranknum">3</span>
+		  					<div class="rankright">
+		  						<a href="#" title="从植物大战僵尸看产品的本土化" class="arttile">从植物大战僵尸看产品的本土化</a>
+		  					</div>
+		  				</li>
+		  				<li>
+		  					<span class="normalspan">4</span>
+		  					<div class="rankright">
+		  						<a href="#" title="习大大亲和优雅的举止" class="arttile">习大大亲和优雅的举止</a>
+		  					</div>
+		  				</li>
+		  				<li>
+		  					<span class="normalspan">5</span>
+		  					<div class="rankright">
+		  						<a href="#" title="开放接口开发企业" class="arttile">开放接口开发企业</a>
+		  					</div>
+		  				</li>
+		  				<li>
+		  					<span class="normalspan">6</span>
+		  					<div class="rankright">
+		  						<a href="#" title="开展煤气化装置大型气化炉、喷嘴、开工" class="arttile">开展煤气化装置大型气化炉、喷嘴、开工</a>
+		  					</div>
+		  				</li>
+		  				<li>
+		  					<span class="normalspan">7</span>
+		  					<div class="rankright">
+		  						<a href="#" title="紧密围绕电力产业的安全、高效" class="arttile">紧密围绕电力产业的安全、高效</a>
+		  					</div>
+		  				</li>
+		  				<li>
+		  					<span class="normalspan">8</span>
+		  					<div class="rankright">
+		  						<a href="#" title="增强我国相关领域竞争力为目标" class="arttile">增强我国相关领域竞争力为目标</a>
+		  					</div>
+		  				</li>
+		  				<li>
+		  					<span class="normalspan">9</span>
+		  					<div class="rankright">
+		  						<a href="#" title="国神集团和丰煤电公司" class="arttile">国神集团和丰煤电公司</a>
+		  					</div>
+		  				</li>
+		  				<li>
+		  					<span class="normalspan">10</span>
+		  					<div class="rankright">
+		  						<a href="#" title="黄骅港务公司顺利通过河北省安全生产" class="arttile">黄骅港务公司顺利通过河北省安全生产</a>
+		  					</div>
+		  				</li>
+		  			</ul>
+		  		</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="clear"></div>
+	<br>
+	<br>
+
+	<script>
+		$(function () {
+			hoverBind();
+		})
+		function hoverBind(){
+			$(".main01").hover(
+				function () {
+					$(this).find(".yc").css("top","0px")
+				 },
+				function () {
+				     $(this).find(".yc").css("top","128px")
+				}
+			)
+		}
+	</script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+[#ftl]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>通过注册邮箱找回密码--密保问题</title>
+	<meta name="Keywords" content="会员中心通过注册邮箱找回密码,密保问题" />
+	<meta name="Description" content="会员中心通过注册邮箱找回密码,密保问题" />
+	<script type="text/javascript" src="${basejs}/js/libs/validator-1.0.0.js"></script>
+	<link rel="stylesheet" type="text/css" href="${basecss}/css/default/findpw.css">
+<script type="text/javascript">
+<!--
+    $(function() {
+        $(".submit").click(function() {
+            $("#reset_form").submit();
+        } );
+        
+        $('input[name="f_name"]').keydown(function(){  
+            if(event.keyCode==13){
+                $(".submit").click();
+                return false;
+            }  
+        });
+        $('input[name="m_name"]').keydown(function(){  
+            if(event.keyCode==13){
+                $(".submit").click();
+                return false;
+            }  
+        });
+    });
+-->
+</script>
+
+</head>
+<body>
+		<div class="container">
+			<div class="main">
+				<div class="topcommon">
+					<img src="${baseimg}/imgs/default/findpw01.png" alt="" />
+					<h2>从这里，找到更好的自己！</h2>
+				</div>
+				<div class="midcommon">
+					<h3>
+						<img src="${baseimg}/imgs/default/login_logo.png" alt="" /> 
+						通过注册邮箱找回密码
+					</h3>
+					<div class="mainmid">
+						<form action="${base}/resetpwd/step3" id="reset_form" method="post">
+							<ul class="mailist securitylist">
+								<li>
+									<label>密保提示问题</label>
+									<span>${question}</span>
+									<input type="hidden" name="question" value="${question}" />
+								</li>
+								<li>
+									<label for="txtemail">问题答案</label>
+									<input type="text" class="mail" id="txtemail" isnotempty="不能为空" name="f_name"/>
+									<div id="email" class="msg-box">
+										<div id="focustxtemail" class="msg-prompt hd">
+											<i></i>
+											<span>请输入您的答案</span>
+										</div>
+										[#if err_father_name??]
+										<div id="errtxtemail" class="msg-error">
+                                            <i></i>
+                                            <span id="errmsgtxtemail">回答错误</span>
+                                        </div>
+										[#else]
+										<div id="errtxtemail" class="msg-error hd">
+                                            <i></i>
+                                            <span id="errmsgtxtemail"></span>
+                                        </div>
+										[/#if]
+										
+										<div id="oktxtemail" class="msg-correct hd">
+											<i></i>
+											<span></span>
+										</div>
+									</div>
+								</li>
+								<li>
+									<label>密保提示问题</label>
+									<span>${question2}</span>
+									<input type="hidden" name="question2" value="${question2}" />
+								</li>
+								<li>
+									<label for="txtquestion">问题答案</label>
+									<input type="text" class="mail" id="txtquestion" isnotempty="不能为空" name="m_name"/>
+									<div id="email" class="msg-box">
+										<div id="focustxtquestion" class="msg-prompt hd">
+											<i></i>
+											<span>请输入您的答案</span>
+										</div>
+										[#if err_mother_name??]
+										<div id="errtxtquestion" class="msg-error">
+                                            <i></i>
+                                            <span id="errmsgtxtquestion">回答错误</span>
+                                        </div>
+										[#else]
+										<div id="errtxtquestion" class="msg-error hd">
+                                            <i></i>
+                                            <span id="errmsgtxtquestion"></span>
+                                        </div>
+										[/#if]
+										
+										<div id="oktxtquestion" class="msg-correct hd">
+											<i></i>
+											<span></span>
+										</div>
+									</div>
+								</li>
+							</ul>
+							<a class="submit" href="javascript:subform()">下一步</a>
+							<input  type="hidden" name="email" value="${exist}"/>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+</body>
+</html>

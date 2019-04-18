@@ -1,0 +1,83 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/Admin.ftl" as a]
+<html>
+<head>
+<title>评论管理</title>
+<script type="text/javascript" src="${basejs}/ckeditor/ckeditor.js"></script>
+<script type="text/javascript">
+<!--
+//-->
+</script>
+</head>
+<body>
+	<section>
+		[@a.search]
+	        <tr>
+	        	<td><label for="sfromusername">评论者姓名: </label><input id="sfromusername" type="text" name="fromusername" /></td>
+	        	<td><label for="scontent">内容: </label><input id="scontent" type="text" name="content" /></td>
+	        </tr>
+	        <tr>
+	        	<td>起始时间: <input name="createtimestart" type="text" editable="false" class="easyui-datebox" /></td>
+                <td>结束时间: <input name="createtimeend" type="text" editable="false" class="easyui-datebox" /></td>
+			</tr>
+			<tr>
+	            <td>评论类别: 
+		            <input id="sall" name="channel" value="" type="radio" class="radio" /><label for="sall">全部</label>
+		            <input id="sfinance" name="channel" value="1" type="radio" class="radio" /><label for="sfinance">天财评论文章</label>
+		            <input id="sdebate" name="channel" value="2" type="radio" class="radio" /><label for="sdebate">论战</label>
+		            <input id="sdebatearticle" name="channel" value="3" type="radio" class="radio" /><label for="sdebatearticle">论战文章</label>
+		            <input id="stopic" name="channel" value="4" type="radio" class="radio" /><label for="stopic">话题</label>
+	            </td>
+	        </tr>   
+			<tr>
+	            <td>状态: 
+		            <input id="sall" name="status" value="" type="radio" class="radio" /><label for="sall">全部</label>
+		            <input id="senable" name="status" value="1" type="radio" class="radio" /><label for="senable">正常</label>
+		            <input id="sdisable" name="status" value="0" type="radio" class="radio" /><label for="sdisable">冻结</label>
+	            </td>
+	        </tr>   
+		[/@a.search]
+		
+		[@a.datagrid options="fitColumns:true,resizeHandle:'right',pagination:true,singleSelect:false,method:'get'"]
+            <th data-options="field:'channelName',width:100">评论类型</th>
+            <th data-options="field:'fromusername',width:100">评论者姓名</th>
+            <th data-options="field:'content',width:500">内容</th>
+            <th data-options="field:'statusName',width:100">状态</th>
+            <th data-options="field:'createtimeStr',width:150">发布时间</th>
+	    [/@a.datagrid]
+	    
+	    [@a.toolbar canadd=false canedit=false]
+	    	[@a.status /]
+	    [/@a.toolbar]
+	    [@a.tools /]
+	    
+	</section>
+	
+	[@a.viewsection]
+	 	<tr>
+            <td>评论类别:</td>
+            <td><span set-key="channelName"></span></td>
+        </tr>
+		<tr>
+            <td>评论者姓名:</td>
+            <td><span set-key="fromusername"></span></td>
+        </tr>
+        <tr>
+            <td>内容:</td>
+            <td><span set-key="content"></span></td>
+        </tr>
+        <tr>
+            <td>赞数:</td>
+            <td><span set-key=""></span></td>
+        </tr>
+        <tr>
+            <td>状态:</td>
+            <td><span set-key="statusName"></span></td>
+        </tr>
+        <tr>
+            <td>发布时间:</td>
+            <td><span set-key="createtimeStr"></span></td>
+        </tr>
+	[/@a.viewsection]
+</body>
+</html>

@@ -1,0 +1,61 @@
+package com.supergenius.web.account.helper;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.alipay.api.AlipayApiException;
+import com.alipay.api.AlipayClient;
+import com.alipay.api.DefaultAlipayClient;
+import com.alipay.api.domain.AlipayTradeRefundModel;
+import com.alipay.api.request.AlipayTradeRefundRequest;
+import com.alipay.api.response.AlipayTradeRefundResponse;
+import com.genius.core.base.utils.StrUtil;
+import com.genius.server.base.helper.BaseHP;
+import com.supergenius.global.conf.SysConf;
+import com.supergenius.third.alipay.config.AlipayConfig;
+import com.supergenius.xo.account.entity.Account;
+import com.supergenius.xo.account.enums.EBank;
+
+/**
+ * 退款
+ * 
+ * @author YangGuang
+ */
+public class RefundHP extends BaseHP {
+
+	private static Logger log = LoggerFactory.getLogger(RefundHP.class);
+
+	/**
+	 * 退款
+	 * 
+	 * @param account
+	 * @param money 退款金额（必须小于account的金额）
+	 * @return
+	 * @author YangGuang
+	 * @throws AlipayApiException
+	 */
+	public static boolean refund(Account account, String money) throws AlipayApiException {
+		String refund_money;
+		if (StrUtil.isNotEmpty(money)) {
+			if (Double.parseDouble(money) > account.getMoney()) {
+				return false;
+			}
+			refund_money = money;
+		} else {
+			refund_money = String.valueOf(account.getMoney());
+		}
+		if (account.getBank() == EBank.alipay) {
+			AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.refundUrl, SysConf.AlipayAppid, SysConf.AlipayPrivateKey, "json", "UTF-8", SysConf.AlipayPublicKey,
+					AlipayConfig.refund_sign_type);
+			AlipayTradeRefundModel model = new AlipayTradeRefundModel();
+			model.setOutTradeNo(account.getAccountsn());
+			model.setRefundAmount(refund_money);
+			model.setOutRequestNo(account.getUid());//部分退款此参数必传
+			AlipayTradeRefundRequest request = new AlipayTradeRefundRequest();
+			request.setBizModel(model);
+			AlipayTradeRefundResponse response = alipayClient.execute(request);
+		}
+		return false;
+	}
+
+}

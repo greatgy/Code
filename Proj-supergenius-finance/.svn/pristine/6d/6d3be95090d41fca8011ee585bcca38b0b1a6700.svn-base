@@ -1,0 +1,50 @@
+﻿---------------web.properties:
+baseRootPath=http://localhost:8082
+SearchUrl=http://localhost:8082/searchengine
+
+
+
+---------------nginx配置：
+server {
+	listen       8082;
+	default_type text/html;
+	location /searchengine {
+		proxy_pass http://localhost:8983/solr/mycloud/query;
+	}
+	location / {
+		proxy_pass http://127.0.0.1:9082/;
+	}
+}
+
+
+---------------启动solr:
+安装：
+先将E:\MyWork2\Proj-supergenius-finance\Web\src\main\resources\Third\Solr\mylib 放到solr安装根目录
+将E:\MyWork2\Proj-supergenius-finance\Web\src\main\resources\Third\Solr\mycloud 放到server\solr\configsets目录下
+
+启动：
+D:\solr5.1.0>bin\solr.cmd start -c -f
+访问：http://localhost:8983/solr
+
+第一次执行下面的命令：
+D:\solr5.1.0>server\scripts\cloud-scripts\zkcli.bat -zkhost localhost:9983 -cmd upconfig -confname mycloud -confdir server\solr\configsets\mycloud\conf 
+创建collection：http://localhost:8983/solr/admin/collections?action=CREATE&name=mycloud&router.name=implicit&shards=shard1&replicationFactor=1&collection.configName=mycloud
+修改配置后执行命令：
+server\scripts\cloud-scripts\zkcli.bat -zkhost localhost:9983 -cmd upconfig -confname mycloud -confdir server\solr\configsets\mycloud\conf
+http://localhost:8983/solr/admin/collections?action=RELOAD&name=mycloud			#重新加载collection
+
+
+---------------web访问：
+http://localhost:8082
+
+测试服务器部署操作
+./solr start -c -f 
+
+./server/scripts/cloud-scripts/zkcli.sh -zkhost 192.168.1.96:9983 -cmd upconfig -confname mycloud -confdir server/solr/configsets/mycloud /conf
+
+http://192.168.1.96:8983/solr/admin/collections?action=CREATE&name=mycloud&router.name=implicit&shards=shard1&replicationFactor=1&collection.configName=mycloud
+http://192.168.1.96:8983/solr/admin/collections?action=CREATE&name=mycloud&router.name=implicit&shards=shard1&replicationFactor=1&collection.configName=mycloud
+
+./server/scripts/cloud-scripts/zkcli.sh -zkhost 192.168.1.96:9983 -cmd upconfig -confname mycloud -confdir server/solr/configsets/mycloud /conf
+
+http://192.168.1.96:8983/solr/admin/collections?action=RELOAD&name=mycloud

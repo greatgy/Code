@@ -1,0 +1,23 @@
+package com.supergenius.core.converters;
+
+import org.springframework.core.convert.converter.Converter;
+
+import com.supergenius.xo.finance.enums.EFinanceMsg;
+
+/**
+ * 配置spring mvc自动接收EFinanceMsg
+ * 
+ * @author LiJiacheng
+ */
+public class StringToEFinanceMsgConverter implements Converter<String, EFinanceMsg> {
+
+	@Override
+	public EFinanceMsg convert(String source) {
+		String value = source.trim();
+		if ("".equals(value)) {
+			return null;
+		}
+		return EFinanceMsg.get(Integer.parseInt(source));
+	}
+
+}

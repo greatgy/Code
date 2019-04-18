@@ -1,0 +1,40 @@
+[#ftl]
+[#if bean??]
+	<div class="side_right">
+		<div class="debate_left">
+			<img src="${webimg}${bean.imgoriginal}" />
+			<div class="lz_one_01">
+				<a href="${baseFinancePath}/debate/${bean.oid}" title="${bean.title}" target="_blank">${bean.title?substring(0,10)}</a>
+			</div>
+			<div class="lz_one_02" title="${bean.titlered}">${bean.titlered}</div>
+			<div class="lz_one_03" title="${bean.titleblue}">${bean.titleblue}</div>
+		</div>
+		<div class="debate_right">
+			<div class="contro_vs">
+				<img src="${baseOfficialImg}/imgs/default/vs.png" />
+				<span class="can">${bean.titlered}</span>
+				<span class="cannot">${bean.titleblue}</span>
+			</div>
+			<div class="controsy">
+			</div>
+			<div class="pre_debate">
+				<ul class="ul2">
+					[#list list as item]
+						[#if item_index != 0]
+							<li>
+								<img src="${baseOfficialImg}/imgs/default/lz_dot.png" />
+								<span>${item.periods}<a href="${baseFinancePath}/debate/${item.oid}" target="_blank">${item.title}</a></span>
+							</li>
+						[/#if]
+					[/#list]
+				</ul>
+			</div>
+		</div>
+	</div>
+[/#if]
+
+		
+		
+		
+		
+	

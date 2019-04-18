@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+     http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+	
+	<!-- Web Configuration -->
+	<util:properties id="sys" location="classpath:webconfig/sys.properties"/>
+	<util:properties id="web" location="classpath:webconfig/web.properties"/>
+	<util:properties id="mapping" location="classpath:webconfig/mapping.properties"/>
+	<util:properties id="redis" location="classpath:webconfig/redis.properties"/>
+	<util:properties id="cache" location="classpath:webconfig/cache.properties"/>
+
+	<bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<!-- <value>classpath:conn/RepliConns.properties</value> -->
+				<!--如果有多个属性文件,依次在下面列出来 -->
+				<value>classpath:conn/DBConn.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<!--国际化资源 for spring & ftl -->
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>i18n/enum</value>
+			</list>
+		</property>
+	</bean>
+	
+	<util:list id="beanNameList">
+		<value>*SOImpl</value>
+	</util:list>
+
+	<!-- PROPAGATION_REQUIRED是事务传播机制，即如果没有事务就创建事务，如果事务存在则加入事务 -->
+	<!-- ISOLATION_DEFAULT是事务的隔离级别是数据库默认的隔离级别 -->
+	<!-- -Exception中“-”表示哪些异常发生事务将回滚，如果是“+”则表示即使异常该事务仍旧被提交 -->
+	<util:properties id="transactionProps">
+		<prop key="get*">
+			PROPAGATION_REQUIRED,readOnly
+		</prop>
+		<prop key="find*">
+			PROPAGATION_REQUIRED,readOnly
+		</prop>
+		<prop key="select*">
+			PROPAGATION_REQUIRED,readOnly
+		</prop>
+		<prop key="search*">
+			PROPAGATION_REQUIRED,readOnly
+		</prop>
+		<prop key="query*">
+			PROPAGATION_REQUIRED,readOnly
+		</prop>
+		<prop key="isExist*">
+			PROPAGATION_REQUIRED,readOnly
+		</prop>
+		<prop key="save*">
+			PROPAGATION_REQUIRED,ISOLATION_DEFAULT,-Exception
+		</prop>
+		<prop key="parse*">
+			PROPAGATION_REQUIRED,ISOLATION_DEFAULT,-Exception
+		</prop>
+		<prop key="delete*">
+			PROPAGATION_REQUIRED,ISOLATION_DEFAULT,-Exception
+		</prop>
+		<prop key="update*">
+			PROPAGATION_REQUIRED,ISOLATION_DEFAULT,-Exception
+		</prop>
+		<prop key="init*">
+			PROPAGATION_REQUIRED,ISOLATION_DEFAULT,-DAOException,-ServicesException,-ServiceException
+		</prop>
+		<prop key="exec*">
+			PROPAGATION_REQUIRED,ISOLATION_DEFAULT,-Exception
+		</prop>
+		<prop key="add*">
+			PROPAGATION_REQUIRED,ISOLATION_DEFAULT,-Exception
+		</prop>
+		<prop key="insert*">
+			PROPAGATION_REQUIRED,ISOLATION_DEFAULT,-Exception
+		</prop>
+		<prop key="remove*">
+			PROPAGATION_REQUIRED,ISOLATION_DEFAULT,-Exception
+		</prop>
+		<prop key="upload*">
+			PROPAGATION_REQUIRED,ISOLATION_DEFAULT,-Exception
+		</prop>
+		<prop key="modify*">
+			PROPAGATION_REQUIRED,ISOLATION_DEFAULT,-Exception
+		</prop>
+		<prop key="incr*">
+			PROPAGATION_REQUIRED,ISOLATION_DEFAULT,-Exception
+		</prop>
+		<prop key="*">
+			PROPAGATION_REQUIRED,ISOLATION_DEFAULT,-java.lang.Exception
+		</prop>
+	</util:properties>
+</beans>

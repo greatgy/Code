@@ -1,0 +1,31 @@
+[#ftl]
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>话题发布成功</title>
+<link href="${basecss}/css/default/pages/topic_achive.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div class="topic_ah_box">
+    <div class="crumbs">
+        <img src="imgs/home.png" />
+        <a href="${base}">首页</a><span class="crumbs_arrow"> ></span>
+        <a href="${base}/topic">话题</a><span class="crumbs_arrow"> ></span>
+        <a href="${base}/topic/apply">发布话题</a>
+    </div>
+    <div class="ct_ah_con">
+        <p class="ct_ah_title">
+            <img src="${baseimg}/imgs/default/ok.png" />
+            <span>发布成功！</span>
+        </p>
+        <p class="ah_clear ct_ah_margin">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;您发起的话题已提交管理员审核，审核结果将以系统通知的形式发到您的消息中心
+        </p>
+        <p class="ah_clear">里，请注意查收！</p>
+        <p class="ah_clear">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;您可以进入
+            <a href="${base}/mytopic" class="ah_font">我的话题</a>查看和管理您的话题。
+        </p>
+  </div>
+</div>
+<div class="clear"></div>
+</body>
+</html>

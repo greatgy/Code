@@ -1,0 +1,16 @@
+basePath=
+/=localhost:11211 127.0.0.1:11211,1
+/s=127.0.0.1:11211
+#below list for junit test
+/users=127.0.0.1:11211,1
+/users/online=127.0.0.1:11211
+/users/mycart=127.0.0.1:11211
+/users/stat=127.0.0.1:11211
+/groups=127.0.0.1:11211,1
+#/shops=127.0.0.1:11211
+#/shops/b2c=127.0.0.1:11211
+
+##############
+# mc cache config
+/finance/article/first=127.0.0.1:11211
+

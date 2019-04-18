@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="userRemindPayHP" class="com.supergenius.server.timer.UserRemindPayExecuter"></bean>
+	<bean id="updateAppJudgeHP" class="com.supergenius.server.timer.UpdateAppJudgeExecuter"></bean>
+	<bean id="updateAppExpertHP" class="com.supergenius.server.timer.UpdateAppExpertExecuter"></bean>
+	<bean id="updateReplyStageHP" class="com.supergenius.server.timer.UpdateReplyStageExecuter"></bean>
+	<bean id="UpdateFinanceArticle" class="com.supergenius.server.timer.UpdateFinanceArticleExecuter"></bean>
+	<bean id="everyhourHandler" class="com.genius.server.timer.Handler">
+		<property name="executers">
+			<list>
+				<!--<ref bean="judgementConfirmExecuter"/>-->
+				<ref bean="UpdateFinanceArticle"/>
+			</list>
+		</property>
+	</bean> 
+	
+	<bean id="everydayHandler" class="com.genius.server.timer.Handler">
+		<property name="executers">
+			<list>
+				<ref bean="userRemindPayHP"/>
+				<ref bean="updateAppJudgeHP"/>
+				<ref bean="updateAppExpertHP"/>
+				<ref bean="updateReplyStageHP"/>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- <bean id="luceneHandler" class="com.genius.server.timer.Handler">
+		<property name="executers">
+			<list>
+				<ref bean="luceneIndexExecuter"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="everymonthHandler" class="com.grandgenius.timer.Handler">
+		<property name="executers">
+			<list>
+				<ref bean="PkUserLevelExecuter"/>
+			</list>
+		</property>
+	</bean>-->
+
+	<bean id="everyhourJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="everyhourHandler" />
+		<property name="targetMethod" value="execute" />
+		<property name="concurrent" value="false" />
+	</bean> 
+
+	<bean id="everydayJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="everydayHandler" />
+		<property name="targetMethod" value="execute" />
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<!--<bean id="everymonthJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="everymonthHandler" />
+		<property name="targetMethod" value="execute" />
+		<property name="concurrent" value="false" />
+	</bean> -->
+	
+	<!-- <bean name="exampleJob" class="org.springframework.scheduling.quartz.JobDetailBean"> -->
+	<!-- <property name="jobClass" value="example.ExampleJob" /> -->
+	<!-- <property name="jobDataAsMap"> -->
+	<!-- <map> -->
+	<!-- <entry key="timeout" value="5" /> -->
+	<!-- </map> -->
+	<!-- </property> -->
+	<!-- </bean> -->
+
+         <bean id="everyhourCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		 <property name="jobDetail" ref="everyhourJobDetail" />
+		<!-- 	每天凌晨三点执行 -->
+		 <!-- <property name="cronExpression" value="0 0 3 * * ?" /> -->
+		 <!-- 	每小时执行一次 -->
+		<property name="cronExpression" value="0 0 * * * ?" />
+		<!-- 	测试每分钟执行一次 -->
+<!-- 		<property name="cronExpression" value="0 * * * * ?" /> -->
+		<!-- 	测试每10分钟执行一次 -->
+<!-- 		<property name="cronExpression" value="0 0/10 * * * ?" /> -->
+	    </bean>  
+
+	<bean id="everydayCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="everydayJobDetail" />
+		<!-- 	每天凌晨三点执行 -->
+		<property name="cronExpression" value="0 0 3 * * ?" /> 
+		<!-- 	测试每分钟执行一次 -->
+		<!-- 	测试每10分钟执行一次 -->
+		<!-- <property name="cronExpression" value="0 0/10 * * * ?" /> -->
+	</bean>
+	
+<!-- 	<bean id="everymonthCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean"> -->
+	<!--  	<property name="jobDetail" ref="everymonthJobDetail" />-->
+		<!-- 	每个月最后一天 23：30 -->
+	<!-- 	<property name="cronExpression" value="0 30 23 L * ?" /> -->
+		<!-- 	测试每分钟执行一次 -->
+		<!--<property name="cronExpression" value="0 * * * * ?" /> -->
+<!-- 	</bean> -->
+
+
+	 <!-- 0  0    *   *   *  ？
+	             秒  分钟     小时     天     月    周几
+	             
+		0 代表具体时间，即0分0秒
+		*代表每的意思，即每月每天每小时
+		？代表不确定 -->
+
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+	    <property name="triggers">
+	        <list>
+	            <ref bean="everyhourCronTrigger" />
+	            <ref bean="everydayCronTrigger" />
+	          <!--   <ref bean="everymonthCronTrigger" /> -->
+	        </list>
+	    </property>
+	</bean>
+</beans>

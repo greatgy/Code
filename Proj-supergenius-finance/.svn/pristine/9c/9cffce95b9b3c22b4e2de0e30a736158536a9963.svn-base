@@ -1,0 +1,680 @@
+.articleBox {
+    margin-top: 28px;
+    margin-right: 2px;
+    margin-bottom: 20px;
+    background: #fff;
+    padding: 20px 3%;
+    box-shadow: 0 1px 1px 0 #b5b5b5;
+}
+.articleBox h3 {
+	margin: 0 auto 15px;
+    font-size: 1.5rem;
+    text-align: center;
+    line-height: 1.8rem;
+    color: #000;
+}
+.detailTips {
+    margin: 20px auto;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #666666;
+}
+.detailTips span {
+    display: inline-block;
+    margin-right: 3%;
+    line-height: 22px;
+}
+.shareBox {
+    margin: 40px 0 30px;
+    border: 1px solid #ddd;
+}
+.shareBox .littleicon {
+	display: inline-block;
+	margin: 8px 2%;
+	color: #333;
+}
+.littleicon img {
+    width: 24px;
+    height: 20px;
+    overflow: hidden;
+    vertical-align: middle;
+}
+.share {
+    display: inline-block;
+    float: right;
+    margin: 5px 2%;
+    font-size: 0.8rem;
+    color: #333;
+}
+.bdsharebuttonbox {
+	display: inline-block;
+    margin-left: 5px;
+    height: 30px;
+    overflow: hidden;
+    vertical-align: middle;
+}
+.say {
+    margin: 30px auto;
+}
+.discussTitle {
+    margin: 15px auto 20px;
+    padding-left: 8px;
+    border-left: 3px solid #1d71b6;
+    height: 20px;
+    color: #1d71b6;
+    text-align: left;
+    font-weight: bold;
+    font-size: 1rem;
+    line-height: 20px;
+}
+.readtimes {
+    color: #666;
+    font-size: 1rem;
+    float: right;
+    margin-top: 3px;
+    margin-right: 16px;
+}
+textarea {
+    width: 100%;
+    height: 80px;
+    padding: 8px 14px;
+    overflow: auto;
+    border: 1px solid #d0d0d0;
+    line-height: 1.2rem;
+    font-size: 0.9rem;
+    resize: none;
+    color: #333;
+    border-radius: 6px;
+}
+.saydetail {
+    margin: 10px auto;
+}
+.saydetail img {
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+}
+.publishBtn {
+    display: inline-block;
+    margin-top: 6px;
+    float: right;
+    vertical-align: top;
+    font-size: 1rem;
+    color: #fff;
+    background: #306faf;
+    border: 1px solid #1d71b6;
+    border-radius: 6px;
+    text-align: center;
+    letter-spacing: 2px;
+    cursor: pointer;
+    padding: 7px 10px;
+}
+.userimg {
+    display: inline-block;
+    width: 8%;
+    vertical-align: top;
+}
+.userimg img {
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+    border-radius: 6px;
+}
+.commentRt {
+    display: inline-block;
+    width: 89%;
+}
+.name {
+    font-size: 1rem;
+    color: #1d71b6;
+}
+.name a {
+    color: #1d71b6;
+}
+.name a:hover {
+    color: #0066a7;
+}
+.face {
+    display: inline-block;
+    margin-right: 5px;
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+}
+.face img {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.delete {
+    float: right;
+    margin-right: 15px;
+}
+.submitBtn {
+    float: right;
+    margin-top: 8px;
+    width: 80px;
+    height: 35px;
+    line-height: 34px;
+    background: #1d71b6;
+    border-radius: 8px;
+    color: #fafafa;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    text-align: center;
+}
+.submitBtn:hover {
+    background: #1d71b6;
+    color: #fff;
+}
+.commentTime {
+    margin-left: 5%;
+    font-size: 13px;
+    color: #999999;
+}
+.comment {
+    margin: 10px 0;
+    font-size: 0.9rem;
+    line-height: 1.3rem;
+}
+.comment span {
+	margin-right: 12px;
+}
+.operate {
+    margin-bottom: 15px;
+}
+.operate a {
+    font-size: 0.9rem;
+    color: #053cb5;
+}
+.leftcomments img {
+    padding-left: 5px;
+    width: 20px;
+    height: 20px;
+    overflow: hidden;
+    vertical-align: middle;
+}
+.operate .zan {
+    float: right;
+    color: #999;
+}
+.zan img {
+	margin-right: 3px;
+    width: 18px;
+    height: 18px;
+    overflow: hidden;
+    vertical-align: bottom;
+}
+.replyBox textarea {
+	height: 40px;
+}
+.replyBox .saydetail {
+    margin: 10px auto 0;
+}
+.replyBox .submitBtn {
+    margin-right: 2%;
+	padding: 0;
+    font-size: 1rem;
+}
+.secondComment {
+    margin: 15px 0;
+}
+.secondComment .userimg img {
+	width: 35px;
+    height: 35px;
+    overflow: hidden;
+}
+.secondComment .name {
+	font-size: 0.9rem;
+}
+.commentitem {
+	margin-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+}
+.replyBox {
+    display: none;
+    padding-bottom: 10px;
+}
+.secondComment {
+    margin: 15px 0;
+    display: none;
+}
+.secondComment li {
+	margin-bottom: 15px;
+}
+.rightItem {
+    margin-bottom: 20px;
+    padding: 20px 10px;
+    width: 99%;
+    margin-left: 0;
+    box-shadow: 0 1px 1px 0 #b5b5b5;
+    background: #fff;
+}
+.rightItem h4 {
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: #1d71b6;
+}
+.rightItem i {
+	display: inline-block;
+    margin-right: 8px;
+    width: 5px;
+    height: 18px;
+    background: #1d71b6;
+    vertical-align: middle;
+}
+.tags li {
+	display: inline-block;
+    margin: 2px 2% 15px 3px;
+    font-size: 0.96rem;
+    padding: 10px;
+    border: 1px solid #d8d8d8;
+    border-radius: 20px;
+    color: #333;
+    overflow: hidden;
+}
+.tags li a {
+    color: #333;
+}
+.tags li:hover {
+	border: 1px solid #1d71b6;
+	color: #1d71b6;
+}
+.tags li:hover a {
+    color: #1d71b6;
+}
+.hotArticle li {
+    margin-bottom: 20px;
+    position: relative;
+}
+.fourimg {
+    width: 30%;
+    overflow: hidden;
+}
+.hotArticle .title {
+    display: inline-block;
+    width: 65%;
+    margin-left: 1%;
+    color: #363636;
+    font-size: 1rem;
+    line-height: 20px;
+}
+.hotArticle li a {
+    color: #363636;
+    font-size: 1rem;
+    line-height: 20px;
+}
+.hotArticle li a:hover {
+    color: #1D71b6;
+}
+.hotArticle .title:hover {
+    color: #1D71b6;
+}
+.hotArticle .flashtime {
+    display: block;
+    margin-left: 0;
+    margin-top: 8px;
+    font-size: 0.8rem;
+    color: #999;
+}
+
+.leadNav {
+    margin: 0 auto 30px;
+}
+.leadNav li {
+    display: inline-block;
+    line-height: 30px;
+    font-size: 0.92rem;
+}
+.leadNav li a {
+	color: #666;
+}
+.leadNav li a:hover {
+	color: #1d71b6;
+	font-size: 1rem;
+}
+.authorbox {
+    margin-bottom: 30px;
+    padding: 20px 20px 10px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    background: #fff;
+}
+.author {
+    padding-bottom: 15px;
+}
+.authorPiece {
+    display: inline-block;
+    width: 58%;
+    vertical-align: top;
+    border-right: 1px solid #bbb;
+    padding-right: 2%;
+}
+.author a {
+    color: #1d71b6;
+    font-size: 1.2rem;
+}
+.author a:hover {
+    color: #1d71b6;
+}
+.authorimg {
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    vertical-align: top;
+    margin-right: 15px;
+    border-radius: 8px;
+}
+.resAuthor {
+    display: inline-block;
+    vertical-align: top;
+}
+.resAuthor span {
+    display: block;
+    margin: 10px 0;
+    font-size: 1rem;
+}
+.resAuthor span a {
+    font-size: 0.98rem;
+    margin-left: 5px;
+}
+.authorName {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 1rem;
+    color: #333;
+}
+.addsub {
+    display: inline-block;
+    text-align: center;
+    width: 38%;
+    font-size: 1rem;
+    color: #1d71b6;
+}
+.addsub a {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 1.8rem;
+}
+.cancelsub {
+    display: inline-block;
+    text-align: center;
+    width: 38%;
+    font-size: 1rem;
+    color: #1d71b6;
+}
+.cancelsub a {
+    display: block;
+    color: #ff0000;
+    margin: 0 0 6px;
+    font-size: 1.8rem;
+}
+.author p {
+    margin: 15px auto;
+    color: #949494;
+    font-size: 0.88rem;
+    line-height: 20px;
+}
+.totalArt {
+    color: #949494;
+    font-size: 1rem;
+}
+.newArticle {
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+}
+.newArticle h5 {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 15px;
+}
+.newArticles li {
+    margin-bottom: 15px;
+    line-height: 20px;
+}
+.newArticles li a {
+    color: #363636;
+    font-size: 0.94rem;
+}
+.newArticles li a:hover {
+    color: #1d71b6;
+}
+
+/* 他的主页 */
+.articleList {
+    margin-top: 30px;
+    background: #fff;
+    box-shadow: 0 1px 1px 0 #d0d0d0;
+    width: 99%;
+    padding: 20px 15px 15px;
+    border-bottom: 1px solid #d4d4d4;
+}
+.tabBox li {
+    position: relative;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e3e3e3;
+    padding-bottom: 20px;
+}
+.tabitemimg {
+    display: inline-block;
+    width: 34%;
+    vertical-align: top;
+    overflow: hidden;
+}
+.tabitemRt {
+    display: inline-block;
+    width: 62%;
+    margin-left: 2%;
+    text-align: left;
+}
+.articleTitle {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 1.25rem;
+    color: #333;
+    line-height: 24px;
+}
+.descripe {
+    margin: 0 auto 30px;
+    color: #666666;
+    font-size: 1rem;
+    line-height: 22px;
+    max-height: 68px;
+    overflow: hidden;
+}
+.timepiece {
+    position: absolute;
+    bottom: 15px;
+    width: 60%;
+    min-height: 20px;
+    overflow: hidden;
+    color: #666;
+    font-size: 0.76rem;
+}
+.time {
+    color: #666;
+}
+.operateBox {
+    display: inline-block;
+    text-align: right;
+    float: right;
+    margin-right: 2%;
+    min-height: 20px;
+    width: 60%;
+}
+.littleicon {
+    margin-left: 6%;
+    font-size: .8rem;
+    color: #666;
+    vertical-align: middle;
+    min-height: 20px;
+}
+.littleicon img {
+    padding-right: 2px;
+    width: 24px;
+    height: 20px;
+    overflow: hidden;
+    vertical-align: middle;
+}
+.tabBox li:hover .tabitemimg img {
+    transform: scale(1.2);
+    -webkit-transform: scale(1.2);
+    -o-transform: scale(1.2);
+    -moz-transform: scale(1.2);
+    transition: transform 0.8s;
+    -webkit-transition: transform 0.8s;
+    -o-transition: transform 0.8s;
+    -moz-transition: transform 0.8s;
+    -ms-transition: transform 0.8s;
+
+}
+.tabBox li:hover .articleTitle {
+    color: #1d71b6;
+}
+
+@media screen and (width: 768px) {
+    .containerBox {
+        width: 90%;
+    }
+    .contentLeft {
+        width: 100%;
+    }
+    .contentRight {
+        margin-left: 0;
+        width: 100%;
+    }
+    .fourimg {
+        vertical-align: top;
+    }
+    .hotArticle .flashtime {
+        margin-top: 20px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+	.contentLeft {
+		width: 100%;
+	}
+	/* textarea {
+        width: 74%;
+        height: 48px;
+    } */
+	.publishBtn {
+		font-size: 1rem;
+	}
+	.userimg {
+		width: 12%;
+    	margin-right: 1.2%;
+	}
+	.userimg img {
+		width: 30px;
+    	height: 30px;
+	}
+	.commentRt {
+		width: 85%;
+	}
+	.name {
+		font-size: 0.9rem;
+	}
+	.operate a {
+		font-size: 0.8rem;
+	}
+	.contentRight {
+		width: 100%;
+        margin-left: 0;
+        margin-top: 20px;
+	}
+	/* .replyBox textarea {
+        height: 20px;
+            width: 70%;
+    } */
+	.replyBox .publishBtn {
+		margin-top: 0;
+		font-size: 0.9rem;
+        padding: 5px 6px;
+	}
+	.secondComment .userimg img {
+		width: 25px;
+		height: 25px;
+	}
+	.secondComment .name {
+	    font-size: 0.8rem;
+	}
+	.say {
+		display: none;
+	}
+	.shareBox {
+	    position: fixed;
+	    bottom: 0;
+	    left: 0;
+	    width: 100%;
+	    margin: 0;
+	    background-color: #fff;
+	    z-index: 10;
+	}
+	.articleframe {
+		border: none!important;
+    	padding: 0!important;
+	}
+	.topnav {
+		height: 42px;
+	}
+	.navlist {
+		display: none;
+	}
+	.searchSecond {
+		top: 18%;
+	}
+	.leadNav {
+		display: none;
+	}
+    .authorbox {
+        margin-top: 0;
+    }
+    .articleBox {
+        margin-top: 0;
+        margin-right: 0;
+        margin-bottom: 20px;
+        background: none;
+        padding: 0;
+        box-shadow: none;
+    }
+    .fourimg {
+        vertical-align: top;
+        min-height: 76px;
+    }
+    .articleList {
+        margin-top: 0;
+        background: none;
+        box-shadow: none;
+        width: 100%;
+        padding: 0 0 15px;
+        clear: both;
+        border-bottom: none;
+    }
+    .tabBox li {
+        margin-bottom: 15px;
+    }
+    .tabitemimg img {
+        max-width: 100%;
+        height: auto;
+        overflow: hidden;
+    }
+    .articleTitle {
+        font-size: 0.98rem;
+        line-height: 20px;
+        max-height: 42px;
+        overflow: hidden;
+    }
+    .descripe {
+        display: none;
+    }
+    .timepiece {
+        bottom: 13px;
+    }
+    .operateBox {
+        width: 45px;
+        height: 20px;
+        overflow: hidden;
+    }
+}

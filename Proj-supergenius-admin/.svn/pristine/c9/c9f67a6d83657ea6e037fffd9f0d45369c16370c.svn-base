@@ -1,0 +1,48 @@
+package com.supergenius.web.admin.finance.helper;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.genius.core.base.utils.StrUtil;
+import com.genius.model.base.entity.Pager;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.finance.service.DebateArticleSO;
+
+/**
+ * 论战文章HP
+ * @author ShangJianguo
+ */
+public class DebateArticleHP extends com.supergenius.server.finance.helper.BaseDebateArticleHP{
+
+	private static DebateArticleSO so;
+
+	private static DebateArticleSO getSO() {
+		if (so == null) {
+			so = (DebateArticleSO) spring.getBean(DebateArticleSO.class);
+		}
+		return so;
+	}
+
+	/**
+	 * 组织要查询的数据
+	 * @param model
+	 * @return
+	 * @author ShangJianguo
+	 */
+	public static Map<String, Object> query(Map<?, ?> model) {
+		Pager pager = Pager.getNewInstance(model.get("page"), model.get("rows"));
+		Map<String, Object> map = getParamMap(pager, model);
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.isred))) {
+			map.put(MapperDict.isred, model.get(ViewKeyDict.isred).toString().trim());
+		}
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.debateuid))) {
+			map.put(MapperDict.debateuid, model.get(ViewKeyDict.debateuid).toString().trim());
+		}
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(ViewKeyDict.total, getSO().getCount(map));
+		result.put(ViewKeyDict.rows, getSO().getList(map));
+		return result;
+	}
+
+}

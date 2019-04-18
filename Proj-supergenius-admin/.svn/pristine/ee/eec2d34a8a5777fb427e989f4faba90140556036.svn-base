@@ -1,0 +1,159 @@
+package com.supergenius.web.admin.gupage.helper;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.genius.core.base.constant.BaseMapperDict;
+import com.genius.core.base.utils.StrUtil;
+import com.genius.core.search.engine.SearchEngine;
+import com.genius.model.base.entity.Pager;
+import com.genius.model.base.enums.EStatus;
+import com.genius.server.base.helper.BaseHP;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.gupage.entity.Article;
+import com.supergenius.xo.gupage.service.ArticleSO;
+
+/**
+ * 个人文章管理HP
+ * 
+ * @author loupengyu
+ * @date 2018年1月11日19:22:16
+ */
+public class GupageArticleHP extends BaseHP {
+
+	private static ArticleSO so;
+	private static SearchEngine engine;
+
+	private static ArticleSO getSO() {
+		if (so == null) {
+			so = (ArticleSO) spring.getBean(ArticleSO.class);
+		}
+		return so;
+	}
+
+	public static SearchEngine getEngine() {
+		if (engine == null) {
+			engine = (SearchEngine) spring.getBean("gupageEngine");
+		}
+		return engine;
+	}
+
+	/**
+	 * 组织查询语句
+	 * 
+	 * @param model
+	 * @return map
+	 * @author loupengyu
+	 */
+	public static Map<String, Object> query(Map<String, Object> model , String channel) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		Pager pager = Pager.getNewInstance(model.get("page"), model.get("rows"));
+		Map<String, Object> map = getParamMap(pager, model);
+		map.put(MapperDict.cid, getcid(channel));
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.name))) {
+			map.put(MapperDict.keywords + MapperDict.suffix_like_key, model.get(BaseMapperDict.name).toString().trim());
+		}
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.status))) {
+			map.put(MapperDict.status, model.get(ViewKeyDict.status).toString().trim());
+		}
+		List<EStatus> liststatus = new ArrayList<>();
+		liststatus.add(EStatus.enable);
+		liststatus.add(EStatus.disable);
+		map.put(MapperDict.status + MapperDict.suffix_in_key, liststatus);
+		map.put(MapperDict.orderBy, MapperDict.sql_order_by + MapperDict.status + MapperDict.desc + MapperDict.comma + MapperDict.createtime + MapperDict.desc);
+		List<Article> list = getSO().getList(map);
+		result.put(ViewKeyDict.total, getSO().getCount(map));
+		result.put(ViewKeyDict.rows, list);
+		return result;
+	}
+	
+//	/**
+//	 * 添加或编辑或删除文章后清理缓存
+//	 * 
+//	 * @return
+//	 * @author ChenQi
+//	 * @date 2018年1月5日20:01:05
+//	 */
+//	public static void Cache(Article article) {
+//		Rule Firstrule = new FinanceFirstArticleRule();// 首页左侧缓存
+//		MemcacheUtil.remove(Firstrule);
+//		Rule cidrule = new FinanceArticleRlue(String.valueOf(article.getCid()));// 模块下的所有文章
+//		MemcacheUtil.remove(cidrule);
+//		Rule allrule = new FinanceArticleRlue(String.valueOf(0));// 所有文章的缓存
+//		MemcacheUtil.remove(allrule);
+//	}
+	
+	/**
+	 * 根据channel获得cid
+	 * 
+	 * @param channel
+	 * @return
+	 * @author loupengyu
+	 * @date 2018年1月11日19:23:21
+	 */
+	public static int getcid(String channel) {
+		int cid = 10;
+		switch (channel) {
+				case "gupagearticle":
+					cid = 10;
+					break;
+				case "gupagenews":
+					cid = 11;
+					break;
+				default:
+					break;
+				}
+		return cid;
+	}
+
+
+//	/**
+//	 * 文章初始化全站索引
+//	 * 
+//	 * @author 
+//	 * @createtime 2017年12月18日10:54:04
+//	 */
+//	public static void initializeSearchIndex() {
+//		Map<String, Object> delmap = new HashMap<>();
+//		delmap.put(MapperSearchDict.table, ESite.gupage.name());
+//		delmap.put("status", EStatus.enable);
+//		getEngine().delete(delmap);
+//		Map<String, Object> countMap = getParamMap();
+//		int count = getSO().getCount(countMap);
+//		int totalPage = (count - 1) / 100 + 1;
+//		for (int i = 1; i <= totalPage; i++) {
+//			countMap = getParamMap(Pager.getNewInstance(i, 100));
+//			List<Article> list = getSO().getList(countMap);
+//			List<Map<String, Object>> maps = new ArrayList<>();
+//			for (Article item : list) {
+//				item.setContent(WebUtil.clearHtmlTag(item.getContent()).toString());
+//				Map<String, Object> map = MapsUtil.toMap(item, Maps.searchStrategy);
+//				map.put(MapperSearchDict.table, ESite.gupage.name());
+//				maps.add(map);
+//			}
+//			if (maps.size() > 0)
+//				getEngine().addBatch(maps);
+//		}
+//	}
+//	
+//	/**
+//	 * 文章有变更时处理缓存
+//	 * 
+//	 * @return
+//	 * @author 
+//	 * @date 2017年12月4日17:06:02
+//	 */
+//	public static void handleCache(int cid) {
+//		Rule rule = new CareerArticleRlue(String.valueOf(cid));// 清空相应cid下的文章缓存
+//		MemcacheUtil.remove(rule);
+//		Rule gupageTopArticlerule = new CareerTopArticleRule(String.valueOf(cid));// 清空相应cid下的轮播文章缓存
+//		MemcacheUtil.remove(gupageTopArticlerule);
+//		Rule gupageLeftArticleRule = new CareerLeftArticleRule(String.valueOf(cid));//清空相应cid下的初次加载文章缓存
+//		MemcacheUtil.remove(gupageLeftArticleRule);
+//		Rule gupageExperienceRule = new CareerExperienceRule();//清空首页心得文章
+//		MemcacheUtil.remove(gupageExperienceRule);
+//	}
+}

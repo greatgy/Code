@@ -1,0 +1,85 @@
+package com.supergenius.web.finance.api;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.genius.core.base.annotation.Json;
+import com.genius.core.base.utils.JsonUtil;
+import com.genius.server.base.controller.BaseController;
+import com.supergenius.global.conf.WebConf;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.web.finance.helper.FinanceHP;
+import com.supergenius.xo.finance.entity.Finance;
+import com.supergenius.xo.finance.enums.EFinance;
+
+/**
+ * app首页数据控制器
+ * @author XieMing
+ * @date 2017年1月6日 下午3:12:15
+ */
+@Controller
+public class IndexInterfacer extends BaseController {
+	
+	/**
+	 * 初始化页面数据
+	 * @return
+	 * @author XieMing
+	 * 2017年1月5日 下午6:32:02
+	 */
+	@RequestMapping(value = { "/api/initialdata" }, method = RequestMethod.GET)
+	@ResponseBody
+	private String initialData() {
+		Map<String, Object> allArticle = new HashMap<>();
+		Map<String, Object> articles = new HashMap<>();
+		for (EFinance type : EFinance.getAppTypes()) {
+			Map<String, Object> article = new HashMap<>();
+			List<Finance> index = FinanceHP.getLatestList(type, 1, WebConf.FinancePageSize);
+			if(index.size() > WebConf.FinanceTopSize) {
+				article.put(ViewKeyDict.tops, index.subList(0, WebConf.FinanceTopSize));
+			} else {
+				article.put(ViewKeyDict.tops, index);
+			}
+			article.put(ViewKeyDict.list, index);
+			articles.put(type.name(), article);
+		}
+		allArticle.put(ViewKeyDict.articles, articles);
+		return JsonUtil.toJson(allArticle, Json.appStrategy);
+
+		/*Map<String, Object> articles = new HashMap<>();
+		for (EFinance type : EFinance.getAppTypes()) {
+			Map<String, Object> article = new HashMap<>();
+			List<Map<String, Object>> tops = new ArrayList<>();
+			List<Map<String, Object>> list = new ArrayList<>();
+			Map<String, Object> topmap = new HashMap<>();
+			Map<String, Object> listmap = new HashMap<>();
+			List<Finance> indexTopList = FinanceHP.getLatestList(type, 1, WebConf.FinancePageSize);
+			for (Finance finance : indexTopList) {
+				if(topmap.size() < 4) {
+					topmap.put("id", finance.getOid());
+					topmap.put("title", finance.getTitle());
+					topmap.put("img", finance.getImgoriginal());
+					tops.add(topmap);
+				}
+				listmap.put("id", finance.getOid());
+				listmap.put("title", finance.getTitle());
+				listmap.put("img", finance.getImgoriginal());
+				listmap.put("summary", finance.getSummary());
+				listmap.put("createtime", finance.getCreatetime());
+				listmap.put("commentcount", finance.getCommentcount());
+				list.add(listmap);
+			}
+			article.put("top", tops);
+			article.put("list", list);
+			articles.put(type.name(), article);
+		}
+		Map<String, Object> allArticles = new HashMap<>();
+		allArticles.put("articles", articles);
+		return JsonUtil.toJson(allArticles);*/
+	}
+}

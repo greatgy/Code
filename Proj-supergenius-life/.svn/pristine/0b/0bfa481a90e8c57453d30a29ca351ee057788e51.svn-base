@@ -1,0 +1,276 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/Public.ftl" as p]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>${title!'天才人生——行万里路'}</title>
+	<link rel="stylesheet" href="${basecss}/css/default/index.css">
+	<script src="${basejs}/js/libs3/echarts.min.js"></script>
+	<script src="${basejs}/js/pages/world.js"></script>
+	<script src="${basejs}/js/pages/china.js"></script>
+	<script type="text/javascript" src="${basejs}/js/pages/scroll.js"></script>
+	<script type="text/javascript">
+		var prePage = 2;
+		var pagenum = 3;
+		var ishot = 0;
+		$(function(){
+			$("#hot").click(function(){
+				$("#newList").hide();
+				$("#hotList").show();
+				$("#new").removeClass("curjudge");
+				$("#hot").addClass("curjudge");
+				prePage = 2;
+				pagenum = 3;
+			    ishot = 1;
+			});
+			$("#new").click(function(){
+				$("#newList").show();
+				$("#hotList").hide();
+				$("#hot").removeClass("curjudge");
+				$("#new").addClass("curjudge");
+				prePage = 2;
+				pagenum = 3;
+				ishot = 0;
+			});
+		});
+	</script>
+</head>
+<body>
+	<div id="map-world-wrap" class="map"></div>
+	<div id="map-china-wrap" class="map hd"></div>
+	<div class="footprint">
+		<ul class="judgement">
+			<li id="new" class="curjudge">最新</li>
+			<li id="hot">最热</li>
+		</ul>
+		[#if me??]
+			<a class="publishBtn" href="${base}/addproblem/${cid}">添加足迹</a>
+		[#else]
+			<a class="publishBtn pop-up" >添加足迹</a>
+		[/#if]
+		<ul class="tabBox footbox" id="newList">
+			[#if problemList??]
+				[#list problemList as item]
+					<li>
+						<a href="${base}/problem/detail/${(item.cid)?c}/${(item.oid)?c}" class="articleTitle">
+							${item.title}
+							<span class="location"><img src="${baseimg}/imgs/default/location.png" alt="位置" title="位置" />${item.placename}</span>
+						</a>
+						<p class="descripe">
+							[#if item.content==""]
+							[#else]
+								[@p.TrimSubstring content="${item.content}" mylength=50 /]
+							[/#if]
+						</p>
+						<div class="timepiece">
+							<span class="time">
+								[@p.mytime datetime="${item.createtimeStr}"/]
+							</span>
+							<div class="operateBox">
+								<a href="${base}/problem/detail/${(item.cid)?c}/${(item.oid)?c}" class="littleicon">
+									<img src="${baseimg}/imgs/default/clickcount.png">
+									${item.clickcount}
+								</a>
+								<a href="${base}/problem/detail/${(item.cid)?c}/${(item.oid)?c}" class="littleicon">
+									<img src="${baseimg}/imgs/default/heart.png">
+									${item.commentscount}
+								</a>
+							</div>
+						</div>
+					</li>
+				[/#list]
+			[/#if]
+		</ul>
+		
+		<ul class="tabBox footbox" id="hotList">
+			[#if problemList??]
+			[#list problemList as item]
+				<li>
+					<a href="${base}/problem/detail/${(item.cid)?c}/${(item.oid)?c}" class="articleTitle">
+						${item.title}
+						<span class="location"><img src="${baseimg}/imgs/default/location.png" alt="位置" title="位置" />${item.placename}</span>
+					</a>
+					<p class="descripe">
+						[#if item.content==""]
+						[#else]
+							[@p.TrimSubstring content="${item.content}" mylength=50 /]
+						[/#if]
+					</p>
+					<div class="timepiece">
+						<span class="time">
+							[@p.mytime datetime="${item.createtimeStr}"/]
+						</span>
+						<div class="operateBox">
+							<a href="${base}/problem/detail/${(item.cid)?c}/${(item.oid)?c}" class="littleicon">
+								<img src="${baseimg}/imgs/default/clickcount.png">
+								${item.clickcount}
+							</a>
+							<a href="${base}/problem/detail/${(item.cid)?c}/${(item.oid)?c}" class="littleicon">
+								<img src="${baseimg}/imgs/default/heart.png">
+								${item.commentscount}
+							</a>
+						</div>
+					</div>
+				</li>
+			[/#list]
+			[/#if]
+		</ul>
+	</div>
+	<script>
+		var worldChart = echarts.init(document.getElementById('map-world-wrap'));
+		var maxworld = ${maxWorld};
+		var maxchina = '${maxChina}';
+		var worldData = ${world};
+        var chinaData = ${china};
+        var canback = true;
+		var isback = false;
+		var option = {
+		  	tooltip: {
+		        trigger: 'item',
+		        formatter: function (params) {
+		        	if (params.name != '') {
+		        		return params.name + ' : ' + params.value;
+		        	}
+		        }
+		    },
+		  	visualMap: {
+				type: 'continuous', // 连续型
+				min: 0,       		// 值域最小值，必须参数
+				max: maxworld,			// 值域最大值，必须参数
+				calculable: true,	// 是否启用值域漫游
+				inRange: {
+		             	color: ['#EDDE5D','#F09819']
+		                             // 指定数值从低到高时的颜色变化
+		        },
+		        textStyle: {
+					color: '#fe6816'	// 值域控件的文本颜色
+				}
+		    },
+		  	toolbox: {
+                show: true,
+                feature: {
+                    mark: { show: true },
+                    dataView: { show: true, readOnly: false },
+                    restore: { show: true },
+                    saveAsImage: { show: true }
+                }
+            },
+		  	backgroundColor: '#ececec',
+			series: [
+				{
+					name: '世界', // series名称
+					type: 'map',
+		            mapType: 'world',
+					symbolSize: 6,
+					data: worldData // series数据内容
+				}
+			]
+		}
+
+		worldChart.setOption(option);
+		worldChart.on('click', function (params) {//点击事件
+			if(params.name == '中国'){
+				$("#map-world-wrap").addClass("hd");
+				$("#map-china-wrap").removeClass("hd");
+				var content = $("#map-china-wrap").html();
+				if(content == "" || content == null){
+					chinaMap();
+				}
+				if (isback == false) {
+					back();
+					isback = true;
+				}
+			}
+		});
+
+		function chinaMap(){
+			var chinaChart = echarts.init(document.getElementById('map-china-wrap'));
+			var option = {
+			  	tooltip: {
+			        trigger: 'item',
+			        formatter: function (params) {
+			            if (params.name != '') {
+			        		return params.name + ' : ' + params.value;
+			        	}
+			        }
+			    },
+			  	visualMap: {
+					type: 'continuous', // 连续型
+					min: 0,       		// 值域最小值，必须参数
+					max: maxchina,			// 值域最大值，必须参数
+					calculable: true,	// 是否启用值域漫游
+					inRange: {
+			             	color: ['#EDDE5D','#F09819']
+			                             // 指定数值从低到高时的颜色变化
+			        },
+			        textStyle: {
+						color: '#fe6816'	// 值域控件的文本颜色
+					}
+			    },
+			  	backgroundColor: '#ececec',
+				series: [
+					{
+						name: '中国', // series名称
+						type: 'map', // series图表类型
+            			mapType: 'china',
+            			label: {
+			                normal: {
+			                    show: true
+			                },
+			                emphasis: {
+			                    show: true
+			                }
+			            },
+						data: chinaData // series数据内容
+					}
+				]
+			}
+			chinaChart.setOption(option);
+			chinaChart.on('click', function (params) {//点击事件
+				canback = false;
+			});
+		}
+		
+		function back(){
+			$("#map-china-wrap").on("click",function(params){
+				if (canback == true) {
+					$("#map-world-wrap").removeClass("hd");
+					$("#map-china-wrap").addClass("hd");
+				} else{
+					canback = true;
+				}
+			})
+		}
+		
+		$(function(){
+			$.fn.scrollHandle({
+				obj: window,
+				fun: loadmore
+			})
+		})
+
+		// 加载更多文章
+		function loadmore() {
+			var	url = "";
+			if (ishot==1) {
+				url = "${base}/ajax/hot/problem";
+			} else {
+			    url = "${base}/ajax/first/problem";
+			}
+			
+			if(prePage != pagenum) {
+			    prePage = pagenum;
+				$.get(url, {pagenum:pagenum, cid:${cid}, ismember:0}, function(data){
+					if(data.trim() == ""){// 没有更多内容
+						$(window).unbind("scroll", defaultScrollHandler);
+						return false;
+					}
+					$(".tabBox").append(data);
+					pagenum+=1;
+				});
+			}
+		}
+	</script>
+</body>
+</html>

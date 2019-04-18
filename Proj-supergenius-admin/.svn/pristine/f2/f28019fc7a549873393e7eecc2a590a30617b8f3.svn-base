@@ -1,0 +1,157 @@
+package com.supergenius.web.admin.finance.helper;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.genius.core.base.annotation.Maps;
+import com.genius.core.base.utils.MapsUtil;
+import com.genius.core.base.utils.StrUtil;
+import com.genius.core.search.constant.MapperSearchDict;
+import com.genius.core.search.engine.SearchEngine;
+import com.genius.model.base.entity.Pager;
+import com.genius.model.base.enums.EStatus;
+import com.genius.server.baseadmin.helper.AdminHP;
+import com.supergenius.global.conf.WebConf;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.finance.entity.Message;
+import com.supergenius.xo.finance.entity.Topic;
+import com.supergenius.xo.finance.enums.EFinanceMsg;
+import com.supergenius.xo.finance.enums.ETopicState;
+import com.supergenius.xo.finance.service.MessageSO;
+import com.supergenius.xo.finance.service.TopicSO;
+
+/**
+ * 话题HP（管理后台）
+ * 
+ * @author liushaomin
+ */
+public class TopicHP extends com.supergenius.server.finance.helper.BaseTopicHP {
+
+	private static Logger log = LoggerFactory.getLogger(TopicHP.class);
+
+	private static TopicSO so;
+
+	private static MessageSO messageSO;
+
+	private static SearchEngine engine;
+
+	private static TopicSO getSO() {
+		if (so == null) {
+			so = (TopicSO) spring.getBean(TopicSO.class);
+		}
+		return so;
+	}
+
+	private static MessageSO getMessageSO() {
+		if (messageSO == null) {
+			messageSO = (MessageSO) spring.getBean(MessageSO.class);
+		}
+		return messageSO;
+	}
+
+	public static SearchEngine getEngine() {
+		if (engine == null) {
+			engine = (SearchEngine) spring.getBean("engine");
+		}
+		return engine;
+	}
+
+	/**
+	 * 查询话题时组织数据
+	 * 
+	 * @return
+	 * @author liushaomin
+	 */
+	public static Map<String, Object> query(Map<?, ?> model) {
+		Pager pager = Pager.getNewInstance(model.get("page"), model.get("rows"));
+		Map<String, Object> map = getParamMap(pager, model, MapperDict.title);
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.author))) {
+			map.put(MapperDict.author + MapperDict.suffix_like_key, model.get(ViewKeyDict.author).toString().trim());
+		}
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.createtimestart))) {
+			String startTime = model.get(ViewKeyDict.createtimestart).toString().trim() + MapperDict.starttimeformat;
+			map.put(MapperDict.createtimestart, startTime);
+		}
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.createtimeend))) {
+			String endTime = model.get(ViewKeyDict.createtimeend).toString().trim() + MapperDict.endtimeformat;
+			map.put(MapperDict.createtimeend, endTime);
+		}
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.state))) {
+			map.put(MapperDict.state, model.get(ViewKeyDict.state).toString().trim());
+		}
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.status))) {
+			map.put(MapperDict.status, model.get(ViewKeyDict.status).toString().trim());
+		}
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(ViewKeyDict.total, getSO().getCount(map));
+		result.put(ViewKeyDict.rows, getSO().getList(map));
+		return result;
+	}
+
+	/**
+	 * 修改话题状态发送消息。
+	 * 
+	 * @param topic
+	 * @return
+	 * @author LiJiacheng
+	 */
+	public static Message sendTopicMsg(Topic topic, String result) {
+		if (result != null) {
+			Map<String, Object> map = new HashMap<>();
+			map.put(MapperDict.title, topic.getTitle());
+			if (result.equals(ETopicState.succeed)) {
+				map.put(MapperDict.type, EFinanceMsg.topicpass);
+				map.put(MapperDict.href, WebConf.baseFinancePath + MapperDict.slash + MapperDict.topic + MapperDict.slash + topic.getOid());
+			} else if (result.equals(ETopicState.failed)) {
+				map.put(MapperDict.type, EFinanceMsg.topicunpass);
+				map.put(MapperDict.href, ViewKeyDict.poundOperation);
+			}
+			map.put(MapperDict.adminuid, AdminHP.getAdminUid());
+			Message message = getMessageSO().addMsg(map);
+			if (message != null) {
+				message.setRecipient(topic.getUseruid());
+				return message;
+			} else {
+				log.info("The sendTopicMsg send failed.");
+				return null;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 话题全部初始化索引
+	 * 
+	 * @author Architect.bian
+	 * @createtime 2015-12-31 下午4:31:09
+	 */
+	public static void initializeSearchIndex() {
+		Map<String, Object> countMap = new HashMap<>();
+		countMap.put(MapperDict.status, EStatus.enable);
+		countMap.put(MapperDict.state, ETopicState.succeed);
+		int count = getSO().getCount(countMap);
+		int totalPage = (count - 1) / 100 + 1;
+		for (int i = 1; i <= totalPage; i++) {
+			countMap = getParamMap(Pager.getNewInstance(i, 100));
+			countMap.put(MapperDict.status, EStatus.enable);
+			countMap.put(MapperDict.state, ETopicState.succeed);
+			List<Topic> list = getSO().getList(countMap);
+			List<Map<String, Object>> maps = new ArrayList<>();
+			for (Topic topic : list) {
+				Map<String, Object> map = MapsUtil.toMap(topic, Maps.searchStrategy);
+				map.put(MapperSearchDict.table, EChannel.topic.name());
+				maps.add(map);
+			}
+			if (maps.size() > 0)
+			getEngine().addBatch(maps);
+		}
+	}
+
+}

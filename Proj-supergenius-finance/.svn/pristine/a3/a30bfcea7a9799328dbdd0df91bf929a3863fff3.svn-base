@@ -1,0 +1,11 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+[#list list as item]
+    <div class="main01" style="background:url('${webimg}${item.imgoriginal}') no-repeat center center" >
+    	<a class="yc" href="${base}/debate/${item.oid?c}" title="${item.title!''}">
+    		[@f.TrimSubstring content="${item.title!''}" mylength=20 /]
+        	<img src="${baseimg}/imgs/default/lzh1_jt.png">
+    	</a>
+	</div>
+[/#list]
+

@@ -1,0 +1,11 @@
+[#ftl]
+
+<div class="attention">
+	<a href="http://tpi.supergenius.cn/"  target="_blank" class="m_img"><img src="${baseimg}/imgs/default/gMerge.jpg" /></a>
+	<div class="attention_top">
+		<div class="focusbox">
+			<a href="#"><img src="${baseimg}/imgs/default/hexun_focus.png" /></a>
+			<a href="#"><img src="${baseimg}/imgs/default/sina_focus.png" /></a>
+		</div>
+    </div>
+</div>

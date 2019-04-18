@@ -1,0 +1,72 @@
+.attention {
+	width: 295px;
+	min-height: 300px;
+	background-color: #fff;
+	margin-bottom: 15px;
+	border-bottom: 1px solid #E8E7E7;
+	box-shadow: 1px 0 1px 0 #E5E1E1;
+}
+.attention * {
+	font-family: "Microsoft Yahei";
+	font-size: 14px;
+}
+.attention_top {
+	width: 275px;
+	height: 180px;
+	background: url(../../../imgs/default/appcode.png) no-repeat center center;
+	overflow: hidden;
+	position: relative;
+}
+.m_img img {
+	height: 160px;
+	width: 100%;
+	overflow: hidden;
+	margin-bottom: 15px;
+}
+.attention_top .focusbox {
+	width: 80px;
+	height: 60px;
+	position: absolute;
+	top: 25px;
+	left: 40px;
+	text-align: left;
+}
+.focusbox img {
+	width: 75px;
+	height: 20px;
+	overflow: hidden;
+	margin-bottom: 5px;
+}
+.sayingbox img {
+	width: 100%;
+	overflow: hidden;
+}
+.sayingbox .sayTopimg {
+	height: 40px;
+}
+.sayingbox .sayBottomimg  {
+	height: 80px;
+}
+.sayingbox .saying {
+	padding: 5px 25px;
+    margin-top: -5px;
+    padding-top: 30px;
+    background-color: #4d85ff;
+    width: 245px;
+    /* border-left: 1px solid #77bae7; */
+    font-size: 21px;
+    color: #ffffff;
+    text-align: left;
+    overflow: hidden;
+}
+.saying p {
+	font-size: 20px;
+    line-height: 26px;
+}
+.saying .author {
+    display: block;
+    margin-top: 5px;
+    text-align: right;
+    letter-spacing: 2px;
+    font-size: 20px;
+}

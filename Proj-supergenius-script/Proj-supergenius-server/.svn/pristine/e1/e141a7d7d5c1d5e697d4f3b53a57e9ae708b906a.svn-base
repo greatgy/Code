@@ -1,0 +1,6 @@
+CareerDB.jdbc.driverClassName=com.mysql.jdbc.Driver
+CareerDB.jdbc.url=jdbc:mysql://localhost:3306/GCareerDB?zeroDateTimeBehavior=convertToNull
+CareerDB.jdbc.username=root
+CareerDB.jdbc.password=123456
+CareerDB.min=30
+CareerDB.max=100

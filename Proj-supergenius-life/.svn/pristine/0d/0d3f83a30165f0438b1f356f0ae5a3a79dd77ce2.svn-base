@@ -1,0 +1,153 @@
+package com.supergenius.web.front.life.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.genius.core.base.utils.StrUtil;
+import com.genius.server.base.controller.BaseController;
+import com.supergenius.global.conf.SysConf;
+import com.supergenius.global.constants.ViewKeyDict;
+import com.supergenius.server.common.constants.MsgKeyDict;
+import com.supergenius.server.user.helper.BaseUserHP;
+import com.supergenius.web.front.life.helper.VideoHP;
+import com.supergenius.xo.life.entity.Video;
+import com.supergenius.xo.life.enums.EGrade;
+import com.supergenius.xo.life.enums.ELabel;
+import com.supergenius.xo.life.enums.EState;
+import com.supergenius.xo.life.service.VideoSO;
+import com.supergenius.xo.user.entity.User;
+import com.supergenius.xo.user.service.UserSO;
+
+/**
+ * 视频
+ * 
+ * @author YangGuang
+ */
+@Controller
+public class VideoController extends BaseController {
+
+	@Autowired
+	VideoSO so;
+
+	@Autowired
+	UserSO userSO;
+	/**
+	 * 视频
+	 * 
+	 * @param model
+	 * @return
+	 * @author ChenQi
+	 */
+	@RequestMapping(value = "/video/{cid:\\d+}", method = RequestMethod.GET)
+	public String getVideo(Map<String, Object> model,@PathVariable Integer cid, HttpServletRequest request) {
+		model.put(ViewKeyDict.videoList, VideoHP.getVideo(SysConf.VideoSize, 0, cid));
+		model.put(ViewKeyDict.hotVideoList, VideoHP.getHotVideo(SysConf.VideoSize, 0, cid));
+		model.put(ViewKeyDict.pagesize, SysConf.VideoSize);
+		model.put(ViewKeyDict.cid, cid);
+		return "video";
+	}
+
+	/**
+	 * 视频下拉加载
+	 * 
+	 * @param model
+	 * @param pagenum
+	 * @param request
+	 * @return
+	 * @author ChenQi
+	 */
+	@RequestMapping(value = "/ajax/video/{cid:\\d+}", method = RequestMethod.GET)
+	public String ajax_video(Map<String, Object> model,@PathVariable Integer cid, int pagenum, HttpServletRequest request) {
+		List<Video> list = VideoHP.getVideo(SysConf.VideoSize, pagenum, cid);
+		model.put(ViewKeyDict.list, list);
+		return "ajaxvideo";
+	}
+	
+	/**
+	 * 热门视频
+	 * 
+	 * @param model
+	 * @param pagenum
+	 * @param request
+	 * @return
+	 * @author ChenQi
+	 */
+	@RequestMapping(value = "/ajax/hotvideo/{cid:\\d+}", method = RequestMethod.GET)
+	public String hotVideo(Map<String, Object> model,@PathVariable Integer cid, int pagenum, HttpServletRequest request) {
+		List<Video> list = VideoHP.getHotVideo(SysConf.VideoSize, pagenum, cid);
+		model.put(ViewKeyDict.list, list);
+		return "ajaxhotvideo";
+	}
+
+	/**
+	 * 视频详情页面
+	 * 
+	 * @param model
+	 * @param uid
+	 * @return
+	 * @author YangGuang
+	 * @date 2018年1月12日14:10:12
+	 */
+	@RequestMapping(value = "/life/videoDetail/{cid:\\d+}/{uid:.{32}}", method = RequestMethod.GET)
+	public String article_detial(Map<String, Object> model, @PathVariable int cid, @PathVariable String uid, HttpServletRequest request, HttpServletResponse response) {
+		if (StrUtil.isNotEmpty(uid)) {
+			Video video = so.get(uid);
+			VideoHP.organized(video);
+			model.put(ViewKeyDict.bean, video);
+			model.put(ViewKeyDict.relateVideoList, VideoHP.getRelateVideo(SysConf.RelateVieoSize, cid, video));
+			model.put(ViewKeyDict.cid, cid);
+		}
+		return "videodetail";
+	}
+
+	/**
+	 * 添加视频
+	 * 
+	 * @param imgdata
+	 * @param content
+	 * @param title
+	 * @param summary
+	 * @return
+	 * @author YangGuang
+	 * @date 2018年1月10日14:11:23
+	 */
+	@RequestMapping(value = "/life/addvideo/{cid:\\d+}", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> article_add(Map<String, Object> model, @PathVariable int cid, String content, String title, String[] imgdata, Integer keywords, Integer grade, Integer sid, HttpServletRequest request) {
+		User user = BaseUserHP.getCurrUser(request);
+		if (StrUtil.isNotEmpty(content) && StrUtil.isNotEmpty(title) && StrUtil.isNotEmpty(imgdata)) {
+			Video video = new Video();
+			video.setUseruid(user.getUid());
+			video.setIsmember(user.getIsUser() == true ? 1 : 0);
+			video.setState(EState.wait);
+			video.setCid(cid);
+			video.setContent(content);
+			video.setTitle(title);
+			video.setImgoriginal(imgdata[0]);
+			video.setImgbig(imgdata[1]);
+			video.setImgmedium(imgdata[2]);
+			video.setImglittle(imgdata[3]);
+			if (keywords != null) {
+				video.setKeywords(ELabel.get(keywords));
+			} else {
+				video.setGrade(EGrade.get(grade));
+				video.setSid(sid);
+				video.setKeywords(ELabel.none);
+			}
+			if (so.add(video)) {
+				return success();
+			}
+		}
+		return result(MsgKeyDict.addFailed);
+	}
+}

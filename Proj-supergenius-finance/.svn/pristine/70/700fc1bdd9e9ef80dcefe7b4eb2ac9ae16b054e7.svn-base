@@ -1,0 +1,227 @@
+package com.supergenius.web.finance.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.genius.model.base.entity.Pager;
+import com.genius.server.base.controller.BaseController;
+import com.supergenius.global.conf.SysConf;
+import com.supergenius.global.conf.WebConf;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.server.user.helper.BaseUserConfigHP;
+import com.supergenius.server.user.helper.BaseUserHP;
+import com.supergenius.web.finance.helper.InboxHP;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.finance.entity.Inbox;
+import com.supergenius.xo.finance.enums.EFinanceMsg;
+import com.supergenius.xo.finance.service.InboxSO;
+import com.supergenius.xo.user.entity.User;
+
+/**
+ * 消息中心
+ * 
+ * @author LiJiacheng
+ */
+@Controller
+public class MsgController extends BaseController {
+
+	@Autowired
+	InboxSO inboxSO;
+
+	/**
+	 * 将不同的消息分为3类，作为type参数，使用in条件进行查询。
+	 */
+	EFinanceMsg[] sys = { EFinanceMsg.sys };
+	EFinanceMsg[] comment = { EFinanceMsg.commentarticle, EFinanceMsg.commenttopic, EFinanceMsg.replycomment };
+	EFinanceMsg[] notice = { EFinanceMsg.articlepraise, EFinanceMsg.topicpraise, EFinanceMsg.speakpraise, EFinanceMsg.articlecollect, EFinanceMsg.topiccollect, EFinanceMsg.articlepass,
+			EFinanceMsg.topicpass, EFinanceMsg.articleunpass, EFinanceMsg.topicunpass, EFinanceMsg.articledelete, EFinanceMsg.topicdelete, EFinanceMsg.topicinvite, EFinanceMsg.newarticle,
+			EFinanceMsg.newtopic, EFinanceMsg.subscribe };
+
+	/**
+	 * 进入消息中心，进入此方法。
+	 * 
+	 * @param model
+	 * @return
+	 * @author LiJiacheng
+	 */
+	@RequestMapping(value = "/my/msg", method = RequestMethod.GET)
+	public String msg_comment(Map<String, Object> model, HttpServletRequest request) {
+		User user = BaseUserHP.getCurrUser(request);
+		if (user != null) {
+			Pager pager = Pager.getNewInstance(ViewKeyDict.num, WebConf.MsgPageSize);
+			List<Inbox> sysInboxs = inboxSO.getListByType(user.getUid(), sys);
+			List<Inbox> commentInboxs = inboxSO.getListByType(user.getUid(), comment);
+			List<Inbox> noticeInboxs = inboxSO.getListByType(user.getUid(), notice);
+			model.put(ViewKeyDict.commentnum, InboxHP.getPageCount(commentInboxs));
+			model.put(ViewKeyDict.noticenum, InboxHP.getPageCount(noticeInboxs));
+			model.put(ViewKeyDict.sysnum, InboxHP.getPageCount(sysInboxs));
+			model.put(ViewKeyDict.uncomment, inboxSO.getUnReadMsg(user.getUid(), comment));
+			model.put(ViewKeyDict.unnotice, inboxSO.getUnReadMsg(user.getUid(), notice));
+			model.put(ViewKeyDict.unsys, inboxSO.getUnReadMsg(user.getUid(), sys));
+			model.put(ViewKeyDict.inboxs, InboxHP.getUserInboxs(user, pager, comment));
+			return "msg";
+		} else {
+			return redirectPrefix + WebConf.LoginURL;
+		}
+	}
+
+	/**
+	 * 三种消息翻页,消息类型切换时,pagenum为1即可(第一页评论消息).
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 * @author LiJiacheng
+	 */
+	@RequestMapping(value = "/ajax/my/msg/{type:\\w+}", method = RequestMethod.POST)
+	public String msg_typeChange(Map<String, Object> model, @PathVariable String type, String pagenum, HttpServletRequest request) {
+		User user = BaseUserHP.getCurrUser(request);
+		if (user != null) {
+			Pager pager = Pager.getNewInstance(pagenum, WebConf.MsgPageSize);
+			if (type.equals(ViewKeyDict.comment)) {
+				model.put(ViewKeyDict.inboxs, InboxHP.getUserInboxs(user, pager, comment));
+			} else if (type.equals(ViewKeyDict.notify)) {
+				model.put(ViewKeyDict.inboxs, InboxHP.getUserInboxs(user, pager, notice));
+			} else if (type.equals(ViewKeyDict.system)) {
+				model.put(ViewKeyDict.inboxs, InboxHP.getUserInboxs(user, pager, sys));
+			}
+			model.put(ViewKeyDict.type, type);
+			return "ajaxmsg";
+		} else {
+			return redirectPrefix + WebConf.LoginURL;
+		}
+	}
+
+	/**
+	 * 当未读消息大于20时，即时获取未读消息的数量。
+	 * 
+	 * @param type
+	 * @param request
+	 * @return
+	 * @author LiJiacheng
+	 */
+	@RequestMapping(value = "/ajax/my/msg/num", method = RequestMethod.POST)
+	@ResponseBody
+	public int getNum(String type, HttpServletRequest request) {
+		User user = BaseUserHP.getCurrUser(request);
+		if (type.equals(MapperDict.comment)) {
+			return inboxSO.getUnReadMsg(user.getUid(), comment);
+		} else if (type.equals(MapperDict.notify)) {
+			return inboxSO.getUnReadMsg(user.getUid(), notice);
+		} else if (type.equals(MapperDict.system)) {
+			return inboxSO.getUnReadMsg(user.getUid(), sys);
+		}
+		return 0;
+	}
+	
+	/**
+	 * 返回ajax跨域jsonp格式:评论消息数,系统通知,系统消息
+	 * @param model
+	 * @param request
+	 * @return
+	 * @author chenminchang
+	 */
+	@RequestMapping(value = "/ajax/msg/msg_jsonp", method = RequestMethod.GET)
+	@ResponseBody
+	public String msg_jsonp(Map<String, Object> model, HttpServletRequest request) {
+		User user = BaseUserHP.getCurrUser(request);
+		if(null == user){
+			return null;
+		}
+		int countcomment = inboxSO.getUnReadMsg(user.getUid(), comment);
+		int countnotice = inboxSO.getUnReadMsg(user.getUid(), notice);
+		int countsysmsg = inboxSO.getUnReadMsg(user.getUid(), sys);
+		Map<String, Object> map = new HashMap<>();
+		map.put(ViewKeyDict.countcomment, countcomment);
+		map.put(ViewKeyDict.countnotice, countnotice);
+		map.put(ViewKeyDict.countsysmsg, countsysmsg);
+		return jsonp(map, request);
+	}
+	
+	
+
+	/**
+	 * 删除消息
+	 * 
+	 * @param uid
+	 * @param request
+	 * @author LiJiacheng
+	 */
+	@RequestMapping(value = "/ajax/my/msg/delete", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean deleteInbox(String uid) {
+		return inboxSO.delete(uid);
+	}
+
+	/**
+	 * 获取未读消息的总数量
+	 * 
+	 * @param request
+	 * @return
+	 * @author LiJiacheng
+	 */
+	@RequestMapping(value = "/ajax/my/unreads", method = RequestMethod.GET)
+	@ResponseBody
+	public int getUnReadMsg(HttpServletRequest request) {
+		User user = BaseUserHP.getCurrUser(request);
+		if (user != null) {
+			return inboxSO.getUnReadMsg(user.getUid());
+		}
+		return 0;
+	}
+
+	/**
+	 * 读取文件，获取总消息中的finance平台消息数量
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 * @author YuYingJie
+	 */
+	@RequestMapping(value = "/ajax/site/message/count", method = RequestMethod.GET)
+	@ResponseBody
+	public String ajax_sitemsgcount(Map<String, Object> model, HttpServletRequest request) {
+		User user = BaseUserHP.getCurrUser(request);
+		int count = 0;
+		if (user != null) {
+			count = BaseUserConfigHP.getUserNewMsgCount(user.getOid(), SysConf.getUserIgnoreFilePath(), EChannel.finance.name());
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put(ViewKeyDict.count, count);
+		map.put(ViewKeyDict.channel, EChannel.finance.name());
+		return jsonp(map, request);
+	}
+
+	/**
+	 * 用户忽略天财评论消息
+	 * 
+	 * @param request
+	 * @return
+	 * @author LiJiacheng
+	 * @modify DiaoBiSong
+	 */
+	@RequestMapping(value = "/ajax/site/message/ignore", method = RequestMethod.GET)
+	@ResponseBody
+	public String ajax_ignoremsg(HttpServletRequest request) {
+		Map<String, Object> map = new HashMap<>();     
+		map.put(ViewKeyDict.ignoreResult, false);
+		User user = BaseUserHP.getCurrUser(request); 
+		if (user != null) {
+			String filePath = SysConf.getUserIgnoreFilePath();
+			map.put(ViewKeyDict.ignoreResult, BaseUserConfigHP.userIgnoreMsg(user.getOid(), filePath, EChannel.finance.name()));
+		}
+		return jsonp(map, request);
+	}
+
+}

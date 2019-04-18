@@ -1,0 +1,167 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/Admin.ftl" as a]
+<html>
+<head>
+<title>投稿管理</title>
+<script type="text/javascript" src="${basejs}/ckeditor/ckeditor.js"></script>
+<script type="text/javascript">
+<!--
+	function mytoolbarStateHandler(event, j){
+		var list = getSelections(j.dg);
+		if (list.length == 0) {
+			getBtnEdit().linkbutton("disable");
+		} else {
+			var row = list[0];
+			if (row.contributeStateName == "审核中") {// 审核已通过,则不让再审核  //2016 11 20 chenminchang 产品说只有审核中的才可显示审核按钮
+				getBtnEdit().linkbutton("enable");
+			} else {
+				getBtnEdit().linkbutton("disable");
+			}
+		}
+	}
+//-->
+</script>
+</head>
+<body>
+	<section>
+		[@a.search]
+	        <tr>
+	        	<td><label for="stitle">标题: </label><input id="stitle" type="text" name="title" /></td>
+	        	<td><label for="sshorttitle">副标题: </label><input id="sshorttitle" type="text" name="shorttitle" /></td>
+	        	<td><label for="sname">作者: </label><input id="sname" type="text" name="name" /></td>
+	        </tr>
+	        <tr>
+	        	<td>起始发布时间: <input name="createtimestart" type="text" editable="false" class="easyui-datebox" /></td>
+                <td>结束发布时间: <input name="createtimeend" type="text" editable="false" class="easyui-datebox" /></td>
+			</tr>
+	        <tr>
+	            <td>状态: 
+		            <input id="sstateall" name="state" value="" type="radio" class="radio" /><label for="sstateall">全部</label>
+		            <input id="sinit" name="state" value="0" type="radio" class="radio" /><label for="sinit">审核中</label>
+		            <input id="saccept" name="state" value="1" type="radio" class="radio" /><label for="saccept">已通过</label>
+		            <input id="srefuse" name="state" value="2" type="radio" class="radio" /><label for="srefuse">未通过</label>
+	            </td>
+	        </tr>                
+		[/@a.search]
+		
+		[@a.datagrid ]
+			<th data-options="field:'name',width:100">姓名</th>
+			<th data-options="field:'usertypeName',width:100">投稿人类别</th>
+            <th data-options="field:'title',width:400">标题</th>
+            <th data-options="field:'typeName',width:200">版块</th>
+            <th data-options="field:'contributeStateName',width:100">状态</th>
+            <th data-options="field:'createtimeStr',width:150">提交时间</th>
+	    [/@a.datagrid]
+		    [@a.toolbar canadd=false candel=false nameedit="审核"]
+		    	[@a.doaction id="download" name="展开打印" onclick="window.open('${base}${baseAdminPath}/ajax/contribute/print?ids=' + getSelectedIDs())" /]
+		    [/@a.toolbar]
+	    [@a.tools /]
+	</section>
+	
+	[@a.editsection canuploadfile=true]
+		<tr>
+            <td>标题:<input type="hidden" name="uid"/></td>
+            <td><span set-key="title"></span></td>
+        </tr>
+        <tr>
+            <td>副标题:</td>
+            <td><span set-key="shorttitle"></span></td>
+        </tr>
+        <tr>
+            <td>作者:</td>
+            <td><span set-key="name"></span></td>
+        </tr>
+        <tr>
+ 			<td>版块:</td>
+        	<td><span set-key="typeName"></span></td>
+        </tr>
+        <tr>
+            <td>关键词:</td>
+            <td><span set-key="keywords"></span></td>
+        </tr>
+        <tr>
+            <td>内容:</td>
+            <td><span set-key="content"></span></td>
+        </tr>
+        <tr>
+            <td>标题图:</td>
+            <td><img src="" set-format="${baseimg}{0}" set-key="imglittle" ></td>
+        </tr>
+    	<tr>
+        	<td>文章类型:</td>
+            <td>
+            	原创:<input id="original1" name="original" value="1" type="radio" class="radio" checked="checked" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+            	非原创:<input id="original0" name="original" value="0" type="radio" class="radio" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            	获得积分：<input type="text" id="score" name="score" class="easyui-numberbox" missingMessage="原创:50-400积分，非原创:1-5积分" max="400" min="0" style="width:100px" data-options="required:true" />
+            	&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:red">*积分不可更改</span> 
+        	</td>
+        </tr>
+        <tr>
+        	<td>通过结果:</td>
+            <td>
+            	通过:<input id="sresult1" name="result" value="1" type="radio" class="radio" checked="checked"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+            	不通过:<input id="sresult0" name="result" value="0" type="radio" class="radio"/>
+        	</td>
+        </tr>
+	[/@a.editsection]
+	
+	[@a.viewsection]
+        <tr>
+            <td>投稿人身份:</td>
+            <td><span set-key="usertypeName"></span></td>
+        </tr>
+        <tr>
+            <td>姓名:</td>
+            <td><span set-key="name"></span></td>
+        </tr>
+        <tr>
+            <td>邮箱</td>
+            <td><span set-key="email"></span></td>
+        </tr>
+        <tr>
+            <td>QQ:</td>
+            <td><span set-key="qq"></span></td>
+        </tr>
+        <tr>
+            <td>手机号:</td>
+            <td><span set-key="phone"></span></td>
+        </tr>
+        <tr>
+            <td>个人简介:</td>
+            <td><span set-key="summary"></span></td>
+        </tr>
+        <tr>
+            <td>文章标题:</td>
+            <td><span set-key="title"></span></td>
+        </tr>
+        <tr>
+            <td>副标题:</td>
+            <td><span set-key="shorttitle"></span></td>
+        </tr>
+         <tr>
+            <td>版块:</td>
+            <td><span set-key="typeName"></span></td>
+        </tr>
+        <tr>
+            <td>标题图:</td>
+            <td><img src="" set-format="${baseimg}{0}" set-key="imglittle" ></td>
+        </tr>
+        <tr>
+            <td>状态:</td>
+            <td><span set-key="contributeStateName"></span></td>
+        </tr>
+        <tr>
+            <td>内容:</td>
+            <td><span set-key="content"></span></td>
+        </tr>
+        <tr>
+            <td>关键字:</td>
+            <td><span set-key="keywords"></span></td>
+        </tr>
+        <tr>
+            <td>提交时间:</td>
+            <td><span set-key="createtimeStr"></span></td>
+        </tr>
+	[/@a.viewsection]
+</body>
+</html>

@@ -1,0 +1,250 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+[#import "/WEB-INF/FtlLib/Macro/Official.ftl" as o]
+<!DOCTYPE html >
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>${title!'天财文章'}</title>
+	<link href="${basecss}/css/default/pages/finance.css" type="text/css" rel="stylesheet">
+	<link rel="stylesheet" href="${basecss}/css/default/pages/attentionus.css"/>
+	<style type="text/css">
+		.ma_one{overflow:hidden;text-align:left;background-color:none;}
+		.pr_word_topic a{color:#344353;}
+	</style>
+	<script type="text/javascript" src="${basejs}/js/pages/index.js"></script>
+	<script type="text/javascript" src="${basejs}/js/libs3/ejs.min.js"></script>
+	<script type="text/javascript" src="${basejs}/js/libs/components.js"></script>
+	<script type="text/javascript" src="${basejs}/js/libs/scroll.js"></script>
+	<script type="text/javascript" src="${basejs}/js/libs3/jquery.qqface.min.js"></script>
+	<script type="text/javascript" src="${basejs}/js/libs/timeago-1.0.0.js"></script>
+    <script type="text/javascript">
+    <!--
+		var broadcastData = [
+			[#list latestlist as item]
+            {
+				title : '${item.title}',
+				img : '${webimg}${item.imgbig}',
+				link : '${base}/${typename}/${item.oid}',
+				baseimg:'${baseimg}'
+			},
+	        [/#list]
+		];
+
+		var FINANCE_PAGE =
+			{
+				pagenum:1,
+				url:"${base}/ajax/${typename}"
+			};
+			
+		$(function($) {
+			// 注册事件
+			$("#loading").ajaxStart(function(){
+				$(this).show();
+			})
+			$("#loading").ajaxStop(function(){
+				$(this).hide();
+			})
+			$.fn.scrollHandle({
+				obj: window,
+				fun: loadmore
+			})
+			initPage();
+		});
+		
+		var prePage = 0;
+		// 加载更多事件处理
+		function loadmore() {
+			var pagenum = FINANCE_PAGE.pagenum +　1;
+			var url = FINANCE_PAGE.url;
+			if(prePage != pagenum) {
+			    prePage = pagenum;
+    			$.get(url, {pagenum:pagenum}, function(data){
+    			    FINANCE_PAGE.pagenum += 1;
+    				if(data.trim() == ""){// 没有更多内容
+    					$(window).unbind("scroll", defaultScrollHandler);
+    					$(this).hide();
+    					$(".loadmore a").html("无更多文章");
+    					$(".loadmore").show();
+    					return;
+    				}
+    				$("#loading").hide();
+    				$(".loadmore").before(data);
+    			});
+			}
+		}
+		
+		function replaceContent(str) {
+			str = str.replace(/\[em_([0-9]*)\]/g,'<img src="' + g.baseimg + '/imgs/face/qq/$1.gif" border="0" />');
+			return str;
+		}
+
+		/*生成页面表情*/
+		function initPage() {
+			$(".comments").each(function(){
+				var content = replaceContent($(this).html());
+				$(this).html(content);
+			});
+		}
+	//-->
+	</script>
+    [@o.BroadcastTemplate /]
+</head>
+<body>
+<div class="centerbox">
+	<div class="prduct_o_box">
+		<div class="ma" style="overflow:hidden;">
+	    </div>
+		<div class="pr_rightbox">
+			[#include "/WEB-INF/Views/Web/attentionus.ftl" /]
+			<!- 最新评论开始 -->
+			<div class="ranklist">
+				<h4>最新评论</h4>
+				<div class="wordslist">
+					<div class="sdot"></div>
+					<ul class="newords">
+						[#list newestcomments as item]
+							[#if item.bean.fromuseroid == me.oid]
+								[#assign url="${base}/my/article" /]
+							[#elseif item.bean.fromuseroid != 0]
+								[#assign url="${base}/his/article/${item.bean.fromuseroid}" /]
+							[#else]
+								[#assign url="javascript:void(0);" /]
+							[/#if]
+							<li>
+								<span class="circledot"></span>
+								<div class="wordright">
+									<div class="justtime">
+										<time>${item.bean.createtimeStr}</time>
+									</div>
+									<div class="nameimg">
+										<a href="${url}" target="_blank">
+											<img [#if item.bean.fromUser.avatar??] src="${userimg}${item.bean.fromUser.avatar}"[#else]src="${baseimg}/imgs/web/noavatar.png"[/#if] />
+										</a>
+										[#if item.bean.fromuseroid != 0]
+										<a href="${url}" target="_blank">
+											${item.bean.fromusername}
+										</a>
+										[#else]
+										<a href="${url}" target="_blank" style="font-size: 14px; color: #1d71b6;">
+											${item.bean.fromusername}
+										</a>
+										[/#if]
+									</div>
+									<p class="comments"> 
+										${item.bean.content}
+									</p>
+									<div class="source">
+										来自${type}：<a href="${base}/${typename}/${item.finance.oid}" target="_blank">[@f.TrimSubstring content="${item.finance.title}" mylength=11 /]</a>
+									</div>
+								</div>
+							</li>
+						[/#list]
+					</ul>
+				</div>
+			</div>
+		    <!- 天财焦点文章排行榜开始 -->
+			[#--<div class="ranklist">
+				<h4>${type}文章排行榜</h4>
+				<ul class="hotlist">
+					[#list list2 as item]
+						<li [#if item_index == 0] class="curshow" [/#if]>
+							<span [#if (item_index < 3)] class="normalspan ranknum" [#else] class="normalspan"[/#if]>${item_index + 1}</span>
+							<div class="rankright">
+								<a href="${base}/${typename}/${item.oid}" title="${item.title}" class="arttile"  target="_blank" >[@f.TrimSubstring content="${item.title}" mylength=13 /]</a>
+								<p class="titdescribe">
+									[@f.TrimSubstring content="${item.summary}" mylength=40 /] 
+									<a href="${base}/${typename}/${item.oid}"  target="_blank" >[详情]</a>
+								</p>
+							</div>
+						</li>
+					[/#list]
+				</ul>
+		  	</div>--]
+		  	<!- 文章排行榜开始 -->
+		  	<div class="ranklist">
+				<h4>文章排行榜</h4>
+				<ul class="hotlist">
+					[#list list as item]
+						<li [#if item_index == 0] class="curshow" [/#if]>
+							<span [#if (item_index < 3)] class="normalspan ranknum" [#else] class="normalspan"[/#if]>${item_index + 1}</span>
+							<div class="rankright">
+								<a href="${base}/${typename}/${item.oid}" title="${item.title}" class="arttile" target="_blank" >[@f.TrimSubstring content="${item.title}" mylength=13 /]</a>
+								<p class="titdescribe">
+									[@f.TrimSubstring content="${item.summary}" mylength=40 /]  
+									<a href="${base}/${typename}/${item.oid}" target="_blank" >[详情]</a>
+								</p>
+							</div>
+						</li>
+					[/#list]
+				</ul>
+		  	</div>
+		</div><!--rightbox-->
+		<div class="pro_left_two">
+			<h1>最新文章</h1>
+			<div class="pro_left_main loadmore1">
+				[#list latestlist as item]
+					<div class="latest_content">
+						<a href="${base}/${typename}/${item.oid}"  target="_blank" >
+							<img src="${webimg}/${item.imglittle}" class="title_img" />
+						</a>
+						<div class="tab_one_r">
+							<h3><a href="${base}/${typename}/${item.oid}" target="_blank" title="${item.title}">[@f.TrimSubstring content="${item.title}" mylength=20 /]</a></h3>
+							<div class="timerank">
+								<span class="ts">发布于 ${item.createtimeStr}</span>
+								<span class="artrank"></span>
+							</div>
+							<p>
+								[@f.TrimSubstring content="${item.summary}" mylength=90 /]
+								<a href="${base}/${typename}/${item.oid}" target="_blank">[详情]</a>
+							</p>
+							<div class="tab_one_bt">
+								<span class="read">阅读&nbsp;(${item.clickcount!"0"})</span>
+								<span>赞&nbsp;(${item.prizecount!"0"})</span>
+								<span><a href="${base}/${typename}/${item.oid}#db_discuss" title="评论数" target="_blank" >评论&nbsp;(${item.commentcount!0})</a></span>
+							</div>
+						</div>
+					</div>
+				[/#list]
+				[#if latestlist?size>0]
+					<div class="tab_bottom loadmore" style="display:none"><a href="javascript:void(0);">加载更多</a></div>
+					<div class="loading" id="loading" style="display:none">
+						<img src="${baseimg}/imgs/default/loading.gif" />
+						loading...
+					</div>
+				[/#if]
+			</div>
+		</div>
+	</div>
+</div>
+	<script>
+	$(function(){
+		var a = 1;
+		$("#controller li").click(function(){
+			var i = $(this).index();
+			a = i;
+			$(this).addClass("active").siblings().removeClass("active");
+			$(".tbui_slideshow_list li").eq(i).css("display","block").siblings().css("display","none");
+			$(".pr_word_topic").html($(".pr_word_"+a).html());
+			$(".pr_con").html($(".pr_con_"+a).html());
+		});
+		setInterval(function(){
+			if( a == $("#controller li").length){
+				a = 0
+			}
+			$("#controller li").eq(a).addClass("active").siblings().removeClass("active");
+			$(".tbui_slideshow_list li").eq(a).css("display","block").siblings().css("display","none");
+			$(".pr_word_topic").html($(".pr_word_"+a).html());
+			$(".pr_con").html($(".pr_con_"+a).html());
+			a++;
+		},2000);
+
+		//右侧排行榜部分鼠标效果
+		$(".hotlist li").hover(function(){
+			$(this).siblings().removeClass("curshow");
+			$(this).addClass("curshow");
+		});
+	});
+	</script>
+</body>
+</html>

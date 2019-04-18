@@ -1,0 +1,247 @@
+package com.supergenius.web.finance.helper;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.genius.model.base.entity.Pager;
+import com.genius.model.base.enums.EStatus;
+import com.supergenius.global.conf.WebConf;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.server.finance.helper.BaseSubscribelHP;
+import com.supergenius.server.user.helper.BaseUserHP;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.finance.entity.Finance;
+import com.supergenius.xo.finance.entity.Message;
+import com.supergenius.xo.finance.entity.Subscribe;
+import com.supergenius.xo.finance.entity.Topic;
+import com.supergenius.xo.finance.entity.UserStatistics;
+import com.supergenius.xo.finance.enums.EFinanceMsg;
+import com.supergenius.xo.finance.enums.EFollow;
+import com.supergenius.xo.finance.service.FinanceSO;
+import com.supergenius.xo.finance.service.MessageSO;
+import com.supergenius.xo.finance.service.SubscribeSO;
+import com.supergenius.xo.finance.service.TopicSO;
+import com.supergenius.xo.finance.service.UserStatisticsSO;
+import com.supergenius.xo.user.entity.User;
+
+/**
+ * 订阅hp
+ * @author YuYingJie
+ */
+public class SubscribeHP extends BaseSubscribelHP {
+
+	private static Logger log = LoggerFactory.getLogger(SubscribeHP.class);
+
+	private static SubscribeSO so;
+
+	private static UserStatisticsSO statisticsSO;
+
+	private static FinanceSO financeSO;
+
+	private static TopicSO topicSO;
+
+	private static MessageSO messageSO;
+
+	private static SubscribeSO getSO() {
+		if (so == null) {
+			so = (SubscribeSO) spring.getBean(SubscribeSO.class);
+		}
+		return so;
+	}
+
+	private static UserStatisticsSO getStatisticsSO() {
+		if (statisticsSO == null) {
+			statisticsSO = (UserStatisticsSO) spring.getBean(UserStatisticsSO.class);
+		}
+		return statisticsSO;
+	}
+
+	private static FinanceSO getFinanceSO() {
+		if (financeSO == null) {
+			financeSO = (FinanceSO) spring.getBean(FinanceSO.class);
+		}
+		return financeSO;
+	}
+
+	private static TopicSO getTopicSO() {
+		if (topicSO == null) {
+			topicSO = (TopicSO) spring.getBean(TopicSO.class);
+		}
+		return topicSO;
+	}
+
+	public static MessageSO getMessageSO() {
+		if (messageSO == null) {
+			messageSO = (MessageSO) spring.getBean(MessageSO.class);
+		}
+		return messageSO;
+	}
+
+	/**
+	 * 获取我的订阅
+	 * @param user
+	 * @param pageSize
+	 * @param pageNum
+	 * @return
+	 * @author YuYingJie
+	 */
+	public static List<Map<String, Object>> getMySubscribe(User user, int pageSize, int pageNum) {
+		if (pageNum < 0) {
+			pageNum = 0;
+		}
+		if (pageSize <= 0) {
+			pageSize = WebConf.MySubscribeCount;
+		}
+		Pager pager = Pager.getNewInstance(pageNum, pageSize);
+		List<Subscribe> list = getSO().getList(user.getUid(), pager);
+		List<Map<String, Object>> maps = new ArrayList<>();
+		Map<String, Object> map;
+		String refuid = "";
+		for (Subscribe subscribe : list) {
+			map = new HashMap<>();
+			map.put(ViewKeyDict.bean, subscribe);
+			if (EFollow.bothfollow.equals(subscribe.getFollow())) {
+				if (user.getUid().equals(subscribe.getRefuseruid())) {
+					refuid = subscribe.getUseruid();
+				} else {
+					refuid = subscribe.getRefuseruid();
+				}
+			} else {
+				refuid = subscribe.getRefuseruid();
+			}
+			map.put(ViewKeyDict.refuser, BaseUserHP.get(refuid));
+			Map<String, Object> map1 = getHotByUserUid(refuid);
+			// 设置finance or topic typename
+			if (map1.containsKey(ViewKeyDict.finance)) {
+				Finance finance = (Finance) map1.get(ViewKeyDict.finance);
+				map.put(ViewKeyDict.finance, finance);
+				map.put(ViewKeyDict.typename, finance.getFirstTypeName());
+			}
+			if (map1.containsKey(ViewKeyDict.topic)) {
+				map.put(ViewKeyDict.topic, (Topic) map1.get(ViewKeyDict.topic));
+				map.put(ViewKeyDict.typename, ViewKeyDict.topic);
+			}
+			// 设置static
+			map.put(ViewKeyDict.userstatistics, getStatisticsSO().obtainOne(refuid));
+			maps.add(map);
+		}
+		return maps;
+	}
+
+	/**
+	 * 获取某人最新的文章或者话题
+	 * @param refuid
+	 * @return
+	 * @author YuYingJie
+	 */
+	public static Map<String, Object> getHotByUserUid(String useruid) {
+		Map<String, Object> map = new HashMap<>();
+		List<Finance> finance = getFinanceSO().getList(useruid, EStatus.enable, Pager.getNewInstance(1, 1));
+		List<Topic> topic = getTopicSO().getList(useruid, Pager.getNewInstance(1, 1));
+		if (finance != null && finance.size() > 0 && topic != null && topic.size() > 0) {
+			String ftime = finance.get(0).getCreatetime().toString();
+			String ttime = topic.get(0).getCreatetime().toString();
+			if (ftime.compareTo(ttime) > 0) {
+				map.put(ViewKeyDict.finance, finance.get(0));
+			} else {
+				map.put(ViewKeyDict.topic, topic.get(0));
+			}
+		} else if (topic != null && topic.size() > 0) {
+			map.put(ViewKeyDict.topic, topic.get(0));
+		} else if (finance != null && finance.size() > 0) {
+			map.put(ViewKeyDict.finance, finance.get(0));
+		}
+		return map;
+	}
+
+	/**
+	 * 获取热门订阅
+	 * @param pagenum
+	 * @param pagesize
+	 * @return
+	 * @author YuYingJie
+	 */
+	public static List<Map<String, Object>> getHotSubscribes(int pagenum, int pagesize) {
+		if (pagenum <= 0) {
+			pagenum = 1;
+		}
+		if (pagesize <= 0) {
+			pagesize = WebConf.MyHotSubscribeCount;
+		}
+		List<Map<String, Object>> maps = new ArrayList<>();
+		Map<String, Object> map1;
+		List<UserStatistics> statistics = getStatisticsSO().getByBeSubscribeCount(Pager.getNewInstance(pagenum, pagesize));
+		for (UserStatistics userStatistics : statistics) {
+			map1 = new HashMap<>();
+			map1.put(ViewKeyDict.bean, userStatistics);
+			map1.put(ViewKeyDict.user, BaseUserHP.get(userStatistics.getUseruid()));
+			Map<String, Object> map = getHotByUserUid(userStatistics.getUseruid());
+			if (map.containsKey(ViewKeyDict.finance)) {
+				Finance finance = (Finance) map.get(ViewKeyDict.finance);
+				map1.put(ViewKeyDict.finance, finance);
+				map1.put(ViewKeyDict.typename, finance.getFirstTypeName());
+			}
+			if (map.containsKey(ViewKeyDict.topic)) {
+				map1.put(ViewKeyDict.topic, (Topic) map.get(ViewKeyDict.topic));
+				map1.put(ViewKeyDict.typename, ViewKeyDict.topic);
+			}
+			maps.add(map1);
+		}
+		return maps;
+	}
+
+	/**
+	 * 我是否订阅过ta
+	 * @param uid
+	 * @return
+	 * @author YuYingJie
+	 */
+	public static boolean isSubscribe(String meuid, String hisuid) {
+		boolean bool = false;
+		if (meuid.equals(hisuid)) {
+			return bool;
+		}
+		List<Subscribe> list = getSO().getList(meuid, null);
+		for (Subscribe subscribe : list) {
+			if (EFollow.bothfollow.equals(subscribe.getFollow())) {
+				if (hisuid.equals(subscribe.getUseruid()) || hisuid.equals(subscribe.getRefuseruid())) {
+					bool = true;
+				}
+			} else {
+				if (hisuid.equals(subscribe.getRefuseruid())) {
+					bool = true;
+				}
+			}
+		}
+		return bool;
+	}
+
+	/**
+	 * 发送订阅消息
+	 * @param user
+	 * @param refUser
+	 * @return
+	 * @author LiJiacheng
+	 */
+	public static Message sendSubMsg(User user, User refUser) {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.sender, user);
+		map.put(MapperDict.title, user.getShowname());
+		map.put(MapperDict.href, WebConf.baseRootPath + MapperDict.slash + MapperDict.his + MapperDict.slash + MapperDict.article + MapperDict.slash + user.getOid());
+		map.put(MapperDict.type, EFinanceMsg.subscribe);
+		Message message = getMessageSO().addMsg(map);
+		if (message != null) {
+			message.setRecipient(refUser.getUid());
+			return message;
+		} else {
+			log.info("The sendSubMsg send failed.");
+			return null;
+		}
+	}
+
+}

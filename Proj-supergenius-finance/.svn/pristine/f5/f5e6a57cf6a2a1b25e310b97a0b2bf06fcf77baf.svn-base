@@ -1,0 +1,289 @@
+/* CSS Document */
+/*03.3论战页面  begin 产品页面*/
+.debate_th_box{ 
+	width:1000px;
+	text-align: left;
+}
+.db_leftbox{
+	width: 656px;
+	padding: 0 17px;
+	background: #fff;
+	margin-top: 20px;
+	display: inline-block;
+	text-align: left;
+	margin-bottom: 40px;
+	box-shadow: 1px 1px 1px 0 #D3D3D3;
+	overflow: hidden;
+}
+.db_discuss {
+	width: 650px;
+	margin-top: 30px;
+	overflow: hidden;
+}
+.db_discuss .mb {
+	padding-left: 10px;
+}
+.db_discuss .readtimes {
+	color: #666666;
+	font-size: 14px;
+	float: right;
+	margin-top: 3px;
+	margin-right: 16px;
+}
+.commentbox {
+	height: 120px;
+	background: #e8e8e8;
+	overflow: hidden;
+	margin-top: 15px;
+}
+.db_discuss .contro_text {
+	width: 590px;
+	margin: 20px 20px 0;
+	border: none;
+	height: 42px;
+	padding: 8px 10px 0;
+	font-size: 15px;
+	color: #535353;
+	line-height: 18px;
+	font-family: "microsoft yahei";
+	border-radius: 5px;
+}
+.txtbottom {
+	text-align: left;
+}
+.submit_comment { 
+	font-size: 15px;
+	display: inline-block;
+	text-align: center;
+	height: 28px;
+	width: 85px;
+	line-height: 28px;
+	color: #fff;
+	margin-left: 5px;
+	border-radius: 5px;
+	box-shadow: 1px 1px 1px 0 #686868;
+	margin-right: 20px;
+	margin-top: 6px;
+}
+.judge {
+	background: #b7b7b7;
+	margin-right: 15px;
+}
+.logafter {
+	background: #1d71b6;
+}
+.judge:hover , .logafter:hover {
+	background: #8cc9fb;
+}
+
+/*tab标签处的样式开始*/
+.comment{
+	width: 650px;
+	text-align: left;
+	overflow: hidden;
+}
+.comment span{
+	margin-right:30px;
+}
+.com_title{
+	height: 25px;
+	line-height: 40px;
+	margin-top: 15px;
+	font: bold 15px "微软雅黑";
+	color: #38485a;
+	border-bottom: 2px solid #C4C4C4;
+}
+.com_title span {
+	height: 25px;
+	display: inline-block;
+	cursor: pointer;
+	font-size: 15px;
+	font-weight: bold;
+}
+.current{
+	border-bottom: 2px solid #1d71b6;
+	color: #1d71b6;
+}
+.commentitem {
+	margin-top: 15px;
+	border-bottom: 1px dotted #ddd;
+	padding-bottom: 18px;
+}
+.commentitem .personimg {
+	width: 36px;
+	height: 36px;
+	overflow: hidden;
+	border: 2px solid #1d71b6;
+	border-radius: 4px;
+}
+.commentitem .itemright {
+	display: inline-block;
+	width: 600px;
+	vertical-align: top;
+	text-align: left;
+	margin-left: 4px;
+}
+.itemright .name {
+	font-size: 14px;
+	color: #1d71b6;
+	font-weight: bold;
+}
+.itemright .name:hover {
+	color: #15c2e7;
+}
+.itemright p {
+	color: #030401;
+	font-size: 13px;
+	line-height: 20px;
+	margin-top: 3px;
+	overflow: hidden;
+	word-break: break-all;
+}
+.itemright .itembottom {
+	margin-top: 5px;
+	height: 20px;
+	line-height: 20px;
+}
+.itembottom .time {
+	font-size: 10px;
+	color: #535353;
+	float: left;
+}
+.comlinkbox {
+	display: inline-block;
+	float: right;
+}
+.comlinkbox a {
+	color: #535353;
+	font-size: 10px;
+	margin-left: 25px;
+}
+.comlinkbox img {
+	width: 17px;
+	height: 18px;
+	overflow: hidden;
+	vertical-align: bottom;
+	margin-right: 4px;
+}
+.inputbox {
+	margin-top: 18px;
+	margin-right: -6px;
+}
+.inputbox input {
+	width: 84%;
+	height: 26px;
+	border: 1px solid #bfbfbf;
+	padding: 0 10px;
+	line-height: 22px;
+	font-size: 13px;
+	font-family: "microsoft yahei";
+	color: #030401;
+	overflow: hidden;
+}
+.inputbox .inputbtn {
+	display: inline-block;
+	width: 65px;
+	height: 28px;
+	background: #1d71b6;
+	text-align: center;
+	line-height: 28px;
+	color: #fff;
+	margin-left: -6px;
+	font-size: 15px;
+	vertical-align: top;
+}
+.seconditem {
+	margin-top: 15px;
+	padding-top: 15px;
+	border-top: 1px dotted #ddd;
+}
+.seconditem .secondright {
+	width: 550px;
+	display: inline-block;
+	vertical-align: top;
+	overflow: hidden;
+	font-size: 14px;
+	margin-left: 4px;
+}
+.tip {
+	text-align: center;
+	font-size: 12px;
+	color: #999999;
+	margin-top: 20px;
+	padding-bottom: 20px;
+}
+.idtip {
+	font-size: 15px;
+	display: inline-block;
+	margin-left: 25px;
+	color: #666;
+}
+.idtip input {
+	width: 73px;
+	height: 24px;
+	margin-top: 6px;
+	padding-left: 5px;
+	border: none;
+	color: #333;
+	font-size: 13px;
+	font-family: "microsoft yahei";
+	overflow: hidden;
+}
+.db_add {
+	text-align: center;
+	padding-bottom: 20px;
+	margin-top: 25px;
+	margin-bottom: 10px;
+}
+.loadmore {
+	width: 300px;
+	height: 30px;
+	display: inline-block;
+	text-align: center;
+	background: #1d71b6;
+	line-height: 30px;
+	font-size: 16px;
+	color: #fff;
+	border-radius: 6px;
+}
+.loadmore:hover {
+	background: #8cc9fb;
+}
+.announce {
+	font-size: 12px;
+	color: #999999;
+	margin-bottom: 10px;
+}
+/* 右侧部分开始 */
+.db_rightbox{  
+	width: 271px;
+	display: inline-block;
+	padding: 0 12px 5px;
+	vertical-align: top;
+	margin-top: 20px;
+}
+/*db_rightbox over*/
+
+.db_leftbox .db_lflink { 
+		text-align:left;
+		clear:both; 
+		width:100%;
+		font-size:14px;
+		font-weight: bold; 
+		line-height:25px;
+	}
+.db_leftbox .db_lflink a{ 
+	color:#344353;  
+	font-weight:bold;
+	font-size: 15px;
+}
+.db_leftbox .db_lflink a:hover {  
+	color:#1d71b6;
+	text-decoration: underline;
+}
+
+/*03.3论战页面 over产品页面*/
+
+
+#biaoqian{ width:auto; height:20px;}
+#biaoqian div{ cursor:pointer;height:100%; width:20px; margin:0px 5px; border:1px solid #999; float:left;text-align:center;line-height:20px;}

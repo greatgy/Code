@@ -1,0 +1,90 @@
+@charset "utf-8";
+/* CSS Document */
+/*03.3论战页面  begin 产品页面*/
+.debate_th_box{ width:1000px; background: #fff}
+.db_leftbox{width:700px; float:left; background: #fff}
+.db_rightbox{  width:286px; float:right; background: #fff}
+
+/*面包屑begin*/
+.crumbs{ float:left; left:0px; margin-top:30px;}
+.crumbs img{float:left; margin-top:5px; margin-right:5px;}
+.crumbs .crumbs_arrow{ color:#999999; font-size:14px;}
+.crumbs a{ font-size:14px; color:#999999; }
+/*面包屑over*/
+
+.db_leftbox .db_article{ clear:both; float:left; margin-top:25px; }
+.db_leftbox .db_article h2{ text-align:left; font-size:30px;}
+.db_leftbox .db_article .db_artime{ text-align:left; font-size:14px; color:#727272; line-height:25px;}
+.db_leftbox .db_article .db_artmargin{ margin-top:15px;}
+.db_leftbox .db_article a{color:#000;}
+.db_leftbox .db_article .db_artcon{  font-size:16px; clear:both; text-indent:2em; line-height:1.8em; }
+.db_leftbox .db_article .db_artfont{ text-indent:2em; text-align:left; width:670px;  line-height:24px; color:#344353;}
+.db_leftbox .db_article .xiu_1 > a {float: right; margin-right: 20px; margin-top: 3px;}
+.db_leftbox .db_article .xiu_1 a span {padding: 5px;}
+.db_leftbox .db_article .db_link {float: right;}
+.db_leftbox .db_discuss{ clear:both; padding-top:40px; color:#344353; }
+.db_leftbox .db_discuss .db_distitle{ float:left; font-size:24px; }
+.db_leftbox .db_discuss .db_discon{ float:right;padding-top:15px;margin-right:22px;}
+.db_leftbox .db_discuss .db_discon span{ font-size:14px; font-weight:bold;color:#344353; }
+.db_leftbox .db_discuss .db_textarea{ width:680px; height:130px; overflow-x:hidden; border:0px;border:1px solid #c8c8c8; margin-top:10px; background:#fbfbfb;box-shadow:3px 3px 5px #c6cacc inset; text-align:left;float:left;  }
+.db_btnposi{ float:right; margin-top:9px; text-align:center;margin-right:14px;}
+.db_btn{ border:0px; background:#eb6100; font-size:16px; display:inline;float:right;line-height:35px; color:#FFF; width:98px; height:35px;}
+.db_btn a{ color:#fff;}
+.db_btn2{ background:#b5b5b5; margin-left:9px;}
+
+/*db_rightbox begin*/
+.db_rightbox .db_table{ width:286px; height:220px; border:1px solid #ebedef; margin-top:30px; font-size:16px;}
+.db_rightbox .db_table .db_td{ border-top:1px solid #ebedef;}
+.db_rightbox .db_table img{ float:left; margin-left:14px; width:125px; height:125px; overflow:hidden; border:1px solid #eee; }
+.db_rightbox .db_table .db_tablecon{  margin-left:12px; float:left;}
+.db_rightbox .db_table .db_name{ color:#344353;  font-weight:bold; margin-top:30px;}
+.db_rightbox .db_table .db_num{ color:#666666; font-size:20px; margin:12px; text-align:left; }
+.db_rightbox .db_table .db_ti{ font-size:13px; font-weight:bold; color:#999999; position:relative; right:6px;}
+.db_rightbox .db_table .db_pre{ margin-left:14px; font-size:12px; color:#000; text-align:left;}
+
+
+/* 论战 、热门排行榜 begin*/
+.t06_con_w290{ margin-top:17px;}
+.t06_con_w290 ul{margin-top:10px; margin-bottom:15px;}
+.t06_con_w290{width:286px;height:auto;border:1px solid #e6e7eb; }
+.t06_con_w290 h4{height:40px;font-size:16px;border-bottom:1px solid #51adee;overflow:auto;z-index:1;}
+.t06_con_w290 h4 span{float:left;display:block;width:150px;height:40px;line-height:40px;color:#fff;background:#51adee;}
+.t06_con_w290 ul{width:240px;padding-left:40px;padding-right:20px;}
+.t06_con_w290  ul li{margin-top:10px;}
+.t06_w290_title{text-align:left;height:30px;line-height:30px;font-size:14px;position:relative;color:#364353;}
+.t06_w290_title a{color:#344353;}
+.on{color:#1d71b6;}
+.t06_w290_title span{position:absolute;left:-30px;top:2px;display:block;width: 25px;height:25px;line-height:25px;text-align:center;background:#e0e4e7;}
+.list_hide{text-align:left;font-size:12px;font-family:"宋体";color:#727374;letter-spacing: 1px;line-height:20px; display:none;}
+.t06_w290_on a{color:#51adee !important;}
+.list_hide span a{color:#1d71b6;}
+.on_num{background:#51adee !important;color:#fff !important;}
+/*论战、热门排行榜 over*/
+
+/*db_rightbox over*/
+
+/*tab标签评论 begin*/
+.comment{width:670px;text-align:left; clear:both; float:left; margin-left:25px; margin-top:20px;}
+.comment span{margin-right:30px;}
+.com_title{height:30px;line-height:30px;font:bold 15px "微软雅黑";color:#38485a;border-bottom:1px solid #f7f8f9;}
+.com_title span{height:28px;display:inline-block;cursor: pointer;}
+.comment .current{border-bottom:2px solid #51aded;}
+.com_list{padding:25px 20px 15px 5px;border-bottom:1px solid #eeeeee;}
+.com_hide{width:590px;}
+.com_but{color:#3698dc;font-size:14px;height:30px;line-height:30px;}
+.com_but span:hover{cursor: pointer;text-decoration: underline;}
+.com_short{width:510px !important;}
+.com_listInner{border:none !important;overflow:auto;z-index:1;padding:5px 0;}
+.com_info{width:590px;font-size:14px;color:#666;line-height:25px;font-family:"宋体";}
+.com_info h3{font-size:14px;font-weight:normal;}
+.com_info h3 a{color:#3698dc; margin-right:5px;}
+.com_reply{text-align:right;}
+.com_reply a{color:#666;}
+.com_reply a:hover{color: #1d71b6;}
+.db_add{ clear:both; width:670px; height:33px; margin-left:25px; background:#e0e3e6; margin-bottom:40px; margin-top:20px; }
+.db_add a{ color:#1d71b6; line-height:33px;}
+
+/*tab标签评论 over*/
+
+
+/*03.3论战页面 over产品页面*/

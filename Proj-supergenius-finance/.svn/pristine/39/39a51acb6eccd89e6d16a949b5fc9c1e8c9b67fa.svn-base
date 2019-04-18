@@ -1,0 +1,125 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+[#if loadmoretype == "article"]
+	[#list list as item]
+		<li>
+			<a href="${base}/${item.type}/${item.bean.oid}" target="_blank"><img src="${webimg}${item.bean.imglittle}" class="artileimg" /></a>
+			<div class="artdetail">
+				<div class="artTitlebox">
+					<a href="${base}/${item.type}/${item.bean.oid}" class="artTitle" target="_blank">[@f.TrimSubstring content="${item.bean.title}" mylength=20 /]</a>
+					<span class="collectTime">${(item.bean.createtime).toString("YYYY.MM.dd HH.mm")}</span>
+					<div class="collecticon collect" id="btncollect${item.collect}_${item.type}_${item.bean.uid}">
+						<span>取消收藏</span>
+						<a href="javascript:;" class="collected"><img src="${baseimg}/imgs/default/collect.png" class="heart" /></a>
+					</div>
+				</div>
+				<p>
+					[@f.TrimSubstring content="${item.bean.summary}" mylength=90 /]
+				</p>
+				<div class="iconsbox">
+					<span title="查看次数">
+						<img src="${baseimg}/imgs/default/viewicon.png">
+						${item.bean.clickcount}
+					</span>
+					<span title="点赞次数">
+						<img src="${baseimg}/imgs/default/thumb.png">
+						${item.bean.prizecount}
+					</span>
+					<span title="评论次数">
+						<img src="${baseimg}/imgs/default/msg01.png">
+						${item.bean.commentcount}
+					</span>
+					<span title="分享">
+						<img src="${baseimg}/imgs/default/shareicon.png">
+					</span>
+				</div>
+			</div>
+		</li>	
+	[/#list]
+[#elseif loadmoretype == "topic"]
+	[#list list as item]
+		[#if item.bean.authorUser.oid != me.oid]
+			[#assign url="${base}/his/topic/${item.bean.authorUser.oid}" /]
+		[#else]
+			[#assign url="javascript:void(0);" /]
+		[/#if]
+		<li>
+			<div class="collecticon tpcCollecticon collect" id="btncollect${item.collect}_${item.type}_${item.bean.uid}">
+				<span>取消收藏</span>
+				<a href="javascript:;" class="collected"><img src="${baseimg}/imgs/default/collect.png" class="heart" /></a>
+			</div>
+			<div class="topicTopinfor">
+				<a [#if item.bean.authorUser??] href="${url}" [#else] herf="javascript:void(0);" [/#if] target="_blank" class="authorname">
+					<img [#if item.bean.authorUser.avatar?? && item.bean.authorUser.avatar != ""]src="${userimg}${item.bean.authorUser.avatar}"[#else]src="${baseimg}/imgs/web/noavatar.png"[/#if] class="authorimg" />
+				</a>
+				<a [#if item.bean.authorUser??] href="${url}" [#else] herf="javascript:void(0);" [/#if] target="_blank" class="authorname">${item.bean.author}</a>
+				<span class="collectTime">${(item.bean.createtime).toString("YYYY.MM.dd HH.mm")}</span>
+			</div>
+			<div class="topicMidinfor">
+				<a href="${base}/${item.type}/${item.bean.oid}" class="topicTitle" title="${item.bean.title}">[@f.TrimSubstring content="${item.bean.title}" mylength=20 /]</a>
+				<a href="${base}/${item.type}/${item.bean.oid}" class="mctTopicimg"><img src="${webimg}${item.bean.imgoriginal}" /></a>
+				<div class="iconsbox">
+					<span title="查看次数">
+						<img src="${baseimg}/imgs/default/viewicon.png">
+						${item.bean.clickcount}
+					</span>
+					<span title="点赞次数">
+						<img src="${baseimg}/imgs/default/thumb.png">
+						${item.bean.prizecount}
+					</span>
+					<span title="评论次数">
+						<img src="${baseimg}/imgs/default/msg01.png">
+						${item.bean.commentcount}
+					</span>
+					<span title="分享">
+						<img src="${baseimg}/imgs/default/shareicon.png">
+					</span>
+				</div>
+			</div>
+		</li>
+	[/#list]
+[#else]
+	[#list list as item]
+		<li>
+			<div class="collecticon dbtCollecticon collect" id="btncollect${item.collect}_${item.type}_${item.bean.uid}">
+				<span>取消收藏</span>
+				<a href="javascript:;" class="collected"><img src="${baseimg}/imgs/default/collect.png" class="heart" /></a>
+			</div>
+			<div class="mctDebate">
+				<a href="${base}/${item.type}/${item.bean.oid}" target="_blank" class="mctTopicimg"><img src="${webimg}${item.bean.imgmedium}" /></a>
+				<div class="mctDebatetitbg"></div>
+				<a href="${base}/${item.type}/${item.bean.oid}" target="_blank" class="mctDebatetit" title="${item.bean.title}" >[@f.TrimSubstring content="${item.bean.title}" mylength=25 /]</a>
+			</div>
+			<div class="dbtSupport">
+				<div class="dbtTitle">
+					<span>${item.bean.titlered}</span>
+					<img src="${baseimg}/imgs/default/vs.png" />
+					<span>${item.bean.titleblue}</span>
+				</div>
+				<div class="dbtvote">
+					<a href="javascript:void(0);" class="redside redvote" id="debate_vote_two_${item.bean.uid}_red" data-support="red" data-id="${item.bean.uid}">
+						<img src="${baseimg}/imgs/default/redzan.png" data-isvoted="${item.voted.voted!"false"}" data-isme="${item.voted.isred!"false"}" />
+					</a>
+					<div class="voteprogress">
+						[#assign red=item.bean.countred /]
+						[#assign blue=item.bean.countblue /]
+						[#assign all=red + blue /]
+						<div class="rprogress" style="width:${red/all*100}%">
+							<div class="redbar"></div>
+						</div>
+						<div class="bprogress" style="width:${blue/all*100}%">
+							<div class="bluebar"></div>
+						</div>
+						<div class="numberbox">
+							<span class="rednum num_${item.bean.uid}_red">${item.bean.countred?c}</span>
+							<span class="bluenum num_${item.bean.uid}_blue">${item.bean.countblue?c}</span>
+						</div>
+					</div>
+					<a href="javascript:void(0);" class="redside bluevote" id="debate_vote_two_${item.bean.uid}_blue" data-support="blue" data-id="${item.bean.uid}">
+						<img src="${baseimg}/imgs/default/bluezan.png" data-isvoted="${item.voted.voted!"false"}" data-isme="${item.voted.isblue!"false"}" />
+					</a>
+				</div>
+			</div>
+		</li>
+	[/#list]
+[/#if]

@@ -1,0 +1,298 @@
+package com.supergenius.web.admin.finance.helper;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.genius.core.base.annotation.Json;
+import com.genius.core.base.annotation.Maps;
+import com.genius.core.base.conf.BaseWebConf;
+import com.genius.core.base.utils.FileUtil;
+import com.genius.core.base.utils.FreemarkerUtil;
+import com.genius.core.base.utils.MapsUtil;
+import com.genius.core.base.utils.StrUtil;
+import com.genius.core.cache.utils.MemcacheUtil;
+import com.genius.core.search.constant.MapperSearchDict;
+import com.genius.core.search.engine.SearchEngine;
+import com.genius.core.serial.utils.SerialUtil;
+import com.genius.model.base.entity.Pager;
+import com.genius.model.base.enums.EStatus;
+import com.supergenius.core.rule.FinanceLatestRule;
+import com.supergenius.core.rule.FinanceRankRule;
+import com.supergenius.core.rule.FinanceRecommendRule;
+import com.supergenius.core.rule.UserArticleCountRule;
+import com.supergenius.global.conf.SysConf;
+import com.supergenius.global.conf.WebConf;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.finance.entity.Finance;
+import com.supergenius.xo.finance.entity.Message;
+import com.supergenius.xo.finance.enums.EFinance;
+import com.supergenius.xo.finance.enums.EFinanceMsg;
+import com.supergenius.xo.finance.service.FinanceSO;
+import com.supergenius.xo.finance.service.MessageSO;
+
+/**
+ * 天财评论文章HP（管理后台）
+ * 
+ * @author liushaomin
+ */
+public class FinanceHP extends com.supergenius.server.finance.helper.BaseFinanceHP {
+
+	private static Logger log = LoggerFactory.getLogger(FinanceHP.class);
+
+	private static FinanceSO so;
+
+	private static MessageSO messageSO;
+
+	private static SearchEngine engine;
+
+	private static FinanceSO getSO() {
+		if (so == null) {
+			so = (FinanceSO) spring.getBean(FinanceSO.class);
+		}
+		return so;
+	}
+
+	public static MessageSO getMessageSO() {
+		if (messageSO == null) {
+			messageSO = (MessageSO) spring.getBean(MessageSO.class);
+		}
+		return messageSO;
+	}
+
+	public static SearchEngine getEngine() {
+		if (engine == null) {
+			engine = (SearchEngine) spring.getBean("engine");
+		}
+		return engine;
+	}
+
+	/**
+	 * 查询天财评论文章时组织数据
+	 * 
+	 * @return
+	 * @author liushaomin
+	 */
+	public static Map<String, Object> query(Map<?, ?> model) {
+		Pager pager = Pager.getNewInstance(model.get("page"), model.get("rows"));
+		Map<String, Object> map = getParamMap(pager, model, MapperDict.title);
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.shorttitle))) {
+			map.put(MapperDict.shorttitle + MapperDict.suffix_like_key, model.get(ViewKeyDict.shorttitle).toString().trim());
+		}
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.type))) {
+			map.put(MapperDict.type, model.get(ViewKeyDict.type).toString().trim());
+		}
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.author))) {
+			map.put(MapperDict.author + MapperDict.suffix_like_key, model.get(ViewKeyDict.author).toString().trim());
+		}
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.origin))) {
+			map.put(MapperDict.origin + MapperDict.suffix_like_key, model.get(ViewKeyDict.origin).toString().trim());
+		}
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.keywords))) {
+			map.put(MapperDict.keywords + MapperDict.suffix_like_key, model.get(ViewKeyDict.keywords).toString().trim());
+		}
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.istop))) {
+			map.put(MapperDict.istop, model.get(ViewKeyDict.istop).toString().trim());
+		}
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.ispublic))) {
+			map.put(MapperDict.ispublic, model.get(ViewKeyDict.ispublic).toString().trim());
+		}
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.createtimestart))) {
+			String startTime = model.get(ViewKeyDict.createtimestart).toString().trim() + MapperDict.starttimeformat;
+			map.put(MapperDict.createtimestart, startTime);
+		}
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.createtimeend))) {
+			String endTime = model.get(ViewKeyDict.createtimeend).toString().trim() + MapperDict.endtimeformat;
+			map.put(MapperDict.createtimeend, endTime);
+		}
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.status))) {
+			map.put(MapperDict.status, model.get(ViewKeyDict.status).toString().trim());
+		}
+		if (StrUtil.isNotEmpty(model.get(ViewKeyDict.debate))) {
+			map.put(MapperDict.debate, model.get(ViewKeyDict.debate).toString().trim());
+		}
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(ViewKeyDict.total, getSO().getCount(map));
+		result.put(ViewKeyDict.rows, getSO().getList(map));
+		return result;
+	}
+
+	/**
+	 * 得到所有的文章类型
+	 * 
+	 * @return
+	 */
+	public static Map<String, String> getEFinanceMap() {
+		Map<String, String> map = new TreeMap<>(new Comparator<String>() {
+			public int compare(String k1, String k2) {
+				return k1.compareTo(k2);
+			}
+		});
+		for (EFinance e : EFinance.values()) {
+			map.put(e.toString(), EFinance.getName(e, Locale.CHINA));
+		}
+		return map;
+	}
+
+	/**
+	 * 清空所有的缓存
+	 * 
+	 * @param ids
+	 * @author ShangJianguo
+	 */
+	public static void removeCache(String[] ids) {
+		publishremove(ids);
+		MemcacheUtil.remove(new FinanceRecommendRule(ViewKeyDict.all));
+		MemcacheUtil.remove(new FinanceRankRule(ViewKeyDict.all));
+		for (EFinance type : EFinance.values()) {
+			MemcacheUtil.remove(new FinanceRankRule(type.name()));// 清空所有类型缓存
+		}
+	}
+
+	/**
+	 * 清空发布时候需要清除的缓存
+	 * 
+	 * @param ids
+	 * @author ShangJianguo
+	 */
+	public static void publishremove(String[] ids) {
+		MemcacheUtil.remove(new FinanceLatestRule(ViewKeyDict.all));// 清空最新文章缓存
+		Finance finance = null;
+		for (String item : ids) {
+			finance = getSO().get(item);
+			MemcacheUtil.remove(new UserArticleCountRule(finance.getAuthoruid()));// 清空某个作者的文章数量
+			MemcacheUtil.remove(new FinanceRankRule(ViewKeyDict.my + finance.getAuthoruid()));
+		}
+		for (EFinance type : EFinance.values()) {
+			MemcacheUtil.remove(new FinanceLatestRule(type.name()));// 清空最新文章缓存
+		}
+	}
+
+	/**
+	 * 重新生成文件
+	 * 
+	 * @author liushaomin
+	 */
+	public static void SerialFile(HttpServletRequest request) {
+		try {
+			deleteFile(SysConf.FileSiteBasePath + SysConf.FileFinancePath);
+			deleteFile(SysConf.FileSiteBasePath + SysConf.MobileFileFinancePath);
+			List<Finance> finances = getSO().getList(EFinance.geniusfocus, new Pager(1, WebConf.OfficialIndexFinanceSize));
+			Map<String, Object> model = new HashMap<String, Object>();
+			model.putAll(BaseWebConf.getBasePath(request.getContextPath()));
+			model.put(ViewKeyDict.list, finances);
+			model.put(ViewKeyDict.baseFinancePath, WebConf.baseFinancePath);
+			File file = new File(SysConf.FileSiteBasePath + SysConf.FileFinancePath);
+			File mobilefile = new File(SysConf.FileSiteBasePath + SysConf.MobileFileFinancePath);
+			FreemarkerUtil.process(SysConf.OfficialIndexTemplatePath, SysConf.HtmlFinanceData, model, file);
+			FreemarkerUtil.process(SysConf.OfficialIndexTemplatePath, SysConf.MobileHtmlFinanceData, model, mobilefile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 重新序列化文件
+	 * 
+	 * @param finance
+	 * @author liushaomin
+	 */
+	public static void serializeToJson(Finance finance) {
+		String path = SysConf.SerialBasePath + SysConf.SerialFiancePath + SysConf.Separator_Directory + finance.getOid();
+		deleteFile(path);
+		SerialUtil.serializeToJson(finance, path, Json.cacheStrategy);
+	}
+
+	/**
+	 * 删除文件
+	 * 
+	 * @param ids
+	 * @author liushaomin
+	 */
+	public static void deleteFile(String[] ids) {
+		for (String id : ids) {
+			Finance finance = getSO().get(id);
+			String path = SysConf.SerialBasePath + SysConf.SerialFiancePath + SysConf.Separator_Directory + finance.getOid();
+			deleteFile(path);
+		}
+
+	}
+
+	/**
+	 * 删除文件
+	 * 
+	 * @author liushaomin
+	 */
+	public static void deleteFile(String path) {
+		FileUtil.delete(path);
+	}
+
+	/**
+	 * 发送文章审核通过的消息
+	 * 
+	 * @param finance
+	 * @author LiJiacheng
+	 */
+	public static Message sendFinanceMsg(Finance finance) {
+		if (finance.getStatus().equals(EStatus.enable)) {
+			Map<String, Object> map = new HashMap<>();
+			map.put(MapperDict.title, finance.getTitle());
+			map.put(MapperDict.type, EFinanceMsg.articlepass);
+			map.put(MapperDict.href, WebConf.baseFinancePath + MapperDict.slash + finance.getTypes().get(0).name() + MapperDict.slash + finance.getOid());
+			map.put(MapperDict.adminuid, finance.getAdminuid());
+			map.put(MapperDict.score, finance.getScore());
+			Message message = getMessageSO().addMsg(map);
+			if (message != null) {
+				message.setRecipient(finance.getAuthoruid());
+				return message;
+			} else {
+				log.info("The sendFinanceMsg send failed.");
+				return null;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 文章初始化全站索引
+	 * 
+	 * @author Architect.bian
+	 * @createtime 2015-12-31 下午3:51:08
+	 */
+	public static void initializeSearchIndex() {
+		Map<String, Object> delmap = new HashMap<>();
+		delmap.put(MapperDict.status, EStatus.enable);
+		getEngine().delete(delmap);
+		Map<String, Object> countMap = new HashMap<>();
+		countMap.put(MapperDict.status, EStatus.enable);
+		int count = getSO().getCount(countMap);
+		int totalPage = (count - 1) / 100 + 1;
+		for (int i = 1; i <= totalPage; i++) {
+			countMap = getParamMap(Pager.getNewInstance(i, 100));
+			countMap.put(MapperDict.status, EStatus.enable);
+			List<Finance> list = getSO().getList(countMap);
+			List<Map<String, Object>> maps = new ArrayList<>();
+			for (Finance item : list) {
+				Map<String, Object> map = MapsUtil.toMap(item, Maps.searchStrategy);
+				map.put(MapperSearchDict.table, EChannel.finance.name());
+				maps.add(map);
+			}
+			if (maps.size() > 0)
+			getEngine().addBatch(maps);
+		}
+	}
+
+}

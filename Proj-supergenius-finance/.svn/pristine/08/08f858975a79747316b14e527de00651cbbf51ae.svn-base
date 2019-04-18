@@ -1,0 +1,31 @@
+package com.supergenius.web.finance.helper;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.genius.server.base.helper.BaseHP;
+import com.supergenius.global.conf.WebConf;
+import com.supergenius.xo.finance.enums.EFinance;
+
+/**
+ * 天财评论HP
+ * @author ShangJianguo
+ */
+public class IndexHP extends BaseHP{
+	
+	/**
+	 * 获取各个分类的最新的文章
+	 * @return 返回各个分类的最新文章，key为文章类别EFinance的name，value为每个类别的文章列表
+	 * @author ShangJianguo
+	 */
+	public static Map<String, Object> getLatestArticle(){
+		Map<String, Object> latestArticle = new HashMap<String, Object>();
+		for (EFinance item : EFinance.values()) {
+			if (item != EFinance.debate) {
+				latestArticle.put(item.name(), FinanceHP.getLatest(item, 1, WebConf.IndexFinanceLatestSize));
+			}
+		}
+		return latestArticle;
+	}
+	
+}

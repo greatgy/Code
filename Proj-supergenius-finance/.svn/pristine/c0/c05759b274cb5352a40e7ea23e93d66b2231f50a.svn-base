@@ -1,0 +1,206 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+[#if type=="all"][#-- 全部文章 --]
+	[#if list?size > 0]
+	[#list list as item]
+	<div class="t06_w680_time left">
+		<span class="left_time">${item.createtime.toString("yyyy年MM月dd日")}</span>
+		<img src="${baseimg}/imgs/default/circle.png" class="t06_w680_circle" style="" />
+	</div>
+	<div class="t06_w680_con right">
+		[#assign publish=false]
+		[#assign link=""]
+		[#assign bean=""]
+		[#assign imgstatus = 10]
+		[#if item.state == 1]
+			[#list list2 as fitem]
+				[#if fitem.contributeuid == item.uid]
+					[#if fitem.status == 1]
+						[#if "${fitem.firstTypeName}" == "debate"]
+							[#assign link="${base}/debate/article/${fitem.uid}"]
+						[#else]
+							[#assign link="${base}/${fitem.firstTypeName}/${fitem.oid}"]
+						[/#if]
+						[#assign bean=fitem]
+						[#assign publish=true]
+						[#assign imgstatus=1 ]
+					[/#if]
+					[#if fitem.status == 10]
+						[#assign imgstatus=10 ]
+					[/#if]
+					[#if fitem.status == 0]
+						[#assign imgstatus=0 ]
+					[/#if]
+					[#break]
+				[/#if]
+			[/#list]
+		[/#if]
+		[#if item.state == 0]
+			[#assign imgstatus=10 ]
+		[/#if]
+		[#if item.state == 2]
+			[#assign imgstatus=2 ]
+		[/#if]
+		<div class="t06_w680_img left">
+			[#if publish]
+				<a href="${link}" target="_blank"><img src="${webimg}${bean.imglittle!''}" /></a>
+			[#else]
+				<img src="${webimg}${item.imglittle!''}" />
+			[/#if]
+			<p class="t06_w680_fix">
+			[#if publish]
+				<img src="${baseimg}/imgs/default/topic04_check03.png">
+			[#else]
+				[#if imgstatus?number == 10]
+					<img src="${baseimg}/imgs/default/topic04_check01.png">
+				[/#if]
+				[#if imgstatus?number == 0]
+					<img src="${baseimg}/imgs/default/topic04_check02.png">
+				[/#if]
+			[/#if]
+			</p>
+		</div>
+		<div class="t06_w680_word right" style="padding-top:0px">
+			[#if publish]
+				<a href="${link}" target="_blank"><h2>${bean.title!''}</h2></a>
+			[#else]
+				<a href=""><h2>${item.title!''}</h2></a>
+			[/#if]
+			[#assign content=item.content?replace("<[^>]*>", "", "r")]
+			[#assign len="${(content?length>=100)?string(100,(content?length))}"]
+			<p>${content?substring(0,'${len}'?number)}
+				[#if publish]
+					<a href="${link}" target="_blank">[详情]</a>
+				[/#if]
+			</p>
+			[#if publish]
+				<p class="t06_w680_detail">
+					 阅读(${bean.clickcount!0}) &nbsp;
+					 <img src="${baseimg}/imgs/default/heart_01.png">(${bean.prizecount!0})&nbsp;&nbsp;
+					 <a href="${base}/${typename}/${item.oid}#db_discuss">评论(${bean.commentcount!0})</a>
+			 	</p>
+			[/#if]
+		</div>
+	</div>
+	[/#list]
+	[/#if]
+[/#if]
+
+[#if type=="publish"][#-- 已发布文章 --]
+	[#list list as item]
+		<div class="t06_w680_time left">
+			<span class="left_time">${item.createtime.toString("yyyy年MM月dd日")}</span>
+			<img src="${baseimg}/imgs/default/circle.png" class="t06_w680_circle"/>
+		</div>
+		<div class="t06_w680_con right">
+			<div class="t06_w680_img left">
+				<img src="${webimg}${item.imglittle}" />
+				<p class="t06_w680_fix">
+					<img src="${baseimg}/imgs/default/topic04_check03.png">
+				</p>
+			</div>
+			<div class="t06_w680_word right" style="padding-top:0px">
+				<a href="${base}/${item.firstTypeName}/${item.oid}" target="_blank"><h2>${item.title?html}</h2></a>
+				<p>[@f.TrimSubstring content='${item.content}' mylength=100 /]<a href="${base}/${item.firstTypeName}/${item.oid}" target="_blank">[详情]</a></p>
+				<p class="t06_w680_detail">
+					 阅读(${item.clickcount!0}) &nbsp;
+					<img src="${baseimg}/imgs/default/heart_01.png">(${item.prizecount!0})&nbsp;&nbsp;
+					 <a href="${base}/${typename}/${item.oid}#db_discuss">评论(${item.commentcount!0})</a>
+			 	</p>
+			</div>
+		</div>
+	[/#list]
+[/#if]
+
+[#if type=="refuse"][#-- 拒绝文章 --]
+	[#list list as item]
+		<div class="t06_w680_time left">
+			<span class="left_time">${item.createtime.toString("yyyy年MM月dd日")}</span>
+			<img src="${baseimg}/imgs/default/circle.png" class="t06_w680_circle"/>
+		</div>
+		<div class="t06_w680_con right">
+			<div class="t06_w680_img left">
+				<img src="${webimg}${item.imglittle!''}" />
+			</div>
+			<div class="t06_w680_word right" style="padding-top:0px">
+				<a href=""><h2>${item.title?html}</h2></a>
+					${item.contributeStateName}
+				<p>[@f.TrimSubstring content='${item.content}' mylength=100 /]</p>
+			</div>
+		</div>
+	[/#list]
+[/#if]
+
+[#if type=="init"][#-- 等待审核文章 --]
+	[#list list as item]
+		<div class="t06_w680_time left">
+			<span class="left_time">${item.createtime.toString("yyyy年MM月dd日")}</span>
+			<img src="${baseimg}/imgs/default/circle.png" class="t06_w680_circle"/>
+		</div>
+		<div class="t06_w680_con right">
+			<div class="t06_w680_img left">
+				<img src="${webimg}${item.imglittle!''}" />
+			</div>
+			<div class="t06_w680_word right" style="padding-top:0px">
+				<a href=""><h2>${item.title?html}</h2></a>
+				<p>[@f.TrimSubstring content='${item.content}' mylength=100 /]</p>
+			</div>
+		</div>
+	[/#list]
+[/#if]
+
+[#if type=="finace_latest"][#-- 分类文章中的最新文章 --]
+	[#list latestlist as item ]
+		<div class="tab_one">
+			<div class="title_img">
+				<img src="${webimg}${item.imgmedium!''}">
+			</div>
+			<div class="tab_one_r">
+				<h3><a href="${base}/${typename}/${item.oid}" target="_blank">${item.title?html}</a></h3>
+				<p><span class="ts">发布于 ${item.createtimeStr}</span><br>
+					[@f.TrimSubstring '${item.content}' /]
+					<a href="${base}/${typename}/${item.oid}" target="_blank">[详情]</a>
+				</p>
+			</div>
+			<div class="tab_one_bt">
+				 <span class="read">阅读(${item.clickcount!0})</span>
+				 <span><img src="${baseimg}/imgs/default/heart_01.png">(${item.prizecount!0})</span>
+				 <span><a href="${base}/${typename}/${item.oid}#db_discuss" title="评论数">评论(${item.commentcount!0})</a></span>
+			</div>
+		</div>
+	[/#list]
+[/#if]
+
+[#if type=="his"][#-- 他的文章 --]
+	[#list list as item ]
+	<div class="t06_w680_info">
+		<div class="t06_w680_time left" style="position:relative;top:16px">
+			<span style="position:relative;bottom:13px">${item.createtime.toString("yyyy年MM月dd日")}</span>
+			<img src="${baseimg}/imgs/default/circle.png" class="t06_w680_circle" style="" />
+		</div>
+		<div class="t06_w680_con right">
+			<div class="t06_w680_img left">
+				<img src="${webimg}${item.imglittle!''}" />
+			</div>
+			<div class="t06_w680_word right" style="padding-top:0px">
+				[#assign link=""]
+				[#if "${item.firstTypeName}" == "debate"]
+					[#assign link="${base}/debate/article/${item.uid}"]
+				[#else]
+					[#assign link="${base}/${item.firstTypeName}/${item.oid}"]
+				[/#if]
+				<a href="${link}" target="_blank"><h2>${item.title}</h2></a>
+				<p>[@f.TrimSubstring content="${item.content}" /]<a href="${link}" target="_blank">[详情]</a></p>
+				<p class="t06_w680_detail">
+					<span>阅读(${item.clickcount!0})</span>
+					<span>
+						<img  src="${baseimg}/imgs/default/heart_02.png"/>(${item.prizecount!0})
+					</span>
+					<a href="${link}#db_discuss">评论(${item.commentcount!0})</a>
+				</p>
+			</div>
+		</div>
+	</div>
+	[/#list]
+[/#if]
+

@@ -1,0 +1,107 @@
+package com.supergenius.web.finance.controller;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.genius.server.base.controller.BaseController;
+import com.supergenius.global.conf.WebConf;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.server.user.helper.BaseUserHP;
+import com.supergenius.web.finance.helper.DebateHP;
+import com.supergenius.web.finance.helper.FinanceHP;
+import com.supergenius.web.finance.helper.IndexHP;
+import com.supergenius.web.finance.helper.QuotesHP;
+import com.supergenius.web.finance.helper.TopicHP;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.finance.entity.Debate;
+import com.supergenius.xo.finance.entity.Finance;
+import com.supergenius.xo.finance.enums.ECountType;
+import com.supergenius.xo.finance.enums.EFinance;
+import com.supergenius.xo.user.entity.User;
+import com.supergenius.xo.user.enums.EComment;
+
+/**
+ * 网站首页控制器
+ * @author ShangJianguo
+ * @modifier LiJiacheng
+ */
+@Controller
+public class IndexController extends BaseController {
+
+	/**
+	 * 跳转到首页并展示数据
+	 * @param model
+	 * @param request
+	 * @return
+	 * @author: ShangJianguo 2014-6-17 下午3:56:26
+	 */
+	@RequestMapping(value = { "/", "/index" }, method = RequestMethod.GET)
+	public String index(Map<String, Object> model, HttpServletRequest request) {
+		List<Finance> indexTopList = FinanceHP.getTopList();// 获取置顶的文章，如果置顶的文章不够再取全站最新的文章
+		if (indexTopList.size() < WebConf.IndexFinanceTopSize) {
+			List<Finance> allLatestList = FinanceHP.getLatestList(null, 1, WebConf.FinancePageSize);
+			if (allLatestList.size() > WebConf.IndexFinanceTopSize) {
+				allLatestList = allLatestList.subList(0, WebConf.IndexFinanceTopSize - indexTopList.size());
+			}
+			indexTopList.addAll(allLatestList);
+		}
+		Debate debate = DebateHP.getCurDebate();
+		model.put(ViewKeyDict.list, indexTopList);
+		model.put(ViewKeyDict.debate, debate);// 当前期论战
+		if (debate != null) {
+			model.put(ViewKeyDict.voted, DebateHP.isVoted(BaseUserHP.getCurrUser(request), debate.getUid(), request));
+		}
+		model.put(ViewKeyDict.newestgoldlanguage, FinanceHP.getNewestFinance(EFinance.goldlanguage));//获取醒世金语最新的一篇文章
+		model.put(ViewKeyDict.quote, QuotesHP.getNewestQuote());// 获取最新的一条finance名言
+		model.put(ViewKeyDict.topic, TopicHP.getTopicByCommentNumer());// 热门话题
+		model.put(ViewKeyDict.map, IndexHP.getLatestArticle());// 各个分类的最新文章
+		model.put(ViewKeyDict.recommendlist, FinanceHP.getRecommendFinance());// 推荐文章
+		model.put(ViewKeyDict.financelist, FinanceHP.getRankList(ECountType.click, null));// 文章排行榜
+		model.put(ViewKeyDict.topiclist, TopicHP.getListByTopicRankFromMC(EChannel.topic, EComment.comment));// 话题排行版
+		model.put(ViewKeyDict.debatelist, DebateHP.getListByDebateRankFromComments());// 论战排行榜
+		return "index";
+	}
+
+	/**
+	 * 会员中心通过此接口使用jsonp获取推荐文章
+	 * @param request
+	 * @return
+	 * @author: chenminchang
+	 */
+	@RequestMapping(value = { "/ajax/topArticle_jsonp" }, method = RequestMethod.GET)
+	@ResponseBody
+	public String getTopArticle_jsonp(HttpServletRequest request) {
+		User user = BaseUserHP.getCurrUser(request);
+		if(null==user){
+			return "";
+		}
+		List<Finance> indexTopList = FinanceHP.getTopList();// 获取置顶的文章，如果置顶的文章不够再取全站最新的文章
+		if (indexTopList.size() < WebConf.IndexFinanceTopSize) {
+			List<Finance> allLatestList = FinanceHP.getLatestList(null, 1, WebConf.FinancePageSize);
+			if (allLatestList.size() > WebConf.IndexFinanceTopSize) {
+				allLatestList = allLatestList.subList(0, WebConf.IndexFinanceTopSize - indexTopList.size());
+			}
+			indexTopList.addAll(allLatestList);
+		}
+		List<Map<String, Object>> list = new ArrayList<>();
+		for (int i=0; i < indexTopList.size(); i++) {
+			Map<String, Object> financemap = new HashMap<>();
+			financemap.put(ViewKeyDict.oid, indexTopList.get(i).getOid());
+			financemap.put(ViewKeyDict.title, indexTopList.get(i).getTitle());
+			financemap.put(ViewKeyDict.img, indexTopList.get(i).getImgmedium());
+			list.add(i, financemap);
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put(ViewKeyDict.list , list);
+		return jsonp(map, request);
+	}
+}

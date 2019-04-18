@@ -1,0 +1,30 @@
+[#ftl]
+[#if list?size > 0]
+	<div class="side_right">
+		[#list list as item]
+			[#if item_index == 0]
+				<div class="debate_left topic_lf">
+					<img src="${webimg}${item.imgoriginal}" />
+					<div class="lz_one_01 topic_left">
+						<a href="${baseFinancePath}/geniusfocus/${item.oid}" title="${item.title}" target="_blank">${item.title}</a>
+					</div>
+				</div>
+			[/#if]	
+		[/#list]	
+		<div class="debate_right">
+			[#list list as item]
+				[#if item_index > 0]
+					<div class="topic01">
+						<img src="${webimg}${item.imgoriginal}" alt="" /> 
+						<div class="topic_detail">
+							<a href="${baseFinancePath}/geniusfocus/${item.oid}" class="t_title" target="_blank">${item.title}</a>
+							<p>${item.content?substring(0,20)}...<a href="${baseFinancePath}/geniusfocus/${item.oid}" class="edetail" target="_blank">[阅读全文]</a></p>
+						</div>
+					</div>
+				[/#if]
+			[/#list]	
+		</div>
+	</div>
+[/#if]
+	
+	

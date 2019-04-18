@@ -1,0 +1,123 @@
+package com.supergenius.web.finance.helper;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.genius.model.base.entity.Pager;
+import com.genius.model.base.enums.EStatus;
+import com.genius.server.base.helper.BaseHP;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.server.user.helper.BaseUserHP;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.finance.entity.Finance;
+import com.supergenius.xo.finance.entity.Topic;
+import com.supergenius.xo.user.entity.User;
+import com.supergenius.xo.user.service.UserSO;
+
+/**
+ * 查找hp
+ * @author YuYingJie
+ */
+public class SearchHP extends BaseHP {
+
+	@Autowired
+	private static UserSO userSO;
+	
+	private static UserSO getUserSO() {
+		if (userSO == null) {
+			userSO = (UserSO) spring.getBean(UserSO.class);
+		}
+		return userSO;
+	}
+	
+	/**
+	 * 查询
+	 * @param keyword
+	 * @param channel
+	 * @param pagesize
+	 * @return
+	 * @author YuYingJie
+	 */
+	public static Map<String, Object> search(String keyword, String channel, int pagesize, HttpServletRequest request) {
+		List<?> list = search(keyword, channel, 0, pagesize, request);
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.showname + MapperDict.suffix_like_key, keyword);
+		map.put(MapperDict.status, EStatus.enable);
+		int count = getUserSO().getCount(map);
+		map.put(ViewKeyDict.list, list);
+		map.put(ViewKeyDict.count, count);
+		return map;
+	}
+	
+	/**
+	 * 分页查询
+	 * @param keyword
+	 * @param channel
+	 * @param pagenum
+	 * @param pagesize
+	 * @return
+	 * @author YuYingJie
+	 */
+	public static List<?> search(String keyword, String channel, int pagenum, int pagesize, HttpServletRequest request) {
+		if (pagenum < 1) {
+			pagenum = 1;
+		}
+		Map<String, Object> map = getParamMap(Pager.getNewInstance(pagenum, pagesize));
+		List<?> list = null;
+		if ("user".equals(channel)) {
+			User me = BaseUserHP.getCurrUser(request);
+			if (StringUtils.isNotEmpty(keyword)) {
+				map.put(MapperDict.showname + MapperDict.suffix_like_key, keyword);
+				map.put(MapperDict.status, EStatus.enable);
+			}
+			List<Map<String, Object>> maps = new ArrayList<>();
+			List<User> list2 = getUserSO().getList(map);
+			for (User user : list2) {
+				Map<String, Object> map2 = new HashMap<>();
+				map2.put(ViewKeyDict.bean, user);//用户
+				if (pagenum == 1) {
+					map2.putAll(UserHP.getSearchMap(user));
+				}
+				map2.put(ViewKeyDict.count, FinanceHP.getAuthorArticleCount(user.getUid()));//文章数量
+				map2.put(ViewKeyDict.count2, TopicHP.getAuthorTopicCount(user.getUid()));//话题数量
+				Map<String, Object> map3 = SubscribeHP.getHotByUserUid(user.getUid());
+				//设置最新文章或者话题
+				if (map3.containsKey(ViewKeyDict.finance)) {
+					Finance finance = (Finance) map3.get(ViewKeyDict.finance);
+					if(finance != null) {
+						map2.put(ViewKeyDict.typename, finance.getFirstTypeName());
+						map2.put(ViewKeyDict.oid, finance.getOid());
+						map2.put(ViewKeyDict.title, finance.getTitle());
+					}
+					map2.put(ViewKeyDict.finance, finance);
+				}
+				if (map3.containsKey(ViewKeyDict.topic)) {
+					Topic topic = (Topic) map3.get(ViewKeyDict.topic);
+					map2.put(ViewKeyDict.topic, topic);
+					if (topic != null) {
+						map2.put(ViewKeyDict.oid, topic.getOid());
+						map2.put(ViewKeyDict.title, topic.getTitle());
+					}
+					map2.put(ViewKeyDict.typename, ViewKeyDict.topic);
+				}
+				//是否订阅
+				if (me != null) {
+					map2.put(ViewKeyDict.issubscribe, SubscribeHP.isSubscribe(me.getUid(), user.getUid()));
+				} else {
+					map2.put(ViewKeyDict.issubscribe, false);
+				}
+				maps.add(map2);
+			}
+			return maps;
+		}
+		return list;
+	}
+	
+}

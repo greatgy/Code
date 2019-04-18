@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+	<context:component-scan base-package="com.supergenius.web">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" />
+	</context:component-scan>
+
+	<bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<property name="converters">
+			<set>
+				<bean class="com.supergenius.core.converters.StringToEArticleChannelConverter" />
+				<bean class="com.supergenius.core.converters.StringToEMergeCaseTypeConverter" />
+				<bean class="com.supergenius.core.converters.StringToEMergeNewsTypeConverter" />
+				<bean class="com.supergenius.core.converters.StringToETypeConverter" />
+				<bean class="com.supergenius.core.converters.StringToEContentTypeConverter" />
+				<bean class="com.supergenius.core.converters.StringToECurrencyConverter" />
+				<bean class="com.supergenius.core.converters.StringToEMoneyUnitConverter" />
+				<bean class="com.supergenius.core.converters.StringToOfficialEArticleChannelConverter" />
+				<bean class="com.supergenius.core.converters.StringToERecruitConverter" />
+				<bean class="com.supergenius.core.converters.StringToEBannerConverter" />
+				<bean class="com.supergenius.core.converters.StringToEChapterConverter" />
+				<bean class="com.supergenius.core.converters.StringToEQstConverter" />
+				<bean class="com.supergenius.core.converters.StringToECaseConverter" />
+				<bean class="com.supergenius.core.converters.StringToECountDetailConverter" />
+				<bean class="com.supergenius.core.converters.StringToEExamConverter" />
+				<bean class="com.supergenius.core.converters.StringToTpiESysEmailTypeConverter" />
+				<bean class="com.supergenius.core.converters.StringToEGradeConverter" />
+				<bean class="com.supergenius.core.converters.StringToEFinanceMsgConverter" />
+				<bean class="com.supergenius.core.converters.StringToEContentConverter" />
+				<bean class="com.supergenius.core.converters.StringToEnterpriserEContentConverter" />
+				<bean class="com.supergenius.core.converters.StringToEMajorConverter" />
+				<bean class="com.supergenius.core.converters.StringToEVideoFromConverter" />
+				<bean class="com.supergenius.core.converters.StringToEStatusConverter" />
+				<bean class="com.supergenius.core.converters.StringToEExpertLevelConverter" />
+				<bean class="com.supergenius.core.converters.StringToEGenderConverter" />
+			</set>
+		</property>
+	</bean>
+</beans>

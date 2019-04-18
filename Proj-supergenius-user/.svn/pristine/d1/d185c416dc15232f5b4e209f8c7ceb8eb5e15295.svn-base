@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>注册成功</title>
+	<meta name="Keywords" content="会员中心，用户注册第二步，注册成功" />
+	<meta name="Description" content="会员中心，用户注册第二步，注册成功" />
+	<!--#include file="/include/head_com.html"-->
+	<link rel="stylesheet" type="text/css" href="/css/default/register.css">
+</head>
+<body>
+	<div class="wraper">
+		<!-- 头部header开始 -->
+		<!--#include file="/include/headeremail.html"-->
+		<!-- 头部header结束 -->
+		<div class="container">
+			<div class="main">
+				<div class="topcommon">
+					<img src="/imgs/default/findpw01.png" alt="" />
+					<h2>从这里，找到更好的自己！</h2>
+				</div>
+				<div class="midcommon">
+					<div class="logotop">
+						<img src="/imgs/default/login_logo.png" alt="" />
+						会员注册
+					</div>
+					<div class="registercontainer">
+						<div class="registercontmiddle">
+							<div class="goemail">
+								<div class="mailtip">
+									<img src="/imgs/default/yes.png" alt="" />
+									手机号/邮箱/微信/微博/QQ验证通过
+								</div>
+								<a href="/index.html" class="toemail submit finishInfo">完善个人信息</a>
+								<a href="/register/baseinfor.html" class="toemail submit">更多特权</a>
+							</div>
+							<!-- <div class="moretest">
+								<h2>没有收到确认邮件怎么办？</h2>
+								<ul class="questionlist">
+									<li>1.看看是否在邮箱的回收站中、垃圾邮件中</li>
+									<li>2.确认没有收到，点此<a href="#" class="moremail">重发一封</a></li>
+									<li>
+										3.也可以试试更换邮箱地址，点击这里<a href="javascript:;" class="changemail">更换邮箱</a>
+										<div class="changebox">
+											<form class="changeboxcontent" action="">
+												<ul class="inputs">
+													<li>
+														<input type="text" placeholder="请输入新的邮箱" />
+														<div class="tips">
+															<img src="/imgs/default/waring.png" alt="" />
+															请输入正确的注册邮箱
+														</div>
+													</li>
+													<li>
+														<input type="text" placeholder="请输入注册时填写的密码" />
+														<div class="tips">
+															<img src="/imgs/default/waring.png" alt="" />
+															密码输入不正确
+														</div>
+													</li>
+												</ul>
+												<button class="submit">提交</button>
+											</form>
+										</div>
+									</li>
+								</ul>
+							</div> -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 底部footer开始 -->
+		<!--#include file="/include/footer.html"-->
+		<!-- 底部footer结束 -->
+	</div>
+	<script>
+		$(function() {
+			$(".changemail").click(function(){
+				$(".changebox").toggle();
+			});
+		});
+	</script>
+</body>
+</html>

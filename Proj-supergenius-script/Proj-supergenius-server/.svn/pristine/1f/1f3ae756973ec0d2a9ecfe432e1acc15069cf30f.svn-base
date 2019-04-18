@@ -1,0 +1,11 @@
+package com.supergenius.server.finance.helper;
+
+import com.genius.server.base.helper.BaseHP;
+
+/**
+ * 投稿HP（前后台共用的方法）
+ * @author liushaomin
+ */
+public class BaseContributorHP extends BaseHP{
+
+}

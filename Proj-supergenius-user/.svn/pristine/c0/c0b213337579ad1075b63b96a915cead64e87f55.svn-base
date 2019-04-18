@@ -1,0 +1,910 @@
+package com.supergenius.web.front.user.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.genius.core.base.utils.CookieUtil;
+import com.genius.core.base.utils.DateUtil;
+import com.genius.core.base.utils.GlobalUtil;
+import com.genius.core.base.utils.NetUtil;
+import com.genius.core.base.utils.StrUtil;
+import com.genius.core.cache.rule.CountRule;
+import com.genius.core.cache.rule.Rule;
+import com.genius.core.cache.utils.MemcacheUtil;
+import com.genius.model.base.enums.EStatus;
+import com.genius.server.base.controller.BaseController;
+import com.genius.server.base.helper.BaseHP;
+import com.supergenius.core.rule.CountSessRule;
+import com.supergenius.global.conf.SysConf;
+import com.supergenius.global.constants.MsgKeyDict;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.server.common.helper.CommonHP;
+import com.supergenius.server.common.utils.ValidUtil;
+import com.supergenius.server.user.helper.BaseUserHP;
+import com.supergenius.web.front.user.helper.LoginHP;
+import com.supergenius.web.front.user.helper.NciicUtil;
+import com.supergenius.web.front.user.helper.SmsHP;
+import com.supergenius.web.front.user.helper.UserHP;
+import com.supergenius.xo.base.enums.EUser;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.common.enums.ECharge;
+import com.supergenius.xo.common.enums.ESite;
+import com.supergenius.xo.user.entity.User;
+import com.supergenius.xo.user.enums.EGender;
+import com.supergenius.xo.user.enums.EUserChannel;
+import com.supergenius.xo.user.service.UserInfoSO;
+import com.supergenius.xo.user.service.UserSO;
+
+/**
+ * 登录注册contrller
+ * 
+ * @author architect.bian
+ * @createtime 2016-3-25 下午12:46:26
+ */
+@Controller
+public class LoginRegController extends BaseController {
+
+	@Autowired
+	private UserSO userSO;
+	@Autowired
+	private UserInfoSO userInfoSO;
+
+	/**
+	 * 用户和会员登录
+	 * 
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = { "/login/{method:[a-z]+}" }, method = RequestMethod.GET)
+	public String login_all(Map<String, Object> model, @PathVariable String method, HttpServletRequest request, HttpServletResponse response) {
+		if (method.equals(ViewKeyDict.member)) {
+			return "login";
+		} else {
+			return "userlogin";
+		}
+	}
+
+	/**
+	 * 自动登录
+	 * 
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = { "/login" }, method = RequestMethod.GET)
+	public String login(Map<String, Object> model, String method, HttpServletRequest request, HttpServletResponse response) {
+		User user = BaseUserHP.getCurrUser(request);
+		if (user != null || BaseUserHP.autoLogin(request, response)) {
+			HashMap<String, Object> map = new HashMap<>();
+			map.put(MapperDict.uid, user.getUid());
+			map.put(MapperDict.lastlogintime, DateUtil.NowTime());
+			map.put(MapperDict.lastloginip, NetUtil.getIPAddr(request));
+			// user.setLastlogintime(DateUtil.NowTime());
+			// user.setLastloginip(NetUtil.getIPAddr(request));
+			if (userSO.updateFields(map)) {
+				return redirectPrefix + "/my/home";
+			}
+		}
+		if (StrUtil.isNotEmpty(method)) {
+			if (method.equals(ViewKeyDict.member)) {
+				return "login";
+			} else {
+				return "userlogin";
+			}
+		}
+		if (ViewKeyDict.member.equals(CookieUtil.get(request, ViewKeyDict.memberCookie))) {// 判断是否会员
+			return "login";
+		}
+		return "userlogin";
+	}
+
+	/**
+	 * 登录
+	 * 
+	 * @param model
+	 * @param token
+	 * @param password
+	 * @param checkCode
+	 * @param rememberme
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/login" }, method = RequestMethod.POST)
+	public String login(Map<String, Object> model, String method, String token, String password, String checkCode, String rememberme, HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		User user = null;
+		boolean flag = true;
+		boolean identity = true;
+		if (StrUtil.isEmpty(token) || StrUtil.isEmpty(password)) {
+			map.put(MsgKeyDict.errs, true);
+		} else {
+			if (ValidUtil.isEmail(token)) {
+				user = userSO.getByEmail(token);
+			} else if (ValidUtil.isMobile(token)) {
+				user = userSO.getByMobile(token);
+			} else {
+				user = userSO.getByUsersn(token);
+			}
+		}
+		// 错误三次以上出现验证码
+		Rule rule = new CountSessRule("token" + StrUtil.removeSpace(token), 60 * 60);
+		int count = MemcacheUtil.get(rule) == null ? 0 : Integer.valueOf(MemcacheUtil.get(rule).toString());
+		if (count >= SysConf.captchaShowUntilLoginCount) {
+			if (StringUtils.isEmpty(checkCode)) {
+				map.put(MsgKeyDict.err_captcha_empty, true);
+				flag = false;
+			} else if (!checkCode.trim().equals(BaseHP.getCaptcha(request))) {
+				map.put(MsgKeyDict.err_captcha, true);
+				flag = false;
+			}
+		}
+
+		if (user != null && user.checkPwd(password) && flag) {
+			if (StrUtil.isNotEmpty(method)) {
+				if (method.equals(ViewKeyDict.member) && !user.getIsUser()) {
+					map.put(MsgKeyDict.err_isnotmember, true);
+					identity = false;
+				} else if (method.equals(ViewKeyDict.user) && user.getIsUser()) {
+					map.put(MsgKeyDict.err_isnotuser, true);
+					identity = false;
+				}
+			} // 禁止会员和用户从对方通道登录
+
+			if (identity) {
+				if (user.getIsStart()) {// 未完善信息的用户 11
+					BaseUserHP.online(user, request, response);
+					if (Boolean.parseBoolean(rememberme)) {
+						LoginHP.rememberMe(user, request, response);
+					}
+					user.setLastlogintime(DateUtil.NowTime());
+					user.setLastloginip(NetUtil.getIPAddr(request));
+					if (userSO.updateFields(user)) {
+						MemcacheUtil.remove(rule);
+						Cookie cookieRedirect = CookieUtil.getCookie(request, ViewKeyDict.redirect);
+						if (cookieRedirect != null && StrUtil.isNotEmpty(cookieRedirect.getValue())) { // 登录后跳转回之前页面
+							CookieUtil.removeCookie(response, ViewKeyDict.redirect);
+							return redirectPrefix + cookieRedirect.getValue();
+						}
+						return redirectPrefix + "/my/home";
+					}
+				} else if (user.getIsWait()) {// 未付款用户
+					return redirectPrefix + "/pay01/" + user.getUid();
+				} else if (user.getIsEnd()) {// 支付成功，身份证验证未通过用户
+					return redirectPrefix + "/pay_verifyidentity/" + user.getUid();
+				} else if (user.getIsDeleted()) {// 删除状态的用户
+					map.put(MsgKeyDict.err_user_delete, true);
+				} else if (user.getIsDisable()) {// 冻结状态的用户
+					map.put(MsgKeyDict.err_user_disable, true);
+				} else if (user.getIsEnable()) {// 正常登陆
+					BaseUserHP.online(user, request, response);
+					if (Boolean.parseBoolean(rememberme)) {
+						LoginHP.rememberMe(user, request, response);
+					}
+					user.setLastlogintime(DateUtil.NowTime());
+					user.setLastloginip(NetUtil.getIPAddr(request));
+					if (userSO.updateFields(user)) {
+						MemcacheUtil.remove(rule);
+						Cookie cookieRedirect = CookieUtil.getCookie(request, ViewKeyDict.redirect);
+						if (cookieRedirect != null && StrUtil.isNotEmpty(cookieRedirect.getValue())) { // 登录后跳转回之前页面
+							CookieUtil.removeCookie(response, ViewKeyDict.redirect);
+							return redirectPrefix + cookieRedirect.getValue();
+						}
+						return redirectPrefix + "/my/home";
+					}
+				}
+			}
+		} else {
+			if (MemcacheUtil.incr(rule) >= SysConf.captchaShowUntilLoginCount) {
+				model.put(MsgKeyDict.failed, true);
+			}
+			if (flag) {
+				map.put(MsgKeyDict.err_user_password_no_match_usersn, true);
+			}
+		}
+		model.put(ViewKeyDict.err, map);
+		model.put(ViewKeyDict.token, token);
+		if (StrUtil.isNotEmpty(method) && method.equals(ViewKeyDict.member)) {
+			return "login";
+		}
+		return "userlogin";
+	}
+
+	/**
+	 * 用户退出登录
+	 * 
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @return
+	 * @author liushaomin
+	 */
+	@RequestMapping(value = { "/offline" }, method = RequestMethod.GET)
+	public String offline(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) {
+		if (BaseUserHP.offline(request)) {
+			CookieUtil.removeCookie(response, ViewKeyDict.redirect);
+			CookieUtil.removeCookie(response, ViewKeyDict.userid);
+			CookieUtil.removeCookie(response, ViewKeyDict.userpwd);
+			CookieUtil.removeCookie(response, ViewKeyDict.endtime);
+			return redirectPrefix + "/login";
+		}
+		return null;
+	}
+
+	/**
+	 * 账号注册
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/register" }, method = RequestMethod.GET)
+	public String register(Map<String, Object> model, HttpServletRequest request) throws Exception {
+		return "writeinfor";
+	}
+
+	/**
+	 * 账号注册
+	 * 
+	 * @param model
+	 * @param email
+	 * @param password
+	 * @param password2
+	 * @param checkCode
+	 * @param agreement
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/register", method = RequestMethod.POST)
+	public String register(Map<String, Object> model, String email, String password, String password2, String code, String agreement, HttpServletRequest request, HttpServletResponse response) {
+		boolean flag = true;
+		if (!ValidUtil.isEmail(email) && !ValidUtil.isMobile(email)) {
+			flag = false;
+		}
+		if (StringUtils.isEmpty(code)) {// 判断验证码是否正确
+			flag = false;
+		}
+		if (!(ValidUtil.isPassword(password)) || !(password.equals(password2))) {// 判断密码规则是否符合
+			flag = false;
+		}
+		if (!agreement.equals("1")) {
+			flag = false;
+		}
+		if (flag) {
+			User user = new User();
+			if (ValidUtil.isEmail(email)) {
+				user.setEmail(email);
+			}
+			if (ValidUtil.isMobile(email)) {
+				user.setMobile(email);
+			}
+			user.initPassword(password);
+			user.setType(Integer.valueOf(EUser.consumer.toString()));
+			user.setStatus(EStatus.start);
+			user.setChannelfrom(EUserChannel.userfee);
+			if (UserHP.register(user, false)) {
+				user.getUserInfo().setUid(user.getUid());
+				user.getUserInfo().setCreatetime(user.getCreatetime());
+				user.getUserInfo().setUpdatetime(user.getUpdatetime());
+				user.getUserInfo().setShowname(email);
+				boolean b = userInfoSO.add(user.getUserInfo());
+				if (b) {
+					BaseUserHP.online(user, request, response);
+					model.put(ViewKeyDict.user, user);
+					return "testemail";
+				}
+			}
+		}
+		return "writeinfor";
+	}
+
+	/**
+	 * 确定发送邮件
+	 * 
+	 * @param model
+	 * @param uid
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/register_reserve/{uid:.{32}}", method = RequestMethod.GET)
+	public String register_reserve(Map<String, Object> model, @PathVariable String uid, HttpServletRequest request, HttpServletResponse response) {
+		User user = UserHP.getUser(uid);
+		if (user != null) {
+			model.put(ViewKeyDict.user, user);
+			model.put(ViewKeyDict.url, UserHP.getEmailLoginUrl(user.getEmail()));
+			return "register_reserve";
+		} else {
+			return response404(response);
+		}
+	}
+
+	/**
+	 * 确定发送验证码
+	 * 
+	 * @param model
+	 * @param
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/sendcode", method = RequestMethod.GET)
+	public String sendcode(Map<String, Object> model, String email, HttpServletRequest request, HttpServletResponse response) {
+		SmsHP.sendSms(email);
+		return "writeinfor";
+	}
+
+	/**
+	 * 重新发送邮件
+	 * 
+	 * @param model
+	 * @param uid
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/register_resendemail/{uid:.{32}}", method = RequestMethod.GET)
+	public String register_sendemail(Map<String, Object> model, @PathVariable String uid, HttpServletRequest request) {
+		User user = UserHP.getUser(uid);
+		UserHP.sendValidEmail(user);
+		return redirectPrefix + "/register_reserve/" + user.getUid();
+	}
+
+	/**
+	 * 注册界面--更换邮箱
+	 * 
+	 * @param model
+	 * @param uid
+	 * @param password
+	 * @param nemail
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/register_changeemail/{uid:.{32}}", method = RequestMethod.GET)
+	public String register_changemail(Map<String, Object> model, @PathVariable String uid, String password, String nemail, HttpServletRequest request, HttpServletResponse response) {
+		User user = userSO.get(uid);
+		model.put(ViewKeyDict.user, user);
+		if (ValidUtil.isEmail(nemail)) {
+			if (user.getPassword().equals(DigestUtils.md5Hex(uid + password))) {
+				user.setEmail(nemail);
+				if (userSO.updateEmail(user)) {
+					UserHP.sendValidEmail(user);
+					return redirectPrefix + "/register_reserve/" + uid;
+				}
+			}
+		}
+		model.put(ViewKeyDict.email, nemail);
+		return "register_reserve";
+	}
+
+	/**
+	 * 邮箱转到确认信息
+	 * 
+	 * @param model
+	 * @param uid
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/register_verify/{uid:.{32}}", method = RequestMethod.GET)
+	public String _verify(Map<String, Object> model, @PathVariable String uid, HttpServletRequest request, HttpServletResponse response) {
+		User user = userSO.get(uid);
+		Map<String, Object> errs = new HashMap<String, Object>();
+		if (user != null) {
+			if (user.getStatus() == EStatus.init || user.getStatus() == EStatus.start) {
+				user.setStatus(EStatus.start);
+				userSO.updateStatus(user);
+				model.put(ViewKeyDict.user, user);
+				return "register_verify";
+			} else {
+				errs.put(MsgKeyDict.err_timeout, true);
+			}
+		} else {
+			errs.put(MsgKeyDict.err_register_verify, true);
+		}
+		model.put(ViewKeyDict.err, errs);
+		return "register_verify";
+	}
+
+	/**
+	 * 账号注册-完善信息
+	 * 
+	 * @param model
+	 * @param uid
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = { "/register_improve/{uid:.{32}}" }, method = RequestMethod.GET)
+	public String register_improve(Map<String, Object> model, @PathVariable String uid, HttpServletRequest request) {
+		User user = userSO.get(uid);
+		model.put(ViewKeyDict.user, user);
+		return "baseinfor";
+	}
+
+	/**
+	 * 账号注册-完善个人信息，进入支付注册
+	 * 
+	 * @param model
+	 * @param uid
+	 * @param user
+	 * @param name
+	 * @param nickname
+	 * @param showname
+	 * @param identityid
+	 * @param mobile
+	 * @param password
+	 * @param password2
+	 * @param question
+	 * @param question2
+	 * @param answer
+	 * @param answer2
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = { "/register_improve/{uid:.{32}}" }, method = RequestMethod.POST)
+	public String register_improve(Map<String, Object> model, @PathVariable String uid, User user, String name, String identityid, String passport, String officer, String checkCode, String mobile,
+			String password, String password2, HttpServletRequest request) {
+		User user2 = userSO.get(uid);
+		boolean flag = true;
+		Map<String, Object> errs = new HashMap<String, Object>();
+		if (!(ValidUtil.isPassword(password) && ValidUtil.isPassword(password2) && password.equals(password2))) {// 判断密码规则是否符合
+			flag = false;
+			errs.put(MsgKeyDict.err_user_password_no_match_usersn, true);
+		}
+		if (!ValidUtil.isChinese(name)) {
+			flag = false;
+			errs.put(MsgKeyDict.err_name, true);
+		} else if (CommonHP.containBlackWords(name)) {
+			flag = false;
+			errs.put(MsgKeyDict.err_name_with_blackword, true);
+		}
+		if (StringUtils.isEmpty(checkCode)) {
+			errs.put(MsgKeyDict.err_captcha_empty, true);
+
+			flag = false;
+		} else if (!checkCode.trim().equals(BaseHP.getCaptcha(request))) {
+			errs.put(MsgKeyDict.err_captcha, true);
+			flag = false;
+		}
+		if (!ValidUtil.isIdentityid(identityid)) {
+			flag = false;
+			errs.put(MsgKeyDict.err_identityid, true);
+		} else if (userInfoSO.getByIdentityID(uid, identityid)) {
+			flag = false;
+			errs.put(MsgKeyDict.err_identityid_registered, true);
+		}
+
+		if (!ValidUtil.isMobile(mobile)) {
+			flag = false;
+			errs.put(MsgKeyDict.err_mobile, true);
+		}
+
+		if (flag) {
+			user2.setUsersn(UserHP.getHRHUsersn());
+			user2.getUserInfo().setUid(uid);
+			user2.getUserInfo().setCreatetime(user.getCreatetime());
+			user2.getUserInfo().setUpdatetime(user.getUpdatetime());
+			user2.getUserInfo().setName(name);
+			user2.initPayPwd(password);
+			if (!StrUtil.isEmpty(identityid)) {
+				user2.getUserInfo().setIdentityid(identityid);
+				String number = user2.getIdentityid().substring(16, 17);// 根据身份证号得到性别
+				if (Integer.valueOf(number) % 2 == 0) {
+					user2.getUserInfo().setGender(EGender.lady);
+				} else {
+					user2.getUserInfo().setGender(EGender.gentleman);
+				}
+				String bitrthday = user2.getIdentityid();
+				user2.getUserInfo().setBirthday(DateTime.parse(bitrthday.substring(6, 10) + "-" + bitrthday.substring(10, 12) + "-" + bitrthday.substring(12, 14)));
+			}
+			if (StrUtil.isEmpty(passport)) {
+				user2.getUserInfo().setPassport(passport);
+			}
+			if (StrUtil.isEmpty(officer)) {
+				user2.getUserInfo().setOfficer(officer);
+			}
+			user2.setMobile(mobile);
+			user2.setStatus(EStatus.wait);
+			if (userInfoSO.get(uid) != null) {
+				userInfoSO.delete(uid);
+			}
+			if (userSO.update(user2) && userInfoSO.add(user2.getUserInfo())) {
+				return redirectPrefix + "/pay01/" + uid;
+			}
+		}
+		model.put(MsgKeyDict.errs, errs);
+		model.put(ViewKeyDict.user, user2);
+		model.put(ViewKeyDict.name, name);
+		model.put(ViewKeyDict.identityid, identityid);
+		model.put(ViewKeyDict.mobile, mobile);
+		return "baseinfor";
+	}
+
+	/**
+	 * 交费第一步
+	 * 
+	 * @param model
+	 * @param uid
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping(value = { "/pay01/{uid:.{32}}" }, method = RequestMethod.GET)
+	public String pay01(Map<String, Object> model, @PathVariable String uid, HttpServletRequest request, HttpServletResponse response) {
+		User user = userSO.get(uid);
+		if (user != null) {
+			model.put(ViewKeyDict.user, user);
+			model.put(ViewKeyDict.uid, uid);
+			return "pay01";
+		}
+		return response404(response);
+	}
+
+	/**
+	 * 交费第二步
+	 * 
+	 * @param model
+	 * @param uid
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping(value = { "/pay02/{uid:.{32}}" }, method = RequestMethod.GET)
+	public String pay02(Map<String, Object> model, @PathVariable String uid, HttpServletRequest request, HttpServletResponse response) {
+		User user = userSO.get(uid);
+		if (user != null) {
+			model.put(ViewKeyDict.user, user);
+			model.put(ViewKeyDict.uid, uid);
+			return "pay02";
+		}
+		return response404(response);
+	}
+
+	/**
+	 * 交费第三步
+	 * 
+	 * @param model
+	 * @param uid
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping(value = { "/pay03/{uid:.{32}}" }, method = RequestMethod.GET)
+	public String pay03(Map<String, Object> model, @PathVariable String uid, HttpServletRequest request, HttpServletResponse response) {
+		User user = userSO.get(uid);
+		if (user != null) {
+			model.put(ViewKeyDict.user, user);
+			model.put(ViewKeyDict.uid, uid);
+			return "pay03";
+		}
+		return response404(response);
+	}
+
+	/**
+	 * 交费第二步
+	 * 
+	 * @param model
+	 * @param uid
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping(value = { "/pay_caution02/{uid:.{32}}" }, method = RequestMethod.GET)
+	public String pay_caution02(Map<String, Object> model, @PathVariable String uid, HttpServletRequest request, HttpServletResponse response) {
+		User user = userSO.get(uid);
+		if (user != null) {
+			model.put(ViewKeyDict.user, user);
+			model.put(ViewKeyDict.uid, uid);
+			model.put(ViewKeyDict.apiuid, SysConf.UserPayApiuid);
+			model.put(ViewKeyDict.registerPayMonney, SysConf.RegisterPayMonney);
+			model.put(ViewKeyDict.site, ESite.user);
+			model.put(ViewKeyDict.type, ECharge.userfee);
+			model.put(ViewKeyDict.payuid, GlobalUtil.getUUID());
+			model.put(ViewKeyDict.userip, NetUtil.getIPAddr(request));
+			return "pay_caution02";
+		}
+		return response404(response);
+	}
+
+	/**
+	 * notifyurl 逻辑
+	 * 
+	 * @param model
+	 * @param pwdmd5
+	 * @param request
+	 * @return
+	 * @author liushaomin
+	 */
+	@RequestMapping(value = { "/api/payregistermoney/recharge/notify" }, method = RequestMethod.GET)
+	@ResponseBody
+	public String notifyurl(Map<String, Object> model, String pwdmd5, String money, String banktype, String payuid, String useruid, HttpServletRequest request) {
+		StringBuffer strb = new StringBuffer();
+		strb.append(SysConf.UserPayApiuid).append(payuid).append(banktype).append(money).append(useruid);
+		String pwdString = DigestUtils.md5Hex(strb.toString());
+		User user = userSO.get(useruid);
+		if (pwdmd5.equals(pwdString)) {
+			if (user != null) {
+				// try {// TODO 暂时不进行身份验证
+				// if (NciicUtil.checkIdCard(user.getUserInfo().getIdentityid(),
+				// user.getName())) {// 身份证校验通过
+				// user.setStatus(EStatus.enable);
+				// } else {// 身份证校验不通过
+				// user.setStatus(EStatus.end);// EStatus.end 已付款 但身份证验证未通过
+				// }
+				// userSO.updateStatus(user);
+				// } catch (Exception e) {
+				// e.printStackTrace();
+				// }
+				user.setAccount(user.getAccount() + Double.valueOf(money));
+				if (user.getAccount() >= Double.valueOf(SysConf.RegisterPayMonney)) {
+					// TODO 将身份证验证放在这里面
+					user.setStatus(EStatus.enable);
+				}
+				userSO.updateStatus(user);
+				BaseUserHP.freshSessUser(request, user);
+				return "0";
+			}
+		}
+		return "-1";
+	}
+
+	/**
+	 * 充值结果为成功
+	 * 
+	 * @param model
+	 * @param result
+	 * @param request
+	 * @return
+	 * @author liushaomin
+	 */
+	@RequestMapping(value = { "/payregistermoney/recharge/result{result:\\d+}" }, method = RequestMethod.GET)
+	public String result(Map<String, Object> model, String uid, HttpServletRequest request, HttpServletResponse response) {
+		User user = userSO.get(uid);
+		if (user == null) {
+			return response404(response);
+		}
+		if (user.getStatus().equals(EStatus.enable)) {
+			return redirectPrefix + "/paysuccess/" + uid;
+		} else if (user.getStatus().equals(EStatus.end)) {
+			return redirectPrefix + "/pay_verifyidentity/" + uid;
+		} else {
+			return response404(response);
+		}
+	}
+
+	/**
+	 * 重新输入身份证和真实姓名并验证
+	 * 
+	 * @param model
+	 * @param uid
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/pay_verifyidentity/{uid:.{32}}", method = RequestMethod.GET)
+	public String pay_verifyidentity(Map<String, Object> model, @PathVariable String uid, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		User user = userSO.get(uid);
+		if (user == null) {
+			return response404(response);
+		} else if (!user.getStatus().toString().equals(EStatus.end.toString())) {
+			return response404(response);
+		}
+		Rule rule = new CountRule("idcard" + user.getUid(), 60 * 60 * 24);
+		Object temp = MemcacheUtil.get(rule);
+		if (temp == null) {
+			temp = "0";
+		}
+		int count = Integer.valueOf(temp.toString());
+		if (count > SysConf.captchaShowUntilLoginCount) {
+			model.put(MsgKeyDict.err_captcha_over_three_times, true);// TODO验证身份次数回显
+		}
+		model.put(ViewKeyDict.count, count);
+		model.put(ViewKeyDict.surpluscount, SysConf.captchaShowUntilLoginCount - count);
+		model.put(ViewKeyDict.user, user);
+		return "pay_verifyidentity";
+	}
+
+	/**
+	 * 重新输入身份证和真是姓名 并验证
+	 * 
+	 * @param model
+	 * @param uid
+	 * @param identityid
+	 * @param name
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/pay_verifyidentity/{uid:.{32}}", method = RequestMethod.POST)
+	public String register_verifyidcard(Map<String, Object> model, @PathVariable String uid, String identityid, String name, HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		User user = userSO.get(uid);
+		if (user == null) {
+			return response404(response);
+		}
+		Rule rule = new CountRule("idcard" + user.getUid(), 60 * 60 * 24);
+		int count = (int) MemcacheUtil.incr(rule);
+		if (count > SysConf.captchaShowUntilLoginCount) {
+			model.put(MsgKeyDict.err_captcha_over_three_times, true);// TODO验证身份次数回显
+			return pay_verifyidentity(model, uid, request, response);
+		}
+		Map<String, Object> errs = new HashMap<String, Object>();
+		if (!StringUtils.isEmpty(identityid) && !StringUtils.isEmpty(name)) {
+			if (!NciicUtil.checkIdCard(identityid, name)) {
+				model.put(ViewKeyDict.identityid, identityid);
+				model.put(ViewKeyDict.name, name);
+				model.put(ViewKeyDict.count, count);
+				model.put(ViewKeyDict.msg, true);
+				model.put(ViewKeyDict.surpluscount, SysConf.captchaShowUntilLoginCount - count);
+				model.put(ViewKeyDict.user, user);
+				return pay_verifyidentity(model, uid, request, response);
+			} else {
+				user.setIdentityid(identityid);
+				String number = identityid.substring(16, 17);// 根据身份证号得到性别
+				if (Integer.valueOf(number) % 2 == 0) {
+					user.setGender(EGender.lady);
+				} else {
+					user.setGender(EGender.gentleman);
+				}
+				String bitrthday = user.getIdentityid();// 根据身份证号得到出生日期
+				user.getUserInfo().setBirthday(DateTime.parse(bitrthday.substring(6, 10) + "-" + bitrthday.substring(10, 12) + "-" + bitrthday.substring(12, 14)));
+				if (user.getShowname().equals(user.getName())) {
+					user.setShowname(name);
+				}
+				user.setName(name);
+				user.setStatus(EStatus.enable);
+				userSO.updateFields(user);
+				if (userInfoSO.updateIdentityID(user.getUid(), identityid)) {
+					model.put(ViewKeyDict.user, user);
+					return redirectPrefix + "/paysuccess/" + uid;
+				}
+			}
+		}
+		errs.put(MsgKeyDict.err_identityid, true);
+		model.put(MsgKeyDict.errs, errs);
+		model.put(ViewKeyDict.identityid, identityid);
+		model.put(ViewKeyDict.name, name);
+		model.put(ViewKeyDict.user, user);
+		return pay_verifyidentity(model, uid, request, response);
+	}
+
+	/**
+	 * 交费成功
+	 * 
+	 * @param model
+	 * @param uid
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = { "/paysuccess/{uid:.{32}}" }, method = RequestMethod.GET)
+	public String paysuccess(Map<String, Object> model, @PathVariable String uid, HttpServletRequest request, HttpServletResponse response) {
+		User user = userSO.get(uid);
+		if (user != null) {
+			BaseUserHP.online(user, request, response);
+			BaseUserHP.freshSessUser(request, user);
+			return "paysuccess";
+		}
+		return response404(response);
+	}
+
+	/**
+	 * ajax判断主流邮箱
+	 * 
+	 * @param model
+	 * @param email
+	 * @return
+	 * @author liushaomin
+	 */
+	@RequestMapping(value = "/ajax/user/emailvalid")
+	@ResponseBody
+	public String emailvalid(Map<String, Object> model, @RequestParam("v") String email) {
+		String flag = "1";
+		if (!(userSO.isExistEmail(email))) {
+			flag = "";
+		} else {
+			flag = "0";
+		}
+		return flag.length() == 0 ? "true" : flag;
+	}
+
+	/**
+	 * ajax判断手机号是否存在
+	 * 
+	 * @param model
+	 * @param email
+	 * @return
+	 * @author liushaomin
+	 */
+	@RequestMapping(value = "/ajax/user/mobilevalid")
+	@ResponseBody
+	public String mobilevalid(Map<String, Object> model, @RequestParam("v") String email) {
+		String flag = "1";
+		User user = userSO.getByMobile(email);
+		if (user == null) {
+			flag = "";
+		} else {
+			flag = "0";
+		}
+		return flag.length() == 0 ? "true" : flag;
+	}
+
+	/**
+	 * ajax判断用户输入客户端验证码是否正确
+	 * 
+	 * @param model
+	 * @param email
+	 * @return
+	 * @author liushaomin
+	 */
+	@RequestMapping(value = "/ajax/user/usercode")
+	@ResponseBody
+	public String usercode(Map<String, Object> model, @RequestParam("v") String code, HttpServletRequest request) {
+		String flag = "1";
+		if (code.trim().equals(BaseHP.getCaptcha(request))) {
+			flag = "";
+		} else {
+			flag = "1";
+		}
+		return flag.length() == 0 ? "true" : flag;
+	}
+
+	/**
+	 * ajax判断输入短信验证码是否正确
+	 * 
+	 * @param model
+	 * @param code
+	 * @return
+	 * @author liushaomin
+	 */
+	@RequestMapping(value = "/ajax/user/code")
+	@ResponseBody
+	public String codevalid(Map<String, Object> model, @RequestParam("l") String email, @RequestParam("v") String code) {
+		boolean validateSmsCode = SmsHP.validateSmsCode(email, code);
+		String flag = "1";
+		if (validateSmsCode) {
+			flag = "";
+		}
+		return flag.length() == 0 ? "" : flag;
+	}
+
+	/**
+	 * 账号注册-重发邮件ajax验证密码
+	 * 
+	 * @param model
+	 * @param password
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = { "/ajax/user/pwdvalid/{uid:.{32}}" }, method = RequestMethod.GET)
+	@ResponseBody
+	public String pwdvalid(Map<String, Object> model, @PathVariable String uid, @RequestParam("v") String password, HttpServletRequest request) {
+		User user = userSO.get(uid);
+		String flag = "0";
+		if (user.checkPwd(password)) {
+			flag = "";
+		}
+		return flag.length() == 0 ? "true" : flag;
+	}
+
+}

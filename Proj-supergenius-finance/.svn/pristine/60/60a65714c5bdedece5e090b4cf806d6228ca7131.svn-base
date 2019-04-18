@@ -1,0 +1,168 @@
+[#ftl]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>${title}</title>
+	<link rel="stylesheet" href="${basecss}/css/default/pages/mycenter.css"/>
+	<style type="text/css">
+
+	</style>
+</head>
+<body>
+	<div class="wraper centerbox">
+		<div class="mycenterTop">
+			<div class="opacitybot"></div>
+			<div class="mybaseinfor">
+				<img src="${baseimg}/imgs/default/myimg.png" class="myimg" />
+				<div class="myinforright">
+					<h3>
+						王老吉
+						<span class="positions">公司-部门-职位</span>
+						<div class="editinfor">
+							<a href="javascript:;" id="editInforbtn"><img src="${baseimg}/imgs/default/edit.png" />
+							编辑信息</a>
+						</div>
+					</h3>
+					<p>丁一，首都经济贸易大学劳动经济学博士研究生，天才纵横国际企业管理（北京）有限公司微观经济分析师。目前主要从事企业人力资源管理方面的研究。人生格言：是非审之于心，毁誉听之于人，得失安之于数。</p>
+					<ul class="mycenterlist">
+						<li><a href="${base}/mct/article">我的文章</a></li>
+						<li><a href="${base}/mct/topic">我的话题</a></li>
+						<li><a href="${base}/mct/collect">我的收藏</a></li>
+						<li><a href="${base}/mct/judge" class="activeblock">我的评论</a></li>
+						<li><a href="${base}/mct/subs">我的订阅</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="mainleft">
+				<h3>我发表的评论</h3>
+				<ul class="judgelist">
+					<li>
+						<a href="#"><img src="${baseimg}/imgs/default/judge01.png" class="judgeuser" /></a>
+						<div class="judgeContent">
+							<div class="nametime">
+								<a href="#" class="judgename"><em>用户本人</em></a>
+								<span class="outtime">2014年12月14日12:34</span>
+								<a href="javascript:;" class="deletelink"><img src="${baseimg}/imgs/default/deleteimg.png" class="deleteimg" /></a>
+							</div>
+							<p>也不能说这篇文章写得不正确，只是有些问题没有交代清楚，对于这个问题，我是这么看待的，发动机可发送的境况，不知道大家对我的看法有</p>
+							<div class="source">
+								来自<a href="#" class="from">美国经济会持续8%的增长</a>
+							</div>
+						</div>
+					</li>
+					<li>
+						<a href="#"><img src="${baseimg}/imgs/default/judge01.png" class="judgeuser" /></a>
+						<div class="judgeContent">
+							<div class="nametime">
+								<a href="#" class="judgename"><em>用户本人</em></a>
+								<span class="outtime">2014年12月14日12:34</span>
+								<a href="javascript:;" class="deletelink"><img src="${baseimg}/imgs/default/deleteimg.png" class="deleteimg" /></a>
+							</div>
+							<p>也不能说这篇文章写得不正确，只是有些问题没有交代清楚，对于这个问题，我是这么看待的，发动机可发送的境况，不知道大家对我的看法有</p>
+							<div class="source">
+								来自<a href="#" class="from">美国经济会持续8%的增长</a>
+							</div>
+						</div>
+					</li>
+					<li>
+						<a href="#"><img src="${baseimg}/imgs/default/judge01.png" class="judgeuser" /></a>
+						<div class="judgeContent">
+							<div class="nametime">
+								<a href="#" class="judgename"><em>用户本人</em></a>
+								<span class="outtime">2014年12月14日12:34</span>
+								<a href="javascript:;" class="deletelink"><img src="${baseimg}/imgs/default/deleteimg.png" class="deleteimg" /></a>
+							</div>
+							<p>也不能说这篇文章写得不正确，只是有些问题没有交代清楚，对于这个问题，我是这么看待的，发动机可发送的境况，不知道大家对我的看法有</p>
+							<div class="source">
+								来自<a href="#" class="from">美国经济会持续8%的增长</a>
+							</div>
+						</div>
+					</li>
+					<li>
+						<a href="#"><img src="${baseimg}/imgs/default/judge01.png" class="judgeuser" /></a>
+						<div class="judgeContent">
+							<div class="nametime">
+								<a href="#" class="judgename"><em>用户本人</em></a>
+								<span class="outtime">2014年12月14日12:34</span>
+								<a href="javascript:;" class="deletelink"><img src="${baseimg}/imgs/default/deleteimg.png" class="deleteimg" /></a>
+							</div>
+							<p>也不能说这篇文章写得不正确，只是有些问题没有交代清楚，对于这个问题，我是这么看待的，发动机可发送的境况，不知道大家对我的看法有</p>
+							<div class="source">
+								来自<a href="#" class="from">美国经济会持续8%的增长</a>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div class="mainright">
+				<div class="countbox">
+					<div class="totcontainer">
+						<span class="totarticles">
+							<b>256</b>
+							文章
+						</span>
+						<span class="totvisited">
+							<b>1280679</b>
+							浏览量
+						</span>
+					</div>
+					<a href="#" class="votebtn">我收到的评论</a>
+				</div>
+				<div class="myartranks">
+					<h3>最新评论</h3>
+					<ul class="newjudgelist">
+						<li>
+							<div class="newjudger">
+								<a href="#" class="newjudgerimg"><img src="${baseimg}/imgs/default/topicuser02.png" /></a>
+								<span class="newname">丹尼</span>
+								<span class="newtime">2015年09月25日12:34</span>
+							</div>
+							<p class="baseintro">也不能说这篇文章写得不正确，只是有些问题没有交代清楚。。。。。。</p>
+							<div class="source">
+								来自<a href="#" class="from">美国经济会持续8%的增长</a>
+							</div>
+						</li>
+						<li>
+							<div class="newjudger">
+								<a href="#" class="newjudgerimg"><img src="${baseimg}/imgs/default/topicuser01.png" /></a>
+								<span class="newname">南溪</span>
+								<span class="newtime">2015年09月25日12:34</span>
+							</div>
+							<p class="baseintro">也不能说这篇文章写得不正确，只是有些问题没有交代清楚。。。。。。</p>
+							<div class="source">
+								来自<a href="#" class="from">美国经济会持续8%的增长</a>
+							</div>
+						</li>
+						<li>
+							<div class="newjudger">
+								<a href="#" class="newjudgerimg"><img src="${baseimg}/imgs/default/topicuser02.png" /></a>
+								<span class="newname">顾里</span>
+								<span class="newtime">2015年09月25日12:34</span>
+							</div>
+							<p class="baseintro">也不能说这篇文章写得不正确，只是有些问题没有交代清楚。。。。。。</p>
+							<div class="source">
+								来自<a href="#" class="from">美国经济会持续8%的增长</a>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	[#include "/WEB-INF/FtlLib/Pages/Edit.ftl" /]
+	<script>
+		$(function(){
+			$(".deletelink").click(function(){
+				$(this).parents("li").remove();
+			});
+		});
+	</script>
+</body>
+</html>
+
+
+
+

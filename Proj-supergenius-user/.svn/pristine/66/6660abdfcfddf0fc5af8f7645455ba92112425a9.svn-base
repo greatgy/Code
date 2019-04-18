@@ -1,0 +1,161 @@
+[#ftl]
+<html>
+<head>
+	<title>会员注册第一步--填写账户信息</title>
+	<meta name="Keywords" content="会员中心，会员注册第一步，填写账户信息" />
+	<meta name="Description" content="会员中心，会员注册第一步，填写账户信息" />
+	<script type="text/javascript" src="${basejs}/js/libs/validator-1.0.0.js"></script>
+	<link rel="stylesheet" type="text/css" href="${basecss}/css/default/register.css">
+<script type="text/javascript">
+<!--
+    function registerValidHandler(){
+		var pwd = $("#txtpassword").val();
+		var pwd2 = $("#txtconfigpwd").val();
+		if(pwd != pwd2 || pwd2 == ""){
+		    return false;
+		} else {
+		    return true;
+		}
+	}
+		
+	function myReload() {
+        var url = $("#checkCode").attr("src").split('?');
+        $("#checkCode").attr("src", getNoCachePath(url[0]));
+    }
+    
+    function chkProtocolValid(){ 
+	    return $(".chkProtocolValid:checked").length == 1;
+	}
+
+	$(function(){
+            $(".submit").click(function(){
+                var checked = $("input[name='agreement']:checked");
+                if (checked.length == 0) {
+                    $("#aggrement").removeClass("hd");
+                    return false;
+                }
+                 if($("#checkbox").is(":checked")){
+    	             $("button").attr("disable","true");
+    	        }
+                $("#regform").submit();
+            });
+            
+         $("#certifycode").keydown(function(event) {
+                if (event.keyCode == 13) {
+                    $(".submit").click();
+                    return false;
+                }
+            })
+        });	
+//-->
+</script>
+</head>
+<body>
+      <div class="container">
+			<div class="main">
+				<div class="topcommon">
+					<img src="${baseimg}/imgs/default/findpw01.png" alt="" />
+					<h2>从这里，找到更好的自己！</h2>
+				</div>
+				<div class="midcommon">
+					<div class="logotop">
+						<img src="${baseimg}/imgs/default/login_logo.png" alt="" />
+						会员注册<span style="color:#c61420;font-size:14px;">&nbsp（会员费为1万元人民币）</span>
+					</div>
+					<div class="registercontainer">
+						<div class="steps">
+							<div class="stepitem curstepitem">
+								<span class="rectbg">1</span>
+								<span>填写账户信息</span>
+							</div>
+							<div class="linebg"></div>
+							<div class="stepitem">
+								<span class="rectbg">2</span>
+								<span>验证注册邮箱</span>
+							</div>
+							<div class="linebg"></div>
+							<div class="stepitem">
+								<span class="rectbg">3</span>
+								<span>基本信息</span>
+							</div>
+							<div class="linebg"></div>
+							<div class="stepitem">
+								<span class="rectbg">4</span>
+								<span>支付会员费</span>
+							</div>
+						</div>
+						<div class="registercontmiddle">
+							<h2>请完成基本信息填写，超天才是一个信息真实的网络平台，请输入您的真实身份信息</h2>
+							<form name="form" id="regform" action="${base}/register" method="post" >
+								<ul class="labelbase">
+									<li>
+										<label for="mail"><i>*</i>&nbsp;邮&nbsp;&nbsp;&nbsp;&nbsp;箱：</label>
+										<input type="text" id="txtemail" name="email" isnotempty="" isemail=""  ajaxvalid="${base}/ajax/user/emailvalid|该邮箱已被注册，请直接登录|请输入163/qq/sina等常用邮箱" maxlength="100" value="${email}" placeholder="请填写常用邮箱" />
+										 <div id="focustxtemail" class="tipnote tipright hd"><i></i><span id="focusmsgtxtemail">请输入您的注册邮箱</span></div> 
+                    	                 <div id="errtxtemail" class="tipnote tipwrong hd"><i></i><span id="errmsgtxtemail">请输入正确的邮箱格式</span></div>
+                    	                 [#if (err.err_email)??]
+                    	                  <div id="errtxtemail" class="tipnote tipwrong"><i></i><span id="errmsgtxtemail">请输入正确的邮箱格式</span></div>
+                    	                 [#elseif err.err_email_exist??]
+                    	                  <div id="errtxtemail" class="tipnote tipwrong"><i></i><span id="errmsgtxtemail">邮箱已被注册</span></div>
+                    	      			 [/#if]
+                    	                 <div id="oktxtemail" class="tipnote hd"><i></i><img src="${baseimg}/imgs/default/yes.png" alt="" /><span id="okmsgtxtemail"></span></div>
+									</li>
+									<li>
+										<label for="password"><i>*</i>&nbsp;设置密码：</label>
+										<input type="password" id="txtpassword" name="password" isnotempty="" customreg="^.{6,16}$|请填写6-16位字符" ispwd="请输入6-16位，包括数字和字母" placeholder="请输入6-16位，包括数字和字母" />
+										<div id="focustxtpassword" class="tipnote tipright hd"><i></i><span id="focusmsgtxtpassword">请输入6-16位，包括数字和字母</span></div> 
+	                                 	<div id="errtxtpassword" class="tipnote tipwrong hd"><i></i><span id="errmsgtxtpassword">请输入6-16位，包括数字和字母</span></div>
+	                       	            <div id="oktxtpassword" class="tipnote hd"><i></i><img src="${baseimg}/imgs/default/yes.png" alt="" /><span id="oktxtpassword"></span></div>
+									</li>
+									<li>
+										<label for="configpwd"><i>*</i>&nbsp;确认密码：</label>
+										<input type="password" id="txtconfigpwd" name="password2" ispwd="" customvalid="registerValidHandler()|两次输入的密码不一致" placeholder="请再次输入密码" />
+										<div id="focustxtconfigpwd" class="tipnote tipright hd"><i></i><span id="focusmsgtxtconfigpwd">请确认密码</span></div>
+	                    	            <div id="errtxtconfigpwd" class="tipnote tipwrong hd"><i></i><span id="errmsgtxtconfigpwd" >两次输入的密码不一致</span></div>
+	                    	            [#if (err.err_pwd2_equal)??]
+	                    	            <div id="errtxtconfigpwd" class="tipnote tipwrong"><i></i><span id="errmsgtxtconfigpwd" >两次输入的密码不一致</span></div>
+	                    	            [/#if]
+	                    	            <div id="oktxtconfigpwd" class="tipnote hd"><i></i><img src="${baseimg}/imgs/default/yes.png" alt="" /><span id="okmsgtxtconfigpwd"></span></div>
+									</li>
+									<li>
+										<label for="certifycode"><i>*</i>&nbsp;验&nbsp;证&nbsp;码：</label>
+										<input type="text" id="certifycode" name="checkCode"/>
+										<img src="${base}/v.jpg" id="checkCode" name="cleckCode" onclick="myReload();" title="看不清？点击换一张" style=" width:100px;height:36px; margin-top:2px; margin-bottom:-13px;">
+										<a href="javascript:;" onclick="myReload();" class="refresh">刷新</a>
+									    [#if (err.err_captcha)??]
+  										<div id="errtxtcertifyCode" class="tipnote tipwrong"><i></i><span id="errmsgtxtconfigpwd">验证码错误</span></div>
+                     	               [/#if]
+									</li>
+									<li>
+										<input type="checkbox" id="checkbox" checked="checked" value="1"class="chkProtocolValid" name="agreement"  isfocus="false">
+										<label for="checkbox" class="agreens">
+											我已阅读并接受
+											<a href="${base}/userrule" class="agreement" target="_blank">《用户协议》</a>
+											<a href="${base}/legal" class="agreement" target="_blank">《法律声明》</a>
+											<a href="${base}/managerule" class="agreement" target="_blank">《社交网络平台管理规定》</a>
+										</label>
+									</li>
+									<li id="aggrement" class="hd">&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">请阅读并接受注册条款</font></li>
+								</ul>
+								<div class="formbottom">
+									<button id="submit" class="submit">立即注册</button>
+									<a href="${base}/login" class="loginto">已有帐号，立即登录&nbsp;&gt;&gt;</a>
+								</div>
+							</form>
+						</div>
+						<div class="registercontbottom">
+							<h2>会员特权</h2>
+							<ul class="rightslist">
+								<li>1、只有成为会员您才有权自由浏览天才培训的文字资料和公开视频,有权申请学员培训过程中私密的视频。</li>
+								<li>2、只有成为会员您才可以申请成为职业经理人培训学院学员。</li>
+								<li>3、只有成为会员您才可以申请加入职业道德培训。</li>
+								<li>4、只有成为会员您才可以浏览天才评论的全部内容，并参与全部活动。</li>
+								<li>5、只有成为会员您才可以进入人间仙境，体验全部社交功能。</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+</body>
+</html>

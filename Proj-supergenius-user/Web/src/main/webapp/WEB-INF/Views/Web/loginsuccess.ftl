@@ -1,0 +1,9 @@
+[#ftl]
+<html>
+<head>
+    <title>${title!'登陆成功'}</title>
+</head>
+<body>
+	<h2>登录成功</h2>
+</body>
+</html>

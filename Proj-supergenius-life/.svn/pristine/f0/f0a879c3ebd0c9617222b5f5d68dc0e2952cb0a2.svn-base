@@ -1,0 +1,20 @@
+[#ftl]
+[#list list as item]
+	<li>
+		<a href="${base}/videoDetail/${(item.cid)?c}/${item.uid}"  target="_blank">
+			<img class="talentimg" src="${webimg}${item.imgmedium}" alt="${item.title}" title="${item.title}">
+			[#if item.type == 1]<div class="voice">音频</div>[/#if]
+		</a>
+		<div class="talentDetail">
+			<span class="talentTitle"><i class="type">初一</i>语文</span>
+			<span class="comment [#if item.state == 2] commented[/#if]">
+				[#if item.state == 2] 专家已点评[#elseif item.state == 0]未点评[/#if]
+			</span>
+			<p>
+				<img src="${webimg}${me.imgmedium}" alt="上传者" title="上传者">
+				${me.showname}
+				<span class="time">上传于<i>[@p.mytime datetime="${item.createtimeStr}"/]</i></span>
+			</p>
+		</div>
+	</li>
+[/#list]

@@ -1,0 +1,728 @@
+.wraper {
+	width: 100%;
+}
+.main {
+	width: 1000px;
+	margin: 0 auto;
+	overflow: hidden;
+	text-align: left;
+	min-height: 700px;
+}
+.newsContainer {
+	background: #fff;
+	min-height: 705px;
+	margin-bottom: 120px;
+	margin-top: 25px;
+	box-shadow: 0 1px 2px 0 #b6b6b6;
+}
+.newsContainer .newsLeft {
+	display: inline-block;
+	width: 162px;
+	height: 100%;
+	text-align: center;
+	overflow: hidden;
+}
+.newsLeft h3 {
+	line-height: 50px;
+	font-size: 18px;
+	font-weight: bold;
+	color: #1d71b6;
+	border-bottom: 1px solid #eeeeee;
+	height: 50px;
+	overflow: hidden;
+}
+.newsLeft .newsnav {
+	padding-top: 5px;
+	text-align: left;
+	overflow: hidden;
+}
+.newsnav li {
+	height: 38px;
+	line-height: 38px;
+	font-size: 16px;
+	background: #fff url(/imgs/default/newsimgbf.png) no-repeat 18px center;
+}
+.newsnav .curSelect {
+	background: #a3d6ff url(/imgs/default/right.png) no-repeat 18px center;
+}
+.newsnav li a {
+	display: block;
+	padding-left: 50px;
+	color: #666;
+}
+.newsnav li span {
+	display: inline-block;
+	width: 23px;
+	height: 12px;
+	border: 1px solid #979797;
+	line-height: 11px;
+	text-align: center;
+	font-size: 10px;
+	float: right;
+	margin-right: 20px;
+	margin-top: 12px;
+	overflow: hidden;
+	border-radius: 3px;
+	color: #333;
+}
+.newsnav .curSelect a , .newsnav .curSelect  span {
+	color: #1d71b6;
+}
+.newsnav .curSelect  span {
+	border: 1px solid #1d71b6;
+}
+.newsnav li:hover {
+	background-color: #cbe8ff;
+}
+.newsContainer .newsRight {
+	width: 820px;
+	display: inline-block;
+	vertical-align: top;
+	padding-left: 14px;
+	overflow: hidden;
+	box-shadow: -1px 0 0 0 #eee;
+	margin-left: -3px;
+	padding-bottom: 185px;
+	min-height: 520px;
+}
+.newsRight h4 {
+	height: 20px;
+	margin-top: 16px;
+	margin-bottom: 16px;
+	font-size: 16px;
+	font-weight: normal;
+	color: #1d71b6;
+	border-left: 3px solid #1d71b6;
+	padding-left: 10px;
+	margin-left: 10px;
+}
+.newsRight .pagebtn {
+	float: right;
+	margin-right: 12px;
+}
+.pagebtn a {
+	width: 15px;
+	height: 15px;
+	display: inline-block;
+	line-height: 12px;
+	text-align: center;
+	color: #c6c6c6;
+	font-size: 16px;
+	vertical-align: middle;
+}
+.pagebtn a:hover {
+	border: 1px solid #ff9166;
+	color: #ff9166;
+}
+.getJudgelist {
+	text-align: left;
+	margin-top: -2px;
+	border-top: 1px solid #eee;
+	overflow: hidden;
+	padding-top: 13px;
+}
+.getJudgelist li {
+	padding-bottom: 13px;
+	padding-left: 8px;
+}
+.getJudgelist .getuserimg {
+	display: inline-block;
+	width: 50px;
+	height: 45px;
+	position: relative;
+	vertical-align: top;
+}
+.getuserimg .judgeuser {
+	width: 40px;
+	height: 40px;
+	overflow: hidden;
+	border: 2px solid #1d71b6;
+	border-radius: 4px;
+}
+.getuserimg .newtip {
+	display: inline-block;
+	position: absolute;
+	width: 16px;
+	height: 10px;
+	background: #ff0000;
+	font-size: 8px;
+	text-align: center;
+	color: #fff;
+	line-height: 10px;
+	border-radius: 3px;
+	right: -5px;
+	top: -2px;
+}
+.getJudgelist .judgeContent {
+	width: 735px;
+	display: inline-block;
+	vertical-align: middle;
+	padding-left: 8px;
+	overflow: hidden;
+	border-bottom: 1px dashed #d5d5d5;
+	padding-bottom: 13px;
+}
+.judgeContent .nametime {
+	position: relative;
+}
+.judgename em {
+	font-size: 14px;
+	font-weight: bold;
+	font-style: normal;
+	color: #1d71b6;
+}
+.nametime .outtime {
+	font-size: 11px;
+	color: #999;
+	float: right;
+}
+.nametime .deleteimg {
+	width: 17px;
+	height: 17px;
+	overflow: hidden;
+	display: none;
+	float: right;
+	margin-left: 15px;
+}
+.judgeContent p {
+	font-size: 12px;
+	color: #333;
+	line-height: 20px;
+	margin-top: 5px;
+	overflow: hidden;
+}
+.judgeContent .source {
+	height: 30px;
+	line-height: 30px;
+	font-size: 14px;
+	background: #eee;
+	padding-left: 10px;
+	color: #999999;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	padding-right: 10px;
+	margin-top: 6px;
+}
+.source .from {
+	color: #1d71b6;
+	margin-left: 10px;
+}
+.getJudgelist li:hover .deleteimg {
+	display: block;
+}
+.source .from:hover {
+	text-decoration: underline;
+	color: #015090;
+}
+.notifylist .notifystatus {
+	font-size: 14px;
+	color: #808080;
+	margin-left: 10px;
+}
+.notifylist .source {
+	margin-top: 12px;
+}
+.systemNewslist li {
+	padding-bottom: 5px;
+}
+.systemNewslist .judgeuser {
+	border: none;
+}
+.systemNewslist .nametime {
+	height: 40px;
+	line-height: 40px;
+	overflow: hidden;
+}
+.systemNewslist .systemTitle {
+	font-size: 16px;
+	font-weight: bold;
+	color: #030401;
+	display: inline-block;
+	max-width: 580px;
+	overflow: hidden;
+}
+.systemNewslist .systemcontent {
+	color: #030401;
+	margin-top: 0;
+	padding-bottom: 15px;
+}
+.systemNewslist .deleteimg {
+	margin-top: 10px;
+}
+.systemNewslist .nametime:hover {
+	cursor: pointer;
+}
+.systemNewslist .judgeContent {
+	padding-bottom: 0;
+	border-bottom: 1px dashed #E1E1E1;
+	width: 780px;
+}
+.newsRight .endnews {
+	width: 735px;
+	margin-left: 70px;
+	margin-top: 50px;
+	overflow: hidden;
+}
+.endnews .dotline {
+	height: 1px;
+	width: 275px;
+	border-bottom: 1px dashed #d5d5d5;
+	display: inline-block;
+}
+.endnews span {
+	vertical-align: middle;
+	font-size: 12px;
+	color: #7d7d7d;
+	margin-top: 5px;
+	padding: 0 26px;
+	display: inline-block;
+}
+
+/* 搜索结果页面 */
+/* 搜索结果文章页 */
+.searchResultright .artilelist {
+	border-top: 1px solid #eee;
+	margin: 0 auto;
+	text-align: left;
+}
+.artilelist li {
+	padding: 15px 0 10px;
+	border-bottom: 1px dotted #d5d5d5;
+	width: 785px;
+	position: relative;
+	margin-left: 10px;
+}
+.artilelist .artileimg {
+	width: 128px;
+	height: 88px;
+	border: 1px solid #77ADD9;
+	overflow: hidden;
+}
+.artilelist .artdetail {
+	display: inline-block;
+	width: 640px;
+	vertical-align: top;
+	margin-left: 8px;
+}
+.artTitlebox {
+	height: 22px;
+}
+.artTitlebox .artTitle {
+	font-size: 14px;
+	font-weight: bold;
+	color: #1d71b6;
+	display: inline-block;
+	max-width: 518px;
+	overflow: hidden;
+	height: 22px;
+}
+.artTitlebox .artTitle:hover {
+	text-decoration: underline;
+}
+.collectTime {
+	float: right;
+	font-size: 12px;
+	color: #b6b6b6;
+	margin-top: 4px;
+	margin-right: 15px;
+}
+.artdetail p {
+	font-size: 13px;
+	color: #333;
+	line-height: 20px;
+	margin-top: 5px;
+	height: 40px;
+	overflow: hidden;
+}
+.artdetail .iconsbox {
+	margin-top: 5px;
+}
+.iconsbox span {
+	font-size: 11px;
+	color: #666;
+	line-height: 16px;
+	display: inline-block;
+}
+.iconsbox .look {
+	margin-right: 35px;
+}
+.iconsbox span img {
+	vertical-align: bottom;
+	width: 17px;
+	height: 18px;
+	overflow: hidden;
+}
+
+.searchResultright .keyword {
+	color: #ff2424;
+}
+/* 搜索话题结果页 */
+.mctTopiclist {
+	text-align: left;
+	border-top: 1px solid #eee;
+	padding-top: 16px;
+	padding-left: 10px;
+}
+.mctTopiclist li {
+	width: 343px;
+	height: 358px;
+	padding: 9px 10px;
+	display: inline-block;
+	border: 1px solid #d5d5d5;
+	position: relative;
+	text-align: left;
+	margin-right: 15px;
+	margin-bottom: 20px;
+}
+.mctTopiclist li:hover {
+	box-shadow: 0 0 3px 0 #1d71b6;
+}
+.topicTopinfor .authorimg {
+	width: 35px;
+	height: 35px;
+	border: 2px solid #1d71b6;
+	overflow: hidden;
+	vertical-align: bottom;
+}
+.topicTopinfor .authorname {
+	font-size: 16px;
+	font-weight: bold;
+	color: #1d71b6;
+	margin-left: 5px;
+}
+.topicTopinfor .collectTime {
+	margin-top: 23px;
+	margin-right: 0;
+}
+.topicMidinfor {
+	margin-top: 10px;
+}
+.topicTitle {
+	display: inline-block;
+	max-width: 100%;
+	height: 21px;
+	line-height: 21px;
+	overflow: hidden;
+	margin-bottom: 5px;
+	color: #333;
+	font-size: 16px;
+}
+.topicTitle:hover {
+	color: #43a7ff;
+	text-decoration: underline;
+}
+.mctTopicimg img {
+	width: 338px;
+	height: 230px;
+	border: 2px solid #fff;
+	box-shadow: 0 1px 1px 0 #999;
+	overflow: hidden;
+	margin-bottom: 10px;
+}
+.topicMidinfor .iconsbox span {
+	margin-left: 8px;
+}
+/* 搜索论战结果页 */
+.mctDebatelist li {
+	width: 362px;
+	height: 364px;
+	padding: 0;
+}
+.mctDebate {
+	width: 356px;
+	margin: 0 auto;
+	position: relative;
+	overflow: hidden;
+}
+.mctDebate .mctTopicimg img {
+	width: 350px;
+	height: 232px;
+	margin: 0 auto;
+	margin-left: 1px;
+	margin-top: 2px;
+}
+.mctDebatetitbg {
+	height: 48px;
+	text-align: left;
+	background: #000;
+	opacity: .63;
+	filter:alpha(opacity=63);
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=63)";
+	position: absolute;
+	bottom: 7px;
+	left: 3px;
+	overflow: hidden;
+	width: 347px;
+}
+.mctDebatetit {
+	color: #fff;
+	position: absolute;
+	z-index: 1;
+	font-size: 14px;
+	display: block;
+	width: 347px;
+	height: 48px;
+	bottom: 7px;
+	left: 4px;
+	text-align: left;
+	line-height: 48px;
+	padding-left: 2px;
+	overflow: hidden;
+}
+.dbtSupport {
+	width: 356px;
+	margin: 0 auto;
+	margin-top: 5px;
+}
+.dbtSupport .dbtTitle {
+	height: 44px;
+	overflow: hidden;
+}
+.dbtTitle span {
+	display: inline-block;
+	width: 155px;
+	height: 42px;
+	overflow: hidden;
+	vertical-align: middle;
+	font-size: 15px;
+	color: #333;
+	line-height: 20px;
+}
+.dbtTitle span b {
+	font-weight: normal;
+}
+
+.dbtTitle img {
+	width: 35px;
+	height: 25px;
+	display: inline-block;
+	overflow: hidden;
+	vertical-align: top;
+	margin-left: -2px;
+}
+.redside img {
+	display: inline-block;
+	width: 52px;
+	height: 48px;
+	overflow: hidden;
+}
+.dbtSupport .dbtvote {
+	margin-top: 8px;
+	text-align: center;
+	overflow: hidden;
+}
+.dbtvote .voteprogress {
+	display: inline-block;
+	width: 215px;
+	text-align: left;
+	vertical-align: baseline;
+	overflow: hidden;
+}
+.rprogress , .bprogress {
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+	float: left;
+}
+.rprogress {
+	width: 37%;
+}
+.bprogress {
+	width: 63%;
+}
+.redbar , .bluebar {
+	height: 7px;
+	border-radius: 10px;
+	margin-bottom: 4px;
+	height: 7px;
+}
+.redbar {
+	background: #d90000;
+}
+.bluebar {
+	background: #0077d9;
+}
+.voteprogress .numberbox {
+	width: 100%;
+	position: relative;
+	overflow: hidden;
+}
+.rednum {
+	font-size: 14px;
+	color: #d90000;
+	display: inline-block;
+	text-align: left;
+	width: 50%;
+	float: left;
+	overflow: hidden;
+}
+.bluenum {
+	font-size: 14px;
+	color: #0077d9;
+	display: inline-block;
+	text-align: right;
+	width: 50%;
+	overflow: hidden;
+}
+.searchUserlist h4 {
+	border-left: none;
+	font-weight: bold;
+	margin-top: 10px;
+	margin-bottom: 15px;
+	margin-left: 0;
+	padding-left: 0;
+}
+.searchUserlist {
+	border-top: 1px solid #eee;
+	padding-top: 16px;
+	padding-left: 10px;
+}
+.searchUserlist li {
+	width: 354px;
+	height: 136px;
+	border: 1px solid #bdbdbd;
+	padding: 15px;
+	overflow: hidden;
+	display: inline-block;
+	margin-right: 15px;
+	position: relative;
+	margin-bottom: 16px;
+}
+.personimg img {
+	width: 90px;
+	height: 90px;
+	overflow: hidden;
+	border: 2px solid #1d71b6;
+	border-radius: 5px;
+}
+.subsperson .personinfor {
+	display: inline-block;
+	width: 240px;
+	height: 100px;
+	overflow: hidden;
+	margin-left: 10px;
+}
+.personame {
+	font-size: 14px;
+	font-weight: bold;
+	color: #1d71b6;
+}
+.personinfor .subsbtn {
+	display: inline-block;
+	font-size: 10px;
+	float: right;
+}
+.subsbtn .substip {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	display: none; 
+}
+.subsbtn .redtip {
+	color: #fa4359;
+}
+.subsbtn .bluetip {
+	color: #1d71b6;
+}
+.cancelsubs img {
+	width: 20px;
+	height: 20px;
+	overflow: hidden;
+}
+.companyInfor {
+	font-size: 13px;
+	color: #333;
+	margin-top: 9px;
+	margin-bottom: 10px;
+	max-height: 17px;
+	overflow: hidden;
+	line-height: 16px;
+}
+.numcont {
+	font-size: 13px;
+	color: #333;
+	margin-top: 14px;
+	max-height: 17px;
+	overflow: hidden;
+	line-height: 16px;
+}
+.numcont span {
+	margin-right: 50px;
+}
+.numcont span a {
+	color: #80a5cf;
+	margin-left: 10px;
+}
+.numcont span a:hover {
+	color: #67D0ED;
+}
+.newaction {
+	max-height: 22px;
+	line-height: 22px;
+	overflow: hidden;
+	margin-top: 10px;
+}
+.newaction img {
+	width: 30px;
+	height: 22px;
+	margin-right: 10px;
+	overflow: hidden;
+	vertical-align: middle;
+}
+.newaction .activity {
+	color: #1d71b6;
+	font-size: 13px;
+	display: inline-block;
+	max-width: 295px;
+	height: 22px;
+	overflow: hidden;
+	vertical-align: top;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+.newaction .activity:hover {
+	color: #3EA6E4;
+	text-decoration: underline;
+}
+
+.searchResultright em {
+	color: #ff2424;
+	font-style: normal;
+}
+.newsRight h4 .ritform {
+	display: inline-block;
+	float: right;
+	margin-right: 18px;
+	width: 40%;
+	border: 1px solid #D5D5D5;
+	height: 28px;
+	margin-top: -4px;
+}
+.ritform input {
+	width: 265px;
+	height: 28px;
+	border: none;
+	outline: none;
+	padding: 0 2px 0 10px;
+	line-height: 24px;
+	font-size: 14px;
+	color: #717171;
+	font-family: "Microsoft Yahei";
+}
+.ritform a {
+	cursor: pointer;
+	display: inline-block;
+	width: 36px;
+	height: 28px;
+	overflow: hidden;
+	float: right;
+	border-left: 1px solid #E8E8E8;
+}
+.ritform a img {
+	width: 20px;
+	height: 18px;
+	overflow: hidden;
+	margin-top: 5px;
+	margin-left: 8px;
+}

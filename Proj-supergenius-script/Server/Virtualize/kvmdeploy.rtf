@@ -1,0 +1,327 @@
+{\rtf1\ansi\ansicpg936\deff0\nouicompat\deflang1033\deflangfe2052{\fonttbl{\f0\fnil\fcharset134 \'cb\'ce\'cc\'e5;}{\f1\fnil\fcharset0 ??;}}
+{\*\generator Riched20 10.0.15063}\viewkind4\uc1 
+\pard\sl276\slmult1\f0\fs22\lang2052\par
+\par
+\'bf\'cb\'c2\'a1\'b7\'fe\'ce\'f1\'c6\'f7\par
+virt-clone -o Serv_webtest_puretmpl_centos7 -n Serv_webtest_\f1\lang1033 xxxx\f0\lang2052 _centos7 --file /data/Storage/Primary/Serv/Serv_webtest_\f1\lang1033 xxxx\f0\lang2052 _centos7_hda.qcow2\line\par
+\'bf\'cb\'c2\'a1\'ca\'fd\'be\'dd\'b1\'b8\'b7\'dd\'b7\'fe\'ce\'f1\'c6\'f7\par
+virt-clone -o Serv_webtest_puretmpl_centos7 -n Serv_backup_allinone_centos7 --file /data/Storage/Primary/Serv/Serv_backup_allinone_centos7_hda.qcow2\par
+virsh autostart Serv_backup_allinone_centos7\par
+virsh start Serv_backup_allinone_centos7\line virsh edit Serv_backup_allinone_centos7\par
+192.168.1.9:5967/team.it\par
+\par
+-----------------------------------------------------------------------------------------------------------------------\par
+\par
+qemu-img create -f raw /data/Storage/Primary/CloudStack/hda.img 100G\par
+qemu-img info /data/Storage/Primary/CloudStack/hda.img\par
+\par
+\'b4\'b4\'bd\'a8Cloudstack Managerserver\par
+virt-install --connect=qemu:///system --name IaaS_cloudstack_centos6.5 --ram 8192 --vcpus=4 --disk path=/data/Storage/Primary/CloudStack/hda.img,device=disk,format=raw,bus=virtio,cache=none,size=100 --accelerate --cdrom /data/Storage/Secondary/OS/Linux/CentOS/CentOS-6.5-x86_64-bin-DVD1to2/CentOS-6.5-x86_64-bin-DVD1.iso --graphics vnc,password=kvm.iaas.vnc,port=5910 --network bridge=br0,model=virtio,model=e1000 --os-type=linux --virt-type=kvm --accelerate --network bridge=br0 --noautoconsole\par
+\f1\lang1033 less\f0\lang2052  /etc/libvirt/qemu/IaaS_cloudstack_centos6.5.xml\par
+\par
+\strike\'b4\'b4\'bd\'a8MysqlDB Server\par
+virt-install --connect=qemu:///system --name IaaS_mysql_centos6.5 --ram 4096 --vcpus=4 --disk path=/data/Storage/Primary/CloudStack/cloudstack_mysql_hda.qcow2,device=disk,format=qcow2,bus=virtio,cache=none,size=100 --accelerate --cdrom /data/Storage/Secondary/OS/Linux/CentOS/CentOS-6.5-x86_64-bin-DVD1to2/CentOS-6.5-x86_64-bin-DVD1.iso --graphics vnc,password=kvm.iaas.vnc,port=5911 --network bridge=br0,model=virtio,model=e1000 --os-type=linux --virt-type=kvm --accelerate --network bridge=br0 --noautoconsole\par
+\f1\lang1033 less\f0\lang2052  /etc/libvirt/qemu/IaaS_mysql_centos6.5.xml\par
+\par
+\strike0\'ca\'b9\'d3\'c3\'b8\'b4\'d6\'c6\'b5\'c4\'d3\'b2\'c5\'cc\'b4\'b4\'bd\'a8MysqlDB Server\par
+virt-install --connect=qemu:///system --name IaaS_mysql_centos6.5 --ram 4096 --vcpus=4 --disk path=/data/Storage/Primary/CloudStack/cloudstack_mysql_hda.raw,device=disk,format=raw,bus=virtio,cache=none,size=100 --accelerate --cdrom /data/Storage/Secondary/OS/Linux/CentOS/CentOS-6.5-x86_64-bin-DVD1to2/CentOS-6.5-x86_64-bin-DVD1.iso --graphics vnc,password=kvm.iaas.vnc,port=5911 --network bridge=br0,model=virtio,model=e1000 --os-type=linux --virt-type=kvm --accelerate --network bridge=br0 --noautoconsole\par
+virsh -c qemu:///system list --all\par
+\par
+virsh -c qemu:///system start IaaS_cloudstack_centos6.5\par
+virsh -c qemu:///system destroy IaaS_cloudstack_centos6.5\par
+virsh -c qemu:///system edit IaaS_cloudstack_centos6.5\par
+virsh -c qemu:///system undefine IaaS_cloudstack_centos6.5\par
+virsh autostart IaaS_cloudstack_centos6.5\par
+\par
+\par
+qemu-img convert -c -O qcow2 \f1\lang1033 hda\f0\lang2052 .img \f1\lang1033 hda\f0\lang2052 .qcow2\par
+qemu-img info 377d8bfe-64e2-4ebf-a251-580bec370dc\par
+kvm-img convert -f vpc -O raw /kvm/images/disk/disk.vhd /kvm/images/disk/disk.img\par
+\par
+yum -y install cloud-agent\par
+service cloudstack-agent start\par
+\par
+\par
+\par
+iptables -I INPUT -p tcp -m tcp --dport 22 -j ACCEPT\par
+iptables -I INPUT -p tcp -m tcp --dport 1798 -j ACCEPT\par
+iptables -I INPUT -p tcp -m tcp --dport 16509 -j ACCEPT\par
+iptables -I INPUT -p tcp -m tcp --dport 5900:6100 -j ACCEPT\par
+iptables -I INPUT -p tcp -m tcp --dport 49152:49216 -j ACCEPT\par
+\par
+virsh -c qemu:///system destroy IaaS_cloudstack_centos6.5\par
+virsh -c qemu:///system destroy IaaS_mysql_centos6.5\par
+\par
+service cloudstack-agent stop\par
+killall jsvc\par
+service cloudstack-agent start\par
+\par
+tail -f /var/log/cloudstack/agent/agent.log\par
+\par
+\par
+/var/lib/libvirt/qemu\par
+[root@node1 qemu]# ll\par
+total 12\par
+drwxr-xr-x. 2 root root 4096 Apr  7 22:32 dump\par
+srwxr-xr-x. 1 root root    0 Apr 13 15:09 IaaS_cloudstack_centos6.5.monitor\par
+srwxr-xr-x. 1 root root    0 Apr 13 15:09 IaaS_mysql_centos6.5.monitor\par
+srwxr-xr-x. 1 root root    0 Apr 11 17:13 s-1939-VM.agent\par
+srwxr-xr-x. 1 root root    0 Apr 13 15:11 s-1940-VM.agent\par
+srwxr-xr-x. 1 root root    0 Apr 13 17:14 s-1942-VM.agent\par
+srwxr-xr-x. 1 root root    0 Apr 13 17:14 s-1942-VM.monitor\par
+drwxr-xr-x. 2 root root 4096 Apr 11 12:30 save\par
+drwxr-xr-x. 2 root root 4096 Apr  7 22:32 snapshot\par
+srwxr-xr-x. 1 root root    0 Apr 13 15:11 v-1938-VM.agent\par
+srwxr-xr-x. 1 root root    0 Apr 13 17:05 v-1941-VM.agent\par
+srwxr-xr-x. 1 root root    0 Apr 13 17:05 v-1941-VM.monitor\par
+srwxr-xr-x. 1 root root    0 Apr 11 09:59 v-2-VM.agent.bak\par
+\par
+\par
+less /etc/cloudstack/agent/agent.properties\par
+guest.network.device=br0\par
+private.network.device=br0\par
+public.network.device=br0\par
+\par
+brctl show\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+NFS\'b6\'cb\'bf\'da\par
+-A INPUT -m state --state NEW -p udp --dport 111 -j ACCEPT\par
+-A INPUT -m state --state NEW -p tcp --dport 111 -j ACCEPT\par
+-A INPUT -m state --state NEW -p tcp --dport 2049 -j ACCEPT\par
+-A INPUT -m state --state NEW -p tcp --dport 32803 -j ACCEPT\par
+-A INPUT -m state --state NEW -p udp --dport 32769 -j ACCEPT\par
+-A INPUT -m state --state NEW -p tcp --dport 892 -j ACCEPT\par
+-A INPUT -m state --state NEW -p udp --dport 892 -j ACCEPT\par
+-A INPUT -m state --state NEW -p tcp --dport 875 -j ACCEPT\par
+-A INPUT -m state --state NEW -p udp --dport 875 -j ACCEPT\par
+-A INPUT -m state --state NEW -p tcp --dport 662 -j ACCEPT\par
+-A INPUT -m state --state NEW -p udp --dport 662 -j ACCEPT\par
+\par
+virsh list --all\par
+virsh -c qemu:///system list --all\par
+virsh snapshot-list\par
+service cloudstack-agent status\par
+service cloudstack-agent start\par
+\par
+\par
+\par
+\par
+--------------------------------------------------------------------------------------------------------\par
+VNC Port:cloudstack(591\f1\lang1033 X\f0\lang2052 )\tab office(594X)\tab serv(596X)\tab\par
+Office_it_123_linux\par
+\f1\lang1033 S\f0\lang2052 erv_web\f1\lang1033 test\f0\lang2052 _\f1\lang1033 supergenius\f0\lang2052 _\f1\lang1033 win2012\f0\lang2052\par
+\f1\lang1033 S\f0\lang2052 erv_\f1\lang1033 team\f0\lang2052 _\f1\lang1033 ftp\f0\lang2052 _\f1\lang1033 win2012\par
+\f0\lang2052\par
+virsh attach-disk domain-name /path/to/disk/image/file sdb\par
+\par
+qemu-img create -f qcow2 /data/Storage/Primary/Office/Office_it_030_hda.qcow2 100G\par
+qemu-img info /data/Storage/Primary/Office/Office_it_030_hda.qcow2\par
+virt-install --connect=qemu:///system --name Office_it_030 --ram 4096 --vcpus=4 --disk path=/data/Storage/Primary/Office/Office_it_030_hda.qcow2,device=disk,format=qcow2,bus=virtio,cache=none,size=100 --accelerate --cdrom /data/Storage/Secondary/OS/Windows/cn_windows_8_1_x64_dvd_2707237.iso --graphics vnc,password=office.it,port=5950 --network bridge=br0,model=virtio,model=e1000 --os-type=windows --virt-type=kvm --accelerate --network bridge=br0 --noautoconsole\par
+virsh -c qemu:///system list --all\par
+\par
+\par
+qemu-img create -f \f1\lang1033 qcow2\f0\lang2052  /data/Storage/Primary/Office/Office_it_000_centos6.5_hda.qcow2 100G\par
+virt-install --connect=qemu:///system --name Office_it_000_centos6.5 --ram 4096 --vcpus=2 --disk path=/data/Storage/Primary/Office/Office_it_000_centos6.5_hda.qcow2,device=disk,format=qcow2,bus=virtio,cache=none,size=100 --accelerate --cdrom /data/Storage/Secondary/OS/Linux/CentOS/CentOS-6.5-x86_64-bin-DVD1to2/CentOS-6.5-x86_64-bin-DVD1.iso --graphics vnc,password=office.it,port=59\f1\lang1033 40\f0\lang2052  --network bridge=br0,model=virtio,model=e1000 --os-type=linux --virt-type=kvm --accelerate --network bridge=br0 --noautoconsole\par
+\par
+qemu-img create -f \f1\lang1033 qcow2\f0\lang2052  /data/Storage/Primary/\f1\lang1033 Serv\f0\lang2052 /\f1\lang1033 S\f0\lang2052 erv_web\f1\lang1033 test\f0\lang2052 _\f1\lang1033 supergenius\f0\lang2052 _\f1\lang1033 win2012\f0\lang2052 _hda.qcow2 100G\par
+virt-install --connect=qemu:///system --name \f1\lang1033 S\f0\lang2052 erv_web\f1\lang1033 test\f0\lang2052 _\f1\lang1033 supergenius\f0\lang2052 _\f1\lang1033 win2012\f0\lang2052  --ram 8192 --vcpus=2 --disk path=/data/Storage/Primary/\f1\lang1033 Serv\f0\lang2052 /\f1\lang1033 S\f0\lang2052 erv_web\f1\lang1033 test\f0\lang2052 _\f1\lang1033 supergenius\f0\lang2052 _\f1\lang1033 win2012\f0\lang2052 _hda.qcow2,device=disk,format=qcow2,bus=virtio,cache=none,size=100 --accelerate --cdrom /data/Storage/Secondary/OS/Windows/cn_windows_server_2012_r2_x64_dvd_2707961.iso --graphics vnc,password=\f1\lang1033 serv.webtest\f0\lang2052 ,port=59\f1\lang1033 60\f0\lang2052  --network bridge=br0,model=virtio,model=e1000 --os-type=windows --virt-type=kvm --accelerate --arch=x86_64 --network bridge=br0 --noautoconsole --disk path=/data/Storage/Secondary/OS/Windows/virtio-win-0.1-74.iso,device=cdrom,perms=ro\par
+\par
+qemu-img create -f \f1\lang1033 qcow2\f0\lang2052  /data/Storage/Primary/\f1\lang1033 Serv\f0\lang2052 /\f1\lang1033 Serv\f0\lang2052 _webtest_\f1\lang1033 supergenius_web\f0\lang2052 _centos6.5_hda.qcow2 100G\par
+virt-install --connect=qemu:///system --name Serv_webtest_\f1\lang1033 supergenius_web\f0\lang2052 _centos6.5 --ram \f1\lang1033 8192\f0\lang2052  --vcpus=4 --disk path=/data/Storage/Primary/\f1\lang1033 Serv\f0\lang2052 /\f1\lang1033 Serv\f0\lang2052 _webtest_\f1\lang1033 supergenius_web\f0\lang2052 _centos6.5_hda.qcow2,device=disk,format=qcow2,bus=virtio,cache=none,size=100 --accelerate --cdrom /data/Storage/Secondary/OS/Linux/CentOS/CentOS-6.5-x86_64-bin-DVD1to2/CentOS-6.5-x86_64-bin-DVD1.iso --graphics vnc,password=\f1\lang1033 serv.webtest\f0\lang2052 ,port=596\f1\lang1033 1\f0\lang2052  --network bridge=br0,model=virtio,model=e1000 --os-type=linux --virt-type=kvm --accelerate --network bridge=br0 --noautoconsole\par
+\par
+qemu-img create -f \f1\lang1033 qcow2\f0\lang2052  /data/Storage/Primary/\f1\lang1033 Serv\f0\lang2052 /\f1\lang1033 Serv\f0\lang2052 _webtest_\f1\lang1033 supergenius_app1\f0\lang2052 _centos6.5_hda.qcow2 100G\par
+virt-install --connect=qemu:///system --name Serv_webtest_\f1\lang1033 supergenius_app1\f0\lang2052 _centos6.5 --ram \f1\lang1033 16384\f0\lang2052  --vcpus=8 --disk path=/data/Storage/Primary/\f1\lang1033 Serv\f0\lang2052 /\f1\lang1033 Serv\f0\lang2052 _webtest_\f1\lang1033 supergenius_app1\f0\lang2052 _centos6.5_hda.qcow2,device=disk,format=qcow2,bus=virtio,cache=none,size=100 --accelerate --cdrom /data/Storage/Secondary/OS/Linux/CentOS/CentOS-6.5-x86_64-bin-DVD1to2/CentOS-6.5-x86_64-bin-DVD1.iso --graphics vnc,password=\f1\lang1033 serv.webtest\f0\lang2052 ,port=596\f1\lang1033 2\f0\lang2052  --network bridge=br0,model=virtio,model=e1000 --os-type=linux --virt-type=kvm --accelerate --network bridge=br0 --noautoconsole\par
+\par
+qemu-img create -f \f1\lang1033 qcow2\f0\lang2052  /data/Storage/Primary/\f1\lang1033 Serv\f0\lang2052 /\f1\lang1033 Serv\f0\lang2052 _webtest_\f1\lang1033 supergenius_app2\f0\lang2052 _centos6.5_hda.qcow2 100G\par
+virt-install --connect=qemu:///system --name Serv_webtest_\f1\lang1033 supergenius_app2\f0\lang2052 _centos6.5 --ram \f1\lang1033 16384\f0\lang2052  --vcpus=8 --disk path=/data/Storage/Primary/\f1\lang1033 Serv\f0\lang2052 /\f1\lang1033 Serv\f0\lang2052 _webtest_\f1\lang1033 supergenius_app2\f0\lang2052 _centos6.5_hda.qcow2,device=disk,format=qcow2,bus=virtio,cache=none,size=100 --accelerate --cdrom /data/Storage/Secondary/OS/Linux/CentOS/CentOS-6.5-x86_64-bin-DVD1to2/CentOS-6.5-x86_64-bin-DVD1.iso --graphics vnc,password=\f1\lang1033 serv.webtest\f0\lang2052 ,port=596\f1\lang1033 3\f0\lang2052  --network bridge=br0,model=virtio,model=e1000 --os-type=linux --virt-type=kvm --accelerate --network bridge=br0 --noautoconsole\par
+\par
+qemu-img create -o compat=0.10 -f \f1\lang1033 qcow2\f0\lang2052  /data/Storage/Primary/\f1\lang1033 Serv\f0\lang2052 /\f1\lang1033 Serv\f0\lang2052 _backup_\f1\lang1033 allinone\f0\lang2052 _centos7_hda.qcow2 300G\par
+virt-install --connect=qemu:///system --name \f1\lang1033 Serv\f0\lang2052 _backup_\f1\lang1033 allinone\f0\lang2052 _centos7 --ram \f1\lang1033 8192\f0\lang2052  --vcpus=4 --disk path=/data/Storage/Primary/\f1\lang1033 Serv\f0\lang2052 /\f1\lang1033 Serv\f0\lang2052 _backup_\f1\lang1033 allinone\f0\lang2052 _centos7_hda.qcow2,device=disk,format=qcow2,bus=virtio,cache=none,size=300 --accelerate --cdrom /data/Storage/Secondary/OS/Linux/CentOS/CentOS-7.3-x86_64-DVD-1611/CentOS-7-x86_64-DVD-1611.iso --graphics vnc,password=\f1\lang1033 serv.backup\f0\lang2052 ,port=596\f1\lang1033 7\f0\lang2052  --network bridge=br0,model=virtio,model=e1000 --os-type=linux --virt-type=kvm --accelerate --network bridge=br0 --noautoconsole\par
+\par
+qemu-img create -o compat=0.10 -f \f1\lang1033 qcow2\f0\lang2052  /data/Storage/Primary/\f1\lang1033 Serv\f0\lang2052 /\f1\lang1033 Serv\f0\lang2052 _game_\f1\lang1033 nodejs\f0\lang2052 _centos7_hda.qcow2 100G\par
+virt-install --connect=qemu:///system --name \f1\lang1033 Serv\f0\lang2052 _game_\f1\lang1033 nodejs\f0\lang2052 _centos7 --ram \f1\lang1033 8192\f0\lang2052  --vcpus=4 --disk path=/data/Storage/Primary/\f1\lang1033 Serv\f0\lang2052 /\f1\lang1033 Serv\f0\lang2052 _game_\f1\lang1033 nodejs\f0\lang2052 _centos7_hda.qcow2,device=disk,format=qcow2,bus=virtio,cache=none,size=300 --accelerate --cdrom /data/Storage/Secondary/OS/Linux/CentOS/CentOS-7.3-x86_64-DVD-1611/CentOS-7-x86_64-DVD-1611.iso --graphics vnc,password=\f1\lang1033 serv.nodejs\f0\lang2052 ,port=596\f1\lang1033 8\f0\lang2052  --network bridge=br0,model=virtio,model=e1000 --os-type=linux --virt-type=kvm --accelerate --network bridge=br0 --noautoconsole\par
+\par
+qemu-img create -o compat=0.10 -f \f1\lang1033 qcow2\f0\lang2052  /data/Storage/Primary/\f1\lang1033 Serv\f0\lang2052 /\f1\lang1033 Serv\f0\lang2052 _webtest_\f1\lang1033 supergenius_game\f0\lang2052 _\f1\lang1033 ubuntu14.04\f0\lang2052 _hda.qcow2 100G\par
+qemu-img info /data/Storage/Primary/\f1\lang1033 Serv\f0\lang2052 /\f1\lang1033 Serv\f0\lang2052 _webtest_\f1\lang1033 supergenius_game\f0\lang2052 _\f1\lang1033 ubuntu14.04\f0\lang2052 _hda.qcow2\par
+virt-install --connect=qemu:///system --name Serv_webtest_\f1\lang1033 supergenius_game\f0\lang2052 _\f1\lang1033 ubuntu14.04\f0\lang2052  --ram \f1\lang1033 8192\f0\lang2052  --vcpus=2 --disk path=/data/Storage/Primary/\f1\lang1033 Serv\f0\lang2052 /\f1\lang1033 Serv\f0\lang2052 _webtest_\f1\lang1033 supergenius_game\f0\lang2052 _\f1\lang1033 ubuntu14.04\f0\lang2052 _hda.qcow2,device=disk,format=qcow2,bus=virtio,cache=none,size=100 --accelerate --cdrom /data/Storage/Secondary/OS/Linux/Ubuntu\f1\lang1033 /ubuntu-14.04.1-server-amd64.iso\f0\lang2052  --graphics vnc,password=\f1\lang1033 serv.webgame\f0\lang2052 ,port=596\f1\lang1033 4\f0\lang2052  --network bridge=br0,model=virtio,model=e1000 --os-type=linux --virt-type=kvm --accelerate --network bridge=br0 --noautoconsole\par
+virsh snapshot-create-as --domain Serv_webtest_\f1\lang1033 supergenius_game\f0\lang2052 _\f1\lang1033 ubuntu14.04\f0\lang2052  --name \f1\lang1033 Snap_20150812_initialized\f0\lang2052  --description "Pure \f1\lang1033 Ubuntu14.04\f0\lang2052 .1"\par
+\par
+qemu-img create -o compat=0.10 -f \f1\lang1033 qcow2\f0\lang2052  /data/Storage/Primary/Office/\f1\lang1033 Office\f0\lang2052 _\f1\lang1033 it\f0\lang2052 _\f1\lang1033 001\f0\lang2052 _centos\f1\lang1033 7\f0\lang2052 _hda.qcow2 100G\par
+virt-install --connect=qemu:///system --name Office_it_001_centos\f1\lang1033 7\f0\lang2052  --ram 4096 --vcpus=2 --disk path=/data/Storage/Primary/Office/Office_it_001_centos7_hda.qcow2,device=disk,format=qcow2,bus=virtio,cache=none,size=100 --accelerate --cdrom /data/Storage/Secondary/OS/Linux/CentOS/CentOS-7-x86_64-DVD-1503-01/CentOS-7-x86_64-DVD-1503-01.iso --graphics vnc,password=office.it,port=59\f1\lang1033 41\f0\lang2052  --network bridge=br0,model=virtio,model=e1000 --os-type=linux --virt-type=kvm --accelerate --network bridge=br0 --noautoconsole\par
+\par
+qemu-img create -o compat=0.10 -f qcow2 /data/Storage/Primary/Serv/Serv_webtest_supergenius_dbcache_centos7_hda.qcow2 100G\par
+virt-install --connect=qemu:///system --name Serv_webtest_supergenius_dbcache_centos7 --ram 8192 --vcpus=2 --disk path=/data/Storage/Primary/Serv/Serv_webtest_supergenius_dbcache_centos7_hda.qcow2,device=disk,format=qcow2,bus=virtio,cache=none,size=100 --accelerate --cdrom /data/Storage/Secondary/OS/Linux/CentOS/CentOS-7-x86_64-DVD-1503-01/CentOS-7-x86_64-DVD-1503-01.iso --graphics vnc,password=serv.db,port=5965 --network bridge=br0,model=virtio,model=e1000 --os-type=linux --virt-type=kvm --accelerate --network bridge=br0 --noautoconsole\par
+virt-clone -o Serv_webtest_supergenius_dbcache_centos7 -n Serv_webtest_puretmpl_centos7 --file /data/Storage/Primary/Serv/Serv_webtest_puretmpl_centos7_hda.qcow2\par
+virsh snapshot-create-as --domain Serv_webtest_supergenius_dbcache_centos7 --name \f1\lang1033 Snap_20161128_initialized\f0\lang2052  --description "Pure \f1\lang1033 Centos\f0\lang2052 7"\par
+\par
+virsh snapshot-create-as --domain Office_it_000_centos6.5 --name \f1\lang1033 Snap_20140415_initialized\f0\lang2052  --description "Pure \f1\lang1033 Centos\f0\lang2052 6.5"\par
+virsh snapshot-create-as --domain Office_it_001_centos7 --name \f1\lang1033 Snap_20160307_initialized\f0\lang2052  --description "Pure \f1\lang1033 Centos\f0\lang2052 7"\par
+virsh snapshot-create-as --domain Team_ui_ftp_win2012 --name \f1\lang1033 Snap_20141010_backup\f0\lang2052  --description "\f1\lang1033 backup before resize disk\f0\lang2052 "\par
+#/var/lib/libvirt/qemu/snapshot/Team_ui_ftp_win2012/Snap_20141010_backup.xml\par
+#/var/log/libvirt/qemu/Team_ui_ftp_win2012.log\par
+virsh snapshot-create-as --domain Office_it_000_centos6.5 --name \f1\lang1033 Snap_20160226_ip150\f0\lang2052  --description "\f1\lang1033 change ip to 150\f0\lang2052 "\par
+\par
+virsh snapshot-list Office_it_000_centos6.5\par
+virsh snapshot-current Office_it_000_centos6.5\par
+virsh snapshot-revert Office_it_000_centos6.5 \f1\lang1033 Snap_20140415_initialized\par
+\f0\lang2052 virsh snapshot-delete Office_it_000_centos6.5 \f1\lang1033 Snap_20140415_initialized\par
+\f0\lang2052 virsh domblklist Serv_webtest_supergenius_win2012\par
+virsh change-media --domain Serv_webtest_supergenius_win2012 hdc /data/Storage/Secondary/OS/Windows/virtio-win-0.1-74.iso\par
+\par
+virsh snapshot-create-as --domain \f1\lang1033 S\f0\lang2052 erv_web\f1\lang1033 test\f0\lang2052 _\f1\lang1033 supergenius\f0\lang2052 _\f1\lang1033 win2012\f0\lang2052  --name \f1\lang1033 Snap_20140512_initialized\f0\lang2052  --description "Pure \f1\lang1033 windows2012\f0\lang2052 "\par
+virsh snapshot-list \f1\lang1033 S\f0\lang2052 erv_web\f1\lang1033 test\f0\lang2052 _\f1\lang1033 supergenius\f0\lang2052 _\f1\lang1033 win2012\par
+virsh -c qemu:///system  snapshot-create-as <domain>\par
+qemu-img snapshot -c <disk-image-file>\f0\lang2052\par
+/var/lib/libvirt/qemu/snapshot\par
+\par
+virsh dumpxml Serv_webtest_supergenius_win2012 > Team_it_allinone_win2012.xml\par
+vim Team_it_allinone_win2012.xml\par
+virsh snapshot-list Serv_webtest_supergenius_win2012\par
+virsh snapshot-dumpxml Serv_webtest_supergenius_win2012 \par
+virsh define Team_it_allinone_win2012.xml\par
+\par
+virsh dumpxml Team_it_allinone_win2012 > Team_it_wiki_win2012.xml\par
+virsh dumpxml Team_it_allinone_win2012 > Team_it_code_win2012.xml\par
+virsh dumpxml Team_it_allinone_win2012 > Team_ui_ftp_win2012.xml\par
+\par
+\par
+\'d4\'f6\'bc\'d3\'d3\'b2\'c5\'cc\'a3\'ac\'b5\'da\'b6\'fe\'bf\'e9\'d3\'b2\'c5\'cc\'bb\'b9\'ca\'c7qcow2\'b8\'f1\'ca\'bd\'ca\'b1\'d3\'d0\'d2\'ec\'b3\'a3error: Unable to read from monitor: Connection reset by peer\par
+qemu-img create -f qcow2 /data/Storage/Primary/Team/Team_it_allinone_win2012_hdb.qcow2 \f1\lang1033 10\f0\lang2052 00G\par
+virsh attach-disk Serv_webtest_supergenius_web_centos6.5 /data/Storage/Primary/Team/Team_it_allinone_win2012_hdb.qcow2 vdb --cache none\par
+qemu-img create -f qcow2 /data/Storage/Primary/Team/Team_ui_ftp_win2012_hdb.qcow2 \f1\lang1033 10\f0\lang2052 00G\par
+\par
+#ui\'d4\'f6\'bc\'d3\'b4\'c5\'c5\'cc\'ca\'b5\'bc\'f9\par
+qemu-img create -f raw /data/Storage/Primary/Team/Team_ui_ftp_win2012_hdb.raw \f1\lang1033 100\f0\lang2052 G\par
+/data/Storage/Primary/Team/Team_ui_ftp_win2012_hdb_disk.xml\par
+\fs18 <disk type='file' device='disk'>\par
+  <driver name='qemu' type='raw' cache='none'/>\par
+  <source file='/data/Storage/Primary/Team/Team_ui_ftp_win2012_hdb.raw'/>\par
+  <target dev='vdb' bus='virtio'/>\par
+</disk>\fs22\par
+virsh attach-device --persistent Team_ui_ftp_win2012 /data/Storage/Primary/Team/Team_ui_ftp_win2012_hdb_disk.xml\par
+#virsh attach-disk  Team_ui_ftp_win2012 /data/Storage/Primary/Team/Team_ui_ftp_win2012_hdb.qcow2 vdb --cache none\par
+#virsh dumpxml Team_ui_ftp_win2012 > Team_ui_ftp_win2012.xml\par
+\par
+#ui\'d4\'f6\'bc\'d3\'b4\'c5\'c5\'cc\'ca\'b5\'bc\'f9\par
+qemu-img create -f raw /data/Storage/Primary/Team/Team_it_allinone_win2012_hdb.raw \f1\lang1033 100\f0\lang2052 G\par
+virsh edit Team_it_allinone_win2012\par
+\fs18 <disk type='file' device='disk'>\par
+  <driver name='qemu' type='raw' cache='none'/>\par
+  <source file='/data/Storage/Primary/Team/Team_it_allinone_win2012_hdb.raw'/>\par
+  <target dev='vdb' bus='virtio'/>\par
+</disk>\par
+\fs22\par
+virsh attach-device --persistent Team_ui_ftp_win2012 /data/Storage/Primary/Team/Team_ui_ftp_win2012_hdb_disk.xml\par
+#virsh attach-disk  Team_ui_ftp_win2012 /data/Storage/Primary/Team/Team_ui_ftp_win2012_hdb.qcow2 vdb --cache none\par
+#virsh dumpxml Team_ui_ftp_win2012 > Team_ui_ftp_win2012.xml\par
+\par
+\par
+\par
+virsh attach-disk Serv_webtest_supergenius_app2_centos6.5 /data/Storage/Primary/Serv/Serv_webtest_supergenius_web_centos6.5_hda.qcow2 vdb --cache none\par
+virsh detach-disk Serv_webtest_supergenius_app2_centos6.5 /data/Storage/Primary/Serv/Serv_webtest_supergenius_web_centos6.5_hda.qcow2\par
+virsh detach-disk Serv_webtest_supergenius_app2_centos6.5 /data/Storage/Primary/Team/Team_it_allinone_win2012_hdb.qcow2\par
+\par
+df -Th\par
+fdisk -l\par
+lvmdiskscan\par
+lvdisplay\tab #\'b2\'e9\'bf\'b4\'c2\'df\'bc\'ad\'be\'ed\par
+vgdisplay\par
+pvdisplay -m /dev/sdb1\par
+\par
+\'b2\'e9\'bf\'b4qcow2\'be\'b5\'cf\'f1\'d6\'d0\'ce\'c4\'bc\'fe\'a3\'ba\par
+modprobe nbd max_part=63\par
+qemu-nbd -c /dev/nbd0 /data/Storage/Primary/Serv/Serv_webtest_supergenius_web_centos6.5_hda.qcow2\par
+#mount /dev/nbd0 /mnt/image\tab #type not found \'b4\'cb\'cc\'f5\'c3\'fc\'c1\'ee\'b2\'bb\'d0\'d0\par
+lvscan\tab #\'c9\'a8\'c3\'e8\par
+lvdisplay\tab #\'b2\'e9\'bf\'b4\'c2\'df\'bc\'ad\'be\'ed\par
+vgchange -ay /dev/VolGroup00\tab #\'bc\'a4\'bb\'ee\'c2\'df\'bc\'ad\'be\'edTo activate the VG\par
+\par
+mkdir /mnt/image\par
+mount /dev/vg_serv/lv_root /mnt/image\par
+\par
+qemu-nbd -d /data/Storage/Primary/Serv/Serv_webtest_supergenius_web_centos6.5_hda.qcow2\tab #\'b6\'cf\'bf\'aa\'c1\'ac\'bd\'d3\par
+\par
+\par
+--------------------------------------------------------------------------------\'b0\'b2\'d7\'b0centos pure template\'c4\'a3\'b0\'e5\'bc\'b0\'bf\'c6\'c2\'a1\'d0\'c2\'cf\'b5\'cd\'b3\par
+Starting install...\par
+ERROR    internal error process exited while connecting to monitor: char device redirected to /dev/pts/16\par
+qemu-kvm: -drive file=/data/Storage/Primary/Team/Team_it_puretmpl_centos6.5_hda.qcow2,if=none,id=drive-virtio-disk0,format=qcow2,cache=none: 'drive-virtio-disk0' uses a qcow2 feature which is not supported by this qemu version: QCOW version 3\par
+qemu-kvm: -drive file=/data/Storage/Primary/Team/Team_it_puretmpl_centos6.5_hda.qcow2,if=none,id=drive-virtio-disk0,format=qcow2,cache=none: could not open disk image /data/Storage/Primary/Team/Team_it_puretmpl_centos6.5_hda.qcow2: Operation not supported\par
+\'d2\'d4\'c9\'cf\'b4\'ed\'ce\'f3\'ca\'c7\'d2\'f2\'ce\'aacompat\'b0\'e6\'b1\'be\'b2\'bb\'b6\'d4\'a3\'ac\'d6\'d8\'d0\'c2\'b4\'b4\'bd\'a8\'d6\'b8\'b6\'a8compat\'ce\'aa0.10\'b0\'e6\'b1\'be\'b5\'c4\'ce\'c4\'bc\'fe\par
+[root@node1 Team]# qemu-img info /data/Storage/Primary/Office/Office_it_030_hda.qcow2\par
+image: /data/Storage/Primary/Office/Office_it_030_hda.qcow2\par
+file format: qcow2\par
+virtual size: 100G (107374182400 bytes)\par
+disk size: 264K\par
+cluster_size: 65536\par
+Format specific information:\par
+    compat: 0.10\par
+[root@node1 Team]# qemu-img info /data/Storage/Primary/Team/Team_it_puretmpl_centos6.5_hda.qcow2\par
+image: /data/Storage/Primary/Team/Team_it_puretmpl_centos6.5_hda.qcow2\par
+file format: qcow2\par
+virtual size: 100G (107374182400 bytes)\par
+disk size: 196K\par
+cluster_size: 65536\par
+Format specific information:\par
+    compat: 1.1\par
+    lazy refcounts: false\par
+\par
+\par
+qemu-img create -o compat=0.10 -f \f1\lang1033 qcow2\f0\lang2052  /data/Storage/Primary/Team/\f1\lang1033 Team_it_puretmpl_centos6.5\f0\lang2052 _hda.qcow2 100G\par
+qemu-img info /data/Storage/Primary/Team/\f1\lang1033 Team_it_puretmpl_centos6.5\f0\lang2052 _hda.qcow2\par
+virt-install --connect=qemu:///system --name Team_it_puretmpl_centos6.5 --ram \f1\lang1033 16384\f0\lang2052  --vcpus=8 --disk path=/data/Storage/Primary/Team/\f1\lang1033 Team_it_puretmpl_centos6.5\f0\lang2052 _hda.qcow2,device=disk,format=qcow2,bus=virtio,cache=none,size=100 --accelerate --cdrom /data/Storage/Secondary/OS/Linux/CentOS/CentOS-6.5-x86_64-bin-DVD1to2/CentOS-6.5-x86_64-bin-DVD1.iso --graphics vnc,password=\f1\lang1033 team.it\f0\lang2052 ,port=5980 --network bridge=br0,model=virtio,model=e1000 --os-type=linux --virt-type=kvm --accelerate --network bridge=br0 --noautoconsole\par
+\par
+virt-clone -o Team_it_puretmpl_centos6.5 -n Team_it_oa_centos6.5 --file /data/Storage/Primary/Team/\f1\lang1033 Team_it_oa_centos6.5\f0\lang2052 _hda.qcow2\par
+virsh list --all\par
+virsh start Team_it_oa_centos6.5\par
+virsh edit Team_it_oa_centos6.5\par
+<graphics type='vnc' port='5981' autoport='no' listen='0.0.0.0' passwd='team.it' />\'c9\'e8\'d6\'c3vnc\'c3\'dc\'c2\'eb\par
+\'c8\'bb\'ba\'f3\'d5\'d2\'b5\'bd <interface type='bridge'><mac address='52:54:00:a8:00:3c'/>\'bd\'abMAC\'b5\'d8\'d6\'b7\'d0\'b4\'c8\'ebifcfg-eth0\'ce\'c4\'bc\'fe\'d6\'d0\par
+setup\'c9\'e8\'d6\'c3\'cd\'f8\'c2\'e7\'d0\'c5\'cf\'a2\par
+cd /etc/udev/rules.d/\par
+mv 70-persistent-net.rules 70-persistent-net.rules.bak\par
+reboot\par
+virsh autostart Team_it_oa_centos6.5\par
+virsh snapshot-list Team_it_oa_centos6.5\par
+virsh snapshot-create-as --domain Team_it_oa_centos6.5 --name \f1\lang1033 Snap_20150201_initialized\f0\lang2052  --description "Pure \f1\lang1033 Centos\f0\lang2052 6.5"\par
+virsh snapshot-list Team_it_oa_centos6.5\par
+\par
+virsh autostart --disable IaaS_cloudstack_centos6.5\par
+virsh autostart --disable IaaS_mysql_centos6.5\par
+--------------------------------------------------------------------------------\'bd\'e1\'ca\'f8\par
+\par
+\par
+\par
+_______________________________________________________KVM\'b9\'d8\'bb\'fa\'d6\'b4\'d0\'d0\'b5\'c4\'c3\'fc\'c1\'ee\par
+virsh list --all\par
+virsh destroy Team_it_code_win2012\par
+virsh destroy Team_it_wiki_win2012\par
+virsh destroy IaaS_mysql_centos6.5\par
+virsh destroy Team_it_allinone_win2012\par
+virsh destroy Office_it_000_centos6.5\par
+virsh destroy Serv_webtest_supergenius_app2_centos6.5\par
+virsh destroy Serv_webtest_supergenius_web_centos6.5\par
+virsh destroy Serv_webtest_supergenius_app1_centos6.5\par
+virsh destroy Team_it_oa_centos6.5\par
+virsh destroy IaaS_cloudstack_centos6.5\par
+virsh destroy Team_ui_ftp_win2012\par
+virsh destroy v-1946-VM\par
+virsh destroy s-2050-VM\par
+virsh destroy r-1958-VM\par
+virsh destroy i-2-1993-VM\par
+\par
+service cloudstack-agent stop\par
+\par
+\par
+\par
+\par
+}
+ 

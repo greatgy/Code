@@ -1,0 +1,163 @@
+package com.supergenius.web.api.user.controller;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.genius.core.base.annotation.Json;
+import com.genius.core.base.constant.BaseStrDict;
+import com.genius.core.base.utils.JsonUtil;
+import com.genius.core.base.utils.StrUtil;
+import com.genius.model.base.enums.EStatus;
+import com.genius.server.base.controller.BaseController;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.server.user.helper.BaseUserHP;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.user.entity.User;
+import com.supergenius.xo.user.service.UserSO;
+
+/** 
+* 人间仙境接口
+* @author liubin
+* @date 2017年4月27日 下午8:37:34 
+*/
+@Controller
+public class UserInterfacer extends BaseController {
+	
+	private static Logger log = LoggerFactory.getLogger(UserInterfacer.class);
+
+	@Autowired
+	private UserSO userSO;
+	
+
+	@RequestMapping(value = "/api/user/getone", method = RequestMethod.POST)
+	public @ResponseBody String user(Map<String, Object> model, String email, Integer id, String usersn, String apipartner, HttpServletRequest request) {
+		log.info(String.format("begin to invoke user (id:%s, email:%s, usersn:%s)", id, email, usersn));
+		User user1 = BaseUserHP.getCurrUser(request);
+		if (user1 != null) {
+			log.info("current user.uid:" + user1.getUid());
+		} else {
+			log.info("no current user");
+		}
+		if (StrUtil.isEmpty(email) && StrUtil.isEmpty(usersn) && id == null) {
+			return JsonUtil.toJson(null);
+		} else if (id != null && id <= 0) {
+			return JsonUtil.toJson(null);
+		}
+		Map<String, Object> map = new HashMap<>();
+		if (!StrUtil.isEmpty(email)) {
+			map.put(MapperDict.email, email);
+		}
+		if (!StrUtil.isEmpty(usersn)) {
+			map.put(MapperDict.usersn, usersn);
+		}
+		if (id != null) {
+			map.put(ViewKeyDict.oid, id);
+		}
+		map.put(MapperDict.no + MapperDict.status, EStatus.disable + "," + EStatus.deleted);
+		User user = userSO.getOne(map);
+		log.info(String.format("return result ：%s", JsonUtil.toJson(user, Json.allStrategy)));
+		return JsonUtil.toJson(user, Json.allStrategy);
+	}
+	
+
+//	@RequestMapping(value = "/api/user/login", method = RequestMethod.POST)
+//	public @ResponseBody Map<String, Object> login(Map<String, Object> model, String sn, String email, String pwd, String apipartner, HttpServletRequest request, HttpServletResponse response) {
+//		log.info(String.format("begin to invoke login (sn:%s, email:%s, pwd:%s)", sn, email, pwd));
+//		User user1 = BaseUserHP.getCurrUser(request);
+//		if (user1 != null) {
+//			log.info("current user.uid:" + user1.getUid());
+//		} else {
+//			log.info("no current user");
+//		}
+//		User user = userSO.getByEmail(email);
+//		Map<String, Object> map = new HashMap<>();
+////		if (!StrUtil.isEmpty(email) && RegexUtil.isEmail(email)) {
+////			user = user.getIsExistEmail(email);
+////		} else if (!StrUtil.isEmpty(sn)) {
+////			user = UserPX.getByUsersnStatus(sn);
+////		}
+////		if (!StringUtils.isEmpty(apipartner) && "test".equals(apipartner)) {// 确认是否是请求测试数据
+////			return getLoginTestData();
+////		}
+//		if (user != null) {
+//			if (user.checkPwd(pwd)) {
+//				log.info(String.format("return result ：%s", JsonUtil.toJson(user)));
+//				BaseUserHP.online(user, request, response);
+//				map.put(ViewKeyDict.key, BaseUserHP.getCookieSessionKey());
+//				map.put(ViewKeyDict.value, request.getAttribute(BaseUserHP.getCookieSessionKey()));
+//				log.info(String.format("return result map ：%s", JsonUtil.toJson(map)));
+//				return map;
+//			} else {
+//				map.put("err", "密码不正确");
+//				return map;
+//			}
+//		} else {
+//			map.put("err", "email 或  会员号不正确");
+//			return map;
+//		}
+//	}
+	
+
+	@RequestMapping(value = "/api/user/loginstatus", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> Islogin(Map<String, Object> model, String ids, String apipartner, HttpServletRequest request, HttpServletResponse response) {
+		log.info(String.format("begin to invoke Islogin (ids:%s)", ids));
+		String status = "0";
+		User user = BaseUserHP.getCurrUser(request);
+		if (user != null) {
+			log.info("current user.uid:" + user.getUid());
+		} else {
+			log.info("no current user");
+		}
+		Map<String, Object> map = new HashMap<>();
+		if (!StrUtil.isNotEmpty(ids)) {
+			map.put(ViewKeyDict.err, "ids为空");
+			return map;
+		}
+		User user2 = BaseUserHP.getCurrUser(request);
+		if (user2 != null) {
+			status = "1";
+		} else {
+			status = "0";
+		}
+		map.put(ViewKeyDict.status, status);
+		return map;
+	}
+	
+	@RequestMapping(value = "/api/user/getcachelist", method = RequestMethod.POST)
+	public @ResponseBody List<User> getcachelist(Map<String, Object> model, String ids, String apipartner, HttpServletRequest request, HttpServletResponse response) {
+		log.info(String.format("begin to invoke users (ids:%s)", ids));
+		User user = BaseUserHP.getCurrUser(request);
+		if (user != null) {
+			log.info("current user.uid:" + user.getUid());
+		} else {
+			log.info("no current user");
+		}
+		if (StrUtil.isEmpty(ids)) {
+			List<User> users = new ArrayList<>();
+			return users;
+		}
+		List<User> users = new ArrayList<>();
+		String[] oids = ids.split(BaseStrDict.comma);
+		int[] oidsInt = new int[oids.length];
+		for (int i = 0; i < oids.length; i++) {
+			oidsInt[i] = Integer.parseInt(oids[i]);
+		}
+		users = userSO.getList(oidsInt);
+		log.info(String.format("return result ：%s", JsonUtil.toJson(users)));
+		return users;
+
+	}
+}

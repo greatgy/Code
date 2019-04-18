@@ -1,0 +1,59 @@
+[#ftl]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<title>${finance.title!''}</title>
+	<style type="text/css">
+		.db_article {
+			margin-top: 10px;
+		}
+		.db_title {
+			font-size: 22px;
+			paddingTop: 10;
+			text-align: center;
+			paddingTop: 10;
+		}
+		.db_artcon p {
+			margin: 10px auto;
+			font-size: 16px;
+			color: #656565;
+			text-indent: 2em;
+			line-height: 24px;
+			font-family: "黑体";
+		}
+		.db_artcon strong {
+			font-weight: bold;
+		}
+		.db_artcon img {
+			max-width: 100%!important;
+			height: auto!important;
+		}
+		.source {
+			font-size: 15px;
+			color: #999;
+		}
+		.source p {
+			line-height: 22px;
+			margin-bottom: 5px;
+		}
+	</style>
+</head>
+<body>
+<div id="wrapper">
+	<div class="db_article">
+		<div class="db_title">
+			${finance.title!''}
+		</div>
+		<div class="db_artcon">
+			${finance.content!''}
+		</div>
+		<div class="source">
+			<p>作者：${finance.author!''} ${finance.createDateStr!''}</p>
+			<p>(来源：${finance.origin!''})</p>
+		</div>
+	</div>
+</div>
+</body>
+</html>

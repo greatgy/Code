@@ -1,0 +1,196 @@
+[#ftl]
+<!DOCTYPE html>
+<html>
+<head>
+	<title>会员注册第三步--基本信息</title>
+	<meta name="Keywords" content="会员中心，会员注册第一步，基本信息" />
+	<meta name="Description" content="会员中心，会员注册第一步，基本信息" />
+	<script type="text/javascript" src="${basejs}/js/libs/validator-1.0.0.js"></script>
+	<link rel="stylesheet" type="text/css" href="${basecss}/css/default/register.css">
+	<script type="text/javascript">
+<!--
+			$(function(){
+			var regs = {
+			isnum : /^.*[0-9]+.*$/,
+			islish: /^.*[A-Za-z]+.*$/,
+			issign: /^.*[_\!\.@#\$%\^&\*\(\)\[\]\\?\\\/\|\-~`\+\=\,\r\n\:\'\"。，；……！￥\{\}·]+.*$/
+			};
+			$("#txtpassword").keyup(function(){
+				var count = 0;
+				for(var b in regs){
+						if(regs[b].test($(this).val())) count++;
+					}
+					$(".strength span").removeClass("curstrength");
+					switch(count)
+					{
+						case 1:
+							$(".strength span:eq(0)").addClass("curstrength");
+							break;
+						case 2:
+							$(".strength span:eq(1)").addClass("curstrength");
+							break;
+						case 3:
+							$(".strength span:eq(2)").addClass("curstrength");
+							break;
+					}
+			});
+			
+			$("#txtconfigpwd").keydown(function(event) {
+			    if (event.keyCode == 13) {
+			        $(".baseinfor").submit();
+			    }
+			})
+	});
+	
+	    function registerValidHandler(){
+		  var pwd = $("#txtpassword").val();
+		  var pwd2 = $("#txtconfigpwd").val();
+		  if(pwd != pwd2 || pwd2 == ""){
+		      return false;
+		  } else {
+		      return true;
+		  }
+	   }
+	   		   
+// -->
+	</script>
+</head>
+<body>
+		<div class="container">
+			<div class="main">
+				<div class="topcommon">
+					<img src="${baseimg}/imgs/default/findpw01.png" alt="" />
+					<h2>从这里，找到更好的自己！</h2>
+				</div>
+				<div class="midcommon">
+					<div class="logotop">
+						<img src="${baseimg}/imgs/default/login_logo.png" alt="" />
+						会员注册
+					</div>
+					<div class="registercontainer">
+						<div class="steps">
+							<div class="stepitem curstepitem">
+								<span class="rectbg">1</span>
+								<span>填写账户信息</span>
+							</div>
+							<div class="linebg redlinebg"></div>
+							<div class="stepitem curstepitem">
+								<span class="rectbg">2</span>
+								<span>验证注册邮箱</span>
+							</div>
+							<div class="linebg redlinebg"></div>
+							<div class="stepitem curstepitem">
+								<span class="rectbg">3</span>
+								<span>基本信息</span>
+							</div>
+							<div class="linebg"></div>
+							<div class="stepitem">
+								<span class="rectbg">4</span>
+								<span>支付会员费</span>
+							</div>
+						</div>
+						<div class="registercontmiddle stepinfo">
+							<h2>请完成基本信息填写，超天才是一个信息真实的网络平台，请输入您的真实身份信息</h2>
+							<form action="${base}/register_improve/${(user.uid)!}" class="baseinfor" method="post">
+								<h4>注册邮箱：<b>${user.email}</b></h4>
+								<ul class="labelbase baseinforlist">
+									<li>
+										<label for="mail"><i>*</i>&nbsp;真实姓名：</label>
+										<input type="text" id="txtname" isnotempty="" ischinese="" name="name" placeholder="请填写与身份证一致的姓名" />
+										<div id="focustxtname" class="tipnote tipright hd"><span id="focusmsgtxtname">请填写与身份证一致的姓名</span></div>
+						            	<div id="errtxtname" class="tipnote tipwrong hd"><span id="errmsgtxtname">请输入中文</span></div>
+						            	[#if (errs.err_name_with_blackword)??]
+						            	<div id="errtxtname" class="tipnote tipwrong"><span id="errmsgtxtname">禁止使用不雅名</span></div>
+						            	[/#if]
+						            	[#if (errs.err_name)??]
+						            	<div id="errtxtname" class="tipnote tipwrong"><span id="errmsgtxtname">请输入中文</span></div>
+						            	[/#if]
+						            	<div id="oktxtname" class="tipnote hd"><img src="${baseimg}/imgs/default/yes.png" alt="" /><span id="okmsgtxtname"></span></div>
+									</li>
+									<li>
+										<label for="password"><i>*</i>&nbsp;英&nbsp;文&nbsp;名：</label>
+                                        <input id="txtnickname" class="InputText" name="nickname" isenglish="" isnotempty="" type="text" placeholder="请填写您的英文名" />
+                                        <div id="focustxtnickname" class="tipnote tipright hd"><span>确认后将不可修改，禁止使用不雅名</span></div>
+						            	<div id="errtxtnickname" class="tipnote tipwrong hd"><span id="errmsgtxtnickname">请输入英文</span></div>
+						            	[#if (errs.err_nickname_with_blackword)??]
+						            	<div id="errtxtnickname" class="tipnote tipwrong"><span id="errmsgtxtnickname">禁止使用不雅名</span></div>
+						            	[/#if]
+						            	[#if (errs.err_nickname)??]
+						            	<div id="errtxtnickname" class="tipnote tipwrong"><span id="errmsgtxtnickname">请输入英文</span></div>
+						            	[/#if]
+						            	<div id="oktxtnickname" class="tipnote hd"><img src="${baseimg}/imgs/default/yes.png" alt="" /><span id="okmsgtxtname"></span></div>
+									</li>
+									<li>
+										<h3>
+											<i>*</i>&nbsp;选择您希望显示的姓名（选择后将不可修改，如需修改请联系客服）
+										</h3>
+										<div class="names">
+											<input type="radio" id="textshowname" name="showname" value="1" checked />
+											<label for="chinese" class="special">中文名</label>
+											<input type="radio" name="showname" id="textshowname" value="0"/>
+											<label for="english" class="special">英文名</label>
+										</div>
+									</li>
+									<li>
+										<label for="configpw"><i>*</i>&nbsp;身份证号：</label>
+										<input id="txtID_number" class="InputText" name="identityid" isidentityid="身份证号校验，与名字是否一致" isnotempty="" type="text" placeholder="身份证号校验，与名字是否一致" />
+										 <div id="focustxtID_number" class="tipnote tipright hd"><i></i><span id="focusmsgtxtID_number">身份证号校验，与名字是否一致</span></div>
+                                         <div id="errtxtID_number" class="tipnote tipwrong hd"><span id="errmsgtxtID_number">请填写正确的身份证号</span></div>
+                                          [#if (errs.err_identityid)??]
+                                          <div id="errtxtID_number" class="tipnote tipwrong"><span id="errmsgtxtID_number">请填写正确的身份证号</span></div>
+                                          [/#if]
+                                          [#if (errs.err_identityid_registered)??]
+                                          <div id="errtxtID_number" class="tipnote tipwrong"><span id="errmsgtxtID_number">该身份证号已经被注册</span></div>
+										  [/#if]
+                                         <div id="oktxtID_number" class="tipnote hd"><img src="${baseimg}/imgs/default/yes.png" alt="" /><span id="okmsgtxtID_number"></span></div>
+									</li>
+									<li>
+										<label for="contactphone"><i>*</i>&nbsp;联系电话：</label>
+										<input type="text" id="txtcontactphone" class="InputText" isnotempty="" ismobile="" name="mobile" type="text" placeholder="请输入正确的手机号码"/>
+										<div id="focustxtcontactphone" class="tipnote tipright hd"><i></i><span id="focusmsgtxtcontactphone">请输入正确的手机号码</span></div>
+                                        <div id="errtxtcontactphone" class="tipnote tipwrong hd"><span id="errmsgtxtcontactphone">手机号码错误</span></div>
+                                        [#if (errs.err_mobile)??]
+                                         <div id="errtxtcontactphone" class="tipnote tipwrong"><span id="errmsgtxtcontactphone">手机号码错误</span></div>
+                                        [/#if]
+                                        <div id="oktxtcontactphone" class="tipnote hd"><img src="${baseimg}/imgs/default/yes.png" alt="" /><span id="okmsgtxtcontactphone"></span></div>
+									</li>
+								</ul>
+								<div class="baseinforbottom">
+									<h2>已为您创建了超天才支付账户，请为您的账户设置支付密码</h2>
+									<ul class="labelbase ">
+										<li>
+										<label for="password"><i>*</i>&nbsp;设置支付密码：</label>
+										<input type="password" id="txtpassword" name="password" isnotempty="" customreg="^.{6,16}$|请填写6-16位字符" ispwd="请输入6-16位，包括数字和字母" placeholder="请输入6-16位，包括数字和字母" />
+										<div id="focustxtpassword" class="tipnote tipright hd"><span id="focusmsgtxtpassword">请输入6-16位，包括数字和字母</span></div> 
+	                                 	<div id="errtxtpassword" class="tipnote tipwrong hd"><span id="errmsgtxtpassword">请输入6-16位，包括数字和字母</span></div>
+	                       	            <div id="oktxtpassword" class="tipnote hd"><img src="${baseimg}/imgs/default/yes.png" alt="" /><span id="oktxtpassword"></span></div>
+									</li>
+										<li>
+											<div class="strength">
+												<span>弱</span>
+												<span>中</span>
+												<span>强</span>
+											</div>
+										</li>    
+										<li>
+										<label for="configpwd"><i>*</i>&nbsp;确认支付密码：</label>
+										<input type="password" id="txtconfigpwd" name="password2" ispwd="" customvalid="registerValidHandler()|两次输入的密码不一致" placeholder="请再次输入密码" />
+										<div id="focustxtconfigpwd" class="tipnote tipright hd"><span id="focusmsgtxtconfigpwd">请确支付认密码</span></div>
+	                    	            <div id="errtxtconfigpwd" class="tipnote tipwrong hd"><span id="errmsgtxtconfigpwd" >两次输入的密码不一致</span></div>
+	                    	            <div id="oktxtconfigpwd" class="tipnote hd"><img src="${baseimg}/imgs/default/yes.png" alt=""/><span id="okmsgtxtconfigpwd" ></span></div>
+									</li>
+									</ul>
+							</div>
+								<div class="formbottom">
+									<button class="submit nextsubmit" type="submit">完成，下一步</button>
+
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,66 @@
+[#ftl]
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>梦之初心--全部课程</title>
+	<meta name="Keywords" content="天才人生,全部课程" />
+	<meta name="Description" content="天才人生,全部课程" />
+	<!--# include file="/include/headcommon.html" -->
+	<link rel="stylesheet" href="${basecss}/css/default/index.css">
+</head>
+<body>
+	<div class="courseLeft">
+		<h3>[#if grade == 1]六年级[#elseif grade == 2]初一[#elseif grade == 4]初二[#elseif grade == 8]初三[/#if]</h3>
+		<ul class="coursesList">
+			[#if subjectList??]
+				[#list subjectList as subject]
+					<li class="[#if subject.sid == sid]curChose[/#if]">
+						<a href="${base}/course/morecourse?sid=${subject.sid}&grade=[#if grade == 1]1[#elseif grade == 2]2[#elseif grade == 4]4[#elseif grade == 8]8[/#if]" >
+							${subject.name}
+							<span class="arrowicon">></span>
+						</a>
+					</li>
+				[/#list]
+			[/#if]
+		</ul>
+	</div>
+	<div class="courseRight">
+		<div class="versionCourse">
+			[#if courseList??]
+				[#list courseList as courtse]
+						<a href="javascript:;" data-uid="${courtse.uid}" class="courseDetail">
+							<img src="${webimg}${courtse.imgmedium}" alt="${courtse.name}" title="${courtse.name}" />
+							<p>${courtse.name}</p>
+						</a>	
+				[/#list]
+			[/#if]
+		</div>
+	</div>
+	<!-- 书籍信息弹窗 -->
+	<div class="mask"></div>
+	<div class="bookDetail">
+	</div>
+	<!-- # include file="/include/footer.html" -->
+	<script type="text/javascript" src="/js/libs/mask.js"></script> 
+	<script type="text/javascript">
+		$(function () {
+			$(document).on('click', ".courseDetail", function(){
+				$(".mask").show();
+					var uid=$(this).data("uid");
+					$.get("${base}/ajax/course/detail", {"uid":uid}, function(data){
+						$(".bookDetail").html(data);
+					});
+					$(".bookDetail").show();
+		     });
+			$(".mask").click(function () {
+				$(".mask").hide();
+				$(".bookDetail").hide();
+			})
+			$(document).on('click', ".closeBtn", function(){
+				$(".mask").hide();
+				$(".bookDetail").hide();
+			})
+		});
+	</script>
+</body>
+</html>

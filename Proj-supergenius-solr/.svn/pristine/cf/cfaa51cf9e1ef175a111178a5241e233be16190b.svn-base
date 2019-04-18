@@ -1,0 +1,83 @@
+[#ftl]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>搜索</title>
+	<meta name="Keywords" content="搜索" />
+	<meta name="Description" content="搜索" />
+	<link rel="stylesheet" href="${basecss}/css/default/index.css">
+</head>
+<body>
+	<div class="containerBox">
+		<div class="lead">
+			<a href="#" class="topLogo"><img src="${baseimg}/imgs/default/logo.png" alt=""></a>
+		</div>
+		<form action="${base}/search" onsubmit ="return validate()">
+			<input type="text" name="content" id="searchcontent"/>
+			<button class="submit" >搜索</button>
+		</form>
+		<div class="hotSearch">
+			<h3><img src="${baseimg}/imgs/default/hot.png" />热门搜索</h3>
+			<ul class="searchitem">
+				[#if list??]
+					[#list list as item]
+						<li>
+							<a href="${base}/search?content=${item.content}&uid=${item.uid}">${item.content}</a></li>
+						</li>
+					[/#list]
+				[/#if]	
+			</ul>
+		</div>
+		<div class="hotSearch">
+			<h3><img src="${baseimg}/imgs/default/hot.png" />热门推荐</h3>
+			<div class="recommend">
+				[#if ADContent??]
+					[#list ADContent as content]
+						<a href="${content.originurl}" class="member">
+							<img src="${webimg}${content.content}" />
+						</a>
+					[/#list]
+				[/#if]
+			</div>
+		</div>
+	</div>
+	<!-- 非会员提醒 -->
+    [#if me??]
+		<div class="fairnormalUser">
+			<h2>
+				温馨提示
+				<a href="javascripst:;" class="closebtn">X</a>
+			</h2>
+			<div class="normalTipbox">
+				<p>目前该板块仅对超天才会员开放，成为超天才会员，享更多特权</p>
+				<a href="${userbase}/register_improve/${me.uid}" class="beuser">加入超天才会员</a>
+			</div>
+		</div>
+	[/#if]
+	<script type="text/javascript">
+	$(".normalUsertip").click(function () {
+		$(".fairnormalUser").show();
+		$(".mask").show();
+		$("#loginmask").css("height", $(document.body).height());
+	});
+	$(".closebtn").click(function () {
+		$(".fairnormalUser").hide();
+		$(".mask").hide();
+	});
+	$(".mask").click(function(){
+		$(".fairnormalUser").hide();
+	});
+	<!--
+	function validate(){
+			if ($("#searchcontent").val().trim() == "") {
+				alert("请输入内容");
+				$("#searchcontent").focus();
+				return false;
+			}
+			return true;
+		}
+	-->
+	</script>
+</body>
+</html>

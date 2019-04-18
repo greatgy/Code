@@ -1,0 +1,959 @@
+﻿/*CSS Document */
+.left{ float:left;}
+.right{ float:right;}
+.clear{ clear:both;}
+.hd{display: none;}
+
+/******************以上为公共样式********************/
+
+/* 底部bottom开始 */
+.bottom{width: 100%;height: 220px;background-color: #323030;clear:both;font-family: "Microsoft Yahei";}
+.bottom_content { width: 800px;padding-top: 45px;}
+.bottom_top { border-bottom: 1px dashed #fff;padding-bottom: 15px;}
+.bottom_top img { margin-right: 60px;}
+.bottom p{text-align:center;font-family: "Microsoft Yahei";}
+.bot_01{color: #fff;margin-top: 15px;}
+.bot_01 a{color: #fff;font-size: 13px;margin: 16px;font-family: "Microsoft Yahei";}
+.bot_01 a:hover { color: #ff0000;}
+.bot_02{color: #9c9b9b;font-size: 13px;margin-top: 10px;margin-bottom: 15px;}
+.spare { color: #fff;vertical-align: middle;font-size: 13px;font-family: "Microsoft Yahei";}
+.spare img { width: 35px;height: 35px;overflow: hidden;vertical-align: middle;margin-left: 5px;}
+.wx_code { display: none; position: relative;width: 200px;height: 200px;top: -240px;left: 80px;background: url("../../imgs/default/wx_bg.png") no-repeat;}
+.app_img { width: 150px;height: 150px;overflow: hidden;position: absolute;top: 15px;left: 25px;}
+#bctop{width:60px;height:60px;background:url("../../imgs/default/bctop.png") no-repeat;cursor:pointer; position:fixed;bottom:20%;right:10%;clear:both;display:none;}
+
+/**头部共用样式**/
+html {
+    background: #f0f0f0!important;
+}
+body { background: #f0f0f0; min-width: auto!important;overflow-y: auto;overflow-x: hidden;}
+body * { font-family: "Microsoft Yahei";}
+.header_tou {
+    border-bottom: 1px solid #e2e2e2;
+}
+.header_fix {
+    position: fixed;
+    left: 0;
+    background: #1d71b6;
+    z-index: 1000;
+    border-bottom: 1px solid #e2e2e2;
+    width: 100%;
+}
+.topnav {
+    max-width: 1400px;
+    width: 95%;
+    text-align: left;
+    height: 60px;
+    /*overflow: hidden;*/
+}
+.logo {
+    display: inline-block;
+    width: 9%;
+    overflow: hidden;
+    vertical-align: middle;
+    margin-right:1%;
+}
+.logo img {
+    max-width: 100%;
+    height: auto;
+}
+.navlist {
+    display: inline-block;
+    width: 63%;
+    overflow: hidden;
+    vertical-align: middle;
+}
+.navlist li {
+    float: left;
+    line-height: 60px;
+    width: auto;
+    text-align: center;
+    font-size: 1.06rem;
+    padding: 0 1.18%;
+    cursor: default;
+}
+.navlist .current {
+    background: #ff9900;
+}
+.navlist li a {
+    color: #fff;
+}
+.navlist li:visited {
+    color: #fff;
+    background: #ff9900;
+}
+.navlist li:hover {
+    color: #fff;
+    background: #ff9900;
+}
+.navlist .current a {
+    color: #fff;
+    font-weight: bold;
+}
+.topRight {
+    float: right;
+    display: inline-block;
+    margin-right: 0.5%;
+    width: 26%;
+    vertical-align: top;
+    text-align: right;
+    line-height: 60px;
+    height: 60px;
+}
+.search {
+    display: inline-block;
+    width: 53%;
+    line-height: 60px;
+    vertical-align: top;
+}
+.search input {
+    width: 95%;
+    height: 30px;
+    border: 1px solid #d2d2d2;
+    padding: 0 29px 0 2%;
+    font-size: 0.78rem;
+    color: #333;
+    border-radius: 6px;
+}
+.searchimg {
+    margin-left: -27px;
+}
+.searchimg img {
+    width: 22px;
+    height: 22px;
+    overflow: hidden;
+    margin-top: 20px;
+    vertical-align: top;
+}
+.loginbox {
+    display: inline-block;
+    width: 45%;
+}
+.login {
+    font-size: 0.96rem;
+    color: #333;
+    border-radius: 6px;
+    /*display: none;*/
+}
+.login:hover {
+    color: #ff8000;
+}
+.user {
+    display: inline-block;
+}
+.user img {
+    width: 45px;
+    height: 45px;
+    overflow: hidden;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+.votebtn {
+    display: inline-block;
+    margin-right: 15%;
+    background: #f58a08;
+    padding: 5px 12px;
+    line-height: 20px;
+    font-size: 0.9rem;
+    color: #fff;
+    border-radius: 6px;
+}
+.votebtn:hover {
+    background: #e27405;
+    color: #fff;
+}
+.logined {
+    display: inline-block;
+    float: right;
+    border-radius: 50%;
+    position:relative;
+}
+.logined img {
+    border-radius: 50%;
+    vertical-align: middle;
+    margin-top: -5px;
+    width: 35px;
+    height: 35px;
+    overflow: hidden;
+    border: 3px solid #fec11c;
+}
+.logined .princeimg {
+	width: 30px;
+    height: 30px;
+    border: none;
+    position: absolute;
+    margin-left: -56.3%;
+    margin-top: -185.8%;
+}
+.logined:hover .userselfbox {
+   display: block;
+}
+.logined .reddot {
+	width: 8px;
+	height: 8px;
+	border-radius: 100%;
+	display: block;
+	background: #ff0000;
+	position: absolute;
+	top: 5px;
+	right: 0px;
+	overflow: hidden;
+}
+.userselfbox {
+	width: 135px;
+	position: absolute;
+	z-index: 10000;
+	right: -32px;
+	padding-top: 4px;
+	margin-top: -8px;
+	overflow: hidden;
+	display: none;
+}
+.userselfbox .trangle {
+	width: 0px;
+	height: 0px;
+	border-style: solid;
+	border-width: 0px 12px 16px 12px;
+	border-color: transparent transparent #e8e8e8  transparent;
+	margin-left: 54%;
+}
+.userselfcontent {
+	width: 115px;
+	height: 140px;
+	background: #e8e8e8 ;
+	border-left: 1px solid #dcdcdc;
+	border-right: 1px solid #dcdcdc;
+	border-bottom: 1px solid #dcdcdc;
+	overflow: hidden;
+	padding-bottom: 5px;
+}
+.userselfcontent .userights {
+	font-size: 14px;
+	color: #333333;
+	text-align: center;
+	overflow: hidden;
+	padding-bottom: 5px;
+	margin-top: 10px;
+}
+.userights li {
+	height: 32px;
+	width: 133px;
+	line-height: 32px;
+	position: relative;
+	text-align: left;
+}
+.userights li a {
+	font-size: 14px;
+	color: #333333;
+	display: block;
+	padding-left: 25px;
+}
+.userights li a:hover {
+	color: #f58a08;
+	/*border: 1px solid #f2d238;*/
+	cursor: pointer;
+}
+
+.userights li span {
+	display: inline-block;
+	width: 25px;
+	height: 14px;
+	background: #ff0000;
+	font-size: 10px;
+	color: #fff;
+	line-height: 14px;
+	border-radius: 5px;
+	text-align: center;
+	position: absolute;
+	top: 9px;
+	right: 20px;
+	overflow: hidden;
+}
+/* 手机端一级导航 */
+.firstNavBox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: auto;
+    z-index: 1000;
+}
+.first_nav {
+    height: 56px;
+    overflow: hidden;
+    background: #fff;
+    /* opacity: 0.9;
+    filter: alpha(opacity=90); */
+}
+.navbar.navbar01 {
+    height: 56px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 0;
+    overflow: hidden;
+    line-height: 56px;
+    text-align: left;
+}
+.userbox {
+    width: 35px;
+    height: 35px;
+    position: absolute;
+    top: 12px;
+    left: 15px;
+    z-index: 100;
+    background: url(../../imgs/default/defaultimg.png) center center no-repeat;
+    background-size: 90%;
+    overflow: hidden;
+    border-radius: 50%;
+}
+.userbox a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.logo_brand {
+    width: 70%;
+    height: 60px;
+    text-align: left;
+    overflow: hidden;
+}
+.navbar-brand {
+    margin: 0;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    padding: 0;
+    vertical-align: middle;
+}
+.navbar-brand img {
+    overflow: hidden;
+    max-height: 30px;
+    margin: 12px 3%;
+    display: inline-block;
+}
+.navbar-brand .superlogo {
+    max-height: 33px;
+}
+.navbar-toggle.collapse_btn {
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    z-index: 100;
+    background: url(../../imgs/mobile/default/homepage_sprites.png) center center no-repeat;
+    background-position: -12px -20px;
+    background-size: 400%;
+    overflow: hidden;
+
+}
+.navbar-toggle.collapse_btn.changeColor {
+    background: url(../../imgs/mobile/default/homepage_sprites.png) center center no-repeat;
+    background-position: -122px -30px;
+}
+#myNavbar {
+    position: fixed;
+    left: 15px;
+    z-index: 1000;
+    width: 100%;
+    background: #d6d1c5;
+}
+.collapseBox {
+    margin: 0;
+    padding: 20px 15px;
+    background: #fff;
+}
+.phoneSearch {
+    text-align: left;
+}
+.phoneSearch input {
+    width: 80%;
+    height: 40px;
+    line-height: 30px;
+    padding: 0 4%;
+    border: 1px solid #adadad;
+    font-size: 15px;
+    color: #000;
+    border-radius: 8px;
+}
+.phoneSearchimg {
+    display: inline-block;
+    margin-left: 1.2%;
+    padding: 0 1%;
+    width: 16%;
+    height: 40px;
+    vertical-align: middle;
+    text-align: center;
+    border-radius: 8px;
+    line-height: 35px;
+}
+.phoneSearchimg img {
+    width: 45px;
+    height: 35px;
+    overflow: hidden;
+}
+.phoneNavList {
+    margin: 20px 0;
+    padding: 10px 15px;
+    width: 100%;
+    /* background: #d6d1c5; */
+    text-align: left;
+}
+.phoneNavList li {
+    display: inline-block;
+    margin-bottom: 15px;
+    padding: 0;
+    line-height: 40px;
+    text-align: center;
+    height: 40px;
+}
+.phoneNavList li a {
+    display: block;
+    font-size: 1rem;
+    color: #444444;
+}
+.phoneNavList .active a {
+    font-size: 1.1rem;
+    color: #dc0510;
+}
+.nav_back {
+    position: absolute;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    height: 1000%;
+    background: #000;
+    opacity: 0.6;
+    filter: alpha(opacity=60);
+}
+.header_fix_phone {
+    display: none;
+}
+.secondNavbox {
+    position: fixed;
+    top: 60px;
+    width: 100%;
+    background: #fff;
+    z-index: 10;
+    border-bottom: 1px solid #ddd;
+    /* box-shadow: 0 1px 2px 0 #c5c5c5; */
+}
+.secondNavbox .row {
+    width: 100%;
+    margin: 2px 0;
+}
+.secondNavbox .row li {
+    padding: 0;
+    line-height: 25px;
+}
+.secondNavbox .row li a {
+    font-size: 0.96rem;
+    color: #333;
+}
+/* 二级导航 */
+.back {
+    display: inline-block;
+    width: 15%;
+    font-size: 2.4rem;
+    color: #959595;
+    padding-left: 5px;
+    height: 56px;
+    line-height: 50px;
+}
+.back:hover {
+    color: #d4d4d4;
+}
+.middleTit {
+    display: inline-block;
+    width: 51%;
+    vertical-align: top;
+    text-align: center;
+}
+.middleTit img {
+    max-height: 25px;
+    display: inline-block;
+    margin: 14px 0%;
+}
+.middleTit .superlogo {
+    max-height: 27px;
+    margin: 15px 4% 14px 0;
+}
+.secondUserbox {
+    left: auto;
+    right: 20%;
+}
+
+
+.containerBox {
+    max-width: 1100px;
+    width: 85%;
+    min-height: 560px;
+    margin: 60px auto 40px;
+    text-align: left;
+    overflow: hidden;
+}
+.contentLeft {
+    display: inline-block;
+    width: 65%;
+    vertical-align: top;
+    overflow: hidden;
+}
+.contentRight {
+    display: inline-block;
+    width: 30%;
+    margin-left: 4%;
+    margin-top: 28px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+.rightItem {
+    margin-bottom: 22px;
+}
+.pictype {
+    color: #ff7500;
+}
+.videotype {
+    color: #9900ff;
+}
+.original {
+    color: #00cc00;
+}
+.phoneFooter {
+    margin: 20px auto;
+    font-size: 0.8rem;
+    color: #999;
+    line-height: 22px;
+    text-align: center;
+    position: relative;
+    bottom: 0;
+    display: none;
+    width: 90%;
+}
+.backBtn {
+    font-size: 2rem;
+    position: absolute;
+    left: 4%;
+    top: 0;
+    color: #9b9b9b;
+    line-height: 40px;
+    display: none;
+}
+.swiper-button-next, .swiper-button-prev {
+    display: none;
+}
+/* 分页 */
+.pagenum {
+    text-align: center;
+    padding: 20px 0;
+    width: auto;
+}
+.pagenum li {
+    display: inline;
+    margin-right: 5px;
+}
+.pagenum a {
+    padding: 6px 12px;
+    line-height: 40px;
+    background: #FFF;
+    border: 1px #ddd solid;
+    color: #444;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    font-size: 0.8rem;
+}
+.pagenum .here {
+    background: #ff8000;
+    border: 1px #ff8000 solid;
+    color: #FFF;
+}
+.pagenum a:hover {
+    background: #ff8000;
+    border: 1px #ff8000 solid;
+    text-decoration: none;
+    color: #FFF;
+}
+
+.topnavPhone {
+    background: #1d71b6;
+    height: 35px;
+    top: 56px;
+    width: 100%;
+    position: fixed;
+    text-align: left;
+    z-index: 10;
+    overflow: hidden;
+    border-top: 1px solid #b1b1b1;
+}
+@media screen and (min-width: 1361px) {
+    .topnav {
+        width: 98%;
+    }
+}
+@media screen and (min-width: 1131px) and (max-width: 1360px){
+    .topnav {
+        width: 98%;
+    }
+    .navlist {
+        width: 65%;
+    }
+    .topRight {
+        width: 24%;
+    }
+    .navlist li {
+        margin: 0 0.2%;
+        font-size: 1rem;
+        padding: 0 0.5%;
+    }
+}
+@media screen and (min-width: 1051px) and (max-width: 1130px){
+    .topnav {
+        width: 98%;
+    }
+    .navlist {
+        width: 65%;
+    }
+    .topRight {
+        width: 24%;
+    }
+    .navlist li {
+        margin: 0 0.2%;
+        font-size: 0.94rem;
+        padding: 0 0.5%;
+    }
+}
+@media screen and (min-width: 951px) and (max-width: 1050px){
+    .topnav {
+        width: 98%;
+    }
+    .logo {
+        width: 9%;
+    }
+    .navlist {
+        width: 64%;
+    }
+    .topRight {
+        width: 25%;
+        margin-right: 0;
+    }
+    .navlist li {
+        font-size: 0.88rem;
+        margin: 0;
+        padding: 0 0.5%; 
+    }
+    .votebtn {
+        margin-right: 8%;
+    }
+}
+@media screen and (min-width: 851px) and (max-width: 950px){
+    .topnav {
+        width: 100%;
+    }
+    .logo {
+        width: 8%;
+    }
+    .navlist {
+        width: 64%;
+    }
+    .navlist li {
+        width: auto;
+        font-size: 0.86rem;
+        padding: 0 0.5%;
+    }
+    .navlist .current {
+        background: none;
+    }
+    .navlist .current a {
+        color: #ff9900;
+    }
+    .topRight {
+        width: 22%;
+    }
+    .search {
+        width: 45%;
+    }
+    .search input {
+        width: 90%;
+    }
+    .loginbox {
+        width: 52%;
+    }
+    .votebtn {
+        margin-right: 5%;
+        padding: 5px;
+        font-size: 0.8rem;
+    }
+    .login {
+        font-size: 0.8rem;
+    }
+}
+@media screen and (min-width: 768px) and (max-width: 850px){
+    .topnav {
+        width: 100%;
+    }
+    .logo {
+        width: 8%;
+    }
+    .navlist {
+        width: 64%;
+    }
+    .navlist li {
+        width: auto;
+        font-size: 0.78rem;
+        padding: 0 1% 0 0;
+    }
+    .navlist .current {
+        background: none;
+    }
+    .navlist .current a {
+        color: #ff9900;
+    }
+    .topRight {
+        width: 22%;
+    }
+    .search {
+        width: 45%;
+    }
+    .search input {
+        width: 90%;
+    }
+    .loginbox {
+        width: 52%;
+    }
+    .votebtn {
+        margin-right: 5%;
+        padding: 5px;
+        font-size: 0.8rem;
+    }
+    .login {
+        font-size: 0.8rem;
+    }
+}
+@media screen and (max-width: 767px){
+	html {
+        background: #fff!important;
+    }
+    body {
+        background: #fff;
+    }
+	.bottom{
+		display:none;
+	}
+    .top {
+        display: none;
+    }
+    #bctop {
+        display: none!important;
+    }
+    .header_fix {
+        top: 0!important;
+    }
+    .header_fix {
+        display: none;
+    }
+    .header_fix_phone {
+        display: block;
+    }
+    .phoneFooter {
+        display: block;
+    }
+    .topnav {
+        width: 100%;
+        position: relative;
+        height: 80px;
+    }
+    .navlist {
+        width: 84%;
+        height: 35px;
+        position: absolute;
+        bottom: 0;
+        overflow: hidden;
+        margin: 0 8%;
+        vertical-align: middle;
+    }
+    .navlist li {
+        padding: 1.2% 6px 1.2% 3px;
+        line-height: 28px;
+        width: auto;
+        font-size: 0.95rem;
+        margin: 0;
+    }
+    .phoneHd {
+        display: none;
+    }
+    .logo {
+        width: 30%;
+        overflow: hidden;
+        max-height: 40px;
+        position: absolute;
+        left: 36%;
+        padding: 1%;
+    }
+    .logo img {
+        max-height: 30px;
+    }
+    .search input, .searchimg {
+        display: none;
+    }
+    
+    .userLogin {
+        display: none;
+    }
+    .normalUser {
+        position: absolute;
+        left: 6%;
+        top: 0;
+        display: inline-block;
+        line-height: 30px;
+        padding: 1.8% 0;
+    }
+    .normalUser img {
+        width: 30px;
+        height: 30px;
+    }
+    .register, .login {
+        display: none;
+    }
+    .containerBox {
+        min-height: auto;
+        margin: 85px auto 40px;
+        max-width: inherit !important;
+    }
+    /* 返回导航 */
+    .logoSecond {
+        left: 30%;
+    }
+    .searchSecond {
+        top: 11%;
+        right: 19%;
+    }
+    .userSecond {
+        right: 4%;
+        left: auto;
+        margin-top: -2px;
+    }
+    .backBtn {
+        display: inline-block;
+    }
+    .votebtn, .nologin {
+        display: none;
+    }
+    .swiper-button-next, .swiper-button-prev {
+        display: block;
+        top: 60px!important;
+        width: 24px!important;
+        height: 24px!important;
+        margin-top: -54px!important;
+        opacity: 0.88;
+    }
+    .swiper-wrapper {
+        overflow: visible;
+        /* width: 50%!important; */
+        padding: 0;
+        margin-left: 0;
+    }
+
+    .swiper-button-next.swiper-button-disabled, .swiper-button-prev.swiper-button-disabled {
+        opacity: 0.65!important;
+    }
+    .swiper-button-prev {
+        background-image: url('/imgs/default/left.png')!important;
+        margin-left: -7px;
+        -moz-background-size: 27px 22px !important;
+        -webkit-background-size: 27px 22px !important;
+        background-size: 27px 22px !important;
+        background-position: 3px !important;
+    }
+    .swiper-button-next {
+        background-image: url('/imgs/default/right.png')!important;
+        margin-left: -2px;
+        background-size: 27px 22px !important;
+        -webkit-background-size: 27px 22px !important;
+        -moz-background-size: 27px 22px !important;
+    }
+    .tabBox {
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+@media screen and (max-height: 569px) {
+    .containerBox {
+        min-height: 358px;
+    }
+}
+@media screen and (min-width: 560px) and (max-width: 767px) {
+    .navlist li {
+        margin: 0 4.2%;
+    }
+}
+/* 职场困惑弹框 */
+.maskContent {
+    position: fixed;
+    width: 50%;
+    height: auto;
+    top: 30%;
+    left: 25%;
+    background: #ddd;
+    text-align: left;
+    border-radius: 8px;
+    z-index: 1002;
+    display: none;
+}
+.maskContent h3 {
+    margin-top: 30px;
+}
+.questionForm {
+    /* width: 50%; */
+    margin: 30px auto;
+}
+.questionForm .state {
+    
+}
+.maskContent .cancelBtn {
+    float: none;
+    background: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+}
+.maskContent .cancelBtn:hover {
+    background: #a5a5a5;
+    color: #fff;
+}
+
+/* 手机搜索弹出层 */
+.searchMask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    display: none;
+}
+
+/* 登录弹出遮罩层 */
+.mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1001;
+    display: none;
+}
+
+/************** 轮播共用样式 **************/
+.carousel-indicators {margin-bottom: -8px;}
+.carousel-indicators li { background-color: #ffffff;width: 7px;height: 7px;}
+.carousel-indicators .active { background-color: #d90d0e;width: 8px;height: 8px;border: 1px solid #d90d0e;}
+.carousel { top: 70px;padding-bottom: 65px;}
+
+/******************footer共用样式********************/
+.footer { border-top: 1px solid #E4DFDF;padding-top: 20px;margin-top: 15px;margin-bottom: 20px;}
+.container_follow { overflow: initial;}
+.follow_bottom h4 { color: #848484;font-size: 15px;}
+.copyright { display: inline;height: 0;float: none;background-color: transparent;font-size: 14px;color: #848484;margin-left: 5px;}

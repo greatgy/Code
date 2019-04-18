@@ -1,0 +1,16 @@
+mongodb.tpi.url=mongodb://localhost:27017/tpi
+mongodb.tpi.username=
+mongodb.tpi.password=
+mongodb.tpi.safe=true
+
+#\u5b98\u7f51mongodb
+mongodb.official.url=mongodb://localhost:27017/official
+mongodb.official.username=
+mongodb.official.password=
+mongodb.official.safe=true
+
+#\u804c\u4e1a\u9053\u5fb7\u57f9\u8badMongodb
+mongodb.moral.url=mongodb://localhost:27017/moral
+mongodb.moral.username=
+mongodb.moral.password=
+mongodb.moral.safe=true

@@ -1,0 +1,65 @@
+[#ftl]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>个人中心--我的文章</title>
+	<meta name="Keywords" content="天才人生，个人中心，我的文章" />
+	<meta name="Description" content="天才人生，个人中心，我的文章" />
+	<!--# include file="/include/headcommon.html" -->
+	<link rel="stylesheet" href="${base}/css/mobile/default/index.css">
+</head>
+<body>
+	<!-- 我的收藏 -->
+	<div class="myCollect">
+		[#if collect??]
+		[#-- ?????????? --]
+		<ul class="tabBox usercollect">
+		[#list collect as item]
+			<li>
+				<a class="tabitemimg" href="${base}/m/article/${(item.cid)?c}/${(item.oid)?c}" title="${item.title}">
+					<img src="${webimg}${item.imgmedium}" alt="${item.title}" title="${item.title}"/>
+				</a>
+				<div class="tabitemRt">
+					<a href="${base}/m/article/${(item.cid)?c}/${(item.oid)?c}" class="articleTitle" ${base}/m/${item.cid}/${(item.oid)?c}">
+						[#--  <span class="videotype">【视频】</span>--]
+						${item.title}
+					</a>
+					[#if item.summary??]
+						<p class="descripe">[@p.TrimSubstring content="${item.summary}" mylength=80 /]</p>
+					[#else]
+						<p class="descripe">[@p.TrimSubstring content="${item.content}" mylength=80 /]</p>
+					[/#if]
+					<div class="timepiece">
+						<span class="time">[@p.mytime datetime="${item.createtimeStr}"/]</span>
+						<div class="operateBox">
+							<a href="${base}/m/article/${(item.cid)?c}/${(item.oid)?c}" class="littleicon">
+								<img src="${baseimg}/imgs/default/heart.png" />
+								${item.prizecount}
+							</a>
+							<a href="${base}/m/article/${(item.cid)?c}/${(item.oid)?c}" class="littleicon">
+								<img src="${baseimg}/imgs/default/discuss.png" />
+								${item.commentscount}
+							</a>
+							<a href="${base}/m/article/${(item.cid)?c}/${(item.oid)?c}" class="littleicon">
+								<img src="${baseimg}/imgs/default/clickcount.png" />
+								${item.clickcount}
+							</a>
+						</div>
+					</div>
+				</div>
+			</li>
+			[/#list]
+		</ul>
+		[/#if]
+		<div class="nomore">
+			<i class="line"></i>
+			我是有底线的
+			<i class="line"></i>
+		</div>
+	</div>
+	<script>
+	
+	</script>
+</body>
+</html>

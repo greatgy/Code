@@ -1,0 +1,659 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+[#import "/WEB-INF/FtlLib/Macro/Official.ftl" as o]
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>${title}</title>
+	<link rel="stylesheet" href="${basecss}/css/default/pages/index.css"/>
+	<link rel="stylesheet" href="${basecss}/css/default/pages/attentionus.css"/>
+	<style type="text/css">
+		.ma{overflow:hidden;}
+		.ma_one{overflow:hidden;text-align:left;}
+		.title_bg a{color:#fff;font-size:14px;}
+	</style>
+	<script src="${basejs}/js/pages/index.js"></script>
+	<script src="${basejs}/js/libs3/ejs.min.js"></script>
+	<script src="${basejs}/js/libs/components.js"></script>
+    <script type="text/javascript">
+		var broadcastData = [
+		[#list list as item]
+            {
+				title : '${item.title}',
+				img : '${webimg}${item.imgbig}',
+				link : '${base}/${item.firstTypeName}/${item.oid}',
+				baseimg:'${baseimg}'
+			}[#if item_index != list?size-1],[/#if]
+        [/#list]
+		];
+	</script>
+	[@o.BroadcastTemplate /]
+</head>
+<body>
+<!--内容开始-->
+<div class="main_m centerbox">
+	<div class="main">
+		<!-- 左边 -->
+		<div class="left">
+		    <!-- 轮播图 -->
+		    <div class="ma">
+            </div>
+		    <!-- 论战进行时 -->
+		    <!--  [#if debate??]
+			    <div class="mb">
+			    	&nbsp;&nbsp;论战进行时
+			    </div>
+			    <div class="mc">
+			    	<div style="width:692px;height:242px;overflow:hidden;">
+			    		<img src="${webimg}${debate.imgoriginal}" style="width:100%;height:100%;overflow:hidden;"/>
+			    	</div>
+			    	<div class="mc_2">
+			    		<a href="${base}/debate/${debate.oid}" style="color:#fff" title="${debate.title!''}" target="_blank">[@f.TrimSubstring content="${debate.title!''}" mylength=28 /]</a>
+			    	</div>
+			    	<div class="mc_1">
+				    	[#if debate.countblue+debate.countred==0]
+				    		[#assign redper=0.5]
+				    	[#else]
+				    		[#assign redper=debate.countred/(debate.countblue+debate.countred)]
+				    	[/#if]
+			    		[#assign blueper=(1-redper)]
+			    		<div style="width:${redper*100}%" title="${redper*100}%" class="mc_1_1"></div>
+			    		<div style="width:${blueper*100}%" title="${blueper*100}%" class="mc_1_2"></div>
+			    	</div>
+			    </div>
+			    <div class="md">
+			    	<div class="md_1">
+			    	    <span class="md_1_1" title="${debate.titlered}">${debate.titlered}</span>
+			    	    <span class="md_1_2" title="${debate.titleblue}">${debate.titleblue}</span>
+			    		<img src="${baseimg}/imgs/default/vs.jpg">
+			    	</div>
+			    	<div class="md_2">
+			    		[#assign maxlength = (debate.redArticles?size>=debate.blueArticles?size)?string(debate.redArticles?size,debate.blueArticles?size) ]
+			    		[#list 1..maxlength?number as index]
+			    		<div class="md_2_1">
+			    			[#if index<=debate.redArticles?size]
+			    			[#assign url="${base}/debate/article/${debate.redArticles[index-1].finaceuid}?doid=${debate.oid}&dperioid=${debate.periods}&disred=1&dviewpoint=${debate.titlered}" /]
+			    			<div class="p0"><a href="${url}" title="${debate.redArticles[index-1].title}">[@f.TrimSubstring "${debate.redArticles[index-1].title}",20 /]</a></div>
+			    			[/#if]
+			    			[#if index<=debate.blueArticles?size]
+			    			[#assign url="${base}/debate/article/${debate.blueArticles[index-1].finaceuid}?doid=${debate.oid}&dperioid=${debate.periods}&disred=0&dviewpoint=${debate.titleblue}" /]
+			    			<div class="p1"><a href="${url}" title="${debate.blueArticles[index-1].title}">[@f.TrimSubstring "${debate.blueArticles[index-1].title}",20 /]</a></div>
+			    			[/#if]
+			    		</div>
+						[/#list]
+			    	</div>
+			    	<div class="md_3" style="float:left;">
+			    		<a href="${base}/debate/${debate.oid}">立即参与</a>
+			    	</div>
+			    </div>
+		    [/#if]-->
+		    <div class="blockgroup">
+		   		<!-- 新增论战进行时 -->
+		   		<div class="debateblock">
+				    <div class="mb">
+				    	&nbsp;&nbsp;论战进行时
+				    </div>
+				    <div class="mc">
+				    	<a href="#">
+				    		<img src="${webimg}/imgs/default/debate01.png" class="debateimg_lg" />
+				    	</a>
+				    	<div class="mc_2"></div>
+				    	<a href="#" class="debateTit" title="美国经济GDP在今后两年能保持3%以上的高速增长吗？" target="_blank">美国经济GDP在今后两年能保持3%以上的高速增长吗？</a>
+				    </div>
+				    <div class="md">
+				    	<div class="md_1">
+				    	    <span class="vstitle redtitle" title="">美国经济会高速增长</span>
+				    	    <img src="${baseimg}/imgs/default/vs.png" />
+				    	    <span class="vstitle bluetitle" title="">美国经济不会高速增长</span>
+				    	</div>
+			    		<div class="votestatus">
+			    			<span class="redside">
+			    				<a href="#"><img src="${baseimg}/imgs/default/redzan.png" /></a>
+			    				370
+			    			</span>
+			    			<div class="progress">
+			    				<div class="redbar"></div>
+			    				<div class="bluebar"></div>
+			    			</div>
+			    			<span class="blueside">
+			    				<a href="#"><img src="${baseimg}/imgs/default/bluezan.png" /></a>
+			    				630
+			    			</span>
+			    		</div>
+				    	<a href="#" class="join">立即参与</a>
+				    </div>
+				</div>
+		    	<!-- 新增论战进行时 -->
+
+		    	<!-- 热门话题 -->
+		    	<div class="hotipicblock">
+				    <div class="mb">
+				    	&nbsp;&nbsp;热门话题
+				    </div>
+				    <a class="mb_a">
+				    	<img src="${baseimg}/imgs/default/topiclfimg.png" />
+				    </a>
+				    <div class="me">
+				    	<h4><a href="#" title="激励你的“人生鸡汤”是什么？">激励你的“人生鸡汤”是什么？</a></h4>
+						<ul class="topicjudge">
+							<li>
+								<a href="#">
+									<img src="${baseimg}/imgs/default/subsimg03.png" />
+								</a>
+								<div class="judgers">
+									<a href="#" class="name">范尊龙</a>
+									<span class="time">2015年9月11日&nbsp;12:23 </span>
+									<p class="points" title="通风范甘迪发送给吧啦巴啦啦啦皮卡丘……">通风范甘迪发送给吧啦巴啦啦啦皮卡丘……</p>
+								</div>
+							</li>
+							<li>
+								<a href="#">
+									<img src="${baseimg}/imgs/default/subsimg04.png" />
+								</a>
+								<div class="judgers">
+									<a href="#" class="name">梦璃</a>
+									<span class="time">2015年9月11日&nbsp;12:23 </span>
+									<p class="points" title="谁言别后终无悔，寒夜清宵绮梦回。深知身在情长在，前……">谁言别后终无悔，寒夜清宵绮梦回。深知身在情长在，前……</p>
+								</div>
+							</li>
+							<li>
+								<a href="#">
+									<img src="${baseimg}/imgs/default/subsimg05.png" />
+								</a>
+								<div class="judgers">
+									<a href="#" class="name">游客</a>
+									<span class="time">2015年9月11日&nbsp;12:23 </span>
+									<p class="points" title="在寒冷的冬天吃上大闸蟹火锅，好温暖啊好温暖！ ">在寒冷的冬天吃上大闸蟹火锅，好温暖啊好温暖！ </p>
+								</div>
+							</li>
+						</ul>
+				    </div>
+				</div>
+		    	<!-- 推荐文章 -->
+		    	<div class="recomendblock">
+				    <div class="mb">
+				    	&nbsp;&nbsp;推荐文章
+				    </div>
+				    <div class="mf" id="mf_a">
+				    	<div class="mf_1 mf_a">
+				    	    <div class="mf_bg"></div>
+				    	    <p class="p1">
+			    	    		<a href="#" target="_blank">中国制造VS印度制造</a>
+			    	    	</p>
+				    		<img src="${baseimg}/imgs/default/focusimg01.png" />
+				    	</div>
+				    	<div class="mf_1 mf_a">
+				    	    <div class="mf_bg"></div>
+				    	    <p class="p1">
+			    	    		<a href="#" target="_blank">谁能拯救中国制作业</a>
+			    	    	</p>
+				    		<img src="${baseimg}/imgs/default/lbsm03.png" />
+				    	</div>
+				    	<div class="mf_1 mf_a">
+				    	    <div class="mf_bg"></div>
+				    	    <p class="p1">
+			    	    		<a href="#" target="_blank">中国制造VS印度制造</a>
+			    	    	</p>
+				    		<img src="${baseimg}/imgs/default/focusimg01.png" />
+				    	</div>
+				    </div>
+			    </div>
+		    	<!-- 最新文章 -->
+		    	<div class="newartblock">
+				    <div class="mb">
+				    	&nbsp;&nbsp;最新文章
+				    </div>
+				    <div class="mg">
+				    	<div class="focusbox">
+					    	<p><a class="p1" href="${base}/geniusfocus">天财焦点</a><span class="p2">/&nbsp;Genius&nbsp;Focus</span></p>
+				    		<ul class="focuslist">
+				    			<li> 
+				    				<a href="#"><img src="${baseimg}/imgs/default/newart01.png" /></a>
+				    				<a href="#" class="articleTit">《中国制造2025》需要新思维</a>
+				    			</li>
+				    			<li> 
+				    				<a href="#"><img src="${baseimg}/imgs/default/newart01.png" /></a>
+				    				<a href="#" class="articleTit">顾雏军：“引商购商“新战略……</a>
+				    			</li>
+				    			<li> 
+				    				<a href="#"><img src="${baseimg}/imgs/default/newart01.png" /></a>
+				    				<a href="#" class="articleTit">黄骅港务公司顺利通过河北省安全生产规定</a>
+				    			</li>
+				    		</ul>
+				    	</div>
+				    	<div class="focusbox">
+					    	<p><a class="p1" href="#">产业</a><span class="p2">/&nbsp;Industries</span></p>
+				    		<ul class="focuslist">
+				    			<li> 
+				    				<a href="#"><img src="${baseimg}/imgs/default/newart02.png" /></a>
+				    				<a href="#" class="articleTit">国家发改委社会发展司司长王威等3人接受调查拷贝</a>
+				    			</li>
+				    			<li> 
+				    				<a href="#"><img src="${baseimg}/imgs/default/newart03.png" /></a>
+				    				<a href="#" class="articleTit">国家发改委社会发展司司长王威等3人接受调查拷贝</a>
+				    			</li>
+				    			<li> 
+				    				<a href="#"><img src="${baseimg}/imgs/default/newart04.png" /></a>
+				    				<a href="#" class="articleTit">《中国制造2025》需要新思维</a>
+				    			</li>
+				    		</ul>
+				    	</div>
+				    	<div class="focusbox">
+					    	<p><a class="p1" href="#">企业</a><span class="p2">/&nbsp;Companies</span></p>
+				    		<ul class="focuslist">
+				    			<li> 
+				    				<a href="#"><img src="${baseimg}/imgs/default/newart01.png" /></a>
+				    				<a href="#" class="articleTit">国家发改委社会发展司司长王威等3人接受调查拷贝</a>
+				    			</li>
+				    			<li> 
+				    				<a href="#"><img src="${baseimg}/imgs/default/newart02.png" /></a>
+				    				<a href="#" class="articleTit">国家发改委社会发展司司长王威等3人接受调查拷贝</a>
+				    			</li>
+				    			<li> 
+				    				<a href="#"><img src="${baseimg}/imgs/default/newart03.png" /></a>
+				    				<a href="#" class="articleTit">《中国制造2025》需要新思维</a>
+				    			</li>
+				    		</ul>
+				    	</div>
+				    	<div class="focusbox">
+					    	<p><a class="p1" href="#">并购</a><span class="p2">/&nbsp;M & A</span></p>
+				    		<ul class="focuslist">
+				    			<li> 
+				    				<a href="#"><img src="${baseimg}/imgs/default/newart02.png" /></a>
+				    				<a href="#" class="articleTit">国家发改委社会发展司司长王威等3人接受调查拷贝</a>
+				    			</li>
+				    			<li> 
+				    				<a href="#"><img src="${baseimg}/imgs/default/newart03.png" /></a>
+				    				<a href="#" class="articleTit">国家发改委社会发展司司长王威等3人接受调查拷贝</a>
+				    			</li>
+				    			<li> 
+				    				<a href="#"><img src="${baseimg}/imgs/default/newart04.png" /></a>
+				    				<a href="#" class="articleTit">《中国制造2025》需要新思维</a>
+				    			</li>
+				    		</ul>
+				    	</div>
+				    	<div class="focusbox">
+					    	<p><a class="p1" href="#">职场新观点</a><span class="p2">/&nbsp;Ethics in Management</span></p>
+				    		<ul class="focuslist">
+				    			<li> 
+				    				<a href="#"><img src="${baseimg}/imgs/default/newart01.png" /></a>
+				    				<a href="#" class="articleTit">国家发改委社会发展司司长王威等3人接受调查拷贝</a>
+				    			</li>
+				    			<li> 
+				    				<a href="#"><img src="${baseimg}/imgs/default/newart04.png" /></a>
+				    				<a href="#" class="articleTit">国家发改委社会发展司司长王威等3人接受调查拷贝</a>
+				    			</li>
+				    			<li> 
+				    				<a href="#"><img src="${baseimg}/imgs/default/newart03.png" /></a>
+				    				<a href="#" class="articleTit">《中国制造2025》需要新思维</a>
+				    			</li>
+				    		</ul>
+				    	</div>
+				    	<div class="focusbox">
+					    	<p><a class="p1" href="#">职场夜话</a><span class="p2">/&nbsp;Office Café</span></p>
+				    		<ul class="focuslist">
+				    			<li> 
+				    				<a href="#"><img src="${baseimg}/imgs/default/newart02.png" /></a>
+				    				<a href="#" class="articleTit">国家发改委社会发展司司长王威等3人接受调查拷贝</a>
+				    			</li>
+				    			<li> 
+				    				<a href="#"><img src="${baseimg}/imgs/default/newart03.png" /></a>
+				    				<a href="#" class="articleTit">国家发改委社会发展司司长王威等3人接受调查拷贝</a>
+				    			</li>
+				    			<li> 
+				    				<a href="#"><img src="${baseimg}/imgs/default/newart04.png" /></a>
+				    				<a href="#" class="articleTit">《中国制造2025》需要新思维</a>
+				    			</li>
+				    		</ul>
+				    	</div>
+				    </div>
+				   
+				</div>
+		   	</div>
+		</div>
+		<div class="right">
+			[#include "/WEB-INF/Views/Web/attentionus.ftl" /]
+	  		<div class="ranklist">
+	  			<h4>热门文章排行榜</h4>
+	  			<ul class="hotlist">
+	  				<li class="curshow">
+	  					<span class="normalspan ranknum">1</span>
+	  					<div class="rankright">
+	  						<a href="#" title="如何基于微信开放接口开发企业的微" class="arttile">如何基于微信开放接口开发企业的微</a>
+	  						<p class="titdescribe">
+								公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+								<a href="#">[详情]</a>
+							</p>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan ranknum">2</span>
+	  					<div class="rankright">
+	  						<a href="#" title="移动营销革命中的新策略" class="arttile">移动营销革命中的新策略</a>
+	  						<p class="titdescribe">
+								公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+								<a href="#">[详情]</a>
+							</p>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan ranknum">3</span>
+	  					<div class="rankright">
+	  						<a href="#" title="从植物大战僵尸看产品的本土化" class="arttile">从植物大战僵尸看产品的本土化</a>
+	  						<p class="titdescribe">
+								公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+								<a href="#">[详情]</a>
+							</p>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">4</span>
+	  					<div class="rankright">
+	  						<a href="#" title="习大大亲和优雅的举止" class="arttile">习大大亲和优雅的举止</a>
+	  						<p class="titdescribe">
+								公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+								<a href="#">[详情]</a>
+							</p>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">5</span>
+	  					<div class="rankright">
+	  						<a href="#" title="开放接口开发企业" class="arttile">开放接口开发企业</a>
+	  						<p class="titdescribe">
+								公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+								<a href="#">[详情]</a>
+							</p>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">6</span>
+	  					<div class="rankright">
+	  						<a href="#" title="开展煤气化装置大型气化炉、喷嘴、开工" class="arttile">开展煤气化装置大型气化炉、喷嘴、开工</a>
+	  						<p class="titdescribe">
+								公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+								<a href="#">[详情]</a>
+							</p>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">7</span>
+	  					<div class="rankright">
+	  						<a href="#" title="紧密围绕电力产业的安全、高效" class="arttile">紧密围绕电力产业的安全、高效</a>
+	  						<p class="titdescribe">
+								公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+								<a href="#">[详情]</a>
+							</p>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">8</span>
+	  					<div class="rankright">
+	  						<a href="#" title="增强我国相关领域竞争力为目标" class="arttile">增强我国相关领域竞争力为目标</a>
+	  						<p class="titdescribe">
+								公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+								<a href="#">[详情]</a>
+							</p>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">9</span>
+	  					<div class="rankright">
+	  						<a href="#" title="国神集团和丰煤电公司" class="arttile">国神集团和丰煤电公司</a>
+	  						<p class="titdescribe">
+								公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+								<a href="#">[详情]</a>
+							</p>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">10</span>
+	  					<div class="rankright">
+	  						<a href="#" title="黄骅港务公司顺利通过河北省安全生产" class="arttile">黄骅港务公司顺利通过河北省安全生产</a>
+	  						<p class="titdescribe">
+								公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+								<a href="#">[详情]</a>
+							</p>
+	  					</div>
+	  				</li>
+	  			</ul>
+	  		</div>
+	  		<div class="ranklist">
+	  			<h4>热门话题排行榜</h4>
+	  			<ul class="hotlist">
+	  				<li class="curshow">
+	  					<span class="normalspan ranknum">1</span>
+	  					<div class="rankright">
+	  						<a href="#" title="如何基于微信开放接口开发企业的微" class="arttile">如何基于微信开放接口开发企业的微</a>
+	  						<div class="titdescribe">
+	  							<span>发起人：王文竹</span>
+	  							<span class="comment">
+	  								<a href="#">
+	  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+	  									88
+	  								</a>
+	  							</span>
+	  						</div>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan ranknum">2</span>
+	  					<div class="rankright">
+	  						<a href="#" title="移动营销革命中的新策略" class="arttile">移动营销革命中的新策略</a>
+	  						<div class="titdescribe">
+	  							<span>发起人：王文竹</span>
+	  							<span class="comment">
+	  								<a href="#">
+	  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+	  									88
+	  								</a>
+	  							</span>
+	  						</div>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan ranknum">3</span>
+	  					<div class="rankright">
+	  						<a href="#" title="从植物大战僵尸看产品的本土化" class="arttile">从植物大战僵尸看产品的本土化</a>
+	  						<div class="titdescribe">
+	  							<span>发起人：王文竹</span>
+	  							<span class="comment">
+	  								<a href="#">
+	  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+	  									88
+	  								</a>
+	  							</span>
+	  						</div>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">4</span>
+	  					<div class="rankright">
+	  						<a href="#" title="习大大亲和优雅的举止" class="arttile">习大大亲和优雅的举止</a>
+	  						<div class="titdescribe">
+	  							<span>发起人：王文竹</span>
+	  							<span class="comment">
+	  								<a href="#">
+	  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+	  									88
+	  								</a>
+	  							</span>
+	  						</div>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">5</span>
+	  					<div class="rankright">
+	  						<a href="#" title="开放接口开发企业" class="arttile">开放接口开发企业</a>
+	  						<div class="titdescribe">
+	  							<span>发起人：王文竹</span>
+	  							<span class="comment">
+	  								<a href="#">
+	  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+	  									88
+	  								</a>
+	  							</span>
+	  						</div>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">6</span>
+	  					<div class="rankright">
+	  						<a href="#" title="开展煤气化装置大型气化炉、喷嘴、开工" class="arttile">开展煤气化装置大型气化炉、喷嘴、开工</a>
+	  						<div class="titdescribe">
+	  							<span>发起人：王文竹</span>
+	  							<span class="comment">
+	  								<a href="#">
+	  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+	  									88
+	  								</a>
+	  							</span>
+	  						</div>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">7</span>
+	  					<div class="rankright">
+	  						<a href="#" title="紧密围绕电力产业的安全、高效" class="arttile">紧密围绕电力产业的安全、高效</a>
+	  						<div class="titdescribe">
+	  							<span>发起人：王文竹</span>
+	  							<span class="comment">
+	  								<a href="#">
+	  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+	  									88
+	  								</a>
+	  							</span>
+	  						</div>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">8</span>
+	  					<div class="rankright">
+	  						<a href="#" title="增强我国相关领域竞争力为目标" class="arttile">增强我国相关领域竞争力为目标</a>
+	  						<div class="titdescribe">
+	  							<span>发起人：王文竹</span>
+	  							<span class="comment">
+	  								<a href="#">
+	  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+	  									88
+	  								</a>
+	  							</span>
+	  						</div>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">9</span>
+	  					<div class="rankright">
+	  						<a href="#" title="国神集团和丰煤电公司" class="arttile">国神集团和丰煤电公司</a>
+	  						<div class="titdescribe">
+	  							<span>发起人：王文竹</span>
+	  							<span class="comment">
+	  								<a href="#">
+	  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+	  									88
+	  								</a>
+	  							</span>
+	  						</div>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">10</span>
+	  					<div class="rankright">
+	  						<a href="#" title="黄骅港务公司顺利通过河北省安全生产" class="arttile">黄骅港务公司顺利通过河北省安全生产</a>
+	  						<div class="titdescribe">
+	  							<span>发起人：王文竹</span>
+	  							<span class="comment">
+	  								<a href="#">
+	  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+	  									88
+	  								</a>
+	  							</span>
+	  						</div>
+	  					</div>
+	  				</li>
+	  			</ul>
+	  		</div>
+	  		<div class="ranklist">
+	  			<h4>论战排行榜</h4>
+	  			<ul class="hotlist">
+	  				<li>
+	  					<span class="normalspan ranknum">1</span>
+	  					<div class="rankright">
+	  						<a href="#" title="如何基于微信开放接口开发企业的微" class="arttile">如何基于微信开放接口开发企业的微</a>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan ranknum">2</span>
+	  					<div class="rankright">
+	  						<a href="#" title="移动营销革命中的新策略" class="arttile">移动营销革命中的新策略</a>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan ranknum">3</span>
+	  					<div class="rankright">
+	  						<a href="#" title="从植物大战僵尸看产品的本土化" class="arttile">从植物大战僵尸看产品的本土化</a>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">4</span>
+	  					<div class="rankright">
+	  						<a href="#" title="习大大亲和优雅的举止" class="arttile">习大大亲和优雅的举止</a>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">5</span>
+	  					<div class="rankright">
+	  						<a href="#" title="开放接口开发企业" class="arttile">开放接口开发企业</a>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">6</span>
+	  					<div class="rankright">
+	  						<a href="#" title="开展煤气化装置大型气化炉、喷嘴、开工" class="arttile">开展煤气化装置大型气化炉、喷嘴、开工</a>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">7</span>
+	  					<div class="rankright">
+	  						<a href="#" title="紧密围绕电力产业的安全、高效" class="arttile">紧密围绕电力产业的安全、高效</a>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">8</span>
+	  					<div class="rankright">
+	  						<a href="#" title="增强我国相关领域竞争力为目标" class="arttile">增强我国相关领域竞争力为目标</a>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">9</span>
+	  					<div class="rankright">
+	  						<a href="#" title="国神集团和丰煤电公司" class="arttile">国神集团和丰煤电公司</a>
+	  					</div>
+	  				</li>
+	  				<li>
+	  					<span class="normalspan">10</span>
+	  					<div class="rankright">
+	  						<a href="#" title="黄骅港务公司顺利通过河北省安全生产" class="arttile">黄骅港务公司顺利通过河北省安全生产</a>
+	  					</div>
+	  				</li>
+	  			</ul>
+	  		</div>
+		</div>
+	</div>	
+	
+</div>
+	<script type="text/javascript">
+		$(function(){
+			$(".hotlist li").hover(function(){
+				$(this).siblings().removeClass("curshow");
+				$(this).addClass("curshow");
+			});
+		});
+	</script>
+</body>
+</html>
+
+
+
+

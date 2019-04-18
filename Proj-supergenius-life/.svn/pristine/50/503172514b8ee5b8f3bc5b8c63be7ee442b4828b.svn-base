@@ -1,0 +1,124 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/Public.ftl" as p]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>${title!'天才人生'}</title>
+	<link rel="stylesheet" href="${basecss}/css/default/index.css">
+	<script type="text/javascript" src="${basejs}/js/pages/scroll.js"></script>
+</head>
+<body>
+	<div class="contentLeft">
+		<div class="memberOnly">
+			<h2>
+				会员专区
+				<a 
+				[#if me??]
+	        		[#if me.getIsUser()] class="all" href="${baseimg}/problem/${cid}_1"[#else]href="javascript:;" class="all normalUsertip"[/#if]
+	        	[#else]
+	        		href="javascript:;" class="pop-up all"
+	        	[/#if]>全部</a>
+			</h2>
+			<ul class="signList">
+				[#if problemList??]
+					[#list problemList as item]
+						<li>
+							<a [#if me??][#if me.getIsUser()]href="${base}/problem/detail/${item.cid}/${item.oid}"[#else]class="normalUsertip"[/#if][#else] class="pop-up"[/#if]>${item.title}</a>
+							[#if item.state != 0]
+								<span>专家已点评</span>
+							[/#if]
+						</li>
+					[/#list]
+				[/#if]
+			</ul>
+		</div>
+		<div class="articles">
+			<h3>文章</h3>
+			<ul class="tabBox">
+				[#if list??]
+					[#list list as article]
+						<li>
+							<a href="${base}/article/${article.cid}/${(article.oid)?c}" class="articleTitle">
+								${article.title}
+							</a>
+							<p class="descripe">
+								[#if article.summary==""]
+									[@p.TrimSubstring content="${article.content}" mylength=80 /]
+								[#else]
+									[@p.TrimSubstring content="${article.summary}" mylength=80 /]
+								[/#if]
+							</p>
+							<div class="pubTime">
+								[@p.mytime datetime="${article.createtimeStr}"/]
+								<div class="operateBox">
+									<a href="${base}/article/${article.cid}/${(article.oid)?c}" class="littleicon">
+										<img src="${baseimg}/imgs/default/clickcount.png">
+										${article.clickcount}
+									</a>
+									<a href="${base}/article/${article.cid}/${(article.oid)?c}" class="littleicon">
+										<img src="${baseimg}/imgs/default/heart.png">
+										${article.prizecount}
+									</a>
+								</div>
+							</div>
+						</li>
+					[/#list]
+				[/#if]
+			</ul>
+		</div>
+	</div>
+	<div class="contentRight">
+		<div class="vdbox">
+			[#if adList??]
+				[#list adList as item]
+					<a href="${item.originurl}"><img src="${webimg}/${item.content}" alt="${item.name}" /></a>
+				[/#list]
+			[/#if]
+		</div>
+		<div class="workplaceitem">
+			<h3>
+				热门文章
+			</h3>
+			<ul class="hotArticles">
+				[#if hotArticleList??]
+					[#list hotArticleList as item]
+						<li>
+							<a href="${base}/article/${item.cid}/${(item.oid)?c}">
+								${item.title}
+							</a>
+							<span class="flashtime">[@p.mytime datetime="${item.createtimeStr}"/]</span>
+						</li>
+					[/#list]
+				[/#if]
+		    </ul>
+		</div>
+	</div>
+	<script>
+		$(function(){
+			$.fn.scrollHandle({
+				obj: window,
+				fun: loadmore
+			})
+		})
+		
+		var prePage = 2;
+		var pagenum = 3;
+		// 加载更多文章
+		function loadmore() {
+			var	url = "${base}/ajax/otherpage/catalogue/${cid}";
+			if(prePage != pagenum) {
+			    prePage = pagenum;
+				$.get(url, {pagenum:pagenum}, function(data){
+					if(data.trim() == ""){// 没有更多内容
+						$(window).unbind("scroll", defaultScrollHandler);
+						return false;
+					}
+					$(".tabBox").append(data);
+					pagenum+=1;
+				});
+			}
+		}
+	</script>
+</body>
+</html>

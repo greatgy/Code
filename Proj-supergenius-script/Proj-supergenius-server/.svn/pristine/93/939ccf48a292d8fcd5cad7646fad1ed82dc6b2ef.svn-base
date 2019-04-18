@@ -1,0 +1,47 @@
+package com.supergenius.server.finance.helper;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.genius.server.base.helper.BaseHP;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.finance.entity.DebateArticle;
+
+/**
+ * 论战文章HP
+ *
+ * @author ShangJianguo
+ */
+public class BaseDebateArticleHP extends BaseHP{
+	
+	/**
+	 * 把字符串转化为可以插入的对象
+	 * @param articles
+	 * @param adminuid
+	 * @param debateuid
+	 * @return
+	 * @author ShangJianguo
+	 */
+	public static List<DebateArticle> getArticleList(String[] articles, String adminuid){
+		List<DebateArticle> articleList = null;
+		if (articles != null) {
+			articleList = new ArrayList<>();
+			DebateArticle article = null;
+			for (String item : articles) {
+				article = new DebateArticle();
+				String[] articlearray = item.split(MapperDict.slash);
+				article.setFinaceuid(articlearray[0]);
+				article.setTitle(articlearray[1]);
+				if ("true".equals(articlearray[2])) {
+					article.setIsred(true);
+				}else if("false".equals(articlearray[2])){
+					article.setIsred(false);
+				}
+				article.setUseruid(articlearray[3]);
+				article.setAdminuid(adminuid);
+				articleList.add(article);
+			}
+		}
+		return articleList;
+	}
+}

@@ -1,0 +1,11 @@
+package com.supergenius.server.finance.helper;
+
+import com.genius.server.base.helper.BaseHP;
+
+/**
+ * 消息HP
+ * @author YuYingJie
+ */
+public class BaseMessageHP extends BaseHP {
+
+}

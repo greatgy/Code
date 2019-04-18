@@ -1,0 +1,344 @@
+[#ftl]
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>${title!'梦之初心--课程推荐'}</title>
+	<meta name="Keywords" content="天才人生,课程推荐" />
+	<meta name="Description" content="天才人生,课程推荐" />
+	<!--# include file="/include/headcommon.html" -->
+	<link rel="stylesheet" href="/css/default/index.css">
+</head>
+<body>
+	<div class="header_fix">
+	    <!--# include file="/include/headertopnav.html" -->
+	</div>
+	<div class="containerBox">
+		<ul class="classStage">
+			<li>
+				<div class="stages">
+					<img src="/imgs/default/courseUser.png" alt="" />
+					初一
+				</div>
+				<div class="courses">
+					[#if sevenList??]
+						[#assign i = 1]
+						[#list sevenList as subject]
+							[#if i < 5]
+								<a href="./totalCourse.html">${subject.name}</a>
+							[/#if]
+							[#assign i = i + 1]
+						[/#list]
+						[#if sevenList?size > 4]
+							<a href="./totalCourse.html">更多</a>
+						[/#if]
+					[/#if]
+				</div>
+			</li>
+			<li>
+				<div class="stages">
+					<img src="/imgs/default/courseUser.png" alt="" />
+					初二
+				</div>
+				<div class="courses">
+					[#if eightList??]
+						[#assign i = 1]
+						[#list eightList as subject]
+							[#if i < 5]
+								<a href="./totalCourse.html">${subject.name}</a>
+							[/#if]
+							[#assign i = i + 1]
+						[/#list]
+						[#if eightList?size > 4]
+							<a href="./totalCourse.html">更多</a>
+						[/#if]
+					[/#if]
+				</div>
+			</li>
+			<li>
+				<div class="stages">
+					<img src="/imgs/default/courseUser.png" alt="" />
+					初三
+				</div>
+				<div class="courses">
+					[#if nineList??]
+						[#assign i = 1]
+						[#list nineList as subject]
+							[#if i < 5]
+								<a href="./totalCourse.html">${subject.name}</a>
+							[/#if]
+							[#assign i = i + 1]
+						[/#list]
+						[#if nineList?size > 4]
+							<a href="./totalCourse.html">更多</a>
+						[/#if]
+					[/#if]
+				</div>
+			</li>
+			<li class="memberPart">
+				<div class="stages">
+					<img src="/imgs/default/partmember.png" alt="会员专区" title="会员专区" />
+				</div>
+				<div class="courses">
+					<a
+					[#if me??]
+	            		[#if me.getIsUser()]
+	            			<a href="${base}/problem/32_1">语文</a>
+	            			<a href="${base}/problem/32_1">数学</a>
+	            			<a href="${base}/problem/32_1">英语</a>
+	            			<a href="${base}/problem/32_1">物理</a>
+	            			<a href="${base}/problem/32_1">更多</a>
+	            		[#else]
+	            			<a href="javascript:;" class="normalUsertip">语文</a>
+	            			<a href="javascript:;" class="normalUsertip">数学</a>
+	            			<a href="javascript:;" class="normalUsertip">英语</a>
+	            			<a href="javascript:;" class="normalUsertip">物理</a>
+	            			<a href="javascript:;" class="normalUsertip">更多</a>
+	            		[/#if]
+	            	[#else]
+	            		<a class="pop-up" href="javascript:;">语文</a>
+						<a class="pop-up" href="javascript:;">数学</a>
+						<a class="pop-up" href="javascript:;">英语</a>
+						<a class="pop-up" href="javascript:;">物理</a>
+						<a class="pop-up" href="javascript:;">更多</a>
+	            	[/#if]
+				</div>
+			</li>
+		</ul>
+		<div class="courseShow">
+			<div class="classItem">
+				<h3>
+					<span><i class="specialNmuber">六</i>年级</span>(四年制)
+					[#if me??]
+						<a class="asklink" href="${base}/addproblem/${cid}">+我要提问</a>
+					[#else]
+						<a class="asklink pop-up" >+我要提问</a>
+					[/#if]
+				</h3>
+				<div class="courseChose">
+					<ul class="tabCourses">
+						[#if sixList??]
+							[#assign i = 1]
+							[#list sixList as subject]
+								<li data-grade="1" data-id="${subject.sid}" class="cur [#if i == 1] curCourse[/#if]">${subject.name}</li>
+								[#assign i = i + 1]
+							[/#list]
+						[/#if]
+					</ul>
+					<div class="versionCourse">
+						[#if sixCourseList??]
+							[#assign i = 1]
+							[#list sixCourseList as courtse]
+								[#if i < 5]
+									<a href="javascript:;" data-uid="${courtse.uid}" class="courseDetail">
+										<img src="${webimg}${courtse.imgmedium}" alt="${courtse.name}" title="${courtse.name}" />
+										<p>${courtse.name}</p>
+									</a>	
+								[#elseif i == 5]
+									<a href="${base}/course/morecourse?sid=${courtse.sid}&grade=${courtse.grade}" class="moreCourse">&gt;</a>
+								[/#if]
+								[#assign i = i + 1]
+							[/#list]
+						[/#if]
+					</div>
+				</div>
+			</div>
+			<div class="classItem">
+				<h3>
+					<span><i class="specialNmuber">初</i>一</span>
+					[#if me??]
+						<a class="asklink" href="${base}/addproblem/${cid}">+我要提问</a>
+					[#else]
+						<a class="asklink pop-up" >+我要提问</a>
+					[/#if]
+				</h3>
+				<div class="courseChose">
+					<ul class="tabCourses">
+						[#if sevenList??]
+							[#assign i = 1]
+							[#list sevenList as subject]
+								<li data-grade="2" data-id="${subject.sid}" class="cur [#if i == 1] curCourse[/#if]">${subject.name}</li>
+								[#assign i = i + 1]
+							[/#list]
+						[/#if]
+					</ul>
+					<div class="versionCourse">
+						[#if sevenCourseList??]
+							[#assign i = 1]
+							[#list sevenCourseList as courtse]
+								[#if i < 5]
+									<a href="javascript:;" data-uid="${courtse.uid}" class="courseDetail">
+										<img src="${webimg}${courtse.imgmedium}" alt="${courtse.name}" title="${courtse.name}" />
+										<p>${courtse.name}</p>
+									</a>	
+								[#elseif i == 5]
+									<a href="${base}/course/morecourse?sid=${courtse.sid}&grade=${courtse.grade}" class="moreCourse">&gt;</a>
+								[/#if]
+								[#assign i = i + 1]
+							[/#list]
+							
+						[/#if]
+					</div>
+				</div>
+			</div>
+			<div class="classItem">
+				<h3>
+					<span><i class="specialNmuber">初</i>二</span>
+					[#if me??]
+						<a class="asklink" href="${base}/addproblem/${cid}">+我要提问</a>
+					[#else]
+						<a class="asklink pop-up" >+我要提问</a>
+					[/#if]
+				</h3>
+				<div class="courseChose">
+					<ul class="tabCourses">
+						[#if eightList??]
+							[#assign i = 1]
+							[#list eightList as subject]
+								<li data-grade="2" data-id="${subject.sid}" class="cur [#if i == 1] curCourse[/#if]">${subject.name}</li>
+								[#assign i = i + 1]
+							[/#list]
+						[/#if]
+					</ul>
+					<div class="versionCourse">
+						[#if eightCourseList??]
+							[#assign i = 1]
+							[#list eightCourseList as courtse]
+								[#if i < 5]
+									<a href="javascript:;" data-uid="${courtse.uid}" class="courseDetail">
+										<img src="${webimg}${courtse.imgmedium}" alt="${courtse.name}" title="${courtse.name}" />
+										<p>${courtse.name}</p>
+									</a>	
+								[#elseif i == 5]
+									<a href="${base}/course/morecourse?sid=${courtse.sid}&grade=${courtse.grade}" class="moreCourse">&gt;</a>
+								[/#if]
+								[#assign i = i + 1]
+							[/#list]
+						[/#if]
+					</div>
+				</div>
+			</div>
+			<div class="classItem">
+				<h3>
+					<span><i class="specialNmuber">初</i>三</span>
+					[#if me??]
+						<a class="asklink" href="${base}/addproblem/${cid}">+我要提问</a>
+					[#else]
+						<a class="asklink pop-up" >+我要提问</a>
+					[/#if]
+				</h3>
+				<div class="courseChose">
+					<ul class="tabCourses">
+						[#if nineList??]
+							[#assign i = 1]
+							[#list nineList as subject]
+								<li data-grade="2" data-id="${subject.sid}" class="cur [#if i == 1] curCourse[/#if]">${subject.name}</li>
+								[#assign i = i + 1]
+							[/#list]
+						[/#if]
+					</ul>
+					<div class="versionCourse">
+						[#if nineCourseList??]
+							[#assign i = 1]
+							[#list nineCourseList as courtse]
+								[#if i < 5]
+									<a href="javascript:;" data-uid="${courtse.uid}" class="courseDetail">
+										<img src="${webimg}${courtse.imgmedium}" alt="${courtse.name}" title="${courtse.name}" />
+										<p>${courtse.name}</p>
+									</a>	
+								[#elseif i == 5]
+									<a href="${base}/course/morecourse?sid=${courtse.sid}&grade=${courtse.grade}" class="moreCourse">&gt;</a>
+								[/#if]
+								[#assign i = i + 1]
+							[/#list]
+						[/#if]
+					</div>
+				</div>
+			</div>
+			<div class="classItem">
+				<h3 class="freepart">
+					<span><i class="specialNmuber">自</i>由交流区</span>
+				</h3>
+				<ul class="quizList askQuestionList">
+					[#if problemList??]
+					[#list problemList as item]
+						<li>
+							<img src="${item.user.useravatar}" [#if item.user.getIsUser()]class="memberUserimg"[/#if] alt="${item.user.username}" title="${item.user.username}" />
+							[#if item.user.getIsUser()]<img src="${baseimg}/imgs/default/prince.png" class="princeimg" alt="" />[/#if]
+							<a 
+							[#if me??]
+			            		[#if me.getIsUser()]href="${base}/problem/detail/${(item.cid)?c}/${(item.oid)?c}"[#else]href="javascript:;" class="normalUsertip"[/#if]
+			            	[#else]
+			            		href="javascript:;" class="pop-up"
+			            	[/#if]>
+							<div class="col-xs-8 col-sm-9">
+								<h4>${item.title}[#if item.state==2]<span class="answerStatus">专家已解答</span>[/#if]</h4>
+								<p>
+								[#if item.content??]
+								[#else]
+									[@p.TrimSubstring content="${item.content}" mylength=50 /]
+								[/#if]
+								</p>
+							</div>
+							<div class="col-xs-4 col-sm-3">
+								<div class="readitem col-sm-6 col-xs-6">
+									阅读
+									<span class="readNum">${item.clickcount}</span>	
+								</div>
+								<div class="readitem col-sm-6 col-xs-6">
+									回答
+									<span class="readNum">${item.commentscount}</span>	
+								</div>
+							</div>
+							</a>
+						</li>
+					[/#list]
+					[/#if]
+				</ul>
+			</div>
+		</div>
+	</div>
+	<!-- 书籍信息弹窗 -->
+	<div class="mask"></div><!-- 高度需自行计算赋值 -->
+	<div class="bookDetail">
+	</div>
+	<!-- # include file="/include/footer.html" -->
+	 <script type="text/javascript" src="/js/libs/mask.js"></script>
+	<script type="text/javascript">
+		$(function () {
+			$(document).on('click', ".courseDetail", function(){
+				$(".mask").show();
+					var uid=$(this).data("uid");
+					$.get("${base}/ajax/course/detail", {"uid":uid}, function(data){
+						$(".bookDetail").html(data);
+					});
+					$(".bookDetail").show();
+		     });
+			$(".mask").click(function () {
+				$(".mask").hide();
+				$(".bookDetail").hide();
+			})
+			$(document).on('click', ".closeBtn", function(){
+				$(".mask").hide();
+				$(".bookDetail").hide();
+			})
+		});
+		//点击更多
+			$(document).on('click', ".moreCourse", function(){
+					var sid=$(this).data("id");
+					var grade=$(this).data("grade");
+					
+					
+		     });
+		//点击科目，选中并后台请求相对应的课程
+			$(".cur").click(function(){
+				$(this).addClass("curCourse").siblings().removeClass("curCourse");
+				var sid=$(this).data("id");
+				var grade=$(this).data("grade");
+				var obj = $(this).parent().siblings(".versionCourse");
+				$.get("${base}/ajax/course", {"grade":grade,"sid":sid}, function(data){
+					$(obj).html(data);
+				});
+			})
+	</script>
+</body>
+</html>

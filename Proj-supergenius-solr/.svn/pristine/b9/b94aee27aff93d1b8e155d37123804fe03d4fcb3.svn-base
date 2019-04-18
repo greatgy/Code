@@ -1,0 +1,299 @@
+.lead {
+    text-align: center;
+}
+.topLogo img {
+	width: auto;
+    height: auto;
+}
+form {
+	margin: 40px auto;
+    text-align: center;
+}
+form input {
+	width: 76%;
+    border: 1px solid #a0a0a0;
+    height: 32px;
+    padding: 5px 2%;
+    line-height: 22px;
+    overflow: hidden;
+}
+form input:focus {
+	border: 1px solid #5d98da;
+}
+.submit {
+	background: #0065c9;
+    text-align: center;
+    color: #fff;
+    font-size: 1rem;
+    height: 45px;
+    padding: 0 15px;
+    margin-left: -5px;
+    letter-spacing: 2px;
+    border-radius: 1px;
+}
+.hotSearch {
+	margin-bottom: 30px;
+    width: 87%;
+}
+.hotSearch h3 {
+	margin-bottom: 20px;
+    font-size: 1.1rem;
+    color: #333;
+}
+.hotSearch h3 img {
+    width: 30px;
+    height: 20px;
+    overflow: hidden;
+    vertical-align: top;
+    margin-right: 3px;
+}
+.searchitem li {
+	display: inline-block;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #7d7d7d;
+    border-radius: 6px;
+}
+.searchitem li a {
+	display: block;
+	padding: 5px 10px;
+	font-size: 1rem;
+    color: #666666;
+}
+.searchitem li:hover {
+	border: 1px solid #ff3333;
+}
+.searchitem li:hover a {
+	color: #ff3333;
+}
+.recommend {
+    margin-bottom: 20px;
+}
+.recommend img {
+    width: 185px;
+    height: 126px;
+    overflow: hidden;
+    margin-right: 2%;
+}
+/* second.html */
+.searchTop {
+    margin-top: 20px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    text-align: left;
+    width: 100%;
+    height: 60px;
+    overflow: hidden;
+    border-bottom: 1px solid #ddd;
+    line-height: 60px;
+}
+.logoimg {
+    display: inline-block;
+    width: 10%;
+    overflow: hidden;
+    vertical-align: top;
+}
+.logoimg img {
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+    vertical-align: middle;
+}
+.searchForm {
+	display: inline-block;
+    width: 80%;
+    margin: 0;
+    vertical-align: middle;
+    text-align: left;
+    margin-left: 1%;
+}
+.searchForm input {
+	width: 56%;
+}
+.choseTab {
+    margin: 20px auto 20px 120px;
+}
+.selectPart {
+    height: 40px;
+    line-height: 40px;
+    margin-bottom: 20px;
+    background: #efefef;
+    text-align: left;
+    padding-left: 6%;
+}
+.selectPart li {
+    display: inline-block;
+}
+.selectPart a {
+	padding: 5px 15px;
+    font-size: 1rem;
+    color: #666666;
+}
+.selectPart .currentPart {
+    border-bottom: 2px solid #1b52ab;
+    color: #000000;
+    font-weight: 600;
+}
+.selectPart a:hover {
+	color: #000;
+}
+.detailLeft {
+    display: inline-block;
+    width: 60%;
+}
+.curResult li {
+	padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+.resultTitle {
+    padding: 0;
+    color: #3366ff;
+    font-size: 1.1rem;
+    line-height: 24px;
+}
+.resultTitle:hover {
+    color: #0033cc;
+}
+.introduce {
+    margin: 8px 0 2px;
+    color: #666666;
+    line-height: 22px;
+    font-size: 0.85rem;
+}
+.detailRight {
+    width: 30%;
+    display: inline-block;
+    vertical-align: top;
+    float: right;
+    border-left: 1px solid #ddd;
+    padding-left: 2%;
+}
+.detailRight .hotSearch {
+	width: auto;
+}
+.detailRight .recommend img {
+	margin-bottom: 20px;
+	width: 70%;
+    height: auto;
+}
+.load {
+	text-align: center;
+	margin: 30px;
+	font-size: .9rem;
+	color: #888;
+	letter-spacing: 1px
+}
+
+.nomore {
+	margin: 40px 0;
+	text-align: center;
+	font-size: .9rem;
+	color: #999
+}
+
+.line {
+	display: inline-block;
+	width: 35%;
+	height: 1px;
+	background: #acacac;
+	vertical-align: middle
+}
+.IsEmpty {
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	font-size: 18px;
+	color: #b3b3b3;
+	line-height: 500px
+}
+.keywordHighlight em {
+	color: #ff2424;
+	font-style: normal
+}
+
+
+@media screen and (max-width: 767px) {
+	.containerBox {
+		margin: 25px auto 40px;
+	}
+	form {
+		text-align: left;
+	}
+	form input {
+		width: 73%;
+    	height: 28px;
+	}
+	.submit {
+		height: 40px;
+	    vertical-align: top;
+	    font-size: 0.96rem;
+	    padding: 0 10px;
+	}
+	.topLogo img {
+		max-width: 160px;
+	}
+	.searchitem li {
+		margin-right: 5%;
+	}
+	.hotSearch {
+		width: 100%;
+	}
+	.member {
+	    display: inline-block;
+	    width: 48%;
+	    overflow: hidden;
+	    margin-right: 1%;
+	}
+	.recommend img {
+	    width: 100%;
+	    height: auto;
+	    min-height: 91px;
+	}
+	/* second.html */
+	.searchTop {
+		height: auto;
+    	line-height: 20px;
+	}
+	.searchTop .logoimg {
+		width: 25%;
+	    vertical-align: middle;
+	    height: auto;
+	}
+	.searchTop .logoimg img {
+		vertical-align: top;
+	}
+	.searchForm {
+		width: 70%;
+    	line-height: 20px;
+	}
+	.searchForm input {
+		width: 56%;
+    	height: 20px;
+	}
+	.searchForm .submit {
+		height: 32px;
+	}
+	.choseTab {
+		width: 90%;
+	}
+	.detailLeft {
+		width: 100%;
+    	margin-top: 20px;
+	}
+	.detailRight {
+		width: 100%;
+    	margin-top: 30px;
+	}
+	.selectPart a {
+		padding: 5px 15px;
+		font-size: 1rem;
+		padding: 5px;
+	}
+	.resultTitle {
+		font-size: 0.98rem;
+	}
+	.selectPart {
+		height: auto;
+		margin-bottom: 0;
+	}
+}

@@ -1,0 +1,570 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+[#import "/WEB-INF/FtlLib/Macro/Public.ftl" as p]
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>${title!'话题详情'}</title>
+	<link href="${basecss}/css/default/pages/topicoid.css" type="text/css" rel="stylesheet"/>
+	<script type="text/javascript" src="${basejs}/js/libs/comment-1.0.0.js"></script>
+	<style type="text/css">
+		.com_info {height:auto;}
+		.time {float:left;}
+		.reply_name {color:#3698dc;}
+		.contr_pic_t{widht:45px;height:45px;}
+		.comment_info{height:auto;}
+	</style>
+	<script type="text/javascript">
+		var params = {
+			content: "",
+			fromuid: "",
+			channel: ""
+		}
+		
+		var commentdefault = {
+			maxlength: 300
+		}
+		
+		var me = {
+			showname: "${me.showname!"游客"}",
+			imglittle: "${me.avatar}",
+			oid:"${me.oid}",
+			defaultImg: "${baseimg}/imgs/web/noavatar.png"
+		}
+		
+		function beforeSubmitHandler(obj){
+			params = {};
+			params.fromuid = '${bean.uid}';
+			params.channel = "topic";
+			params.content = $(obj).siblings(".comment_textarea").val();
+			var touid = $(obj).parent().parent().parent().data("uid");
+			if(typeof touid != "undefined"){
+				params.touid = touid;
+				params.touseruid = $(obj).parent().parent().parent().data("touseruid");
+			}
+			var topuid = $(obj).parent().parent().parent().data("topuid");
+			if(typeof topuid != "undefined"){
+				params.topuid = topuid;
+			}
+			var fromusername = $("input[name='fromusername']").val();
+            if(fromusername != ""){
+                params.fromusername = fromusername;
+            }
+		}
+		
+		function afterSubmitHandler(result, obj){
+			if(result.success){
+				$(".comment_textarea").val("");
+				addComment(result, obj);
+				$(".reply_title").html("");
+				registerPraise();
+			}else{
+				alert("添加失败");
+			}
+		}
+		
+		function submitCommentHandler(obj){
+			beforeSubmitHandler(obj);
+			if(params.content == ""){
+				alert("评论内容不能为空");
+				return;
+			}
+			if(params.content.length >= commentdefault.maxlength){
+				alert("评论内容最多" + commentdefault.maxlength +　"个字");
+				return;
+			}
+			$.post("${base}/ajax/comment/{0}_{1}".format(params.channel, params.fromuid), params,function(data){
+				afterSubmitHandler(data, obj);
+			});
+		}
+		function reply(obj){
+			if($(".comment_textarea").val() != '') {
+				if(!confirm("您确定要放弃现在的评论吗？")){
+					return;
+				}else{
+					$(".comment_textarea").val('');
+				}
+			}
+			var replytxt = "回复&nbsp;<span class='reply_name' style='margin-right:0;'>" + $(obj).data("toname") + "</span>：";
+			$(".reply_title").html(replytxt).removeClass("hd");
+			window.location.hash = "reply_form";
+			$(".comment_textarea").focus();
+			
+		}
+		function addComment(result, obj){
+			var html = "";
+			html += '<div class="com_list com_list_right">';
+			html += '<a href=""><img width="45px" height="45px" class="right"';
+			if(me.imglittle.trim() != ""){
+				html += 'src="${baseimg}' + me.imglittle + '">';
+			}else{
+				html += 'src="' + me.defaultImg + '" />';
+			} 
+			html += '</a><div class="com_info right" >';
+			html += '<h3><a href="">' + result.bean.fromusername + '</a>&nbsp;&nbsp;刚刚</h3>';
+			html += '<p class="com_con">' + result.bean.content +'</p>'
+			html += '<p class="com_reply">';
+			html += '<span class="reply"><a href="javascript:void(0)" id="btnprizecomments_${(me.oid)!"0"}_'+result.bean.uid+'" data-counter=".prizecounter">'
+				 + '<img src="${baseimg}/imgs/default/heart_02.png" /><span class="prizecounter">(0)</span></a></span>';
+			html += '<a href="javascript:void(0);" onclick="reply(this);" data-toname="' + result.bean.fromusername +'">回复</a>';
+			html += '</p></div><div class="clear"></div></div>';
+			if($("#list_one_1 .com_list").length == 0){
+				$(".db_add").after(html);
+			}else{
+				$("#list_one_1 .com_list").last().after(html);
+			}
+			$("#list_one_1 .nothing").addClass("hd");
+		}
+	</script>
+</head>
+<body>
+	<div class="centerbox">
+		<div class="topic02">
+			<div class="t02_lt">
+				<div class="t02_lt_h430">
+					<img src="${baseimg}/imgs/default/topiclfimg.png" class="title_img" />
+					<div class="t02_h430_imgs">
+						<h3>激励你的人生鸡汤是什么？</h3>
+						<div class="creatime">创建于2015-07-13</div>
+						<p>红尘渺渺，云海茫茫。当淋满尘世风雨或披荆斩棘之时，人们总会寻求一种精神力量来激励自己走向新的人生轨道。那么在你的人生之路中，最红尘渺渺，云海茫茫。当淋满尘世风雨或披荆斩棘之时，人们总会寻求一种精神力量来激励自己走向新的人生轨道。那么在你的人生之路中，最红尘渺渺，云海茫茫。当淋满尘世风雨或披荆斩棘之时，人们总会寻求一种精神力量来激励自己走向新的人生轨道。那么在你的人生之路中，最</p>
+					</div>
+					<div class="record">
+						<span class="speak">发言&nbsp;&nbsp;&nbsp;29</span>
+						<span>浏览&nbsp;&nbsp;&nbsp;166</span>
+					</div>
+					<ul class="showays">
+						<li>
+							<a href="javascript:;" id="zanli">
+								<span>+<i class="zanumber">123</i></span>
+								<img src="${baseimg}/imgs/default/zan.png" alt="" class="liwaysimg liwaysimg01" />
+							</a>
+						</li>
+						<li>
+							<a href="javascript:;" id="collectli">
+								<span class="collect">收藏</span>
+								<img src="${baseimg}/imgs/default/collected.png" alt="" class="liwaysimg liwaysimg02" />
+							</a>
+						</li>
+						<li>
+							<a href="javascript:;">
+								<span>分享</span>
+								<img src="${baseimg}/imgs/default/share.png" alt="" class="liwaysimg liwaysimg03" />
+							</a>
+						</li>
+						<li>
+							<a href="javascript:;">
+								<span>评论</span>
+								<img src="${baseimg}/imgs/default/discuss.png" alt="" class="liwaysimg liwaysimg04" />
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="t02_lt_say">
+					<div class="mb">
+						有话要说
+						<span class="readtimes">1&nbsp;人讨论&nbsp;&nbsp;&nbsp;&nbsp;532&nbsp;人阅读</span>
+					</div>
+					<div class="commentbox" id="commentform">
+					  	<textarea class="contro_text"></textarea>
+					  	<div class="txtbottom">
+					  		<a href="#" class="submit_comment judge right" title="">发表评论</a>
+						  	<a href="#" class="submit_comment logafter right" title="">登录后发言</a>
+						  	<span class="idtip">您为游客，可自定义昵称：<input type="text" value="" name="fromusername" placeholder="选填" autocomplete="off"  maxlength="5"></span>
+					  	</div>
+				 	</div>
+				</div>
+				<div class="comment">
+					<div class="com_title">
+						<span class="current">全部评论</span>
+						<span>精彩评论</span>
+					</div>
+					<div class="commentitem">
+						<a href="#"><img src="${baseimg}/imgs/default/subsimg05.png" class="personimg" /></a>
+						<div class="itemright">
+							<a href="#" class="name">吧啦啦</a>
+							<p>网友微博爆料，井柏然的清秀字体被资本市场看中，某知名字库将以1000元/字的价格买断其版权。微博爆料，井柏然的清秀字体被资本市某知名字库将以1000元/字的价格买断其版权。</p>
+							<div class="itembottom">
+								<span class="time">5月27日</span>
+								<div class="comlinkbox">
+									<a href="javascript:;">
+										<img src="${baseimg}/imgs/default/msgimg.png" />
+										评论(0)
+									</a>
+									<a href="javascript:;">
+										<img src="${baseimg}/imgs/default/zanicon.png" />
+										赞(0)
+									</a>
+								</div>
+							</div>
+							<div class="inputbox">
+								<input type="text" />
+								<a href="#" class="inputbtn">提交</a>
+							</div>
+						</div>
+					</div>
+					<div class="commentitem">
+						<a href="#"><img src="${baseimg}/imgs/default/subsimg03.png" class="personimg" /></a>
+						<div class="itemright">
+							<a href="#" class="name">吧啦啦</a>
+							<p>网友微博爆料，井柏然的清秀字体被资本市场看中，某知名字库将以1000元/字的价格买断其版权。微博爆料，井柏然的清秀字体被资本市某知名字库将以1000元/字的价格买断其版权。</p>
+							<div class="itembottom">
+								<span class="time">5月27日</span>
+								<div class="comlinkbox">
+									<a href="javascript:;">
+										<img src="${baseimg}/imgs/default/msgimg.png" />
+										评论(0)
+									</a>
+									<a href="javascript:;">
+										<img src="${baseimg}/imgs/default/zanicon.png" />
+										赞(0)
+									</a>
+								</div>
+							</div>
+							<div class="inputbox">
+								<input type="text" />
+								<a href="#" class="inputbtn">提交</a>
+							</div>
+							<div class="seconditem">
+								<a href="#"><img src="${baseimg}/imgs/default/subsimg01.png" class="personimg" /></a>
+								<div class="secondright">
+									<a href="#" class="name">吧啦啦</a>
+									<p>网友微博爆料，井柏然的清秀字体被资本市场看中，某知名字库将以1000元/字的价格买断其版权。微博爆料，井柏然的清秀字体被资本市某知名字库将以1000元/字的价格买断其版权。</p>
+									<div class="itembottom">
+										<span class="time">5月27日</span>
+										<div class="comlinkbox">
+											<a href="javascript:;">
+												<img src="${baseimg}/imgs/default/retret.png" />
+												回复(0)
+											</a>
+											<a href="javascript:;">
+												<img src="${baseimg}/imgs/default/zanicon.png" />
+												赞(0)
+											</a>
+										</div>
+									</div>
+									<div class="inputbox">
+										<input type="text" />
+										<a href="#" class="inputbtn">提交</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="tip">已经是全部的评论了！</div>
+			</div>
+
+			<div class="t02_rt">
+				<!- 话题发起人 -->
+				<div class="ranklist">
+					<h4>话题发起人</h4>
+					<div class="originator">
+						<a href="#"><img src="${baseimg}/imgs/default/subsimg03.png" class="picture" /></a>
+						<div class="originame">
+							<a href="#" class="specials specname">王文竹</a>
+							<span>文章&nbsp;&nbsp;<a href="#" class="specials">236</a></span>
+							<span>积分&nbsp;&nbsp;<i class="specials">58</i></span>
+						</div>
+						<div class="subs">
+							<a href="javascript:;">
+								<img src="${baseimg}/imgs/default/addsubs.png" />
+							</a>
+							<a href="javascript:;" class="addsub">订阅</a>
+						</div>
+					</div>
+				</div>
+				<!- 邀请嘉宾 -->
+				<div class="ranklist">
+					<h4>嘉宾列表</h4>
+					<ul class="t02_list_ul">
+						<li>
+							<a href="#" target="_blank"><img src="${baseimg}/imgs/default/subsimg05.png" /></a>
+							<p class="t02_list_name">娜佳</p>
+						</li>
+						<li>
+							<a href="#" target="_blank"><img src="${baseimg}/imgs/default/subsimg03.png" /></a>
+							<p class="t02_list_name">娜佳</p>
+						</li>
+						<li>
+							<a href="#" target="_blank"><img src="${baseimg}/imgs/default/subsimg02.png" /></a>
+							<p class="t02_list_name">娜佳</p>
+						</li>
+						<li>
+							<a href="#"><img src="${baseimg}/imgs/default/topic02_22.png" class="add" /></a>
+							<p class="t02_list_name">添加</p>
+						</li>
+					</ul>
+				</div>
+				<!- 最新参与用户 -->
+				<div class="ranklist">
+					<h4>最新参与用户</h4>
+					<ul class="t02_list_ul">
+						<li>
+							<a href="#" target="_blank"><img src="${baseimg}/imgs/default/subsimg02.png" /></a>
+							<p class="t02_list_name">娜佳</p>
+						</li>
+						<li>
+							<a href="#" target="_blank"><img src="${baseimg}/imgs/default/subsimg03.png" /></a>
+							<p class="t02_list_name">拖拖</p>
+						</li>
+						<li>
+							<a href="#" target="_blank"><img src="${baseimg}/imgs/default/subsimg01.png" /></a>
+							<p class="t02_list_name">西西</p>
+						</li>
+						<li>
+							<a href="#" target="_blank"><img src="${baseimg}/imgs/default/subsimg04.png" /></a>
+							<p class="t02_list_name">贝贝</p>
+						</li>
+					</ul>
+				</div>
+
+				<div class="ranklist">
+		  			<h4>热门话题排行榜</h4>
+		  			<ul class="hotlist">
+		  				<li class="curshow">
+		  					<span class="normalspan ranknum">1</span>
+		  					<div class="rankright">
+		  						<a href="#" title="如何基于微信开放接口开发企业的微" class="arttile">如何基于微信开放接口开发企业的微</a>
+		  						<div class="titdescribe">
+		  							<span>发起人：王文竹</span>
+		  							<span class="topicview">
+		  								<a href="#">
+		  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+		  									88
+		  								</a>
+		  							</span>
+		  						</div>
+		  					</div>
+		  				</li>
+		  				<li>
+		  					<span class="normalspan ranknum">2</span>
+		  					<div class="rankright">
+		  						<a href="#" title="移动营销革命中的新策略" class="arttile">移动营销革命中的新策略</a>
+		  						<div class="titdescribe">
+		  							<span>发起人：王文竹</span>
+		  							<span class="topicview">
+		  								<a href="#">
+		  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+		  									88
+		  								</a>
+		  							</span>
+		  						</div>
+		  					</div>
+		  				</li>
+		  				<li>
+		  					<span class="normalspan ranknum">3</span>
+		  					<div class="rankright">
+		  						<a href="#" title="从植物大战僵尸看产品的本土化" class="arttile">从植物大战僵尸看产品的本土化</a>
+		  						<div class="titdescribe">
+		  							<span>发起人：王文竹</span>
+		  							<span class="topicview">
+		  								<a href="#">
+		  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+		  									88
+		  								</a>
+		  							</span>
+		  						</div>
+		  					</div>
+		  				</li>
+		  				<li>
+		  					<span class="normalspan">4</span>
+		  					<div class="rankright">
+		  						<a href="#" title="习大大亲和优雅的举止" class="arttile">习大大亲和优雅的举止</a>
+		  						<div class="titdescribe">
+		  							<span>发起人：王文竹</span>
+		  							<span class="topicview">
+		  								<a href="#">
+		  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+		  									88
+		  								</a>
+		  							</span>
+		  						</div>
+		  					</div>
+		  				</li>
+		  				<li>
+		  					<span class="normalspan">5</span>
+		  					<div class="rankright">
+		  						<a href="#" title="开放接口开发企业" class="arttile">开放接口开发企业</a>
+		  						<div class="titdescribe">
+		  							<span>发起人：王文竹</span>
+		  							<span class="topicview">
+		  								<a href="#">
+		  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+		  									88
+		  								</a>
+		  							</span>
+		  						</div>
+		  					</div>
+		  				</li>
+		  				<li>
+		  					<span class="normalspan">6</span>
+		  					<div class="rankright">
+		  						<a href="#" title="开展煤气化装置大型气化炉、喷嘴、开工" class="arttile">开展煤气化装置大型气化炉、喷嘴、开工</a>
+		  						<div class="titdescribe">
+		  							<span>发起人：王文竹</span>
+		  							<span class="topicview">
+		  								<a href="#">
+		  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+		  									88
+		  								</a>
+		  							</span>
+		  						</div>
+		  					</div>
+		  				</li>
+		  				<li>
+		  					<span class="normalspan">7</span>
+		  					<div class="rankright">
+		  						<a href="#" title="紧密围绕电力产业的安全、高效" class="arttile">紧密围绕电力产业的安全、高效</a>
+		  						<div class="titdescribe">
+		  							<span>发起人：王文竹</span>
+		  							<span class="topicview">
+		  								<a href="#">
+		  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+		  									88
+		  								</a>
+		  							</span>
+		  						</div>
+		  					</div>
+		  				</li>
+		  				<li>
+		  					<span class="normalspan">8</span>
+		  					<div class="rankright">
+		  						<a href="#" title="增强我国相关领域竞争力为目标" class="arttile">增强我国相关领域竞争力为目标</a>
+		  						<div class="titdescribe">
+		  							<span>发起人：王文竹</span>
+		  							<span class="topicview">
+		  								<a href="#">
+		  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+		  									88
+		  								</a>
+		  							</span>
+		  						</div>
+		  					</div>
+		  				</li>
+		  				<li>
+		  					<span class="normalspan">9</span>
+		  					<div class="rankright">
+		  						<a href="#" title="国神集团和丰煤电公司" class="arttile">国神集团和丰煤电公司</a>
+		  						<div class="titdescribe">
+		  							<span>发起人：王文竹</span>
+		  							<span class="topicview">
+		  								<a href="#">
+		  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+		  									88
+		  								</a>
+		  							</span>
+		  						</div>
+		  					</div>
+		  				</li>
+		  				<li>
+		  					<span class="normalspan">10</span>
+		  					<div class="rankright">
+		  						<a href="#" title="黄骅港务公司顺利通过河北省安全生产" class="arttile">黄骅港务公司顺利通过河北省安全生产</a>
+		  						<div class="titdescribe">
+		  							<span>发起人：王文竹</span>
+		  							<span class="topicview">
+		  								<a href="#">
+		  									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+		  									88
+		  								</a>
+		  							</span>
+		  						</div>
+		  					</div>
+		  				</li>
+		  			</ul>
+		  		</div>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+	<script>
+		var pagenum = 1;
+		var id="#list_one_1";
+		function loadmore(){
+			$.get("${base}/ajax/comment/topic_${bean.uid}_{0}".format(pagenum),function(data){
+				if(data.trim() == ""){
+					if(pagenum != 1){
+						$(".comment_more").html("无更多评论").unbind("click");
+					}else{
+						$(".nothing").removeClass("hd");
+					}
+				}else{
+					pagenum += 1;
+					$(".db_add").after(data);
+					registerPraise();
+					$(".comment_more").removeClass("hd");
+				}
+			});
+		}
+		
+		var pagenum2 = 1;
+		var isfirst2 = true;
+		function loadmore2(){
+			if(!isfirst2){
+				return;
+			}
+			isfirst2 = false;
+			$.get("${base}/ajax/comment/topic_${bean.uid}_{0}?me=true".format(pagenum2),function(data){
+				if(data.trim() == ""){
+					if(pagenum2 != 1){
+						$(".comment_more2").html("无更多与我相关的评论").unbind("click");
+					}else{
+						$(".nothing_2").removeClass("hd");
+						$(".comment_more2").addClass("hd");
+					}
+				}else{
+					pagenum2 += 1;
+					$(".comment_more2").after(data);
+				}
+			});
+		}
+		
+		$(function($) {
+			$(".loadmore").bind("click", function(){
+				loadmore();	
+			});
+			$(".loadmore").click();
+			$(".comment_more2").bind("click", function(){
+				loadmore2();	
+			});
+		});
+		
+		function setTab(name,cursel,n){
+			id = "#list_one_" + cursel;
+			for(i=1;i<=n;i++){	  
+				var menu=document.getElementById(name+i);
+				var con=document.getElementById("list_"+name+"_"+i);
+				menu.className=i==cursel?"current":"";
+				con.style.display=i==cursel?"block":"none";
+			}
+			if(cursel == 2) {
+				loadmore2();
+			}
+		}
+
+		$(function(){
+			//分享按钮图片切换
+			$("#zanli").click(function(){
+				$(this).find(".liwaysimg01").attr("src","${baseimg}/imgs/default/zaned.png");
+				$(".zanumber").html(parseInt($(".zanumber").html())+1);
+			});
+			$("#collectli").click(function(){
+				$(this).find(".liwaysimg02").attr("src","${baseimg}/imgs/default/collects.png");
+				$(".collect").html("已收藏");
+			});
+			$(".zanmore").click(function(){
+				var inum = parseInt($(this).children("i").html());
+				$(this).children("i").html(parseInt(inum+1));
+				$(this).children("img").attr("src","${baseimg}/imgs/default/zaned.png").css("width","20").css("height","17");
+			});
+
+			//订阅
+			$(".subs").click(function(){
+				$(this).find("img").attr("src","/imgs/default/cancelsubs.png");
+				$(this).find(".addsub").html("已订阅").css("color","#f00");
+			});
+
+		});
+	</script>
+</body>
+</html>

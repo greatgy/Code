@@ -1,0 +1,12 @@
+[#ftl]
+[#if list??]
+	[#list list as item]
+		<li>
+			<a href="${base}/topic/${item.cid}/${item.oic}" title="${item.title}">
+				${item.title}
+			</a>
+			<span class="topicnews"><img src="${baseimg}/imgs/default/topicnews.png" alt="">${item.clickcount}</span>
+		</li>
+	[/#list]
+[/#if]
+

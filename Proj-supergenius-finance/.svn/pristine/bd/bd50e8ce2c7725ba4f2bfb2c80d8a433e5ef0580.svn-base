@@ -1,0 +1,329 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+[#import "/WEB-INF/FtlLib/Macro/Public.ftl" as p]
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>${title!'话题详情'}</title>
+	<link href="${basecss}/css/default/pages/topicoid.css" type="text/css" rel="stylesheet"/>
+	<script type="text/javascript" src="${basejs}/js/libs/comment-1.0.0.js"></script>
+    <script type="text/javascript" src="${basejs}/js/libs/scroll.js"></script>
+    <script type="text/javascript" src="${basejs}/js/libs3/jquery.qqface.min.js"></script>
+	<script type="text/javascript" src="${basejs}/js/pages/topiccomment.js"></script>
+	<script type="text/javascript">
+        var me = {
+            showname: "${me.showname!'游客'}",
+            imglittle: "${me.avatar}",
+            oid:"${(me.oid?c)!'0'}",
+            defaultImg: "${baseimg}/imgs/web/noavatar.png"
+        }
+        var fromuid = '${bean.uid}';
+    </script>
+    
+    <style type="text/css">
+    	span.emotion{width:42px; height:20px;margin-left: 0px;background:url("${baseimg}/imgs/face/icon.gif") no-repeat 2px 2px; padding-left:20px; cursor:pointer}
+		span.emotion:hover{background-position:2px -28px}
+		.qqFace{margin-top:4px;background:#fff;padding:2px;border:1px #dfe6f6 solid;}
+		.qqFace table td{padding:0px;}
+		.qqFace table td img{cursor:pointer;border:1px #fff solid;}
+		.qqFace table td img:hover{border:1px #0066cc solid;}
+    <style>
+</head>
+<body>
+<div class="centerbox">
+<div class="topic02">
+	<div class="t02_lt">
+		<div class="t02_lt_h430">
+			<img src="${webimg}${bean.imgoriginal}" class="title_img" />
+			<div class="t02_h430_imgs">
+				<h3>${bean.title}</h3>
+				<div class="creatime">创建于${bean.publishtimeStr}</div>
+				${bean.content}
+			</div>
+			<div class="record">
+				[#--<span class="speak">发言&nbsp;&nbsp;&nbsp;${bean.commentcount}</span>
+                <span>浏览&nbsp;&nbsp;&nbsp;${bean.clickcount}</span>--]
+			</div>
+			<ul class="showays">
+				<li>
+					<a href="javascript:;" id="btnprizetopic_${(me.oid?c)!'0'}_${bean.uid}" data-counter=".prizecounter">
+						<span>+<i class="zanumber zancountjs">${bean.prizecount!'0'}</i></span>
+						<img src="${baseimg}/imgs/default/heart_01.png" data-notcomment="true" data-isprize="${bean.isprize!'false'}" class="liwaysimg liwaysimg01" />
+					</a>
+				</li>
+				<li>
+					<a [#if me??] href="javascript:;" id="btncollect${collect}_topic_${bean.uid}" data-iscollect="${bean.iscollect!'false'}" [#else] href="javascript:;" class="pop-up" [/#if]>
+						<span class="collect">收藏</span>
+						<img src="${baseimg}/imgs/default/collected.png" alt="" class="liwaysimg liwaysimg02" data-iscollect="${bean.iscollect!'false'}" />
+					</a>
+				</li>
+				<li>
+					<a href="javascript:;">
+						<span>分享</span>
+					</a>
+					[@p.share /]
+				</li>
+				<li>
+					<a href="#say">
+						<span>评论</span>
+						<img src="${baseimg}/imgs/default/discuss.png" alt="" class="liwaysimg liwaysimg04" />
+					</a>
+				</li>
+			</ul>
+		</div>
+		<div class="t02_lt_say" id="say">
+			<div class="mb">
+				有话要说
+				<span class="readtimes">${bean.commentcount}&nbsp;人讨论&nbsp;&nbsp;&nbsp;&nbsp;${bean.clickcount}&nbsp;人阅读</span>
+			</div>
+			<div class="commentbox" id="commentform">
+			  	<textarea class="contro_text" id="content"></textarea>
+			  	<div class="txtbottom" style="text-align: left;">
+			  		<p style="text-align: left; margin-top: 4px; margin-left: 15px;margin-right: 10px; display: inline-block;"><span class="emotion">表情</span></p>
+			  		<a href="" class="submit_comment logafter right" title="" onclick="submitCommentHandler(this)" data-uid="${bean.uid}" style="margin-right: 20px;">发表评论</a>
+			  		[#if !me??]
+    				  	<a href="javascript:;" class="submit_comment judge right pop-up" style="margin-right: 15px;" title="">登录后发言</a>
+    			 	 	<span class="idtip">您为游客，可自定义昵称:<input type="text" value="" name="fromusername" placeholder="选填" autocomplete="off"  maxlength="5"></span>
+                	[/#if]
+                </div>
+		 	</div>
+		</div>
+		<div class="comment">
+			<div class="com_title">
+				<span id="one1" class="current" onclick="setTab('one',1,2)">全部评论</span>
+				<span id="one2" onclick="setTab('one',2,2)">精彩评论</span>
+			</div>
+			<div id="list_one_1" style="display:block;">
+    			<div class="nothing hd">
+                    <img src="${baseimg}/imgs/default/prompt.png" style="width:481px;heigth:211px">
+    			</div>
+    			<div class="db_add comment_more loadmore comment_new hd">
+                    <span>加载更多</span>
+                </div>
+                <div class="loading" id="loading" style="display:none">
+					<img src="${baseimg}/imgs/default/loading.gif" />
+					loading...
+				</div>
+			</div>
+			<div id="list_one_2" style="display:none;">
+    			[#if wonderfullist?size!=0]
+        			[#list wonderfullist as wonder]
+            			<div class="commentitem">
+                            [#if wonder.fromUser??]
+                                <a href="${base}/his/topic/${wonder.fromUser.oid?c}" target="_blank">
+                            [#else]
+                                <a href="javascript:void(0);">
+                            [/#if]
+                                <img [#if wonder.fromUser.avatar == ""]src="${baseimg}/imgs/web/noavatar.png"[#else]src="${userimg}${wonder.fromUser.avatar}"[/#if] class="personimg" />
+                            </a>
+                            <div class="itemright">
+                                [#if wonder.fromUser??]
+                                    <a href="${base}/his/topic/${wonder.fromUser.oid?c}" class="name" target="_blank">
+                                [#else]
+                                    <a href="javascript:void(0);" class="name">
+                                [/#if]
+                                    ${wonder.fromusername}
+                                </a>
+                                <p class="comments">${wonder.content}</p>
+                                <div class="itembottom">
+                                    <span class="time">${wonder.createtimeStr}</span>
+                                    <div class="comlinkbox">
+                                        <a href="javascript:void(0);" onclick="startreply(this);" data-toname="${wonder.fromusername}" data-uid="${wonder.uid}" data-fromuseruid="${wonder.fromuseruid}">
+                                            <img src="${baseimg}/imgs/default/msgimg.png" />评论(${wonder.replys?size})
+                                        </a>
+                                        <a href="javascript:void(0)" id="btnprizecomments_${(me.oid?c)!"0"}_${wonder.uid}" data-counter=".prizecounter">
+                                            <img src="${baseimg}/imgs/default/zanicon.png" data-isprize="${wonder.isprize!'false'}"/><span class="prizecounter">(${wonder.prizecount!'0'})</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>  
+                        </div>
+        			[/#list]
+    			[#else]
+        			<div class="nothing">
+                        <img src="${baseimg}/imgs/default/prompt.png" style="width:481px;heigth:211px">
+                    </div>
+    			[/#if]
+			</div>
+		</div>
+	</div>
+	<div class="t02_rt">
+		<div class="ranklist">
+			<h4>话题发起人</h4>
+			<div class="originator">
+                [#if author.uid==me.uid]
+				    <a href="${base}/my/topic" target="_blank">
+				[#else]
+				    <a href="${base}/his/topic/${author.oid?c}" target="_blank">
+				[/#if]
+				    [#if author.avatar != ""]
+				        <img src="${userimg}${author.avatar}" class="picture" />
+				    [#else]
+				        <img src="${baseimg}/imgs/web/noavatar.png" class="picture" />
+				    [/#if]
+				</a>
+				<div class="originame">
+					[#if author.uid==me.uid]
+                        <a href="${base}/my/topic" target="_blank" class="specials specname">
+                    [#else]
+                        <a href="${base}/his/topic/${author.oid?c}" target="_blank" class="specials specname">
+                    [/#if]
+                        ${author.showname}
+					</a>
+                    [#if bean.authorUser.oid == me.oid]
+                        [#assign url="${base}/my/topic" /]
+                    [#elseif bean.authorUser.oid != 0]
+                        [#assign url="${base}/his/topic/${bean.authorUser.oid?c}" /]
+                    [#else]
+                        [#assign url="javascript:void(0);" /]
+                    [/#if]
+                    [#if bean.authorUser.oid == me.oid]
+                        [#assign url1="${base}/my/article" /]
+                    [#elseif bean.authorUser.oid != 0]
+                        [#assign url1="${base}/his/article/${bean.authorUser.oid?c}" /]
+                    [#else]
+                        [#assign url1="javascript:void(0);" /]
+                    [/#if]
+                    <span>文章&nbsp;&nbsp;<a [#if bean.authorUser??] href="${url1}" [#else] href="javascript:void(0);" [/#if] class="specials" target="_blank">${articleCount!0}</a></span>
+					<span>话题&nbsp;&nbsp;<a [#if bean.authorUser??] href="${url}" [#else] href="javascript:void(0);" [/#if] class="specials" target="_blank">${topicCount!0}</a></span>
+				</div>
+				<div class="subs" id="subscribe" data-isubscribe="${issubscribe!'false'}">
+					<a [#if me?? && me.uid != bean.useruid && author??] href="javascript:void(0);" onclick="subscribeHandle(this, ${author.oid?c});" [#elseif !me??] href="javascript:void(0);" class="pop-up" [#else] href="javascript:void(0);" [/#if]>
+						<img src="${baseimg}/imgs/default/addsubs.png" />
+					</a>
+					<a [#if me?? && me.uid != bean.useruid && author??] href="javascript:void(0);" onclick="subscribeHandle(this, ${author.oid?c});" class="addsub" [#elseif !me??] href="javascript:void(0);" class="addsub pop-up" [#else] href="javascript:void(0);" class="addsub" [/#if]>订阅</a>
+				</div>
+			</div>
+		</div>
+		<!- 邀请嘉宾 -->
+		<div class="ranklist hd">
+			<h4>嘉宾列表</h4>
+			<ul class="t02_list_ul">
+                [#list list as topicGuest]
+    				<li>
+    					<a href="${base}/his/topic/${topicGuest.topicUser.oid?c}" target="_blank"><img src="${userimg}${topicGuest.topicUser.avatar}" /></a>
+    					<p class="t02_list_name">${topicGuest.name}</p>
+    				</li>
+				[/#list]
+				<li>
+					<a href="#"><img src="${baseimg}/imgs/default/topic02_22.png" class="add" /></a>
+					<p class="t02_list_name">添加</p>
+				</li>
+			</ul>
+		</div>
+		<!- 最新参与用户 -->
+		<div class="ranklist">
+			<h4>最新参与用户</h4>
+			<ul class="t02_list_ul">
+                [#list list2 as newuser]
+    				<li>
+    					<a href="${base}/his/topic/${newuser.oid?c}" target="_blank">
+        					[#if newuser.avatar != ""]
+                                <img src="${userimg}${newuser.avatar}" />
+                            [#else]
+                                <img src="${baseimg}/imgs/web/noavatar.png" />
+                            [/#if]
+    					</a>
+    					<p class="t02_list_name">${newuser.showname}</p>
+    				</li>
+				[/#list]
+			</ul>
+		</div>
+		<div class="ranklist">
+  			<h4>热门话题排行榜</h4>
+  			<ul class="hotlist">
+                [#list topicrank as hottopic]
+      				<li [#if hottopic_index==0]class="curshow"[/#if]>
+      					<span [#if (hottopic_index < 3)] class="normalspan ranknum" [#else] class="normalspan"[/#if]>${hottopic_index + 1}</span>
+      					<div class="rankright">
+      						<a href="${base}/topic/${hottopic.oid?c}" title="${hottopic.title}" class="arttile">${hottopic.title}</a>
+      						<div class="titdescribe">
+      							<span>发起人：${hottopic.author}</span>
+      							<span class="topicview">
+      								<a>
+      									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+      									${hottopic.commentcount}
+      								</a>
+      							</span>
+      						</div>
+      					</div>
+      				</li>
+  				[/#list]
+  			</ul>
+  		</div>
+	</div>
+	<div class="clear"></div>
+</div>
+</div>
+	<script type="text/javascript">
+		var pagenum = 1;
+		function loadmore() {
+			pagenum += 1;
+			var url = "${base}/ajax/comment/topic_${bean.uid}_{0}".format(pagenum - 1);
+			$.ajax({
+				type:"GET",
+				url:url,
+				beforeSend:function(XMLHttpRequest) {
+					$("#loading").show();
+				},
+				success:function(data){
+					$("#loading").hide();
+					if(data.trim() == "") {
+						pagenum -= 1;
+						$(window).unbind("scroll", defaultScrollHandler);
+						if(pagenum != 1) {
+							$(".comment_more").find("span").html("无更多评论").unbind("click");
+							$(".comment_more").show();
+						} else {
+							$(".nothing").removeClass("hd");
+						}
+					} else {
+						$(".db_add").before(data);
+						if($(".commentitem").length >= 20) {
+						   $(".comment_more").removeClass("hd");
+						}
+						initPage();
+					}
+					unRegisterPraise();
+	                registerPraise();
+				}
+			});
+		
+			$.get("${base}/ajax/comment/topic_${bean.uid}_{0}".format(pagenum),function(data){
+				
+			});
+		}
+		$(function($) {
+			$.fn.scrollHandle({
+				obj: window,
+				fun: loadmore
+			});
+			$(".loadmore").bind("click", function() {
+				loadmore();
+			});
+			$(".loadmore").click();
+			$(".loadmore").unbind("click");
+			$(".comment_more2").bind("click", function() {
+				loadmore2();
+			});
+			prizeBindEvent();//赞
+            collectBindEvet();//收藏
+            setSubscribeStyle();//订阅样式
+            //表情
+        	$('.emotion').qqFace({ 
+		        assign:'content', //给输入框赋值 
+		        path:'${baseimg}/imgs/face/qq/' //表情图片存放的路径 
+		    });
+		});
+		
+		function setTab(name,cursel,n) {
+			for(i=1;i<=n;i++){
+                $("#"+name+i).removeClass("current");
+                $("#list_"+name+"_"+i).hide();
+			}
+            $("#"+name+cursel).addClass("current");
+            $("#list_"+name+"_"+cursel).show();
+		}
+	</script>
+</body>
+</html>

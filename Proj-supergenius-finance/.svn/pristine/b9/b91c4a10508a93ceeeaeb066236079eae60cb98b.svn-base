@@ -1,0 +1,160 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+
+[#if type=="topicindex"][#--话题首页-加载更多 --]
+	[#list list as item]
+        <div class="topic">
+            <div class="topic_img">
+            	[#if item.isTopicStateSucceed && item.isEnable]
+                	<a href="${base}/topic/${item.oid}" target="_blank"><img src="${webimg}${item.imglittle}"></a>
+                [#else]
+                	<img src="${webimg}${item.imglittle}}">
+                [/#if]
+            </div>
+            <div class="topic_title1">
+                [#if item.isTopicStateSucceed && item.isEnable]
+                	<a href="${base}/topic/${item.oid}" target="_blank"><span class="topic_title">${item.title} </span></a>
+                [#else]
+                	<span class="topic_title">${item.title} </span>
+                [/#if]
+                <br/>
+                <span class="topic_title topic_bor">${item.anthor} &nbsp;&nbsp;${item.publishtime.toString("YYYY-MM-dd")}</span>
+            </div>
+            <div class="right mr_10">
+                <img src="${baseimg}/imgs/default/heart_02.png"><span class="topic_zan">(${item.prizecount})</span>
+                <span class="topic_zan">评论(${item.commentcount})</span>
+            </div>
+        </div>
+    [/#list]
+[#elseif type=="all"][#-- 个人话题主页-全部话题 --]
+	[#list list as item]
+		<div class="tab_one">
+			[#if item.isTopicStateSucceed && item.isEnable]
+				<a href="${base}/topic/${item.oid}" target="_blank"><img src="${webimg}${item.imglittle}" style="width:212px;height:140px;"></a>
+            [#else]
+            	<img src="${webimg}${item.imglittle}" style="width:212px;height:140px;">
+            [/#if]
+			<p class="t06_w680_fix">
+				[#if item.isDisable]
+					<img src="${baseimg}/imgs/default/topic04_check04.png">
+				[#elseif item.isTopicStateInit]
+					<img src="${baseimg}/imgs/default/topic04_check01.png">
+				[#elseif item.isTopicStateSucceed]
+					<img src="${baseimg}/imgs/default/topic04_check03.png">
+				[#elseif item.isTopicStateFailed]
+					<img src="${baseimg}/imgs/default/topic04_check02.png">
+				[/#if]
+			</p>
+			<div class="tab_one_r">
+				[#--[#if item.isTopicStateSucceed]<div class="yaoqing">邀请嘉宾</div>[/#if]--]
+				<h3>
+					[#if item.isTopicStateSucceed && item.isEnable]
+						<a href="${base}/topic/${item.oid}" target="_blank">${item.title}</a>
+	                [#else]
+	                	${item.title}
+	                [/#if]
+				</h3>
+				<p>发布于 ${item.publishtime.toString("YYYY-MM-dd")}<br>
+					[@f.TrimSubstring content="${item.content!''}" mylength=70 /]
+					[#if item.isTopicStateSucceed]<a href="${base}/topic/${item.oid}" target="_blank">[详情]</a>[/#if]
+				</p>
+			</div>
+			<div class="tab_one_bt">
+				<img src="${baseimg}/imgs/default/heart_02.png">${item.prizecount!0}&nbsp;&nbsp;|&nbsp;&nbsp;评论 ${item.commentcount!0}
+			</div>
+		</div>
+	[/#list]
+[#elseif type=="succeed"][#-- 个人话题主页-已发布话题 --]
+	[#list list as item]
+		<div class="tab_one">
+			<a href="${base}/topic/${item.oid}" target="_blank"><img src="${webimg}${item.imglittle}" style="width:212px;height:140px;"></a>
+			<p class="t06_w680_fix">
+				<img src="${baseimg}/imgs/default/topic04_check03.png">
+			</p>
+			<div class="tab_one_r">
+				[#--<div class="yaoqing">邀请嘉宾</div>--]
+				<h3><a href="${base}/topic/${item.oid}" target="_blank">${item.title}</a></h3>
+				<p>发布于 ${item.publishtime.toString("YYYY-MM-dd")}<br>
+					[@f.TrimSubstring content="${item.content!''}" mylength=70 /]
+					[#if item.isTopicStateSucceed]<a href="${base}/topic/${item.oid}" target="_blank">[详情]</a>[/#if]
+				</p>
+			</div>
+			<div class="tab_one_bt">
+				<img src="${baseimg}/imgs/default/heart_02.png">${item.prizecount!0}&nbsp;&nbsp;|&nbsp;&nbsp;评论 ${item.commentcount!0}
+			</div>
+		</div>
+	[/#list]
+[#elseif type=="failed"][#-- 个人话题主页-未通过话题 --]
+	[#list list as item]
+		<div class="tab_one">
+			<img src="${webimg}${item.imglittle}" style="width:212px;height:140px;">
+			<p class="t06_w680_fix">
+				<img src="${baseimg}/imgs/default/topic04_check02.png">
+			</p>
+			<div class="tab_one_r">
+				<h3>${item.title}</h3>
+				<p>发布于 ${item.publishtime.toString("YYYY-MM-dd")}<br>
+					[@f.TrimSubstring content="${item.content!''}" mylength=70 /]
+					[#if item.isTopicStateSucceed]<a href="${base}/topic/${item.oid}" target="_blank">[详情]</a>[/#if]
+				</p>
+			</div>
+			<div class="tab_one_bt">
+				<img src="${baseimg}/imgs/default/heart_01.png">${item.prizecount!0}&nbsp;&nbsp;|&nbsp;&nbsp;评论  ${item.commentcount!0}
+			</div>
+		</div>
+	[/#list]
+[#elseif type=="init"][#-- 个人话题主页-审核中话题 --]
+	[#list list as item]
+		<div class="tab_one">
+			<img src="${webimg}${item.imglittle}" style="width:212px;height:140px;">
+			<p class="t06_w680_fix">
+				<img src="${baseimg}/imgs/default/topic04_check01.png">
+			</p>
+			<div class="tab_one_r">
+				<h3>${item.title}</h3>
+				<p>发布于 ${item.publishtime.toString("YYYY-MM-dd")}<br>
+					[@f.TrimSubstring content="${item.content!''}" mylength=70 /]
+					[#if item.isTopicStateSucceed]<a href="${base}/topic/${item.oid}" target="_blank">[详情]</a>[/#if]
+				</p>
+			</div>
+			<div class="tab_one_bt">
+				<img src="${baseimg}/imgs/default/heart_02.png">${item.prizecount!0}&nbsp;&nbsp;|&nbsp;&nbsp;评论 ${item.commentcount!0}
+			</div>
+		</div>
+	[/#list]
+[#elseif type=="disable"][#-- 个人话题主页-已撤销话题 --]
+	[#list list as item]
+		<div class="tab_one">
+			<img src="${webimg}${item.imglittle}" style="width:212px;height:140px;">
+			<p class="t06_w680_fix">
+				<img src="${baseimg}/imgs/default/topic04_check04.png">
+			</p>
+			<div class="tab_one_r">
+				<h3>${item.title}</h3>
+				<p>发布于 ${item.publishtime.toString("YYYY-MM-dd")}<br>
+					[@f.TrimSubstring content="${item.content!''}" mylength=70 /]
+					[#if item.isTopicStateSucceed]<a href="${base}/topic/${item.oid}" target="_blank">[详情]</a>[/#if]
+				</p>
+			</div>
+			<div class="tab_one_bt">
+				<img src="${baseimg}/imgs/default/heart_02.png">${item.prizecount!0}&nbsp;&nbsp;|&nbsp;&nbsp;评论 ${item.commentcount!0}
+			</div>
+		</div>
+	[/#list]
+[#elseif type=="join"][#--个人话题主页-我参与的话题 --]
+	[#list list as item]
+		<div class="tab_one">
+			<a href="${base}/topic/${item.oid}"><img src="${webimg}${item.imglittle}" style="width:212px;height:140px;"></a>
+			<div class="tab_one_r">
+				<h3><a href="${base}/topic/${item.oid}">${item.title}</a></h3>
+				<p>发布于 ${item.publishtime.toString("YYYY-MM-dd")}<br>
+                  	 [@f.TrimSubstring content="${item.content!''}" mylength=70 /]
+					 [#if item.isTopicStateSucceed]<a href="${base}/topic/${item.oid}" target="_blank">[详情]</a>[/#if]
+                </p>
+			</div>
+			<div class="tab_one_bt">
+				<img src="${baseimg}/imgs/default/heart_02.png">${item.prizecount!0}&nbsp;&nbsp;|&nbsp;&nbsp;评论 ${item.commentcount!0}
+			</div>
+		</div>
+	[/#list]
+[/#if]

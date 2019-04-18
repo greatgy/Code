@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+   <sqldata>
+      <mysqlhost>127.0.0.1</mysqlhost>
+      <mysqlport>3306</mysqlport>
+      <user>root</user>
+      <password>123456</password>
+	  <mongohost>127.0.0.1</mongohost>
+	  <mongoport>27017</mongoport>
+   </sqldata>
+
+   <db>
+	  <dbname>GEnterpriserDB2</dbname>
+	  <tablename>article</tablename>
+   </db>
+
+</config>

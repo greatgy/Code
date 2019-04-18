@@ -1,0 +1,65 @@
+http://www.oracle.com/technetwork/cn/community/java/apache-maven-getting-started-2-405568-zhs.html
+
+maven：
+http://www.iteye.com/topic/1123225
+
+
+springMVC:
+http://www.open-open.com/lib/view/open1338338587698.html
+http://blog.csdn.net/sunitjy/article/details/6782431
+
+springMVC参数绑定设置:
+http://csjava.blog.163.com/blog/static/1904700332012102742025948/
+
+
+D:\Program Files\Java\jdk1.7.0
+
+.;%JAVA_HOME%\dt.jar;%JAVA_HOME%\tools.jar;
+
+
+mybatis：
+http://blog.csdn.net/kutejava/article/details/9164353#t1
+注意在增加，更改，删除的时候要调用session.commit()，这样才会真正对数据库进行操作，否则是没有提交的。
+
+
+正则表达式：
+http://www.jb51.net/article/17943.htm
+
+
+m2eclipse:
+http://www.cnblogs.com/silentjesse/archive/2012/10/17/2727407.html
+
+mongodb：
+http://www.cnblogs.com/TankMa/archive/2011/06/08/2074947.html
+
+
+easyui：
+http://www.jeasyui.com/demo/main/index.php?plugin=Accordion&theme=default&dir=ltr&pitem=
+
+freemaker mybatis ... :
+http://www.656463.com/article/NrA3Un.htm
+
+
+管理后台控件：
+http://192.168.1.7:8088/redmine/projects/grandgenusgroup/wiki/GeniusConvention
+
+
+http://mattkersley.com/responsive/
+查看响应式网页的一款工具
+
+http://blog.csdn.net/wangjianzhongshixiao/article/details/9316741 
+
+  jad反编译工具
+
+SAE java程序访问mysql：
+http://m.blog.csdn.net/blog/yanzel/14109807#
+http://blog.csdn.net/yanzel/article/details/14109807
+
+ 
+ 
+ http://www.cnblogs.com/TextEditor/archive/2013/01/20/2857999.html
+
+
+http://bbs.it-home.org/thread-2577-1-1.html
+
+http://www.cnblogs.com/2-18/archive/2012/10/19/2731805.html

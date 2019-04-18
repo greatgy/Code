@@ -1,0 +1,209 @@
+package com.supergenius.web.finance.helper;
+
+import com.genius.server.base.helper.BaseHP;
+
+public class IndexHP extends BaseHP {
+
+	/*private static ArticleSO so;
+	private static CatalogueSO catalogueso;
+	private static ContentSO contentso;
+	private static VisitorSO visitorSO;
+	private static UserSO userSO;
+
+	public static ArticleSO getSO() {
+		if (so == null) {
+			so = (ArticleSO) spring.getBean(ArticleSO.class);
+		}
+		return so;
+	}
+
+	public static CatalogueSO getCatalogueSO() {
+		if (catalogueso == null) {
+			catalogueso = (CatalogueSO) spring.getBean(CatalogueSO.class);
+		}
+		return catalogueso;
+	}
+
+	public static ContentSO getContentSO() {
+		if (contentso == null) {
+			contentso = (ContentSO) spring.getBean(ContentSO.class);
+		}
+		return contentso;
+	}
+	
+	private static VisitorSO getVisitorSO() {
+		if (visitorSO == null) {
+			visitorSO = (VisitorSO) spring.getBean(VisitorSO.class);
+		}
+		return visitorSO;
+	}
+
+	private static UserSO getUserSO() {
+		if (userSO == null) {
+			userSO = (UserSO) spring.getBean(UserSO.class);
+		}
+		return userSO;
+	}*/
+	
+
+	/**
+	 * 得到广告位内容
+	 * 
+	 * @return
+	 * @author ChenQi
+	 * @date 2017年8月28日15:04:02
+	 * @return List<Content>
+	 */
+	/*public static List<Content> getADContent(EContent content) {
+		List<Content> list = getContentSO().getADContentList(EStatus.enable, content);
+		return list;
+	}*/
+	
+	/**
+	 * 为文章设置摘要
+	 * 
+	 * @return
+	 * @author ChenQi
+	 * @date 2017年9月12日18:19:43
+	 * @return Article
+	 */
+	/*public static Article setSummary(Article article) {
+		if (StrUtil.isEmpty(article.getSummary()) && StrUtil.isNotEmpty(article.getContent())) {
+			String content = StringEscapeUtils.unescapeHtml4(article.getContent());// 转义特殊字符
+			StringBuffer clearHtmlContent = WebUtil.clearHtmlTag(content);
+			String summary = clearHtmlContent.length() > SysConf.SummarySize ? clearHtmlContent.substring(0, SysConf.SummarySize) + "......"
+					: clearHtmlContent.substring(0, clearHtmlContent.length() - 1);
+			article.setSummary(StringEscapeUtils.unescapeHtml4(summary));
+		} else if (article.getSummary().length() > SysConf.SummarySize) {
+			article.setSummary(StringEscapeUtils.unescapeHtml4(article.getSummary()).substring(0, SysConf.SummarySize) + "......");
+		}
+		return article;
+	}*/
+
+
+	/**
+	 * 初始化所有文章
+	 * 
+	 * @return
+	 * @author ChenQi
+	 * @date 2017年8月29日17:04:02
+	 * @return boolean
+	 */
+	/*public static boolean initArticleList(List<Article> allArticleList) {
+		boolean flag = true;
+		Map<String, Object> map = new HashMap<String, Object>();
+		for (Article article : allArticleList) {
+			String uid = article.getUid();
+			if (ArticleRedisUtil.isInit(uid)) {
+				article.setClickcount(ArticleRedisUtil.getInt(uid, ViewKeyDict.clickcount));
+				article.setCollectcount(ArticleRedisUtil.getInt(uid, ViewKeyDict.collectcount));
+				article.setCommentscount(ArticleRedisUtil.getInt(uid, ViewKeyDict.commentscount));
+				article.setPrizecount(ArticleRedisUtil.getInt(uid, ViewKeyDict.prizecount));
+				article.setWeight(getWeight(uid));
+			} else {
+				map.clear();
+				map.put(ViewKeyDict.clickcount, 0);
+				map.put(ViewKeyDict.collectcount, 0);
+				map.put(ViewKeyDict.commentscount, 0);
+				map.put(ViewKeyDict.prizecount, 0);
+				flag = ArticleRedisUtil.set(uid, map);
+			}
+			if (!flag) {
+				return false;
+			}
+		}
+		return true;
+	}*/
+
+	/**
+	 * 计算权重值
+	 * 
+	 * @return
+	 * @author ChenQi
+	 * @date 2017年8月29日17:25:25
+	 * @return Float
+	 */
+	/*public static Float getWeight(String uid) {
+		Map<String, Float> map = new HashMap<String, Float>();
+		map.put(ViewKeyDict.clickcount, SysConf.ClickcountPercent);
+		map.put(ViewKeyDict.collectcount, SysConf.CollectcountPercent);
+		map.put(ViewKeyDict.commentscount, SysConf.CommentscountPercent);
+		map.put(ViewKeyDict.prizecount, SysConf.PrizecountPercent);
+		return ArticleRedisUtil.getWeight(uid, map);
+	}*/
+
+	/**
+	 * 获取二级导航模块
+	 * 
+	 * @author 许志翔
+	 * @return List<Catalogue>
+	 * @date 2017年12月4日11:35:08
+	 */
+	/*public static List<Catalogue> getCatalogueList() {
+		List<Catalogue> list = new LinkedList<>();
+		Catalogue catalogue = null;
+		// 从序列化文件中取得网站导航的目录(排序)
+		String path = SysConf.SerialBasePath + SysConf.SerialCareerCataloguePath + SysConf.CareerCatalogueOrder;
+		File file = new File(path);
+		if (file.exists() && file.isFile()) {
+			Map<String, String> index = SerialUtil.deserializeFromJson(path, Map.class);
+			for (String cid : index.get(MapperDict.informationList).split(MapperDict.comma)) {
+				path = SysConf.SerialBasePath + SysConf.SerialCareerCataloguePath + SysConf.Separator_Directory + cid;
+				file = new File(path);
+				if (file.exists() && file.isFile()) {
+					catalogue = SerialUtil.deserializeFromJson(path, Catalogue.class, Json.cacheStrategy);
+					list.add(catalogue);
+				} else {
+					Map<String, Object> map = new HashMap<>();
+					map.put(MapperDict.cid, cid);
+					catalogue = getCatalogueSO().getOne(map);
+					serializeCatalogue(catalogue);
+				}
+			}
+		} else {
+			Map<String, Object> map = new HashMap<>();
+			map.put(MapperDict.status, EStatus.enable);
+			map.put(MapperDict.isspecial, 0);
+			map.put(MapperDict.orderBy, MapperDict.sql_order_by + MapperDict.createtime + MapperDict.desc);
+			list = getCatalogueSO().getList(map);
+			String informationList = "";
+			for (Catalogue item : list) { // 将Catalogue序列化
+				serializeCatalogue(item);
+				informationList = informationList + item.getCid() + MapperDict.comma;
+			}
+			informationList = informationList.substring(0, informationList.length() - 1);
+			Map<String, Object> map2 = new HashMap<>(); // 将模块排序进行序列化
+			map2.put(MapperDict.informationList, informationList);
+			SerialUtil.serializeToJson(map2, SysConf.SerialBasePath + SysConf.SerialCareerCataloguePath + SysConf.CareerCatalogueOrder);
+		}
+		return list;
+	}*/
+
+	/**
+	 * 序列化模块
+	 * 
+	 * @param catalogue
+	 */
+	/*public static void serializeCatalogue(Catalogue catalogue) {
+		String cataloguepath = SysConf.SerialBasePath + SysConf.SerialCareerCataloguePath + SysConf.Separator_Directory + catalogue.getCid();
+		File tempfile = new File(cataloguepath);
+		if (!tempfile.getParentFile().exists()) {
+			tempfile.getParentFile().mkdirs();
+		}
+		if (tempfile.exists() && tempfile.isFile()) {
+			tempfile.delete();
+		}
+		try {
+			tempfile.createNewFile();
+			SerialUtil.serializeToJson(catalogue, cataloguepath, Json.cacheStrategy);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static final Comparator<Article> COMPARATOR = new Comparator<Article>() {
+		public int compare(Article o1, Article o2) {
+			return o1.compareTo(o2);// 运用Article类的compareTo方法比较两个对象
+		}
+	};*/
+}

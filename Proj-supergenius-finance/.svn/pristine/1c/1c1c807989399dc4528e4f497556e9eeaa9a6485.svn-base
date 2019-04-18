@@ -1,0 +1,467 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>${title!"个人中心"}</title>
+	<link rel="stylesheet" href="${basecss}/css/default/pages/mycenter.css"/>
+	<script type="text/javascript" src="${basejs}/js/libs/comment-1.0.0.js"></script>
+	<script type="text/javascript" src="${basejs}/js/pages/vote.js"></script>
+	<script type="text/javascript" src="${basejs}/js/libs3/jquery.qqface.min.js"></script>
+	<script type="text/javascript">
+	<!--
+		var MYCENTER_GLOBLE = {
+			meid:${me.oid?c}
+		};
+	-->
+	</script>
+	<script type="text/javascript" src="${basejs}/js/pages/mycenter.js"></script>
+</head>
+<body>
+	<div class="wraper centerbox">
+		<div class="mycenterTop">
+			<div class="opacitybot"></div>
+			<div class="mybaseinfor">
+				<img [#if me.avatar?? && me.avatar != ""]src="${userimg}${me.avatar}" [#else] src="${baseimg}/imgs/web/noavatar.png" [/#if] class="myimg" />
+				<div class="myinforright">
+					<h3>
+						${me.showname}
+						<span class="positions">[#if me.company?trim?? && me.company?trim != ""]${me.company}[#if me.department?trim?? && me.department?trim != "" || me.job?trim?? && me.job?trim != "" ]-[/#if][/#if][#if me.department?trim?? && me.department?trim != ""]${me.department}[#if me.job?trim?? && me.job?trim != ""]-[/#if][/#if]${me.job?if_exists}</span>
+					</h3>
+					<p>${me.summary}</p>
+					<ul class="mycenterlist" id="navigationbar">
+						<li><a href="javascript:void(0);" [#if channel == "article" ] class="activeblock" [/#if] data-channel="article">我的文章</a></li>
+						<li><a href="javascript:void(0);" [#if channel == "topic" ] class="activeblock" [/#if] data-channel="topic">我的话题</a></li>
+						<li><a href="javascript:void(0);" [#if channel == "collect" ] class="activeblock" [/#if] data-channel="collect">我的收藏</a></li>
+						<li><a href="javascript:void(0);" [#if channel == "comment" ] class="activeblock" [/#if] data-channel="comment">我的评论</a></li>
+						<li><a href="javascript:void(0);" [#if channel == "subscribe" ] class="activeblock" [/#if] data-channel="subscribe">我的订阅</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="main" id="main">
+			[#if channel == "article"]
+				<div class="mainleft">
+					<h3 style="display:inline-block">我的文章</h3>
+					<p style="display:inline-block;float:right;margin-top:3%">共获得&nbsp;<span style="color:#1D71B6">${score!'0'}</span>&nbsp;积分</p>
+					<ul class="tablist" id="tabtoggle">
+						<li class="curtab">
+							<a href="javascript:;" class="tab" data-tab="all">全部</a>
+						</li>
+						<li>
+							<a href="javascript:;" class="tab" data-tab="publish">已发布</a>
+						</li>
+						<li>
+							<a href="javascript:;" class="tab" data-tab="refuse">未通过</a>
+						</li>
+						<li>
+							<a href="javascript:;" class="tab" data-tab="init">审核中</a>
+						</li>
+					</ul>
+					<div class="allbox">
+						<div id="article_all" class="content">
+							[#if list?size==0]
+								<img class="noarticle" src="${baseimg}/imgs/default/prompt.png" width="481px" heigth="211px"/>
+							[#else]
+								<ul class="allists t06_w680_info" id="allists1">
+									[#list list as item]
+										<li>
+											<div class="leftime">
+												<b>${item.createtime.toString("yyyy")}</b>
+												${item.createtime.toString("MM月dd日")}
+												<img src="${baseimg}/imgs/default/dbcircle.jpg" />
+											</div>
+											<div class="t06_w680_con right">
+												[#assign publish=false]
+												[#assign statename=""]
+												[#assign link=""]
+												[#assign bean=""]
+												[#assign imgstatus = 10]
+												[#if item.state == 1]
+													[#list list2 as fitem]
+														[#if fitem.contributeuid == item.uid]
+															[#if fitem.status == 1]
+																[#if "${fitem.firstTypeName}" == "debate"]
+																	[#assign link="${base}/debate/article/${fitem.uid}"]
+																[#else]
+																	[#assign link="${base}/${fitem.firstTypeName}/${fitem.oid?c}"]
+																[/#if]
+																[#assign publish=true]
+																[#assign bean=fitem ]
+																[#assign imgstatus=1 ]
+															[/#if]
+															[#if fitem.status == 10]
+																[#assign imgstatus=10 ]
+															[/#if]
+															[#if fitem.status == 0]
+																[#assign imgstatus=0 ]
+															[/#if]
+															[#break]
+														[/#if]
+													[/#list]
+												[/#if]
+												[#if item.state == 0]
+													[#assign imgstatus=10 ]
+												[/#if]
+												[#if item.state == 2]
+													[#assign imgstatus=2 ]
+												[/#if]
+												<div class="rightcontent">
+													<div class="contentleft">
+														[#if publish]
+															<a href="${link}" target="_blank">
+																<img src="${webimg}${bean.imgbig}" class="article01" />
+																<img src="${baseimg}/imgs/default/pass.png" class="status" />
+															</a>
+														[#else]
+															<img src="${webimg}${item.imgbig}" class="article01" />
+															[#if imgstatus?number == 10]
+																<img src="${baseimg}/imgs/default/verify.png" class="status" />
+															[/#if]
+															[#if imgstatus?number == 0]
+																<img src="${baseimg}/imgs/default/notpass.png" class="status" />
+															[/#if]
+														[/#if]
+													</div>
+													<div class="contentright">
+														<h5>
+															[#if publish]
+																<a href="${link}" target="_blank">${bean.title}</a>
+															[#else]
+																${item.title}
+															[/#if]
+														</h5>
+														<p>
+															[#if publish]
+																[@f.TrimSubstring content='${bean.content}' mylength=62 /]
+																<a href="${link}" style="color: #3698dc;font-size: 12px;margin-left: 5px;" target="_blank">[详情]</a>
+															[#else]
+																[@f.TrimSubstring content='${item.content}' mylength=62 /]
+															[/#if]
+														</p>
+														[#if publish]
+															<div class="iconsbox">
+																<span title="查看次数">
+																	<img src="${baseimg}/imgs/default/viewicon.png" />
+																	${bean.clickcount!0}
+																</span>
+																<span title="点赞次数">
+																	<img src="${baseimg}/imgs/default/thumb.png" />
+																	${bean.prizecount!0}
+																</span>
+																<span title="评论次数">
+																	<a href="${link}" target="_blank">
+																		<img src="${baseimg}/imgs/default/msg01.png" />
+																		${bean.commentcount!0}
+																	</a>
+																</span>
+																<span title="分享">
+																	<img src="${baseimg}/imgs/default/shareicon.png" />
+																</span>
+																&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+																<span title="获得积分">
+																	积分：${bean.score!'0'}
+																</span>
+															</div>
+														[/#if]
+													</div>
+												</div>
+											</div>
+										</li>
+									[/#list]
+								</ul>
+								[#if list?size > 9]
+									<div class="clear"></div>
+									<div class="tab_bottom t06_w680_more more_all " data-tab="all"><a href="javascript:void(0);">加载更多</a></div>
+								[/#if]
+							[/#if]
+						</div>
+						
+						<div id="article_publish" class="content" style="display:none">
+							<div class="noarticle hd">
+								<img src="${baseimg}/imgs/default/prompt.png" width="481px" heigth="211px"/>
+							</div>
+							<ul class="allists t06_w680_info" id="allists2">
+							</ul>
+							<div class="clear"></div>
+							<div class="tab_bottom t06_w680_more more_publish"  data-tab="publish"><a href="javascript:void(0);">加载更多</a></div>
+						</div>
+						
+						<div id="article_refuse" class="content" style="display:none">
+							<div class="noarticle hd">
+								<img src="${baseimg}/imgs/default/prompt.png" width="481px" heigth="211px"/>
+							</div>
+							<ul class="allists t06_w680_info" id="allists3">
+							</ul>
+							<div class="clear"></div>
+							<div class="tab_bottom t06_w680_more more_refuse"  data-tab="refuse"><a href="javascript:void(0);">加载更多</a></div>
+						</div>
+						
+						<div id="article_init" class="content" style="display:none">
+							<div class="noarticle hd">
+								<img src="${baseimg}/imgs/default/prompt.png" width="481px" heigth="211px"/>
+							</div>
+							<ul class="allists t06_w680_info" id="allists4">
+							</ul>
+							<div class="clear"></div>
+							<div class="tab_bottom t06_w680_more more_init"  data-tab="init"><a href="javascript:void(0);">加载更多</a></div>
+						</div>	
+					</div>
+				</div>
+				
+				<div class="mainright">
+					<div class="countbox">
+						<div class="totcontainer">
+							<span class="totarticles">
+								<b>${count!"0"}</b>
+								已发布文章
+							</span>
+							<span class="totvisited">
+								<b>${count2!"0"}</b>
+								浏览量
+							</span>
+						</div>
+						<a href="${base}/contribute" class="votebtn">投稿</a>
+					</div>
+					<div class="myartranks">
+						<h3>我的文章排行榜</h3>
+						<ul class="myarticlelist">
+							[#list ranklist as item]
+								[#if typename==""]
+									[#assign typename="${item.firstTypeName}"]
+								[/#if]
+								<li>
+									[#if item_index < 3]
+										<span class="bluenum num">${item_index + 1}</span>
+									[#else]
+										<span class="num">${item_index + 1}</span>
+									[/#if]
+									<a href="${base}/${typename}/${item.oid?c}" title="${item.title}" target="_blank">[@f.TrimSubstring content="${item.title}" mylength=18 /]</a>
+								</li>
+							[/#list]
+						</ul>
+					</div>
+				</div>
+			[#elseif channel == "topic"]
+				<div class="mainleft">
+					<div class="topictab">
+						<a href="javascript:;" class="initialtpc curtopic" id="one1" onclick="topicSetTab('one',1,2)">发起的话题</a>
+						<a href="javascript:;" class="jointpc" id="one2" data-topic="first" onclick="topicSetTab('one',2,2)">参与的话题</a>
+					</div>
+					<div class="initialtpcbox" id="list_one_1">
+						<ul class="tablist">
+							<li class="curtab">
+								<a href="javascript:;" class="tabtopic" data-tab="all">全部</a>
+							</li>
+							<li>
+								<a href="javascript:;" class="tabtopic" data-tab="publish">已发布</a>
+							</li>
+							<li>
+								<a href="javascript:;" class="tabtopic" data-tab="refuse">未通过</a>
+							</li>
+							<li>
+								<a href="javascript:;" class="tabtopic" data-tab="init">审核中</a>
+							</li>
+						</ul>
+						<div id="topic_all" class="content">
+							[#if list?size == 0]
+								<div><img src="${baseimg}/imgs/default/prompt.png" width="481px" heigth="211px"/></div>
+							[#else]
+								<ul class="allists topiclist" id="topicbox1">
+									[#list list as alltopic]
+										<li class="tpcitem">
+		                                    [#if alltopic.isDisable]
+		                                        <img src="${baseimg}/imgs/default/verify.png" class="statusimg" />
+		                                    [#elseif alltopic.isTopicStateInit]
+		                                        <img src="${baseimg}/imgs/default/verify.png" class="statusimg">
+		                                    [#elseif alltopic.isTopicStateSucceed]
+		                                        <img src="${baseimg}/imgs/default/pass.png" class="statusimg">
+		                                    [#elseif alltopic.isTopicStateFailed]
+		                                        <img src="${baseimg}/imgs/default/notpass.png" class="statusimg">
+		                                    [/#if]
+		    								<div class="newjudger">
+		    									<a href="javascript:void(0);" class="newjudgerimg" target="_blank"><img [#if alltopic.authorUser.avatar??] src="${userimg}${alltopic.authorUser.avatar}" [#else]src="${baseimg}/imgs/web/noavatar.png"[/#if]/></a>
+		    									<a href="javascript:void(0);" class="newNamelink" target="_blank"><span class="newname">${alltopic.author}</span></a>
+		    									<span class="newtime">${alltopic.publishtimeStr}</span>
+		    								</div>
+		    								[#if alltopic.isTopicStateSucceed]
+			    								<a href="${base}/topic/${alltopic.oid?c}" class="topicTitlink" target="_blank"><span class="topictit">${alltopic.title}</span></a>
+			    								<div class="imgcontainer"><a href="${base}/topic/${alltopic.oid?c}" target="_blank"><img src="${webimg}${alltopic.imgoriginal}" class="topicimg" /></a></div>
+		    								[#else]
+		    									<span class="topictit">${alltopic.title}</span>
+			    								<div class="imgcontainer"><img src="${webimg}${alltopic.imgoriginal}" class="topicimg" /></div>
+		    								[/#if]
+		    								<div class="iconsbox">
+		    									<span title="查看次数">
+		    										<img src="${baseimg}/imgs/default/viewicon.png" />
+		    										${alltopic.clickcount}
+		    									</span>
+		    									<span title="点赞次数">
+		    										<img src="${baseimg}/imgs/default/thumb.png" />
+		    										${alltopic.prizecount}
+		    									</span>
+		    									<span title="评论次数">
+		    										<img src="${baseimg}/imgs/default/msg01.png" />
+		    										${alltopic.commentcount}
+		    									</span>
+		    									<span title="分享">
+		    										<img src="${baseimg}/imgs/default/shareicon.png" />
+		    									</span>
+		    								</div>
+		    							</li>
+									[/#list]
+								</ul>
+								[#if list?size > 9]
+									<div class="tab_bottom more_all topicloadmore" data-tab="all"><a href="javascript:void(0);">加载更多</a></div>
+								[/#if]
+							[/#if]
+						</div>	
+						
+						<div id="topic_publish" class="hd content" >
+							<div class="notopic hd"><img src="${baseimg}/imgs/default/prompt.png" width="481px" heigth="211px"/></div>
+							<ul class="allists topiclist" id="topicbox2">
+							</ul>
+							<div class="tab_bottom more_publish topicloadmore"  data-tab="publish"><a href="javascript:void(0);">加载更多</a></div>
+						</div>
+						<div id="topic_refuse" class="hd content">
+							<div class="notopic hd"><img src="${baseimg}/imgs/default/prompt.png" width="481px" heigth="211px"/></div>
+							<ul class="allists topiclist" id="topicbox3" >
+							</ul>
+							<div class="tab_bottom more_refuse topicloadmore"  data-tab="refuse"><a href="javascript:void(0);">加载更多</a></div>
+						</div>
+						<div id="topic_init" class="hd content">
+							<div class="notopic hd"><img src="${baseimg}/imgs/default/prompt.png" width="481px" heigth="211px"/></div>
+							<ul class="allists topiclist" id="topicbox4">
+							</ul>
+							<div class="clear"></div>
+							<div class="tab_bottom more_init topicloadmore"  data-tab="init"><a href="javascript:void(0);">加载更多</a></div>
+						</div>
+					</div>
+					<div class="initialtpcbox" id="list_one_2" style="display:none">
+						<div id="topic_join" class="hd content">
+							<div class="notopic hd"><img src="${baseimg}/imgs/default/prompt.png" width="481px" heigth="211px"/></div>
+							<ul class="allists topiclist tab_more">
+							</ul>
+							<div class="clear"></div>
+							<div class="tab_bottom more_join topicloadmore"  data-tab="join"><a href="javascript:void(0);">加载更多</a></div>
+						</div>
+					</div>
+				</div>
+				<div class="mainright">
+					<div class="countbox">
+						<div class="totcontainer">
+							<span class="totarticles">
+								<b>${count!"0"}</b>
+								已发布话题
+							</span>
+							<span class="totvisited">
+								<b>${count2!"0"}</b>
+								参与数
+							</span>
+						</div>
+						<a href="${base}/topic/apply" class="votebtn">发起话题</a>
+					</div>
+					<div class="myartranks">
+						<h3>我的话题排行榜</h3>
+						<ul class="myarticlelist">
+							[#list topicrank as item]
+	    						<li>
+	    							[#if item_index < 3]
+										<span class="bluenum num">${item_index + 1}</span>
+									[#else]
+										<span class="num">${item_index + 1}</span>
+									[/#if]
+	    							<a href="${base}/topic/${item.oid?c}" title="${item.title}"  target="_blank">[@f.TrimSubstring content="${item.title}" mylength=18 /]</a>
+	    						</li>
+							[/#list]
+						</ul>
+					</div>
+				</div>
+			[#elseif channel == "collect"]
+				<div class="collectContainer">
+					<div class="collectLeft">
+						<h3>我的收藏</h3>
+						<ul class="collectnav">
+							<li class="curSelect" data-type="article">
+								<a href="javascript:;">我收藏的文章</a>
+							</li>
+							<li data-type="topic">
+								<a href="javascript:;">我收藏的话题</a>
+							</li>
+							<li data-type="debate">
+								<a href="javascript:;">我收藏的论战</a>
+							</li>
+						</ul>
+					</div>
+					<div class="collectRight">
+						<div class="collectContent" id="collect1">
+							<h4>我收藏的文章</h4>
+							[#if list?size==0]
+								<img class="noarticle" src="${baseimg}/imgs/default/prompt.png" width="481px" heigth="211px"/>	
+							[#else]
+								<ul class="artilelist">
+									[#list list as item]
+										<li>
+											<a href="${base}/${item.type}/${item.bean.oid?c}" target="_blank"><img src="${webimg}${item.bean.imglittle}" class="artileimg" /></a>
+											<div class="artdetail">
+												<div class="artTitlebox">
+													<a href="${base}/${item.type}/${item.bean.oid?c}" class="artTitle" target="_blank">[@f.TrimSubstring content="${item.bean.title}" mylength=20 /]</a>
+													<span class="collectTime">${(item.bean.createtime).toString("YYYY.MM.dd HH.mm")}</span>
+													<div class="collecticon collect" id="btncollect${item.collect}_${item.type}_${item.bean.uid}">
+														<span>取消收藏</span>
+														<a href="javascript:;" class="collected"><img src="${baseimg}/imgs/default/collect.png" class="heart" /></a>
+													</div>
+												</div>
+												<p>
+													[@f.TrimSubstring content="${item.bean.summary}" mylength=90 /]
+												</p>
+												<div class="iconsbox">
+													<span title="查看次数">
+														<img src="${baseimg}/imgs/default/viewicon.png">
+														${item.bean.clickcount}
+													</span>
+													<span title="点赞次数">
+														<img src="${baseimg}/imgs/default/thumb.png">
+														${item.bean.prizecount}
+													</span>
+													<span title="评论次数">
+														<img src="${baseimg}/imgs/default/msg01.png">
+														${item.bean.commentcount}
+													</span>
+													<span title="分享">
+														<img src="${baseimg}/imgs/default/shareicon.png">
+													</span>
+												</div>
+											</div>
+										</li>	
+									[/#list]
+								</ul>
+								[#if list?size > 19]
+									<div class="tab_bottom loadmore collectloadmore" data-collect="article"><a href="javascript:void(0);">加载更多</a></div>
+								[/#if]
+							[/#if]
+						</div>
+						<div class="collectContent" id="collect2">
+							<h4>我收藏的话题</h4>
+							<ul class="mctTopiclist">
+							</ul>
+							<div class="tab_bottom loadmore collectloadmore" data-collect="topic"><a href="javascript:void(0);">加载更多</a></div>
+						</div>
+						<div class="collectContent" id="collect3">
+							<h4>我收藏的论战</h4>
+							<ul class="mctTopiclist mctDebatelist">
+							</ul>
+							<div class="tab_bottom loadmore collectloadmore" data-collect="debate"><a href="javascript:void(0);">加载更多</a></div>
+						</div>
+					</div>
+				</div>
+			[/#if]
+		</div>
+	</div>
+	[#include "/WEB-INF/FtlLib/Pages/Edit.ftl" /]
+	[#--
+		[#include "/WEB-INF/FtlLib/Pages/Addsubs.ftl" /]
+	--]
+</body>
+</html>

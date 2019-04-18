@@ -1,0 +1,188 @@
+function submitCommentHandler(obj){
+	beforeSubmitHandler(obj);
+	if(params.content.trim() == ""){
+		alert("评论内容不能为空");
+		return;
+	}
+	if(params.content.length >= commentdefault.maxlength){
+		alert("评论内容最多" + commentdefault.maxlength +　"个字");
+		return;
+	}
+	$.post(g.base + "/ajax/comment/{0}_{1}".format(params.channel, params.fromuid), params,function(data){
+		afterSubmitHandler(data, obj);
+	});
+}
+
+	var params = {
+			content: "",
+			fromuid: "",
+			channel: ""
+		}
+		
+		var commentdefault = {
+			maxlength: 300
+		}
+		
+		function beforeSubmitHandler(obj){
+			params = {};
+			params.fromuid = fromuid;
+			params.channel = "finance";
+			params.content = $(obj).parent().siblings(".comment_textarea").val();
+			var touid = $(obj).parent().parent().parent().data("uid");
+			if(typeof touid != "undefined"){
+				params.touid = touid;
+				params.touseruid = $(obj).parent().parent().parent().data("touseruid");
+				params.tousername = $(obj).parent().parent().parent().data("tousername");
+			}
+			var topuid = $(obj).parent().parent().parent().data("topuid");
+			if(typeof topuid != "undefined"){
+				params.topuid = topuid;
+			}
+			var fromusername = $("input[name='fromusername']").last().val();
+			if(fromusername != ""){
+				params.fromusername = fromusername;
+			}
+			
+		}
+		
+		function afterSubmitHandler(result, obj){
+			if(result.success){
+				$(".comment_textarea").val("")
+				addComment(result.bean, obj);
+				$(".comment_form").remove();
+				$("#list_one_1 .nothing").addClass("hd");
+				$(".db_btn2").css("background", "#b5b5b5");
+				registerPraise();
+			}else{
+				alert("评论失败");
+			}
+		}
+		
+		function addComment(bean, obj){
+			var parentobj = $(obj).parent().parent().parent();
+			var html = '';
+			if($(parentobj).attr("class").indexOf("com_info") == -1){
+				// 对文章的回复
+				html += '<div class="com_list">';
+				html += '<a href=""><img width="45px" height="45px" class="left"';
+				if(me.imglittle.trim() != ""){
+					html += 'src="' + g.baseimg + me.imglittle + '">';
+				}else{ 
+					html += 'src="' + me.defaultImg + '">';
+				} 
+				html += "</a>";
+				html += '<div class="com_info right" data-uid="'+ bean.uid +'" data-touseruid="'+bean.fromuseruid+'" >';
+				html += '<h3><a href="">' + bean.fromusername + '</a>：' + bean.content + '</h3>';
+				html += '<div class="com_reply"><span style="float:left;">'+bean.createtimeStr+'</span><span>';
+				html += '<span class="reply"><a href="javascript:void(0)" id="btnprizecomments_'+me.oid+'_'+bean.uid+'" data-counter=".prizecounter">'
+				 	 + '<img src="'+g.baseimg+'/imgs/default/heart_01.png"/><span class="prizecounter">(0)</span></a></span>';
+				html += '</span><a href="javascript:void(0);" class="reply" onclick="reply(this)">回复</a></div></div>';
+				html += '<div class="clear"></div><div class="com_hide right"></div><div class="clear"></div></div>';
+				$("#list_one_1").prepend(html);
+			}else{
+				html += '<div class="com_list com_listInner">';
+				html += '<a href="">';
+				html += '<a href=""><img width="45px" height="45px" class="left"';
+				if(me.imglittle.trim() != ""){
+					html += 'src="' + g.baseimg + me.imglittle + '">';
+				}else{
+					html += 'src="' + me.defaultImg + '">';
+				} 
+				html += '</a>';
+				if(typeof params.topuid == "undefined"){
+					params.topuid = params.touid;
+				}
+				html += '<div class="com_info right com_short" data-topuid="' +params.topuid+ '" data-uid="'+bean.uid+'" data-touseruid="'+bean.fromuseruid+'" >';
+				html += '<h3><a href="">'+bean.fromusername +'</a>回复';
+				html += '<a href="">' + bean.tousername +'</a>：<span class="com_con">' + bean.content +'</span></h3>';
+				html += '<p class="com_reply">';
+				html += '<span style="float:left;">'+ bean.createtimeStr +'</span>';
+				html += '<span><a href=""><img  src="'+g.baseimg+'/imgs/default/heart_02.png"  onmouseover="this.src=\''+g.baseimg+'/imgs/default/heart_01.png\'" onmouseout="this.src=\'${baseimg}/imgs/default/heart_02.png\'"/></a>(0)';
+				html += '</span><a href="javascript:void(0);" class="reply" onclick="reply(this)">回复</a></p></div></div>';
+				if($(parentobj).attr("class").indexOf("com_short") == -1){
+					// 对评论的回复
+					$(obj).parent().parent().parent().siblings(".com_hide").append(html);
+				}else{
+					// 对回复的回复
+					$(obj).parent().parent().parent().parent().after(html);
+				}
+			}
+		}
+		
+		function reply(obj){
+			if($(".comment_form").length != 0) {
+				if(!confirm("您确定要放弃现在的评论吗？")){
+					$(".comment_form")[0].focus();
+					return;
+				}else{
+					$(".comment_form").remove();
+				}
+			}
+			var comment_form = $("#comment_form").clone().addClass("comment_form").css("width","100%").css("height", "100%");
+			$(comment_form).children(".comment_textarea").css("width","100%").css("height", "100%");
+			$(obj).parent().after(comment_form);
+			$(".comment_textarea", $(".comment_form")).bind("blur", function(event){
+				if($(this).val() == ""){
+					$(this).parent().remove();
+				}
+			});
+		}
+		
+		var pagenum = 1;
+		var id="#list_one_1";
+		function loadmore(){
+			$.get(g.base + "/ajax/comment/finance_"+fromuid+"_{0}".format(pagenum),function(data){
+				if(data.trim() == ""){
+					if(pagenum != 1){
+						$(".loadmore").html("无更多评论").unbind("click");
+					}else{
+						$(".db_add").css("visibility","hidden");
+						$(".nothing").removeClass("hd");
+					}
+				}else{
+					pagenum += 1;
+					$(id).append(data);
+					if($("#list_one_1 .com_list").length < 20){
+						$(".db_add").css("visibility","hidden");
+					}
+					registerPraise();
+				}
+			});
+		}
+		
+		$(function($) {
+			$(".loadmore").bind("click", function(){
+				loadmore();	
+			});
+			$(".loadmore").click();
+		});
+		
+		function setTab(name,cursel,n){
+			if(cursel == 1){
+				$(".db_add").addClass("hd");
+				$(".db_add").removeClass("hd");
+			}else{
+				$(".db_add").addClass("hd");
+			}
+			for(i=1;i<=n;i++){	  
+				var menu=document.getElementById(name+i);
+				var con=document.getElementById("list_"+name+"_"+i);
+				menu.className=i==cursel?"current":"";
+				con.style.display=i==cursel?"block":"none";
+			}
+		}
+		
+		function showmore(obj){
+			$(obj).siblings(".com_listInner").removeClass("hd");
+			$(obj).addClass("hd");
+		}
+		
+		$(function () {
+		    $(".comment_textarea").live("keyup", function(){
+		        if($(".comment_textarea").last().val() != ""){
+		            $(".db_btn2").last().css("background","#eb6100")
+		        }else{
+		            $(".db_btn2").last().css("background","#b5b5b5")
+		        }
+		    });
+		})

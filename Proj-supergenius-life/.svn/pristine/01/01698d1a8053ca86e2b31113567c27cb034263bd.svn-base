@@ -1,0 +1,2 @@
+(function(){$(document).ready(function(){new Broadcast($("#lunbo"),{init:function(){this.element.find('.banner_list [data-index="0"]').css("left","15px").addClass("active").show()},select:function(b){for(var a=0;a<this.count;a++)a!==this.currentIndex&&this.element.find('.banner_list [data-index="'+a+'"]').hide();this.element.find('.banner_list [data-index="'+b+'"]').css({left:"15px"}).show();this.element.find('.banner_list [data-index="'+this.currentIndex+'"]').animate({left:"-100%"},1E3).hide()},
+count:$("#lunbo li").length,interval:5})})})();

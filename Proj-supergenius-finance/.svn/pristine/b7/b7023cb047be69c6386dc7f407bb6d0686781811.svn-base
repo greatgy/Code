@@ -1,0 +1,38 @@
+[#ftl]
+[#if list?size > 0]
+	[#list list as item]
+		<div class="content">
+			<a href="${baseFinancePath}/article/${item.firstCid}/${(item.oid)?replace(',', '')}" class="pull-left col-xs-4 col-sm-3 li_img">
+				<img src="${webimg}${item.imglittle}" alt="" class="img-responsive" />
+			</a>
+			<div class="right_content col-xs-8 col-sm-9">
+				<h5 class="title"><a href="${baseFinancePath}/article/${item.firstCid}/${(item.oid)?replace(',', '')}">${item.title}</a></h5>
+				<div class="detail">${item.author}~发表于${item.createtime.toString("YYYY-MM-dd")}</div>
+				<div class="introduce">
+					[@TrimSubstring content="${item.content}" mylength=45 /]
+				</div>
+			</div>
+		</div>
+		[#if item_has_next]<hr />[/#if]
+	[/#list]	
+[/#if]
+
+[#--
+ * 字符串清空html并截取一定的字数
+ * @content 要处理的文字	
+ * @length 要截取的长度	
+ * @since 1.0
+ --]
+[#macro TrimSubstring content mylength]
+	[#if mylength<=0]
+		[#local mylength=100]
+	[/#if]
+	[#local con=content?replace("<[^>]*>", "", "r")]
+	[#local con=con?replace("&nbsp;", "", "r")]
+	[#local apostrophe=true /]
+	[#if (con?length)<='${mylength}'?number]
+		[#local mylength='${con?length}']
+		[#local apostrophe=false /]
+	[/#if]
+	${con?substring(0,'${mylength}'?number)}[#if apostrophe]...[/#if] 
+[/#macro]

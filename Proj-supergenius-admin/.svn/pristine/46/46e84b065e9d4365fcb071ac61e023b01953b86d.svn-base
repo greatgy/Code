@@ -1,0 +1,178 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------------------
+Svn Revision:636
+Engineer:liubin
+DataTime:2017-02-07 17:01
+Comment:修改user项目会员列表中搜索条件默认为正常状态
+
+--------------------------------------------------------
+Svn Revision:623
+Engineer:chenminchang
+DataTime:2016-12-20 19:01
+Comment:升级ckeditor，并添加拖动图片功能
+
+--------------------------------------------------------
+Svn Revision:619
+Engineer:liubin
+DataTime:2016-12-14 14:30
+Comment:增加企业家培训中后台报名的功能
+
+--------------------------------------------------------
+Svn Revision:613
+Engineer:chenminchang
+DataTime:2016-12-08 11:12
+Comment:代码评审后的重构
+
+--------------------------------------------------------
+Svn Revision:608
+Engineer:liubin
+DataTime:2016-12-06 14:42
+Comment:修改消息发送的顺序
+
+--------------------------------------------------------
+Svn Revision:606
+Engineer:liubin
+DataTime:2016-12-06 14:42
+Comment:增加邮件发送
+
+--------------------------------------------------------
+Svn Revision:597
+Engineer:陈敏昌
+DataTime:2016-12-02 18:52
+Comment:为特批学员增加性别
+
+--------------------------------------------------------
+Svn Revision:592
+Engineer:liubin
+DataTime:2016-12-01 11:00
+Comment:增加挑战者和被挑战者备选裁判的显示以及选择裁判和专家功能的优化
+
+--------------------------------------------------------
+Svn Revision:585
+Engineer:liubin
+DataTime:2016-11-29 19:09
+Comment:修改后台管理消息的增加
+
+--------------------------------------------------------
+Svn Revision:583
+Engineer:chenminchang
+DataTime:2016-11-29 12:34
+Comment:修改后台管理
+
+--------------------------------------------------------
+Svn Revision:579
+Engineer:liubin
+DataTime:2016-11-24 19:19
+Comment:修改挑战管理中的设置挑战结果的bug
+
+--------------------------------------------------------
+Svn Revision:576
+Engineer:liubin
+DataTime:2016-11-24 15:19
+Comment:增加挑战中即将开始的状态
+
+--------------------------------------------------------
+Svn Revision:570
+Engineer:chenminchang
+DataTime:2016-11-23 18:35
+Comment:修改证书相关
+
+--------------------------------------------------------
+Svn Revision:562
+Engineer:liubin
+DataTime:2016-11-22 9:25
+Comment:修改答辩管理中反馈材料的错误和举报管理中举报记录的增加
+
+--------------------------------------------------------
+Svn Revision:559
+Engineer:liubin
+DataTime:2016-11-22 9:25
+Comment:修改答辩和挑战中的bug
+
+
+--------------------------------------------------------
+Svn Revision:550
+Engineer:chenminchang
+DataTime:2016-11-21 12:00
+Comment:增加积分可以晋级的消息
+
+
+--------------------------------------------------------
+Svn Revision:281
+Engineer:yuyingjie
+DataTime:2015-07-7 11:30
+Comment:修改finance论战
+
+
+--------------------------------------------------------
+Svn Revision:259
+Engineer:yuyingjie
+DataTime:2015-04-28 16:00
+Comment:修改enum.peoperties配置文件，替换模板，修改java文件
+
+--------------------------------------------------------
+Svn Revision:249
+Engineer:yuyingjie
+DataTime:2015-04-23 16:58
+Comment:修改enum.peoperties配置文件，替换模板，修改java文件
+
+
+--------------------------------------------------------
+Svn Revision:245
+Engineer:yuyingjie
+DataTime:2015-04-22 17:40
+Comment:修改web.properties配置文件，替换模板，修改java文件
+
+
+
+--------------------------------------------------------
+Svn Revision:243
+Engineer:yuyingjie
+DataTime:2015-04-21 17:30
+Comment:添加mobilefinance.data、mobileproject.data文件，修改sys.properties、enum.properties文件
+
+
+
+--------------------------------------------------------
+Svn Revision:227
+Engineer:lijiacheng
+DataTime:2015-04-15 10:52
+Comment:修改了dodiscuss.ftl、doadminmenu、discussAdminer、discusshp文件。。。注释说明
+
+
+
+
+--------------------------------------------------------
+Svn Revision:1
+Engineer:yuyingjie
+DataTime:2015-04-13 18:25
+Comment:修改了dodiscuss.ftl文件，添加查询。。。注释说明
+
+
+
+
+
+
+
+
+--------------------------------------------------------
+Svn Revision:1
+Engineer:architect.bian
+DataTime:2015-03-13 12:39
+Comment:修改了xxbug。。。注释说明

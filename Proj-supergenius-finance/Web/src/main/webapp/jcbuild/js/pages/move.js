@@ -1,0 +1,3 @@
+function getStyle(b,e){return b.currentStyle?b.currentStyle[e]:getComputedStyle(b,!1)[e]}
+function startMove(b,e,c){c=c||{};c.type=c.type||"linear";c.time=c.time||300;clearInterval(b.timer);var j=Math.floor(c.time/16.7),g={},k={},f;for(f in e)g[f]=parseFloat(getStyle(b,f)),k[f]=e[f]-g[f];var h=0;b.timer=setInterval(function(){h++;for(var d in e){switch(c.type){case "linear":var a=h/j,a=g[d]+k[d]*a;break;case "ease-in":a=h/j;a=g[d]+k[d]*a*a*a;break;case "ease-out":a=1-h/j,a=g[d]+k[d]*(1-a*a*a)}"opacity"==d?(b.style.opacity=a,b.style.filter="alpha(opcity:"+100*a+")"):b.style[d]=a+"px"}h==
+j&&(clearInterval(b.timer),c.end&&c.end())},16.7)};

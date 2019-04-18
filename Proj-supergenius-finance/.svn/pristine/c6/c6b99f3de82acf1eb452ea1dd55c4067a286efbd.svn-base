@@ -1,0 +1,35 @@
+var toTop = 0;
+$(window).scroll(function() {
+	toTop = $(this).scrollTop();
+	var suffix = location.href.split("=")[1];
+	if (suffix != undefined && suffix != 'undefined') {
+		history.pushState("popstate", "back", location.href.split("#")[0] + "#" + toTop + "=" + location.href.split("=")[1]);
+	} else {
+		history.pushState("popstate", "back", location.href.split("#")[0] + "#" + toTop);
+	}
+});	
+
+function ajax_history(url, pagesize, tabBox, firstNum, firstSize) {
+	if (history.pushState) {
+		if (location.href.indexOf("#")!=-1) {
+			var uriSuffix = location.href.split("#")[1];
+			var scrollTop = uriSuffix.split("=")[0];
+		    var num = location.href.split("=")[1];
+			var loadsize = num * pagesize - (firstNum - 1);
+			if (num == undefined || num == 'undefined') {
+				loadsize = firstSize - (firstNum - 1);
+			} else {
+				pagenum = parseInt(num) + 1;
+			}
+			$(window).unbind("scroll", defaultScrollHandler);
+			$.ajaxSettings.async = false;
+			$.get(url , {pagenum: firstNum, pagesize: loadsize}, function(data) {
+				scrollTop = parseInt(scrollTop);
+				$(tabBox).html(data);
+			});
+			$(window).scrollTop(scrollTop);
+			$.ajaxSettings.async = true;
+		}
+	}
+}
+

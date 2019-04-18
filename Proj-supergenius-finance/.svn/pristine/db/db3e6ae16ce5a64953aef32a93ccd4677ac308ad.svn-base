@@ -1,0 +1,62 @@
+/**
+ * 可扩展功能增加每分钟更新一次时间
+ */
+;(function ($) {
+
+	$.fn.timeago = function(options) {
+		var defaults = {
+			timeregx:/^\d{4}-\d{1,2}-\d{1,2}\s\d{1,2}:\d{1,2}:\d{1,2}$/,
+			fmnow:"刚刚",
+			fmseconds:"ss秒前",
+			fmminute:"mm分钟前",
+			fmtoday:"今天 hh:mm",
+			fmyesterday:"昨天 hh:mm",
+			fmbeforeyesterday:"前天 hh:mm",
+			fmdate:"mm月dd日 hh:mm",
+			fmfulldate:"yyyy年mm月dd日 hh:mm"
+		};
+		var vars = $.extend({}, defaults, options);
+		$(this).each(function(){
+			if(vars.timeregx.test($(this).text())) {
+				var rex = /^(\d{4})-(\d{1,2})-(\d{1,2})\s(\d{1,2}):(\d{1,2}):(\d{1,2})$/;
+				var arr = rex.exec($(this).text());
+				$(this).attr("title", $(this).text());
+				$(this).html(getTimeAgo(vars, parseInt(RegExp.$1), parseInt(RegExp.$2), parseInt(RegExp.$3), parseInt(RegExp.$4), parseInt(RegExp.$5), parseInt(RegExp.$6)));
+			}
+		});
+	 };
+	 
+	 function getTimeAgo(vars, year, month, day, hour, minute, seconds) {
+		 var now = new Date();
+		 var y = now.getFullYear();
+		 var mo = now.getMonth() + 1;
+		 var d = now.getDate();
+		 var h = now.getHours();
+		 var m = now.getMinutes();
+		 var s = now.getSeconds();
+//		 alert(y + "-" + mo + "-" + d + " " + h + ":" + m + ":" + s);
+		 if(y == year && mo == month && d == day && h == hour && m == minute && s == seconds) {
+			 return vars.fmnow;
+		 } else if(y == year && mo == month && d == day && h == hour && m == minute) {
+			 return vars.fmseconds.replace("ss", s - seconds);//n秒前
+		 } else if(y == year && mo == month && d == day && h == hour) {
+			 return vars.fmminute.replace("mm", m - minute);//n分钟前
+		 } else if(y == year && mo == month && d == day) {
+			 return vars.fmtoday.replace("hh", hour).replace("mm", minute);//今天 12:32
+		 } else if(y == year && mo == month && d == (day + 1)) {
+			 return vars.fmyesterday.replace("hh", hour).replace("mm", minute);//昨天 12:32
+		 } else if(y == year && mo == month && d == (day + 2)) {
+			 return vars.fmbeforeyesterday.replace("hh", hour).replace("mm", minute);//前天 12:32
+		 } else if(y == year) {
+			 return vars.fmdate.replace("mm", month).replace("dd", day).replace("hh", hour).replace("mm", minute);//mm月dd日 hh:mm
+		 } else {
+			 return vars.fmfulldate.replace("yyyy", year).replace("mm", month).replace("dd", day).replace("hh", hour).replace("mm", minute);//yyyy年mm月dd日 hh:mm
+		 }
+	 }
+
+})(jQuery);
+$(function(){
+	if($("time").length > 0) {
+		$("time").timeago();
+	}
+});

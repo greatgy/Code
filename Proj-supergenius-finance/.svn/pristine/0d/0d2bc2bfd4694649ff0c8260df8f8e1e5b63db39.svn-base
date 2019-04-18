@@ -1,0 +1,335 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+[#import "/WEB-INF/FtlLib/Macro/Public.ftl" as p]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>${title}</title>
+	<link rel="stylesheet" href="${basecss}/css/default/pages/msg.css"/>
+	<script type="text/javascript" src="${basejs}/js/pages/vote.js"></script>
+	<script type="text/javascript" src="${basejs}/js/libs/scroll.js"></script>
+</head>
+<body>
+	<div class="wraper centerbox">
+		<div class="main">
+			<div class="newsContainer searchResult">
+				<div class="newsLeft">
+					<h3>搜索页面</h3>
+					<ul class="newsnav">
+						<li [#if channel == "finance"] class="curSelect"[/#if] id="tab_finance" data-table="finance">
+							<a href="javascript:void(0);">文章<span>[#if channel == "finance"]${count!"0"}[#else]->[/#if]</span></a>
+						</li>
+						<li [#if channel == "topic"] class="curSelect"[/#if] id="tab_topic" data-table="topic">
+							<a href="javascript:void(0);">话题<span>[#if channel == "topic"]${count!"0"}[#else]->[/#if]</span></a>
+						</li>
+						<li [#if channel == "debate"] class="curSelect"[/#if] id="tab_debate" data-table="debate">
+							<a href="javascript:void(0);">论战<span>[#if channel == "debate"]${count!"0"}[#else]->[/#if]</span></a>
+						</li>
+						<li [#if channel == "user"] class="curSelect"[/#if] id="tab_user" data-table="user">
+							<a href="javascript:void(0);">用户<span>[#if channel == "user"]${count!"0"}[#else]->[/#if]</span></a>
+						</li>
+					</ul>
+				</div>
+				<div class="newsRight searchResultright" id="content">
+					<h4>与<em id="emkeyword">"${searchkeyword?html}"</em>相关的<span id="searchchannel">[#if channel == "finance"]文章[#elseif channel == "topic"]话题[#elseif channel == "debate"]论战[#else]用户[/#if]</span>
+						&nbsp;<b class="keyword keywordcount">${count!"0"}</b>&nbsp;个
+						<form class="ritform" action="${base}/search/${channel}">
+						    <input type="text" id="searchword" maxlength="20" value="${searchkeyword?html}" />
+						   	<input style='display:none' />
+						    <a href="javascript:void(0);" id="pagesearch">
+								<img src="${baseimg}/imgs/default/search.png" />
+							</a>
+						</form>
+					</h4>
+					[#if channel == "finance"]
+						<ul id="searchBoxArticle" class="artilelist">
+						</ul>
+					[#elseif channel == "topic"]
+						<ul id="searchBoxTopic" class="mctTopiclist">
+						</ul>
+					[#elseif channel == "debate"]
+						<ul id="searchBoxDebate" class="mctTopiclist mctDebatelist">
+						</ul>
+					[#else]
+						<ul id="searchBoxUser" class="searchUserlist">
+							[#list list as item]
+								[#if me?? && me.oid == item.bean.oid]
+									[#assign url="${base}/my/article"]
+									[#assign url2="${base}/my/article"]
+									[#assign url3="${base}/my/topic"]
+								[#else]
+									[#assign url="${base}/his/article/${item.bean.oid?c}"]
+									[#assign url2="${base}/his/article/${item.bean.oid?c}"]
+									[#assign url3="${base}/his/topic/${item.bean.oid?c}"]
+								[/#if]
+								<li>
+									<div class="subsperson">
+										<a href="${url}" class="personimg" target="_blank">
+											<img [#if item.bean.avatar?? && item.bean.avatar != ""] src="${userimg}${item.bean.avatar}" [#else] src="${baseimg}/imgs/web/noavatar.png" [/#if] />
+										</a>
+										<div class="personinfor">
+											<h4>
+												<a href="${url}" class="personame" target="_blank">${item.bean.showname}</span></a>
+												<div class="subsbtn">
+												[#if item.issubscribe]
+													<span class="substip redtip">已取消订阅</span>
+													<a [#if me?? && me.oid != item.bean.oid] href="javascript:void(0);" onclick="subscribeHandle(this, ${item.bean.oid?c});" [#elseif me??] href="javascript:void(0);" [#else] href="javascript:;" class="cancelsubs cancelSubs pop-up" [/#if] class="cancelsubs cancelSubs" data-isubscribe="${item.issubscribe!'false'}">
+														<img src="${baseimg}/imgs/default/cancelsubs.png" />
+													</a>
+												[#else]
+													<span class="substip bluetip">订阅成功</span>
+													<a [#if me?? && me.oid != item.bean.oid] href="javascript:void(0);" onclick="subscribeHandle(this, ${item.bean.oid?c});" [#elseif me??] href="javascript:void(0);" [#else] href="javascript:;" class="cancelsubs cancelSubs pop-up" [/#if] class="cancelsubs cancelSubs" data-isubscribe="${item.issubscribe!'false'}">
+														<img src="${baseimg}/imgs/default/addsubs.png" />
+													</a>
+												[/#if]
+												</div>
+											</h4>
+											<div class="companyInfor">
+												[#if item.bean.company?trim?? && item.bean.company?trim != ""]${item.bean.company}[#if item.bean.department?trim?? && item.bean.department?trim != "" || item.bean.job?trim?? && item.bean.job?trim != "" ]-[/#if][/#if][#if item.bean.department?trim?? && item.bean.department?trim != ""]${item.bean.department}[#if item.bean.job?trim?? && item.bean.job?trim != ""]-[/#if][/#if]${item.bean.job?if_exists}
+											</div>
+											<div class="numcont">
+												<span class="articleNum">
+													文章
+													<a href="${url2}" target="_blank">${item.count!"0"}篇</a>
+												</span>
+												<span class="topicNum">
+													话题
+													<a href="${url3}" target="_blank">${item.count2!"0"}个</a>
+												</span>
+											</div>
+										</div>
+									</div>
+									<div class="newaction">
+										<img src="${baseimg}/imgs/default/voiceimg.png" />
+											[#if item.finance?? ]
+												<a href="${base}/${item.typename}/${item.finance.oid?c}" class="activity" target="_blank">
+												[@f.TrimSubstring content='${item.finance.title}' mylength=100 /]
+											[#elseif item.topic??]
+												<a href="${base}/${item.typename}/${item.topic.oid?c}" class="activity" target="_blank">
+												[@f.TrimSubstring content='${item.topic.title}' mylength=100 /]
+											[#else]
+												<a href="javascript:void(0);" class="activity">
+												暂无最新文章...
+											[/#if]
+										</a>
+									</div>
+								</li>
+							[/#list]
+						</ul>
+					[/#if]
+					<img class="noarticle" src="${baseimg}/imgs/default/prompt.png" style="display:none" width="481px" heigth="211px"/>
+					<div class="clear"></div>
+					<div class="tab_bottom loadmore" style="display:none" data-tab="${channel}?keyword=${searchkeyword}"><a href="javascript:void(0);">加载更多</a></div>
+					<div class="loading hd" id="loading" style="display:none">
+						<img src="${baseimg}/imgs/default/loading.gif" />
+						loading...
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script id="tmplArticles" type="text/x-handlebars-template">
+		{{#each docs}}
+			<li>
+				<a href="{{href}}" target="_blank"><img src="{{../webimg}}/{{imglittle}}" class="artileimg" /></a>
+				<div class="artdetail">
+					<div class="artTitlebox">
+						<a href="{{href}}" class="artTitle" target="_blank">{{{title}}}</a>
+						<span class="collectTime">{{createtimeStr}}</span>
+					</div>
+					<p>{{{summary}}}</p>
+					<div class="iconsbox">
+						<div class="searchbox" data-rednerstatus="0">
+							<input type="hidden" name="uid" value="{{uid}}" />
+							<input type="hidden" name="url" value="{{../base}}/ajax/search/finance/count" />
+							<span class="look" title="查看次数">
+								<img src="{{../baseimg}}/imgs/default/viewicon.png">
+								<span class="field" data-field="clickcount">{{clickcount}}</span>
+							</span>
+							<span class="look" title="点赞次数">
+								<img src="{{../baseimg}}/imgs/default/thumb.png">
+								<span class="field" data-field="prizecount">{{prizecount}}</span>
+							</span>
+							<span class="look" title="评论次数">
+								<img src="{{../baseimg}}/imgs/default/msg01.png">
+								<span class="field" data-field="commentcount">{{commentcount}}</span>
+							</span>
+							<span class="look" title="分享">
+								<img src="{{../baseimg}}/imgs/default/shareicon.png">
+							</span>
+						</div>
+					</div>
+				</div>
+			</li>
+		{{/each}}
+	</script>
+	<script id="tmplTopic" type="text/x-handlebars-template">
+		{{#each docs}}
+			<li>
+				<div class="searchbox" data-rednerstatus="0">
+					<input type="hidden" name="uid" value="{{uid}}">
+					<input type="hidden" name="userid" value="{{useruid}}">
+					<div class="topicTopinfor">
+						<a href="{{userhome}}" class="field" data-field="hishome" target="_blank">
+							<img src="{{useravatar}}" class="authorimg field" data-field="avatar" />
+						</a>
+						<a href="{{userhome}}" class="authorname field" data-field="hishome" target="_blank">{{author}}</a>
+						<span class="collectTime">{{createtimeStr}}</span>
+					</div>
+					<div class="topicMidinfor">
+						<a href="{{href}}" class="topicTitle" title="{{{title}}}" target="_blank">{{{title}}}</a>
+						<a href="{{href}}" class="mctTopicimg" target="_blank"><img src="{{../webimg}}/{{imgoriginal}}" /></a>
+						<div class="iconsbox">
+							<span class="look" title="查看次数">
+								<img src="{{../baseimg}}/imgs/default/viewicon.png">
+								<span class="field" data-field="clickcount">{{clickcount}}</span>
+							</span>
+							<span class="look" title="点赞次数">
+								<img src="{{../baseimg}}/imgs/default/thumb.png">
+								<span class="field" data-field="prizecount">{{prizecount}}</span>
+							</span>
+							<span class="look" title="评论次数">
+								<img src="{{../baseimg}}/imgs/default/msg01.png">
+								<span class="field" data-field="commentcount">{{commentcount}}</span>
+							</span>
+							<span class="look" title="分享">
+								<img src="{{../baseimg}}/imgs/default/shareicon.png">
+							</span>
+						</div>
+					</div>
+				<div>
+			</li>
+		{{/each}}
+	</script>
+	<script id="tmplDebate" type="text/x-handlebars-template">
+		{{#each docs}}
+			<li>
+				<div class="searchbox" data-rednerstatus="0">
+					<input type="hidden" name="uid" value="{{uid}}">
+					<div class="mctDebate">
+						<a href="{{../base}}/debate/{{oid}}" target="_blank" class="mctTopicimg"><img src="{{../webimg}}/{{imgmedium}}" /></a>
+						<div class="mctDebatetitbg"></div>
+						<a href="{{../base}}/debate/{{oid}}" target="_blank" class="mctDebatetit" title="{{{title}}}">{{{title}}}</a>
+					</div>
+					<div class="dbtSupport">
+						<div class="dbtTitle">
+							<span>{{{titlered}}}</span>
+							<img src="{{../baseimg}}/imgs/default/vs.png" />
+							<span>{{{titleblue}}}</span>
+						</div>
+						<div class="dbtvote">
+							<a href="javascript:void(0);" class="redside redvote" id="debate_vote_two_{{uid}}_red" data-support="red" data-id="{{uid}}">
+								<img src="{{../baseimg}}/imgs/default/redzan.png" class="field" data-field="red" data-isvoted="{{item.voted.voted}}" data-isme="{{item.voted.isred}}" />
+							</a>
+							<div class="voteprogress">
+								<div class="rprogress" style="width:{{redwidth}}%">
+									<div class="redbar"></div>
+								</div>
+								<div class="bprogress" style="width:{{bulewidth}}%">
+									<div class="bluebar"></div>
+								</div>
+								<div class="numberbox">
+									<span class="rednum rednum_{{uid}} num_{{uid}}_red">{{countred}}</span>
+									<span class="bluenum bluenum_{{uid}} num_{{uid}}_blue">{{countblue}}</span>
+								</div>
+							</div>
+							<a href="javascript:void(0);" class="redside bluevote" id="debate_vote_two_{{uid}}_blue" data-support="blue" data-id="{{uid}}">
+								<img src="{{../baseimg}}/imgs/default/bluezan.png" class="field" data-field="blue" data-isvoted="{{item.voted.voted}}" data-isme="{{item.voted.isblue}}"/>
+							</a>
+						</div>
+					</div>
+				</div>
+			</li>
+		{{/each}}
+	</script>
+	<script id="tmplUser" type="text/x-handlebars-template">
+		{{#each list}}
+			<li>
+				<div class="subsperson">
+					<a href="{{url}}" class="personimg" target="_blank">
+						<img src="{{avatar}}" />
+					</a>
+					<div class="personinfor">
+						<h4>
+							<a href="{{url}}" class="personame" target="_blank">{{showname}}</span></a>
+							<div class="subsbtn">
+								{{#if issubscribe}}
+									<span class="substip redtip">已取消订阅</span>
+									<a href="javascript:;" {{#if canpopup}} class="cancelsubs cancelSubs pop-up" {{else}} onclick="subscribeHandle(this, {{useroid}});" {{/if}} class="cancelsubs cancelSubs" data-isubscribe="{{issubscribe}}">
+										<img src="{{../baseimg}}/imgs/default/cancelsubs.png" />
+									</a>
+								{{else}}
+									<span class="substip bluetip">订阅成功</span>
+									<a href="javascript:;" {{#if canpopup}} class="cancelsubs cancelSubs pop-up" {{else}} onclick="subscribeHandle(this, {{useroid}});" {{/if}} class="cancelsubs cancelSubs" data-isubscribe="{{issubscribe}}">
+										<img src="{{../baseimg}}/imgs/default/addsubs.png" />
+									</a>
+								{{/if}}
+							</div>
+						</h4>
+						<div class="companyInfor">
+							{{company}}-{{department}}-{{job}}
+						</div>
+						<div class="numcont">
+							<span class="articleNum">
+								文章
+								<a href="{{url}}" target="_blank">{{count}}篇</a>
+							</span>
+							<span class="topicNum">
+								话题
+								<a href="{{url2}}" target="_blank">{{count2}}个</a>
+							</span>
+						</div>
+					</div>
+				</div>
+				<div class="newaction">
+					<img src="{{../baseimg}}/imgs/default/voiceimg.png" />
+						{{#if finance}}
+							<a href="{{../base}}/{{typename}}/{{oid}}" class="activity" target="_blank">
+							{{title}}
+						{{else}}
+							{{#if topic}}
+								<a href="{{../base}}/{{typename}}/{{oid}}" class="activity" target="_blank">
+								{{title}}
+							{{else}}
+								<a href="javascript:void(0);" class="activity">
+								暂无最新文章...
+							{{/if}}
+						{{/if}}
+					</a>
+				</div>
+			</li>
+		{{/each}}
+	</script>
+	<script type="text/javascript" src="${basejs}/js/libs/search-1.0.0.js"></script>
+	<script type="text/javascript" src="${basejs}/js/libs3/handlebars-4.0.5.min.js"></script>
+	<script type="text/javascript">
+	<!--
+		var PageData = {
+			start : 0,
+			pagesize : 20,
+			pagenum : 1,
+			//sort : "sortorder desc",
+			table : "${channel}",
+			keyword : "${searchkeyword!''}",
+			searchword: "title:${searchkeyword!''} OR content:${searchkeyword!''}",
+		}
+		var me = {
+			showname: "${me.showname!'游客'}",
+			imglittle: "${me.avatar}",
+			oid:"${(me.oid?c)!'0'}",
+			defaultImg: "${baseimg}/imgs/web/noavatar.png"
+		}
+		var ChannelName = {
+			"finance":"文章",
+			"topic":"话题",
+			"debate":"论战",
+			"user":"用户"
+		}
+		var client = SearchClient("${SearchUrl}");
+		var defaultAvatar = "${baseimg}/imgs/web/noavatar.png";
+	-->
+	</script>
+	<script type="text/javascript" src="${basejs}/js/pages/search.js"></script>
+</body>
+</html>

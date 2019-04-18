@@ -1,0 +1,94 @@
+[#ftl]
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>${title!'发布话题'}</title>
+<link href="${basecss}/css/default/pages/contribute11.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="${basejs}/js/libs/validator-1.0.0.js"></script>
+<script src="http://open.web.meitu.com/sources/xiuxiu.js" type="text/javascript"></script>
+<script type="text/javascript">
+	function showXiuXiu(){
+	  /*第1个参数是加载编辑器div容器，第2个参数是编辑器类型，第3个参数是div容器宽，第4个参数是div容器高*/
+	  xiuxiu.setLaunchVars("uploadBtnLabel", "上传");
+	  xiuxiu.setLaunchVars("titleVisible", "0");
+	  xiuxiu.setLaunchVars("cropPresets", "4:3");
+	  xiuxiu.setLaunchVars("customMenu", ["edit"]);
+	  xiuxiu.embedSWF("altimg",1,"100%","400px");
+	  xiuxiu.setUploadURL("${base}/uploadimg/topic");//修改为您自己的图片上传接口
+	  xiuxiu.setUploadType(2);
+	  xiuxiu.setUploadDataFieldName("fileimg");
+	  xiuxiu.onInit = function (){
+	    xiuxiu.loadPhoto("");//默认待处理图片
+	  }
+	  xiuxiu.onUploadResponse = function (data){
+	    $("#imgbox").html("<span id='altimg'></span>");
+	    $("#topicimg").val(data);
+	    var origin = data.split(",")[3];
+	    $("#imgshow").removeClass("hd");
+	    $("#imgshow_big").attr("src",'${webimg}' + origin)
+	  }
+	  xiuxiu.onClose = function (){
+        $("#imgbox").html("<span id='altimg'></span>");
+	  }
+	}
+</script>
+</head>
+<body>
+
+<div class="contribute_box">
+   <div class="contribute_800">
+      <div class="contribute_title">
+         <span class="title_1">发布新话题</span>
+      </div>
+      <form id="topicapply" action="${base}/topic/apply" method="post" enctype="multipart/form-data">
+         <input type="text" id="txttitle" value="${title}" name="title" isnotempty="" maxlength="50" placeholder="快来给话题起个名字吧。" class="sc_input1"/>
+         <div class="msg-box_topic">
+            <div>
+            	<div id="errtxttitle" class="msg-weak msg-inline msg-error hd"><i></i><span id="errmsgtxttitle"></span></div>
+            	<div id="oktxttitle" class="msg-weak msg-inline msg-correct hd"></div>
+            </div>
+         </div>
+         <textarea class="sc_textarea" id="content" name="content" placeholder="说说话题的具体情况吧">${content}</textarea>
+          <br/> <br/>
+          <input id="topicimg" name="topicimg" type="text" value="" class="hd"/>
+         &nbsp;&nbsp;<span class="title_2">上传话题图片</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+         <a id="upload" href="javascript:showXiuXiu()" class="title_3_a">点此上传</a>
+         <div id="imgbox">
+        	<span id="altimg"></span>
+         </div>
+         <div class="hd" id="imgshow" style="margin-left:54px;">
+        	<img id="imgshow_big" src=''/>
+         </div>
+         <div class="clear"></div>
+         <span class="title_2">“热门话题”管理规定</span>
+         <div class="agree">
+            1.“热门话题”的选题范围仅限于与企业经营管理相关的经济类、管理类话题，由网站编辑负责审核，审核通过后方可发布。</br>
+            2.会员发起的话题一旦提交，就不可修改；已经通过审核并发布的话题，会员无权撤销或修改。</br>
+            3.会员在热门话题的发言应符合本网站《用户协议》中的相关规定，如有违反，本网站有权删除发言或撤销该话题，并依照《用户协议》中的相关规定进行处理。</br>
+            4.本管理规定的解释权属于本网站。
+         </div>
+         <span class="agree_check">
+            <input name="ischeckbox" id="checkbox" type="checkbox" checked="false" value="0">
+            <label class="agree_check1">我已阅读该规定并同意所有条款</label>
+         </span>
+         <a class="draft_tg right" href="javascript:submit()">确认并提交审核</a>
+      </form>
+   </div>
+</div>
+<script type="text/javascript">
+   function submit(){
+   		var content = $("#content").val();
+   		var title = $("#txttitle").val();
+   	   if(content == ""){
+   	   		alert("话题内容不能为空");
+   	   } else if(title.length > 50||title.length < 5) {
+            alert("话题标题必须在5到50字之间");
+   	   } else if($("[name='ischeckbox']:checked").val() != 0) {
+            alert("请同意热门话题管理规定");
+	   } else {
+			$("#topicapply").submit();
+		}
+   }
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+#\u641c\u7d22\u914d\u7f6e
+
+#solr\u7684\u914d\u7f6e
+solr.finance.cloud=true
+#solr.host=http://192.168.20.2:8983/solr/mycloud
+solr.finance.host=localhost:9983/financecloud
+solr.finance.uniqueKey=uid
+
+# startup solr\u7684\u914d\u7f6e
+solr.startup.cloud=true
+#solr.startup.host=http://192.168.20.2:8983/solr/startupcloud
+solr.startup.host=localhost:9983/startupcloud
+solr.startup.uniqueKey=uid
+
+# ai solr\u7684\u914d\u7f6e
+solr.ai.cloud=true
+#solr.ai.host=http://192.168.20.2:8983/solr/aicloud
+solr.ai.host=localhost:9983/aicloud
+solr.ai.uniqueKey=uid
+
+# career solr\u7684\u914d\u7f6e
+solr.career.cloud=true
+solr.career.host=localhost:9983/careercloud
+solr.career.uniqueKey=uid
+
+# gupage solr\u7684\u914d\u7f6e
+solr.gupage.cloud=true
+#solr.ai.host=http://192.168.20.2:8983/solr/aicloud
+solr.gupage.host=localhost:9983/gupagecloud
+solr.gupage.uniqueKey=uid
+
+# enterpriser solr\u7684\u914d\u7f6e
+solr.enterpriser.cloud=true
+solr.enterpriser.host=localhost:9983/enterprisercloud
+solr.enterpriser.uniqueKey=uid

@@ -1,0 +1,303 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+[#import "/WEB-INF/FtlLib/Macro/Public.ftl" as p]
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>${title!'热门话题'}</title>
+    <link rel="stylesheet" href="${basecss}/css/default/pages/topic.css"/>
+    <script type="text/javascript" src="${basejs}/js/libs/scroll.js"></script>
+	<script type="text/javascript" src="${basejs}/js/libs3/jquery.qqface.min.js"></script>
+	<script type="text/javascript">
+		var TOPIC_PAGE = {
+    		pagenum:1,
+    		url:"${base}/ajax/topic"
+		};
+		$(function($) { // 注册事件
+			$("#loading").ajaxStart(function(){
+				$(this).show();
+			})
+			$("#loading").ajaxStop(function(){
+				$(this).hide();
+			})
+			$.fn.scrollHandle({
+				obj: window,
+				fun: loadmore
+			})
+			initPage();
+		});
+		// 加载更多事件处理
+		function loadmore() {
+			var pagenum = TOPIC_PAGE.pagenum +　1;
+			var url = TOPIC_PAGE.url;
+			$.get(url, {pagenum:pagenum}, function(data){
+				if(data.trim() == "") { // 没有更多内容
+					$(window).unbind("scroll", defaultScrollHandler);
+					$(".loadmore a").html("无更多话题");
+					$(".loadmore").show();
+					return;
+				}
+				$("#loading").hide();
+				TOPIC_PAGE.pagenum += 1;
+				$(".newtopicbox").append(data);
+				masonryHandleAgain();
+			});
+		}
+		
+		function replaceContent(str) {
+			str = str.replace(/\[em_([0-9]*)\]/g,'<img src="' + g.baseimg + '/imgs/face/qq/$1.gif" border="0" />');
+			return str;
+		}
+
+		/*生成页面表情*/
+		function initPage() {
+			$(".comments").each(function(){
+				var content = replaceContent($(this).html());
+				$(this).html(content);
+			});
+		}
+	</script>
+</head>
+<body>
+<div class="centerbox">
+<div class="topic_07_box">
+	<div class="blockgroup">
+		<div class="tp_01_one">	
+			<div id="box">
+                <ul id="ul1">
+                    [#list toplist as item]
+                    	[#if item_index == 0]
+                    		<li style="width:420px"><a href="${base}/topic/${item.oid}" target="_blank"><img src="${webimg}${item.imgoriginal}"/><span class="cover_bar" title="${item.title}">${item.title}</span></a></li>
+                    	[#elseif item_index != 0]
+                    		<li><a href="${base}/topic/${item.oid}" target="_blank"><img src="${webimg}${item.imgoriginal}"/><span class="cover_bar hd" title="${item.title}">${item.title}</span></a></li>
+                    	[/#if]
+                	[/#list]
+                </ul>
+            </div>
+		</div>
+		<div class="topicmain">
+			<div class="tp_01_two">
+				<div class="mb">
+	                &nbsp;&nbsp;推荐话题
+	            </div>
+                <div class="mf" id="mf_a" >
+                    [#list recommendlist as item]
+	                   <div class="mf_1 mf_a">
+                            <div class="mf_bg"></div>
+			    	        <p class="p1">
+		    	    		   <a href="${base}/topic/${item.oid}" target="_blank">${item.title}</a>
+			    	    	</p>
+		                    <img src="${webimg}${item.imgoriginal}" />
+		                </div>
+		            [/#list]
+                </div>
+            </div>
+	        <div class="tp_01_thr">
+                <div class="mb">
+	                &nbsp;&nbsp;最新话题
+	            </div>
+	     		<ul class="newtopicbox">
+	     		    [#list list as newtopic]
+                        <li>
+    	     				<div class="litopbox">
+    	     					<a href="${base}/his/topic/${newtopic.authorUser.oid}" target="_blank">
+                                    [#if newtopic.authorUser.avatar??]
+                                        <img src="${userimg}${newtopic.authorUser.avatar}" />
+                                    [#else]
+                                        <img src="${baseimg}/imgs/web/noavatar.png" />
+                                    [/#if]
+    	     					</a>
+    	     					<a href="${base}/his/topic/${newtopic.authorUser.oid}" class="name" target="_blank">${newtopic.authorUser.showname}</a>
+    	     					<span class="distime">${newtopic.createtimeStr}</span>
+    	     				</div>
+    	     				<a href="${base}/topic/${newtopic.oid}" class="tit" title="${newtopic.title}" target="_blank">${newtopic.title}</a>
+    	     				<a href="${base}/topic/${newtopic.oid}" class="limidbox" target="_blank">
+    	     					<img src="${webimg}${newtopic.imgoriginal}" />
+    	     				</a>
+    	     				<div class="iconsbox">
+    							<span title="查看次数">
+    								<img src="${baseimg}/imgs/default/viewicon.png" />
+    								${newtopic.clickcount}
+    							</span>
+    							<span title="点赞次数">
+    								<img src="${baseimg}/imgs/default/thumb.png" />
+    								${newtopic.prizecount}
+    							</span>
+    							<span title="评论次数">
+    								<img src="${baseimg}/imgs/default/msg01.png" />
+    								${newtopic.commentcount}
+    							</span>
+    							<span title="分享">
+    								<img src="${baseimg}/imgs/default/shareicon.png" />
+    								${newtopic.sharecount}
+    							</span>
+    						</div>
+    	     			</li>
+	     			[/#list]
+	     		</ul>
+	        </div>
+	        <div class="loadmore tab_bottom hd"><a href="javascript:void(0);">加载更多话题</a></div>
+	        <div class="loading" id="loading" style="display:none">
+				<img src="${baseimg}/imgs/default/loading.gif" />
+				loading...
+			</div>
+	    </div>
+	</div>
+	<div class="tp_07_right">
+		[#if me??]
+            <div class="twosf">
+                <a href="${base}/my/topic" style="display:inline" >
+                    <img [#if "${me.avatar}" == ""]src="${baseimg}/imgs/web/noavatar.png"[#else]src="${userimg}${(me.avatar)}"[/#if]>
+                </a>
+                <h1><a href="${base}/my/topic">${me.showname}</a></h1>   
+                <div class="onr_rr">
+                    <p><a href="${base}/my/topic" target="_blank">${count}<br><span>我发起</span></a></p>
+                    <p class="rrtb"></p>
+                    <p><a href="${base}/my/topic" target="_blank">${count2}<br><span>我参与</span></a></p>
+                </div>
+            </div>
+        [/#if]
+        <div class="btnsbox">
+            <a [#if me??]class="tp_07_onel linkbtn" href="${base}/topic/apply" target="_blank" [#else] href="javascript:;" class="tp_07_onel linkbtn pop-up" [/#if]>发起话题</a>
+            [#if toplist?? && toplist?size > 0]
+                <a class="tp_07_oner linkbtn" href="${base}/topic/random" target="_blank">随机穿越</a>
+            [/#if]
+        </div>
+		<div class="ranklist">
+			<h4>话题发言榜</h4>
+			<ul class="statelist">
+				[#if activeUsers??]
+                    [#list activeUsers as item]
+                        [#list item?keys as user]
+                            <li>
+                                <a href="${base}/his/topic/${user.oid}" target="_blank">
+                                    [#if user.avatar??]
+                                        <img src="${userimg}${user.avatar!''}" />
+                                    [#else]
+                                        <img src="${baseimg}/imgs/web/noavatar.png" />
+                                    [/#if]
+                                </a>
+                                <a href="${base}/his/topic/${user.oid}" target="_blank">${user.showname}</a>
+                                <span>
+                                    <img src="${baseimg}/imgs/default/msgimg.png" />
+                                    ${item?values[user_index]}
+                                </span>
+                            </li>
+                        [/#list]
+                    [/#list]
+                [/#if]
+			</ul>
+		</div>
+		<!-- 最新发言 -->
+		<div class="ranklist">
+			<h4>最新发言</h4>
+			<div class="wordslist">
+				<div class="sdot"></div>
+				<ul class="newords">
+				    [#list newestcomments as comment]
+    					<li>
+    						<span class="circledot"></span>
+    						<div class="wordright">
+    							<div class="justtime">
+                                        <time>${comment['bean'].createtimeStr}</time>
+                                    </div>
+    							<div class="nameimg">
+        							[#if comment['bean'].fromuseroid==0]
+        								<a href="javascript:void(0)" class="visitor" style="font-size: 14px; color: #1d71b6;">
+        							[#else]
+                                        <a href="${base}/his/topic/${comment['bean'].fromUser.oid}" target="_blank">
+        							[/#if]
+    									<img [#if comment['bean'].fromUser.avatar??] src="${userimg}${comment['bean'].fromUser.avatar}"[#else]src="${baseimg}/imgs/web/noavatar.png"[/#if] />
+    									${comment['bean'].fromusername}
+    								</a>
+    							</div>
+    							<p class="comments">
+                                    ${comment['bean'].content}
+    							</p>
+    							<div class="source">
+    								来自话题：<a href="${base}/topic/${comment['topic'].oid}" target="_blank">[@f.TrimSubstring content="${comment['topic'].title}" mylength=13 /]</a>
+    							</div>
+    						</div>
+    					</li>
+					[/#list]
+				</ul>
+			</div>
+		</div>
+		<!-- 热门话题排行榜 -->
+		<div class="ranklist">
+  			<h4>热门话题排行榜</h4>
+  			<ul class="hotlist">
+                [#list topicrank as hottopic]
+      				<li [#if hottopic_index==0]class="curshow"[/#if]>
+      					<span [#if (hottopic_index < 3)] class="normalspan ranknum" [#else] class="normalspan"[/#if]>${hottopic_index + 1}</span>
+      					<div class="rankright">
+      						<a href="${base}/topic/${hottopic.oid}" title="${hottopic.title}" class="arttile" target="_blank">${hottopic.title}</a>
+      						<div class="titdescribe">
+      							<span>发起人：${hottopic.author}</span>
+      							<span class="comment">
+      								<a>
+      									<img src="${baseimg}/imgs/default/msgimg.png" class="commentimg" />
+      									${hottopic.commentcount}
+      								</a>
+      							</span>
+      						</div>
+      					</div>
+      				</li>
+  				[/#list]
+  			</ul>
+  		</div>
+	</div>
+</div>
+</div>
+<div class="clear"></div>
+<script type="text/javascript" src="${basejs}/js/pages/topic.js"></script>
+<script src="${basejs}/js/libs/masonry-1.0.0.js"></script>
+<script src="${basejs}/js/pages/move.js"></script>
+<script src="${basejs}/js/libs/timeago-1.0.0.js"></script>
+<script>
+    window.onload=function(){
+        var oBox=document.getElementById('box');
+        var oUl=document.getElementById('ul1');
+        var aLi=oUl.children;
+        for(var i=0;i<aLi.length;i++){
+            aLi[i].onmouseover=function(){
+	            var aLspan=document.getElementsByClassName('cover_bar');
+	            for(var i=0;i<aLi.length;i++){
+	                startMove(aLi[i],{width:51});
+	                $(".cover_bar", aLi[i]).addClass("hd");
+	            }
+	            startMove(this,{width:420});
+	            $(".cover_bar", this).removeClass("hd");
+            }
+        }
+    }
+	 //推荐话题鼠标悬停效果
+	$(".mf_a").hover(function() {
+		$(this).find(".mf_bg").css({
+			"top" : "0px",
+			"height" : "100%",
+			"background" : "#1d71b6",
+			"opacity" : "0.6"
+		});
+		$(this).find(".p1").css({
+			"height" : "100%",
+		});
+		$(this).find(".p1 a").css({
+			"line-height" : "150px",
+		});
+	}, function() {
+		$(this).find(".mf_bg").css({
+			"top" : "128px",
+			"background" : "#000",
+			"opacity" : "0.5"
+		});
+		$(this).find(".p1").css({
+			"height" : "30px",
+		});
+		$(this).find(".p1 a").css({
+			"line-height" : "30px",
+		});
+	});
+</script>
+</body>
+</html>

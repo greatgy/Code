@@ -1,0 +1,62 @@
+[#ftl]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>个人中心--我的文章</title>
+	<meta name="Keywords" content="天才人生，个人中心，我的文章" />
+	<meta name="Description" content="天才人生，个人中心，我的文章" />
+	<!--# include file="/include/headcommon.html" -->
+	<link rel="stylesheet" href="${base}/css/mobile/default/index.css">
+</head>
+<body>
+	<!-- 我的话题 -->
+	<div class="myCollect">
+		<ul class="artTab">
+			<li class="curart">
+				<a href="${base}/m/my/center/topic">已发布</a>
+			</li>
+			<li id="join" onclick="jointopic()">已参与</li>
+		</ul>
+		[#if topic??]
+		<ul class="tabBox topicTabbox">
+		[#list topic as item]
+			<li>
+				<a href="${base}/m/topic/review/${(item.cid)?c}/${item.oid}" class="articleTitle">
+					${item.title}
+				</a>
+				<p class="descripe">[@p.TrimSubstring content="${item.content}" mylength=180 /]</p>
+			</li>
+			[/#list]
+		</ul>
+		[/#if]
+		<div class="nomore">
+			<i class="line"></i>
+			我是有底线的
+			<i class="line"></i>
+		</div>
+	</div>
+	<script>
+	<script>
+	$(function(){
+		topicid = $(".topictab li:first").attr("id");
+		$(".topictab li:first").addClass("curart");
+		$(".topictab li").click(function(){
+			topicid = $(this).attr("id");
+			$(this).addClass("curart").siblings().removeClass("curart");
+		});	
+	});
+</script>
+		function jointopic() {
+			$(window).unbind("scroll", defaultScrollHandler);
+			$.get("${base}/m/ajax/my/mycenter/joinTopic", {uid:"${me.uid}"}, function(data){
+				$(".topicTabbox").html(data);
+			});
+			$.fn.scrollHandle({
+				obj: window,
+				fun: loadmoretopicjoin
+			})
+		}	
+	</script>
+</body>
+</html>

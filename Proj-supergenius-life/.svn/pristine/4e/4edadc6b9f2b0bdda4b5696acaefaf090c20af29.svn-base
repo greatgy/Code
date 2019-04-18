@@ -1,0 +1,396 @@
+package com.supergenius.web.front.life.controller;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.genius.core.base.annotation.Json;
+import com.genius.core.base.annotation.Maps;
+import com.genius.core.base.constant.BaseStrDict;
+import com.genius.core.base.utils.CookieUtil;
+import com.genius.core.base.utils.MapsUtil;
+import com.genius.core.base.utils.StrUtil;
+import com.genius.core.base.utils.WebUtil;
+import com.genius.core.cache.rule.Rule;
+import com.genius.core.cache.utils.RedisUtil;
+import com.genius.core.search.constant.MapperSearchDict;
+import com.genius.model.base.enums.EStatus;
+import com.genius.server.base.controller.BaseController;
+import com.supergenius.global.conf.SysConf;
+import com.supergenius.global.constants.ViewKeyDict;
+import com.supergenius.server.user.helper.BaseUserHP;
+import com.supergenius.web.front.life.helper.AnswerHP;
+import com.supergenius.web.front.life.helper.ContentHP;
+import com.supergenius.web.front.life.helper.ProblemHP;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.common.enums.ESite;
+import com.supergenius.xo.life.entity.Answer;
+import com.supergenius.xo.life.entity.Catalogue;
+import com.supergenius.xo.life.entity.Photo;
+import com.supergenius.xo.life.entity.Problem;
+import com.supergenius.xo.life.enums.ECatalogue;
+import com.supergenius.xo.life.enums.EComment;
+import com.supergenius.xo.life.enums.ELifeChannel;
+import com.supergenius.xo.life.enums.EState;
+import com.supergenius.xo.life.rule.LifeProblemCommentCountRlue;
+import com.supergenius.xo.life.service.AnswerSO;
+import com.supergenius.xo.life.service.CatalogueSO;
+import com.supergenius.xo.life.service.ProblemSO;
+import com.supergenius.xo.user.entity.User;
+import com.supergenius.xo.user.entity.Visitor;
+import com.supergenius.xo.user.service.VisitorSO;
+
+/**
+ * 课程controller
+ * 
+ * @author: ChenQi
+ * @date 2018年5月16日10:57:19
+ */
+@Controller
+public class ProblemController extends BaseController {
+
+	@Autowired
+	private ProblemSO problemSO;
+	
+	@Autowired
+	private VisitorSO visitorSO;
+	
+	@Autowired
+	private AnswerSO answerSO;
+	
+	@Autowired
+	private CatalogueSO catalogueSO;
+	
+	/**
+	 * 问题展示页
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 * @author: ChenQi 2018年5月16日11:53:18
+	 */
+	@RequestMapping(value = "/problem/moreproblem/{cid:\\d+}_{ismember:\\d+}", method = RequestMethod.GET)
+	public String problemIndex(Map<String, Object> model,@PathVariable Integer cid,@PathVariable Integer ismember, HttpServletRequest request) {
+		// 资料交流
+		if (ECatalogue.get(cid) == ECatalogue.material || ECatalogue.get(cid) == ECatalogue.major || ECatalogue.get(cid) == ECatalogue.university || ECatalogue.get(cid) == ECatalogue.answer) {
+			Photo photo = ContentHP.getbannerList(ECatalogue.get(cid)).get(0);
+			model.put(ViewKeyDict.photo, photo);
+		}
+		model.put(ViewKeyDict.problemList, ProblemHP.getProblemList(0, SysConf.DesignProblemSize, cid, ismember));
+		return "problem";
+	}
+	
+
+	/**
+	 * 添加问题
+	 * 
+	 * @param model
+	 * @param cid
+	 * @return
+	 * @author ChenQi
+	 * @date 2018年5月17日11:07:35
+	 */
+	@RequestMapping(value = "/problem/addproblem", method = RequestMethod.POST)
+	public String addProblem(Map<String, Object> model, @RequestParam String title, @RequestParam String content, @RequestParam int cid, @RequestParam String isnick, HttpServletRequest request, HttpServletResponse response) {
+		Problem problem = new Problem();
+		problem.setTitle(title);
+		problem.setContent(content);
+		problem.setCid(cid);
+		problem.setState(EState.wait);
+		Catalogue catalogue = catalogueSO.getOneByCid(cid);
+		problem.setCataloguename(catalogue.getName());
+		User user = BaseUserHP.getCurrUser(request);
+		Visitor visitor = null;
+		if (StrUtil.isEmpty(isnick)) {
+			problem.setUseruid(user.getUid());
+			problem.setUsername(user.getUsername());
+		} else {
+			visitor = ProblemHP.getNickVisitor(request, response);
+			problem.setUseruid(user.getUid());
+			problem.setUsername(visitor.getUsername());
+		}
+		if (user.getIsUser()) {
+			problem.setIsmember(SysConf.ismember);
+		} else {
+			problem.setIsmember(SysConf.notmember);
+		}
+		if (problemSO.add(problem)) {
+			Problem newproblem = problemSO.get(problem.getUid());// 获取更新后的问题，因为oid是存入数据库自动生成的
+			Map<String, Object> map = MapsUtil.toMap(newproblem, Maps.searchStrategy);// 增加索引
+			map.put(MapperSearchDict.table, ESite.life.name());
+			ProblemHP.getEngine().add(map);
+			return redirectPrefix + "/problem" + BaseStrDict.slash + "detail" + BaseStrDict.slash + newproblem.getCid() + BaseStrDict.slash
+					+ newproblem.getOid();
+		}
+		return response404(response);
+	}
+	
+	/**
+	 * 问题详情页
+	 * 
+	 * @param model
+	 * @param cid
+	 * @return
+	 * @author ChenQi
+	 * @date 2018年5月17日11:07:41
+	 */
+	@RequestMapping(value = "/problem/detail/{cid:\\d+}/{oid:\\w+}", method = RequestMethod.GET)
+	public String problemDetail(Map<String, Object> model, @PathVariable int cid, @PathVariable int oid, HttpServletRequest request, HttpServletResponse response) {
+		Problem problem = ProblemHP.getProblem(oid);
+		Rule rule = new LifeProblemCommentCountRlue(problem.getUid());
+		RedisUtil.incr(rule);
+		User user = BaseUserHP.getCurrUser(request);
+		if (user != null) {// 设置是否赞过
+			if (AnswerHP.isPrise(problem.getUid(), user.getUid())) {
+				problem.setIsprize(true);
+			}
+		} else {
+			Visitor visitor = AnswerHP.getVisitor(request, response);
+			if (AnswerHP.isPrise(problem.getUid(), visitor.getUid())) {
+				problem.setIsprize(true);
+			}
+		}
+		model.put(ViewKeyDict.bean, problem);
+		model.put(ViewKeyDict.cid, problem.getCid());
+		return "problemdetail";
+	}
+	
+	/**
+	 * 加载更多问题
+	 * 
+	 * @param model
+	 * @param cid
+	 * @return
+	 * @author ChenQi
+	 * @date 2018年5月17日11:07:41
+	 */
+	@RequestMapping(value = "/ajax/first/problem", method = RequestMethod.GET)
+	public String moreProblem(Map<String, Object> model, int ismember, int pagenum, int cid, HttpServletRequest request, HttpServletResponse response) {
+		List<Problem> problemList = ProblemHP.getProblemList(pagenum, SysConf.LoadSize, cid, ismember);
+		model.put(ViewKeyDict.problemList, problemList);
+		return "ajaxproblem";
+	}
+	
+	/**
+	 * 添加回答
+	 * 
+	 * @param fromuid
+	 * @param request
+	 * @param response
+	 * @author ChenQi
+	 * @date 2018年5月17日11:07:41
+	 */
+	@ResponseBody
+	@RequestMapping(value = { "/ajax/answer/{fromuid:.{32}}" }, method = RequestMethod.POST)
+	public ResponseEntity<Map<String, Object>> answer_add(Answer answer, String isnick, @PathVariable String fromuid, HttpServletRequest request, HttpServletResponse response) {
+		User user = BaseUserHP.getCurrUser(request);
+		answer.setFromuid(fromuid);
+		Visitor visitor = null;
+		if (StrUtil.isEmpty(isnick)) {
+			answer.setFromUser(user);
+			answer.setFromuseruid(user.getUid());
+			answer.setFromuseroid(user.getOid());
+			answer.setFromusername(user.getUsername());
+		} else {
+			visitor = AnswerHP.getNickVisitor(request, response);
+			answer.setFromuseruid(visitor.getUid());
+			answer.setFromuseroid(visitor.getOid());
+			answer.setFromusername(user.getUsername());
+			answer.setFromVisitorAvatar(visitor.getAvatar());
+			answer.setFromVisitorName(visitor.getNickname());
+		}
+		if (StrUtil.isNotEmpty(answer.getTouseruid())) {
+			User toUser = BaseUserHP.get(answer.getTouseruid());
+			if (toUser != null) {
+				answer.setTousername(toUser.getUsername());
+				answer.setTouseroid(toUser.getOid());
+			} else {
+				Visitor tovisitor = visitorSO.get(answer.getTouseruid());	
+				if (tovisitor != null) {
+					answer.setTousername(tovisitor.getUsername());
+				}
+				answer.setTouseroid(tovisitor.getOid());
+			}
+		}
+		answer.setType(EComment.comment);
+		answer.setChannel(ELifeChannel.problemcomments);
+		answer.setContent(WebUtil.clearXSS(answer.getContent()));
+		String topuid = request.getParameter(ViewKeyDict.topuid);
+		if (StringUtils.isEmpty(topuid)) {
+			topuid = request.getParameter(ViewKeyDict.touid);
+		}
+		if (StrUtil.isNotEmpty(topuid)) {
+			answer.setData(topuid);
+		}
+		if (StrUtil.isEmpty(answer.getTouid())) {
+			answer.setTouid(null);
+		}
+		boolean addresult = AnswerHP.add(answer, request);
+		Map<String, Object> result = new HashMap<String, Object>();
+		if (addresult) {
+			Rule rule = new LifeProblemCommentCountRlue(answer.getFromuid());
+			RedisUtil.incr(rule);
+		}
+		result.put(ViewKeyDict.success, addresult);
+		result.put(ViewKeyDict.bean, answer);
+		return json(result, Json.webStrategy);
+	}
+
+	/**
+	 * 获取一级评论
+	 * 
+	 * @param model
+	 * @param fromuid文章的uid
+	 * @param num当前页数
+	 * @author ChenQi
+	 * @date 2018年5月17日11:07:41
+	 */
+	@RequestMapping(value = ("/ajax/answer/{cid:\\d+}_{fromuid:.{32}}_{num:\\d+}"), method = RequestMethod.GET)
+	public String answers_list(Map<String, Object> model, @PathVariable String fromuid, @PathVariable Integer num, @PathVariable Integer cid, HttpServletRequest request,
+			HttpServletResponse response) {
+		List<Answer> list = new ArrayList<>();
+		if (num == null || num <= 0) {
+			num = 1;
+		}
+		User user = BaseUserHP.getCurrUser(request);
+		list = answerSO.getCommentList(EComment.comment, fromuid, SysConf.GetCommentsSize, num);
+		AnswerHP.organized(list);
+		List<String> prizes = new ArrayList<>();
+		if (user != null) {
+			prizes = AnswerHP.getListPrize(user);
+			for (Answer answer : list) {
+				for (String item : prizes) {
+					if (answer.getUid().equals(item)) {
+						answer.setIsprize(true);
+						break;
+					}
+				}
+			}
+		} else {// 从cookie中获取
+			Visitor visitor = AnswerHP.getVisitor(request, response);
+			for (Answer item : list) {
+				if (AnswerHP.isPrise(item.getUid(), visitor.getUid())) {
+					item.setIsprize(true);
+				}
+			}
+		}
+		model.put(ViewKeyDict.cid, 12);
+		model.put(ViewKeyDict.channel, cid);
+		model.put(ViewKeyDict.list, list);
+		if (user != null) {
+			model.put(ViewKeyDict.useruid, user.getUid());
+		}else{
+			model.put(ViewKeyDict.useruid, CookieUtil.get(request, ViewKeyDict.visitors));
+		}
+		return "ajaxanswer";
+	}
+
+	/**
+	 * 获取二级评论
+	 * 
+	 * @param model
+	 * @param firstuid一级评论的uid
+	 * @param pagenum当前页数
+	 * @author ChenQi
+	 * @date 2018年5月17日11:07:41
+	 */
+	@RequestMapping(value = ("/ajax/secondanswer/{firstuid:.{32}}_{cid:\\d+}_{pagenum:\\d+}"), method = RequestMethod.GET)
+	public String second_list(Map<String, Object> model, @PathVariable String firstuid, @PathVariable int cid, @PathVariable Integer pagenum, HttpServletRequest request,
+			HttpServletResponse response) {
+		User user = BaseUserHP.getCurrUser(request);
+		List<Answer> list = new ArrayList<>();
+		if (pagenum == null || pagenum <= 0) {
+			pagenum = 1;
+		}
+		list = answerSO.getSecondList(EComment.comment, firstuid, SysConf.GetCommentsSize, pagenum);
+		AnswerHP.organized(list);
+		if (user != null) {
+			for (Answer answer : list) {
+				if (AnswerHP.isPrise(answer.getUid(), user.getUid())) {
+					answer.setIsprize(true);
+				}
+			}
+		} else {// 从cookie中获取
+			Visitor visitor = AnswerHP.getVisitor(request, response);
+			for (Answer item : list) {
+				if (AnswerHP.isPrise(item.getUid(), visitor.getUid())) {
+					item.setIsprize(true);
+				}
+			}
+		}
+		model.put(ViewKeyDict.firstuid, firstuid);
+		model.put(ViewKeyDict.cid, cid);
+		model.put(ViewKeyDict.secondList, list);
+		if (user != null) {
+			model.put(ViewKeyDict.useruid, user.getUid());
+		}else{
+			model.put(ViewKeyDict.useruid, CookieUtil.get(request, ViewKeyDict.visitors));
+		}
+		return "ajaxsecondanswer";
+	}
+	
+	/**
+	 * 删除评论
+	 * 
+	 * @param model
+	 * @param useruid
+	 * @param uid
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/ajax/answer/delete/{uid:.{32}}/{fromuseruid:.{32}}/{channel:[a-z]+}/{useruid:.{32}}", method = RequestMethod.GET)
+	public @ResponseBody boolean comments_delete(Map<String, Object> model, @PathVariable String uid, @PathVariable String fromuseruid, @PathVariable String useruid, @PathVariable String channel, HttpServletRequest request, HttpServletResponse response) {
+		User user = BaseUserHP.getCurrUser(request);
+		if (user != null) {
+			if (!user.getUid().equals(fromuseruid) && !user.getUid().equals(useruid)) {
+				return false;
+			}
+		}else {
+			String visitorUid = CookieUtil.get(request, ViewKeyDict.visitors);
+			if (StrUtil.isNotEmpty(visitorUid) && !visitorUid.equals(fromuseruid)) {
+				return false;
+			}
+		}
+		AnswerHP.deleteAnswer(uid, useruid);
+		return true;
+	}
+	
+	/**
+	 * 删除问题
+	 * 
+	 * @param model
+	 * @param uid
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/life/ajax/lifeproblem/delete/{uid:.{32}}", method = RequestMethod.GET)
+	public @ResponseBody boolean comments_delete(Map<String, Object> model, @PathVariable String uid, HttpServletRequest request, HttpServletResponse response) {
+		Problem problem = problemSO.get(uid);
+		if (problem != null) {
+			problem.setStatus(EStatus.deleted);
+			if (problemSO.update(problem)) {
+				Map<String, Object> map = new HashMap<>();
+				map.put(MapperDict.uid, problem.getUid());
+				ProblemHP.getEngine().delete(map);
+				return true;
+			}
+		}
+		return true;
+	}
+}

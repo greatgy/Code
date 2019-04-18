@@ -1,0 +1,28 @@
+basePath=
+#db 0
+#/one
+/=redis://localhost:6379
+#db 2 temp
+/users=redis://localhost:6379/2
+
+#db 3 permanence, could not be deleted
+/count=redis://localhost:6379/3?keylen=3
+
+#article
+/count/cmt=redis://localhost:6379/4?keylen=3
+#debate
+/count/comment/debate=redis://localhost:6379/5?keylen=3
+#topic
+/count/comment/topic=redis://localhost:6379/6?keylen=3
+#debatevote
+/count/debatevote=redis://localhost:6379/7?keylen=3
+#topic
+/count/click/topic=redis://localhost:6379/8?keylen=3
+#article
+/count/click/article=redis://localhost:6379/9?keylen=3
+#article
+/count/prize=redis://localhost:6379/10?keylen=3
+#topic
+/count/prize/topic=redis://localhost:6379/11?keylen=3
+#comment
+/count/prize/comment=redis://localhost:6379/12?keylen=3

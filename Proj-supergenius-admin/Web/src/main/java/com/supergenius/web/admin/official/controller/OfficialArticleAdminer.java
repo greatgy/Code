@@ -1,0 +1,177 @@
+package com.supergenius.web.admin.official.controller;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.genius.core.base.annotation.Json;
+import com.genius.core.base.constant.BaseStrDict;
+import com.genius.model.base.enums.EStatus;
+import com.genius.model.baseadmin.entity.AdminLog;
+import com.genius.server.base.controller.BaseController;
+import com.genius.server.baseadmin.helper.AdminHP;
+import com.supergenius.global.conf.SysConf;
+import com.supergenius.global.conf.UriConf;
+import com.supergenius.server.common.constants.MsgKeyDict;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.web.admin.official.helper.OfficialArticleHP;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.official.entity.Article;
+import com.supergenius.xo.official.enums.EArticleChannel;
+import com.supergenius.xo.official.enums.EArticleType;
+import com.supergenius.xo.official.service.ArticleSO;
+
+/**
+ * 官网文章管理
+ * @author liushaomin
+ */
+@Controller
+@RequestMapping(value = UriConf.baseAdminPath)
+public class OfficialArticleAdminer extends BaseController{
+	
+	@Autowired
+	ArticleSO so;
+	
+	/**
+	 * 打开页面
+	 * @param model
+	 * @return
+	 * @author liushaomin
+	 */
+	@RequestMapping(value = {"/official/article"}, method = RequestMethod.GET)
+	public String article(Map<String, Object> model) {
+		model.put(ViewKeyDict.channel, EChannel.article.name());
+		model.put(ViewKeyDict.site, EChannel.official.name());
+		model.put(ViewKeyDict.channelname, EChannel.getName(EChannel.article, Locale.CHINA));
+		Map<String, String> channelMap = new HashMap<>();
+		for (EArticleChannel item : EArticleChannel.values()) {
+			channelMap.put(item.toString(), item.getName());
+		}
+		channelMap.remove(EArticleChannel.video.toString());
+		model.put(ViewKeyDict.map, channelMap);
+		return "doofficialarticle";
+	}
+	
+	/**
+	 * 查询时组织数据
+	 * @param model
+	 * @param request
+	 * @return
+	 * @author liushaomin
+	 */
+	@RequestMapping(value = {"/official/ajax/article/list"}, method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> article_list(Map<String, Object> model, HttpServletRequest request) {
+		cloneParamsToModel(model, request);
+		model.put(ViewKeyDict.type, EArticleType.article);
+		Map<String, Object> searchMap = OfficialArticleHP.query(model);
+		return json(searchMap, Json.webStrategy);
+	}
+	
+	/**
+	 * 添加文章
+	 * @param article
+	 * @param file
+	 * @return
+	 * @author liushaomin
+	 */
+	@RequestMapping(value = "/official/ajax/article/add", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> article_add(Article article, String contributeimg) {
+		if (StringUtils.isNotEmpty(contributeimg)) {
+			String[] imgs = contributeimg.split(BaseStrDict.comma);
+			article.setImgs(imgs);
+		}
+		article.setType(EArticleType.article);
+		if (so.add(article)) {
+			return success();
+		}
+		return result(MsgKeyDict.addFailed);
+	}
+	
+	/**
+	 * 编辑
+	 * @param article
+	 * @param file
+	 * @return
+	 * @author liushaomin
+	 */
+	@RequestMapping(value = "/official/ajax/article/edit", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> article_edit(Article article, String contributeimg) {
+		if (StringUtils.isNotEmpty(contributeimg)) {
+			String[] imgs = contributeimg.split(BaseStrDict.comma);
+			article.setImgs(imgs);
+		}
+		article.setType(EArticleType.article);
+		if (so.update(article)) {
+			return result(MsgKeyDict.editSuccess);
+		}else {
+			return result(MsgKeyDict.editFailed);
+		}
+	}
+	
+	/**
+	 * 修改状态
+	 * @param ids
+	 * @param status
+	 * @param adminLog
+	 * @param dopwd
+	 * @return
+	 * @author liushaomin
+	 */
+	@RequestMapping(value = "/official/ajax/article/status/{status:\\d+}", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> article_status(String[] ids, @PathVariable int status, AdminLog adminLog, String dopwd) {
+		if (AdminHP.isDopwd(dopwd)) {
+			if (so.update(EStatus.get(status), ids)) {
+				return success();
+			}
+		}
+		return result(MsgKeyDict.updateFailed);
+	}
+	
+	/**
+	 * 删除
+	 * @param ids
+	 * @return
+	 * @author liushaomin
+	 */
+	@RequestMapping(value = "/official/ajax/article/delete", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> article_delete(String[] ids) {
+		if (so.deleteByUids(ids)) {
+			return success();
+		}
+		return result(MsgKeyDict.deleteFailed);
+	}
+	
+	/**
+	 * 上传图片处理
+	 * 
+	 * @param model
+	 * @param type
+	 * @param file
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = { "/official/ajax/article/uploadimg" }, method = RequestMethod.POST)
+	@ResponseBody
+	public String upload(Map<String, Object> model, @RequestParam MultipartFile fileimg, HttpServletRequest request) {
+		String data = OfficialArticleHP.resizeImage(fileimg, SysConf.OfficialPhotoPath, SysConf.TitleImgShowSizes, SysConf.ImgSiteBasePath);
+		return data;
+	}
+}

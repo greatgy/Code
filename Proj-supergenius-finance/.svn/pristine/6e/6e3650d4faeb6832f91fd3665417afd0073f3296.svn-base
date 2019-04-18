@@ -1,0 +1,12 @@
+basePath=
+#db 0
+#/one
+/=redis://localhost:6379
+#db 2 temp
+/users=redis://localhost:6379/2
+
+#db 3 permanence, could not be deleted
+/count=redis://localhost:6379/3?keylen=3
+#\u6587\u7ae0\u7684\u70b9\u8d5e\u3001\u8bc4\u8bba\u3001\u6536\u85cf\u3001\u6d4f\u89c8\u7b49
+/finance/article=redis://localhost:6379/3?keylen=3
+

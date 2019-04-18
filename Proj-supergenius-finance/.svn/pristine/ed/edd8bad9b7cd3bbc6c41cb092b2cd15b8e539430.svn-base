@@ -1,0 +1,519 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+[#import "/WEB-INF/FtlLib/Macro/Official.ftl" as o]
+<!DOCTYPE html >
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>${title!'天财文章'}</title>
+	<link href="${basecss}/css/default/pages/finance.css" type="text/css" rel="stylesheet">
+	<link rel="stylesheet" href="${basecss}/css/default/pages/attentionus.css"/>
+	<style type="text/css">
+		.ma_one{overflow:hidden;text-align:left;background-color:none;}
+		.pr_word_topic a{color:#344353;}
+	</style>
+	<script src="${basejs}/js/pages/index.js"></script>
+	<script src="${basejs}/js/libs3/ejs.min.js"></script>
+	<script src="${basejs}/js/libs/components.js"></script>
+    <script type="text/javascript">
+    <!--
+		var broadcastData = [
+			[#list latestlist as item]
+            {
+				title : '${item.title}',
+				img : '${webimg}${item.imgbig}',
+				link : '${base}/${typename}/${item.oid}',
+				baseimg:'${baseimg}'
+			},
+	        [/#list]
+		];
+
+		var FINANCE_PAGE =
+			{
+				pagenum:1,
+				url:"${base}/ajax/${typename}"
+			};
+			
+		$(function($) {
+			// 注册事件
+			$(".loadmore").bind("click", function(){
+				loadmore();
+			});
+		});
+		
+		// 加载更多事件处理
+		function loadmore() {
+			var pagenum = FINANCE_PAGE.pagenum +　1;
+			var url = FINANCE_PAGE.url;
+			$.get(url, {pagenum:pagenum}, function(data){
+				if(data.trim() == ""){// 没有更多内容
+					$(".loadmore").unbind("click");
+					$(".loadmore a").html("无更多文章");
+					return;
+				}
+				FINANCE_PAGE.pagenum += 1;
+				$(".latest_content").append(data);
+				
+			});
+		}
+	//-->
+	</script>
+    [@o.BroadcastTemplate /]
+</head>
+<body>
+	<div class="centerbox">
+		<div class="prduct_o_box">
+			<div class="ma" style="overflow:hidden;">
+		    </div>
+			<div class="pr_rightbox">
+				[#include "/WEB-INF/Views/Web/attentionus.ftl" /]
+				<!- 最新评论开始 -->
+				<div class="ranklist">
+					<h4>最新评论</h4>
+					<div class="wordslist">
+						<div class="sdot"></div>
+						<ul class="newords">
+							<li>
+								<span class="circledot"></span>
+								<div class="wordright">
+									<div class="justtime">55&nbsp;分钟前</div>
+									<div class="nameimg">
+										<a href="#">
+											<img src="${baseimg}/imgs/default/subsimg04.png" />
+											呼呼 
+										</a>
+									</div>
+									<p> 
+										2002年的法国，曾经是中世纪英法战争古战场的多尔登山谷某处。一个考古小组正在历史学家爱德华曾经是中世纪英法战争古战场的...
+									</p>
+									<div class="source">
+										来自论战：<a href="#">2015快递业会不会掀起“并购风”</a>
+									</div>
+								</div>
+							</li>
+							<li>
+								<span class="circledot"></span>
+								<div class="wordright">
+									<div class="justtime">5&nbsp;小时前</div>
+									<div class="nameimg">
+										<a href="#">
+											<img src="${baseimg}/imgs/default/subsimg04.png" />
+											呼呼 
+										</a>
+									</div>
+									<p> 
+										2002年的法国，曾经是中世纪英法战争古战场的多尔登山谷某处。一个考古小组正在历史学家爱德华曾经是中世纪英法战争古战场的...
+									</p>
+									<div class="source">
+										来自论战：<a href="#">2015快递业会不会掀起“并购风”</a>
+									</div>
+								</div>
+							</li>
+							<li>
+								<span class="circledot"></span>
+								<div class="wordright">
+									<div class="justtime">8&nbsp;小时前</div>
+									<div class="nameimg">
+										<a href="#">
+											<img src="${baseimg}/imgs/default/subsimg04.png" />
+											呼呼 
+										</a>
+									</div>
+									<p> 
+										2002年的法国，曾经是中世纪英法战争古战场的多尔登山谷某处。一个考古小组正在历史学家爱德华曾经是中世纪英法战争古战场的...
+									</p>
+									<div class="source">
+										来自论战：<a href="#">2015快递业会不会掀起“并购风”</a>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			    <!- 天财焦点文章排行榜开始 -->
+				<div class="ranklist">
+					<h4>天财焦点文章排行榜</h4>
+					<ul class="hotlist">
+						<li class="curshow">
+							<span class="normalspan ranknum">1</span>
+							<div class="rankright">
+								<a href="#" title="如何基于微信开放接口开发企业的微" class="arttile">如何基于微信开放接口开发企业的微</a>
+								<p class="titdescribe">
+									公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+									<a href="#">[详情]</a>
+								</p>
+							</div>
+						</li>
+						<li>
+							<span class="normalspan ranknum">2</span>
+							<div class="rankright">
+								<a href="#" title="移动营销革命中的新策略" class="arttile">移动营销革命中的新策略</a>
+								<p class="titdescribe">
+									公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+									<a href="#">[详情]</a>
+								</p>
+							</div>
+						</li>
+						<li>
+							<span class="normalspan ranknum">3</span>
+							<div class="rankright">
+								<a href="#" title="从植物大战僵尸看产品的本土化" class="arttile">从植物大战僵尸看产品的本土化</a>
+								<p class="titdescribe">
+									公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+									<a href="#">[详情]</a>
+								</p>
+							</div>
+						</li>
+						<li>
+							<span class="normalspan">4</span>
+							<div class="rankright">
+								<a href="#" title="习大大亲和优雅的举止" class="arttile">习大大亲和优雅的举止</a>
+								<p class="titdescribe">
+									公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+									<a href="#">[详情]</a>
+								</p>
+							</div>
+						</li>
+						<li>
+							<span class="normalspan">5</span>
+							<div class="rankright">
+								<a href="#" title="开放接口开发企业" class="arttile">开放接口开发企业</a>
+								<p class="titdescribe">
+									公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+									<a href="#">[详情]</a>
+								</p>
+							</div>
+						</li>
+						<li>
+							<span class="normalspan">6</span>
+							<div class="rankright">
+								<a href="#" title="开展煤气化装置大型气化炉、喷嘴、开工" class="arttile">开展煤气化装置大型气化炉、喷嘴、开工</a>
+								<p class="titdescribe">
+									公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+									<a href="#">[详情]</a>
+								</p>
+							</div>
+						</li>
+						<li>
+							<span class="normalspan">7</span>
+							<div class="rankright">
+								<a href="#" title="紧密围绕电力产业的安全、高效" class="arttile">紧密围绕电力产业的安全、高效</a>
+								<p class="titdescribe">
+									公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+									<a href="#">[详情]</a>
+								</p>
+							</div>
+						</li>
+						<li>
+							<span class="normalspan">8</span>
+							<div class="rankright">
+								<a href="#" title="增强我国相关领域竞争力为目标" class="arttile">增强我国相关领域竞争力为目标</a>
+								<p class="titdescribe">
+									公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+									<a href="#">[详情]</a>
+								</p>
+							</div>
+						</li>
+						<li>
+							<span class="normalspan">9</span>
+							<div class="rankright">
+								<a href="#" title="国神集团和丰煤电公司" class="arttile">国神集团和丰煤电公司</a>
+								<p class="titdescribe">
+									公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+									<a href="#">[详情]</a>
+								</p>
+							</div>
+						</li>
+						<li>
+							<span class="normalspan">10</span>
+							<div class="rankright">
+								<a href="#" title="黄骅港务公司顺利通过河北省安全生产" class="arttile">黄骅港务公司顺利通过河北省安全生产</a>
+								<p class="titdescribe">
+									公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+									<a href="#">[详情]</a>
+								</p>
+							</div>
+						</li>
+					</ul>
+			  	</div>
+			  	<!- 文章排行榜开始 -->
+			  	<div class="ranklist">
+					<h4>文章排行榜</h4>
+					<ul class="hotlist">
+						<li class="curshow">
+							<span class="normalspan ranknum">1</span>
+							<div class="rankright">
+								<a href="#" title="激励你人生的“鸡汤”是什么？" class="arttile">激励你人生的“鸡汤”是什么？</a>
+								<p class="titdescribe">
+									踏上了古丝绸之路，前往遥远... 
+									<a href="#">[详情]</a>
+								</p>
+							</div>
+						</li>
+						<li>
+							<span class="normalspan ranknum">2</span>
+							<div class="rankright">
+								<a href="#" title="移动营销革命中的新策略" class="arttile">移动营销革命中的新策略</a>
+								<p class="titdescribe">
+									公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+									<a href="#">[详情]</a>
+								</p>
+							</div>
+						</li>
+						<li>
+							<span class="normalspan ranknum">3</span>
+							<div class="rankright">
+								<a href="#" title="从植物大战僵尸看产品的本土化" class="arttile">从植物大战僵尸看产品的本土化</a>
+								<p class="titdescribe">
+									公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+									<a href="#">[详情]</a>
+								</p>
+							</div>
+						</li>
+						<li>
+							<span class="normalspan">4</span>
+							<div class="rankright">
+								<a href="#" title="习大大亲和优雅的举止" class="arttile">习大大亲和优雅的举止</a>
+								<p class="titdescribe">
+									公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+									<a href="#">[详情]</a>
+								</p>
+							</div>
+						</li>
+						<li>
+							<span class="normalspan">5</span>
+							<div class="rankright">
+								<a href="#" title="开放接口开发企业" class="arttile">开放接口开发企业</a>
+								<p class="titdescribe">
+									公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+									<a href="#">[详情]</a>
+								</p>
+							</div>
+						</li>
+						<li>
+							<span class="normalspan">6</span>
+							<div class="rankright">
+								<a href="#" title="开展煤气化装置大型气化炉、喷嘴、开工" class="arttile">开展煤气化装置大型气化炉、喷嘴、开工</a>
+								<p class="titdescribe">
+									公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+									<a href="#">[详情]</a>
+								</p>
+							</div>
+						</li>
+						<li>
+							<span class="normalspan">7</span>
+							<div class="rankright">
+								<a href="#" title="紧密围绕电力产业的安全、高效" class="arttile">紧密围绕电力产业的安全、高效</a>
+								<p class="titdescribe">
+									公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+									<a href="#">[详情]</a>
+								</p>
+							</div>
+						</li>
+						<li>
+							<span class="normalspan">8</span>
+							<div class="rankright">
+								<a href="#" title="增强我国相关领域竞争力为目标" class="arttile">增强我国相关领域竞争力为目标</a>
+								<p class="titdescribe">
+									公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+									<a href="#">[详情]</a>
+								</p>
+							</div>
+						</li>
+						<li>
+							<span class="normalspan">9</span>
+							<div class="rankright">
+								<a href="#" title="国神集团和丰煤电公司" class="arttile">国神集团和丰煤电公司</a>
+								<p class="titdescribe">
+									公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+									<a href="#">[详情]</a>
+								</p>
+							</div>
+						</li>
+						<li>
+							<span class="normalspan">10</span>
+							<div class="rankright">
+								<a href="#" title="黄骅港务公司顺利通过河北省安全生产" class="arttile">黄骅港务公司顺利通过河北省安全生产</a>
+								<p class="titdescribe">
+									公元七世纪，大唐高僧玄奘离开京都长安，毅然决然地踏上了古丝绸之路，前往遥远... 
+									<a href="#">[详情]</a>
+								</p>
+							</div>
+						</li>
+					</ul>
+			  	</div>
+			</div><!--rightbox-->
+			<div class="pro_left_two">
+				<h1>最新文章</h1>
+				<div class="pro_left_main">
+					[#list latestlist as item ]
+					<div class="latest_content">
+						<a href="#">
+							<img src="${baseimg}/imgs/default/focusimg01.png" class="title_img" />
+						</a>
+						<div class="tab_one_r">
+							<h3><a href="${base}/${typename}/${item.oid}" target="_blank" title="顾雏军：“引资购商”是实现制造业强国的捷径">顾雏军：“引资购商”是实现制造业强国的捷径</a></h3>
+							<div class="timerank">
+								<span class="ts">发布于 ${item.createtimeStr}</span>
+								<span class="artrank">文章等级：<b>A</b>&nbsp;级</span>
+							</div>
+							<p>
+								《中国经济周刊》：自国务院印发《中国制造2025》规划大约两个月后，你几乎在很短的时间里完成了这篇4万多字的论文《中国制造2025》自国务院印发
+								<a href="${base}/${typename}/${item.oid}" target="_blank">[详情]</a>
+							</p>
+							<div class="tab_one_bt">
+								<span class="read">阅读&nbsp;(${item.clickcount!0})</span>
+								<span>赞&nbsp;(${item.prizecount!0})</span>
+								<span><a href="${base}/${typename}/${item.oid}#db_discuss" title="评论数">评论&nbsp;(${item.commentcount!0})</a></span>
+							</div>
+						</div>
+					</div>
+					<div class="latest_content">
+						<a href="#">
+							<img src="${baseimg}/imgs/default/focusimg02.png" class="title_img" />
+						</a>
+						<div class="tab_one_r">
+							<h3><a href="${base}/${typename}/${item.oid}" target="_blank" title="《中国制作2025》需要新思维">《中国制作2025》需要新思维</a></h3>
+							<div class="timerank">
+								<span class="ts">发布于 ${item.createtimeStr}</span>
+								<span class="artrank">文章等级：<b>A</b>&nbsp;级</span>
+							</div>
+							<p>
+								《中国经济周刊》：自国务院印发《中国制造2025》规划大约两个月后，你几乎在很短的时间里完成了这篇4万多字的论文《中国制造2025》自国务院印发
+								<a href="${base}/${typename}/${item.oid}" target="_blank">[详情]</a>
+							</p>
+							<div class="tab_one_bt">
+								<span class="read">阅读&nbsp;(${item.clickcount!0})</span>
+								<span>赞&nbsp;(${item.prizecount!0})</span>
+								<span><a href="${base}/${typename}/${item.oid}#db_discuss" title="评论数">评论&nbsp;(${item.commentcount!0})</a></span>
+							</div>
+						</div>
+					</div>
+					<div class="latest_content">
+						<a href="#">
+							<img src="${baseimg}/imgs/default/focusimg03.png" class="title_img" />
+						</a>
+						<div class="tab_one_r">
+							<h3><a href="${base}/${typename}/${item.oid}" target="_blank" title="索尼的断臂之路——手机、电脑、PC收购前景……">索尼的断臂之路——手机、电脑、PC收购前景……</a></h3>
+							<div class="timerank">
+								<span class="ts">发布于 ${item.createtimeStr}</span>
+								<span class="artrank">文章等级：<b>A</b>&nbsp;级</span>
+							</div>
+							<p>
+								《中国经济周刊》：自国务院印发《中国制造2025》规划大约两个月后，你几乎在很短的时间里完成了这篇4万多字的论文《中国制造2025》自国务院印发
+								<a href="${base}/${typename}/${item.oid}" target="_blank">[详情]</a>
+							</p>
+							<div class="tab_one_bt">
+								<span class="read">阅读&nbsp;(${item.clickcount!0})</span>
+								<span>赞&nbsp;(${item.prizecount!0})</span>
+								<span><a href="${base}/${typename}/${item.oid}#db_discuss" title="评论数">评论&nbsp;(${item.commentcount!0})</a></span>
+							</div>
+						</div>
+					</div>
+					<div class="latest_content">
+						<a href="#">
+							<img src="${baseimg}/imgs/default/focusimg01.png" class="title_img" />
+						</a>
+						<div class="tab_one_r">
+							<h3><a href="${base}/${typename}/${item.oid}" target="_blank" title="谁能拯救中国制造业？">谁能拯救中国制造业？</a></h3>
+							<div class="timerank">
+								<span class="ts">发布于 ${item.createtimeStr}</span>
+								<span class="artrank">文章等级：<b>A</b>&nbsp;级</span>
+							</div>
+							<p>
+								《中国经济周刊》：自国务院印发《中国制造2025》规划大约两个月后，你几乎在很短的时间里完成了这篇4万多字的论文《中国制造2025》自国务院印发
+								<a href="${base}/${typename}/${item.oid}" target="_blank">[详情]</a>
+							</p>
+							<div class="tab_one_bt">
+								<span class="read">阅读&nbsp;(${item.clickcount!0})</span>
+								<span>赞&nbsp;(${item.prizecount!0})</span>
+								<span><a href="${base}/${typename}/${item.oid}#db_discuss" title="评论数">评论&nbsp;(${item.commentcount!0})</a></span>
+							</div>
+						</div>
+					</div>
+					<div class="latest_content">
+						<a href="#">
+							<img src="${baseimg}/imgs/default/focusimg03.png" class="title_img" />
+						</a>
+						<div class="tab_one_r">
+							<h3><a href="${base}/${typename}/${item.oid}" target="_blank" title="顾雏军：“引资购商”是实现制造业强国的捷径">顾雏军：“引资购商”是实现制造业强国的捷径</a></h3>
+							<div class="timerank">
+								<span class="ts">发布于 ${item.createtimeStr}</span>
+								<span class="artrank">文章等级：<b>A</b>&nbsp;级</span>
+							</div>
+							<p>
+								《中国经济周刊》：自国务院印发《中国制造2025》规划大约两个月后，你几乎在很短的时间里完成了这篇4万多字的论文《中国制造2025》自国务院印发
+								<a href="${base}/${typename}/${item.oid}" target="_blank">[详情]</a>
+							</p>
+							<div class="tab_one_bt">
+								<span class="read">阅读&nbsp;(${item.clickcount!0})</span>
+								<span>赞&nbsp;(${item.prizecount!0})</span>
+								<span><a href="${base}/${typename}/${item.oid}#db_discuss" title="评论数">评论&nbsp;(${item.commentcount!0})</a></span>
+							</div>
+						</div>
+					</div>
+					<div class="latest_content">
+						<a href="#">
+							<img src="${baseimg}/imgs/default/focusimg02.png" class="title_img" />
+						</a>
+						<div class="tab_one_r">
+							<h3><a href="${base}/${typename}/${item.oid}" target="_blank" title="谁能拯救中国制造业？">谁能拯救中国制造业？</a></h3>
+							<div class="timerank">
+								<span class="ts">发布于 ${item.createtimeStr}</span>
+								<span class="artrank">文章等级：<b>A</b>&nbsp;级</span>
+							</div>
+							<p>
+								《中国经济周刊》：自国务院印发《中国制造2025》规划大约两个月后，你几乎在很短的时间里完成了这篇4万多字的论文《中国制造2025》自国务院印发
+								<a href="${base}/${typename}/${item.oid}" target="_blank">[详情]</a>
+							</p>
+							<div class="tab_one_bt">
+								<span class="read">阅读&nbsp;(${item.clickcount!0})</span>
+								<span>赞&nbsp;(${item.prizecount!0})</span>
+								<span><a href="${base}/${typename}/${item.oid}#db_discuss" title="评论数">评论&nbsp;(${item.commentcount!0})</a></span>
+							</div>
+						</div>
+					</div>
+					[/#list]
+					[#if latestlist?size>0]
+					<div class="tab_bottom loadmore"><a href="">加载更多</a></div>
+					[/#if]
+					<div class="loading">
+						<img src="${baseimg}/imgs/default/loading.gif" />
+						loading...
+					</div>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+	$(function(){
+		var a = 1;
+		$("#controller li").click(function(){
+			var i = $(this).index();
+			a = i;
+			$(this).addClass("active").siblings().removeClass("active");
+			$(".tbui_slideshow_list li").eq(i).css("display","block").siblings().css("display","none");
+			$(".pr_word_topic").html($(".pr_word_"+a).html());
+			$(".pr_con").html($(".pr_con_"+a).html());
+		});
+		setInterval(function(){
+			if( a == $("#controller li").length){
+				a = 0
+			}
+			$("#controller li").eq(a).addClass("active").siblings().removeClass("active");
+			$(".tbui_slideshow_list li").eq(a).css("display","block").siblings().css("display","none");
+			$(".pr_word_topic").html($(".pr_word_"+a).html());
+			$(".pr_con").html($(".pr_con_"+a).html());
+			a++;
+		},2000);
+
+		//右侧排行榜部分鼠标效果
+		$(".hotlist li").hover(function(){
+			$(this).siblings().removeClass("curshow");
+			$(this).addClass("curshow");
+		});
+	});
+	</script>
+</body>
+</html>

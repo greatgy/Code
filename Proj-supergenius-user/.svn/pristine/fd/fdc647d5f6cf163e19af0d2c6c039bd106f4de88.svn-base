@@ -1,0 +1,179 @@
+body {
+	background: #e6e6e6;
+}
+.container {
+	margin-bottom: 104px;
+	min-height: 600px;
+}
+.myorders {
+	width: 980px;
+	min-height: 500px;
+	margin: 0 auto;
+	background: #fff;
+	margin-top: 17px;
+	box-shadow: 1px 1px 0 1px #BFBFBF;
+}
+.myorders h2 {
+	width: 940px;
+	height: 50px;
+	line-height: 60px;
+	font-size: 17px;
+	color: #000;
+	text-align: left;
+	padding-left: 20px;
+	overflow: hidden;
+}
+.orderlist {
+	width: 942px;
+	min-height: 328px;
+	text-align: left;
+	margin: 0 auto;
+	padding-bottom: 30px;
+}
+.orderlist1 {
+	width: 942px;
+	min-height: 328px;
+	text-align: left;
+	margin: 0 auto;
+	padding-bottom: 30px;
+}
+.orderlist .orderlisttit{
+	width: 925px;
+	height: 48px;
+	overflow: hidden;
+	padding: 0 0 0 10px;
+	/* background: #d1444d; */
+	background: #10d57b;
+	line-height: 50px;
+}
+.orderlist1 .orderlisttit1{
+	width: 925px;
+	height: 48px;
+	overflow: hidden;
+	padding: 0 0 0 10px;
+	/* background: #d1444d; */
+	background: #d1444d;
+	line-height: 50px;
+}
+.orderlisttit .partitem {
+	display: inline-block;
+	overflow: hidden;
+	font-size: 16px;
+	color: #fff;
+	float: left;
+}
+.orderlisttit1 .partitem {
+	display: inline-block;
+	overflow: hidden;
+	font-size: 16px;
+	color: #fff;
+	float: left;
+}
+.orderlist .part01 {
+	width: 170px;
+	padding-left: 15px;
+}
+.orderlist .part02 {
+	width: 215px;
+}
+.orderlist .part03 {
+	width: 90px;
+}
+.orderlist .part04 {
+	width: 115px;
+}
+.orderlist .part05 {
+	width: 135px;
+}
+.orderlist .part06 {
+	width: 84px;
+}
+.orderlist .part07 {
+	width: 100px;
+}
+.orderlist1 .part01 {
+	width: 170px;
+	padding-left: 15px;
+}
+.orderlist1 .part02 {
+	width: 215px;
+}
+.orderlist1 .part03 {
+	width: 90px;
+}
+.orderlist1 .part04 {
+	width: 115px;
+}
+.orderlist1 .part05 {
+	width: 135px;
+}
+.orderlist1 .part06 {
+	width: 84px;
+}
+.orderlist1 .part07 {
+	width: 100px;
+}
+.part03 select , .part06 select {
+	width: 32px;
+	font-size: 12px;
+	text-align: left;
+	overflow: hidden;
+}
+.orderlist li {
+	height: 40px;
+	line-height: 40px;
+	width: 925px;
+	padding: 0 0 0 10px;
+	margin: 0 auto;
+	overflow: hidden;
+}
+.orderlist .orderlitem {
+	display: inline-block;
+	overflow: hidden;
+	font-size: 12px;
+	color: #313131;
+	float: left;
+}
+.orderlist1 li {
+	height: 40px;
+	line-height: 40px;
+	width: 925px;
+	padding: 0 0 0 10px;
+	margin: 0 auto;
+	overflow: hidden;
+}
+.orderlist1 .orderlitem {
+	display: inline-block;
+	overflow: hidden;
+	font-size: 12px;
+	color: #313131;
+	float: left;
+}
+.orderlist .orderlitem.part01 {
+	/* color: #5c91d9; */
+	/* color: #1a9adb; */
+}
+.orderlitem a {
+	color: #7B7594;
+	font-size: 12px;
+	margin-right: 20px;
+}
+.orderlitem a:hover {
+	color: #36abeb;
+	text-decoration: underline;
+}
+.orderlitem .delete:hover {
+	color: #f50c0c;
+}
+.page {
+	width: 100%;
+	height: 20px;
+	padding-bottom: 40px;
+	margin: 0 auto;
+}
+.orderlist li:nth-of-type(odd) {
+	background: #E5F5E7;
+}
+.orderlist1 li:nth-of-type(odd) {
+	background: #F9E7DD;
+}

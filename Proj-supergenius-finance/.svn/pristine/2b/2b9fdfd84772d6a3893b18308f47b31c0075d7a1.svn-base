@@ -1,0 +1,176 @@
+/* CSS Document */
+.topic_07_box{
+	width: 1000px;
+	margin-top:30px; 
+	margin-bottom: 40px;
+	min-height: 595px;
+}
+.tp_07_left{
+	float: left;
+	width: 656px;
+	padding: 0 17px;
+	background: #fff;
+	text-align: left;
+	padding-bottom: 20px;
+	box-shadow: 1px 1px 1px 0 #ddd;
+	overflow: hidden;
+}
+.tp_07_right{float:right;width:295px;}
+
+.tp_07_left .tp_01_one {
+	position: relative;
+	width: 100%;
+	height: 375px;
+	margin-bottom: 0px;
+	margin-top: 16px;
+	border: 1px solid #d5d5d5;
+}
+.tp_01_one .debatebg {
+	display: block;
+	width: 100%;
+	height: 366px;
+}
+.debatebg img {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+.contro_icon {
+	position: absolute;
+	top: 15px;
+	left: -20px;
+	background: url(/imgs/default/part01.png) left center no-repeat;
+	font-size: 18px;
+	width: 173px;
+	height: 57px;
+	line-height: 45px;
+	color: #fff;
+	text-align: center;
+}
+.tp_01_one .lz_one_01{
+	height: 60px;
+	line-height: 60px;
+	width: 641px;
+	background-color: rgba(0,0,0,0.35);
+	color: #fff;
+	font-size: 18px;
+	padding-left: 15px;
+	position: absolute;
+	top: 285px;
+	left: 0;
+	text-align: left;
+	overflow: hidden;
+}
+.lz_one_01 a {
+	color: #fff;
+}
+.lz_one_01 img {
+	position: absolute;
+	top: 9px;
+	right: 10px;
+	width: 36px;
+	height: 36px;
+	overflow: hidden;
+}
+.tp_01_one .over_title {
+	overflow: hidden; 
+	white-space: nowrap; 
+	text-overflow: ellipsis;
+	height: 37px;
+	line-height: 37px;
+	position: absolute;
+	color: #fff;
+	font-weight: 600;
+	font-size: 16px;
+	text-align: center;
+	display: inline-block;
+	bottom: 0;
+}
+.tp_01_one .lz_one_02 {
+	width: 40%;
+	background-color: #d90000;
+	left: 0;
+}
+.tp_01_one .lz_one_03 {
+	width: 60%;
+	background-color: #0077d9;
+	right: 0;
+}
+.tp_01_two {
+	width:100%; 
+	padding-top:30px;
+	overflow: hidden;
+}
+.tp_01_two .lz_main{ 
+	width: 100%;
+	text-align: left;
+}
+.lz_main .main01{
+	cursor: pointer;
+	width: 318px;
+	height: 163px;
+	position: relative;
+	display: inline-block;
+	border: 1px solid #d3d3d3;
+	overflow: hidden;
+	box-sizing: border-box;
+	margin-right: 7px;
+	margin-bottom: 9px;
+}
+.main01 .yc{
+	display: block; 
+	color:#fff; 
+	width:300px;
+	height:165px;
+ 	background-color:rgba(0,0,0,0.35);
+    font-size:16px; 
+    line-height:35px;
+    text-align:center;
+    position:absolute;
+    top:128px;
+    padding: 0 8px;
+}
+.yc img {
+	width: 64px;
+	height: 64px;
+	overflow: hidden;
+	margin-top: 30px;
+	display: block;
+}
+.lz_main .list01 {
+	background: url(/imgs/default/debatelis01.png) no-repeat center center;
+	background-size: cover;
+	background-origin: border-box;
+}
+.lz_main .list02 {
+	background: url(/imgs/default/debatelis02.png) no-repeat center center;
+	background-size: cover;
+	background-origin: border-box;
+}
+.lz_main .list03 {
+	background: url(/imgs/default/debatelis03.png) no-repeat center center;
+	background-size: cover;
+	background-origin: border-box;
+}
+.lookall {
+	text-align: center;
+	display: inline-block;
+	margin-left: 270px;
+	font-size: 15px;
+	color: #999999;
+	margin-top: 10px;
+	padding-bottom: 15px;
+	overflow: hidden;
+}
+.lookall:hover {
+	color: #0A8BCD;
+}
+.ranklist .detail {
+	font-size: 15px;
+	color: #333333;
+	line-height: 20px;
+	margin-top: -10px;
+	padding-bottom: 10px;
+}
+
+

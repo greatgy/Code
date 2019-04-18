@@ -1,0 +1,11 @@
+[#ftl]
+[#if course??]
+	<img src="${webimg}${course.imgmedium}" alt="${course.name}" title="${course.name}" />
+			<div class="bookRight">
+				<p>出版时间：${(course.publishtime).toString("yyyy年MM月dd日 ")}</p>
+				<p>出版方：${course.press}</p>
+				<p>应用学校：${course.useadress}</p>
+				<p>适用年级：[#if course.grade == 1]六年级[#elseif course.grade == 2]初一[#elseif course.grade == 4]初二[#elseif course.grade == 8]初三[/#if]</p>
+			</div>
+	<a href="javascript:;" class="closeBtn"><img src="/imgs/default/close.png" alt="关闭" title="关闭" /></a>
+[/#if]

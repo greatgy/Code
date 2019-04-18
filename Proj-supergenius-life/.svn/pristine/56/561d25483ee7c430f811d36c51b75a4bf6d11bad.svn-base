@@ -1,0 +1,46 @@
+[#ftl]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>${title!'天才人生'}</title>
+	<link rel="stylesheet" href="${basecss}/css/mobile/default/index.css">
+	<style type="text/css">
+		html {
+			background: #f4f5f6;/* cdd1d5 */
+		}
+	</style>
+</head>
+<body>
+	<ul class="navlist">
+        [#if cataloguelist??]
+        	[#assign i=1]
+	    	[#list cataloguelist as map]
+	    		[#if map["first"].cid != 1]
+		    		<li class="catalogue_${(map["first"].cid)?c}[#if i==2] curnavLi[/#if]">
+			            [#if map["second"]?? && map["second"]?size>0]
+				            <span class="labeltitle">
+			                	${map["first"].name}
+				            </span>
+			            	<ul class="rollnav">
+				            	[#assign secondlist = map["second"]]
+				            	[#list secondlist as item]
+				            		<li [#if cid?? && cid?c == (item.cid)?c]class="current"[/#if]><a href="${base}/catalogue/${(item.pcid)?c}/${(item.cid)?c}">${item.name}</a></li>
+				            	[/#list]
+			            	</ul>
+			            [#else]
+			            	<a class="aa" href="${base}/catalogue/${map["first"].pcid}/${(map["first"].cid)?c}">${map["first"].name}</a>
+			            [/#if]
+			        </li>
+			       [/#if] 
+		        [#assign i=i+1]
+	    	[/#list]
+	    [/#if]
+    </ul>
+    <script>
+    	$("li").click(function(){
+    		$(this).addClass("curnavLi").siblings().removeClass("curnavLi");
+    	})
+    </script>
+</body>
+</html>

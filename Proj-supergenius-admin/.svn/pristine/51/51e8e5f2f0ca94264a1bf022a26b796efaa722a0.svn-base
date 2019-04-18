@@ -1,0 +1,125 @@
+package com.supergenius.web.admin.finance.controller;
+
+import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.genius.core.base.annotation.Json;
+import com.genius.server.base.controller.BaseController;
+import com.genius.server.baseadmin.helper.AdminHP;
+import com.supergenius.global.conf.UriConf;
+import com.supergenius.server.common.constants.MsgKeyDict;
+import com.supergenius.server.common.constants.ViewKeyDict;
+import com.supergenius.web.admin.finance.helper.ContributeHP;
+import com.supergenius.web.admin.finance.helper.InboxHP;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.finance.entity.Contribute;
+import com.supergenius.xo.finance.entity.Finance;
+import com.supergenius.xo.finance.enums.EContributeState;
+import com.supergenius.xo.finance.service.ContributeSO;
+import com.supergenius.xo.finance.service.FinanceSO;
+import com.supergenius.xo.user.enums.EScore;
+
+/**
+ * 投稿controller
+ * @author liushaomin
+ */
+@Controller
+@RequestMapping(value = UriConf.baseAdminPath)
+public class ContributeAdminer extends BaseController {
+
+	@Autowired
+	private ContributeSO so;
+
+	@Autowired
+	private FinanceSO financeso;
+
+	/**
+	 * 进入投稿管理
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = { "/contribute" }, method = RequestMethod.GET)
+	public String contribute(Map<String, Object> model, HttpServletRequest request) {
+		model.put(ViewKeyDict.channel, EChannel.contribute.name());
+		model.put(ViewKeyDict.channelname, EChannel.getName(EChannel.contribute, Locale.CHINA));
+		return "docontribute";
+	}
+
+	/**
+	 * 得到投稿列表
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = { "/ajax/contribute/list" }, method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> contribute_list(Map<String, Object> model, HttpServletRequest request) {
+		cloneParamsToModel(model, request);
+		Map<String, Object> searchMap = ContributeHP.query(model);
+		return json(searchMap, Json.webStrategy);
+	}
+
+	/**
+	 * 审核投稿
+	 * @param file
+	 * @param finance
+	 * @return
+	 */
+	@RequestMapping(value = "/ajax/contribute/edit", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> contribute_edit(String uid, String result, int score, int original) {
+		Contribute contribute = so.get(uid);
+		if (result.equals("1")) {
+			Finance finance = new Finance();
+			finance.setAdminuid(AdminHP.getAdminUid());
+			finance.set(contribute);
+			finance.setScore(score); //积分暂时隐藏 等manager上线
+			if (original == 1) { //原创
+				finance.setScoreType(EScore.originalFinance);
+			} else {
+				finance.setScoreType(EScore.forwardFinance);
+			}
+			if (financeso.add(finance)) {
+				contribute.setState(EContributeState.accept);
+			} else {
+				return result(MsgKeyDict.updateFailed);
+			}
+		} else {
+			contribute.setState(EContributeState.refuse);
+		}
+		if (so.UpdateState(contribute)) {
+			if (contribute.getState().equals(EContributeState.refuse)) {
+				InboxHP.sendInboxByMsg(ContributeHP.sendContributeMsg(contribute, AdminHP.getAdminUid()));
+			}
+			return success();
+		}
+		return result(MsgKeyDict.updateFailed);
+	}
+
+	/**
+	 * 进入打印页面
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @param uid
+	 */
+	@RequestMapping(value = "/ajax/contribute/print", method = RequestMethod.GET)
+	public String contribute_download(Map<String, Object> model, String[] ids, HttpServletRequest request, HttpServletResponse response) {
+		Contribute contribute = so.get(ids[0]);
+		model.put(ViewKeyDict.bean, contribute);
+		model.put(ViewKeyDict.type, "contribute");
+		return "doprint";
+	}
+
+}

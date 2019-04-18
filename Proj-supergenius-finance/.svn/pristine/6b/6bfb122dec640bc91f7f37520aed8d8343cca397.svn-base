@@ -1,0 +1,165 @@
+package com.supergenius.web.finance.helper;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.genius.server.base.helper.BaseHP;
+import com.supergenius.global.conf.WebConf;
+import com.supergenius.xo.common.constants.MapperDict;
+import com.supergenius.xo.common.enums.EChannel;
+import com.supergenius.xo.finance.entity.Finance;
+import com.supergenius.xo.finance.entity.Message;
+import com.supergenius.xo.finance.entity.Topic;
+import com.supergenius.xo.finance.enums.ECollectType;
+import com.supergenius.xo.finance.enums.EFinance;
+import com.supergenius.xo.finance.enums.EFinanceMsg;
+import com.supergenius.xo.finance.service.FinanceSO;
+import com.supergenius.xo.finance.service.MessageSO;
+import com.supergenius.xo.finance.service.TopicSO;
+import com.supergenius.xo.user.entity.Comments;
+import com.supergenius.xo.user.entity.User;
+import com.supergenius.xo.user.service.CommentsSO;
+
+/**
+ * 消息HP
+ * 
+ * @author LiJiacheng
+ */
+public class MsgHP extends BaseHP {
+
+	private static Logger log = LoggerFactory.getLogger(MsgHP.class);
+
+	private static FinanceSO financeSO;
+
+	private static TopicSO topicSO;
+
+	private static CommentsSO commentsSO;
+
+	private static MessageSO messageSO;
+
+	private static FinanceSO getFinanceSO() {
+		if (financeSO == null) {
+			financeSO = (FinanceSO) spring.getBean(FinanceSO.class);
+		}
+		return financeSO;
+	}
+
+	private static TopicSO getTopicSO() {
+		if (topicSO == null) {
+			topicSO = (TopicSO) spring.getBean(TopicSO.class);
+		}
+		return topicSO;
+	}
+
+	private static CommentsSO getCommentsSO() {
+		if (commentsSO == null) {
+			commentsSO = (CommentsSO) spring.getBean(CommentsSO.class);
+		}
+		return commentsSO;
+	}
+
+	private static MessageSO getMessageSO() {
+		if (messageSO == null) {
+			messageSO = (MessageSO) spring.getBean(MessageSO.class);
+		}
+		return messageSO;
+	}
+
+	/**
+	 * 赞发消息
+	 * 
+	 * @param channel
+	 * @param uid
+	 * @param user
+	 * @author LiJiacheng
+	 */
+	public static Message prizeMsg(String channel, String fromuid, User user) {
+		Map<String, Object> map = new HashMap<>();
+		if (EChannel.get(channel).equals(EChannel.topic)) {
+			Topic topic = getTopicSO().get(fromuid);
+			if (topic.getUseruid().equals(user.getUid())) {
+				return null;
+			}
+			map.put(MapperDict.type, EFinanceMsg.topicpraise);
+			map.put(MapperDict.title, topic.getTitle());
+			map.put(MapperDict.href, WebConf.baseRootPath + MapperDict.slash + MapperDict.topic + MapperDict.slash + topic.getOid());
+		} else if (EChannel.get(channel).equals(EChannel.finance)) {
+			Finance finance = getFinanceSO().get(fromuid);
+			if (finance.getAuthoruid().equals(user.getUid())) {
+				return null;
+			}
+			map.put(MapperDict.type, EFinanceMsg.articlepraise);
+			map.put(MapperDict.title, finance.getTitle());
+			map.put(MapperDict.href, WebConf.baseRootPath + MapperDict.slash + finance.getFirstTypeName() + MapperDict.slash + finance.getOid());
+		} else if (EChannel.get(channel).equals(EChannel.comments)) {
+			Comments comments = getCommentsSO().get(fromuid);
+			if (comments.getFromuseruid().equals(user.getUid())) {
+				return null;
+			}
+			map.put(MapperDict.type, EFinanceMsg.speakpraise);
+			map.put(MapperDict.title, comments.getContent());
+			map.put(MapperDict.href, CommentsHP.getHrefByComments(comments, null));
+		} else {
+			return null;
+		}
+		map.put(MapperDict.sender, user);
+		map.put(MapperDict.baseuser, WebConf.baseRootPath);
+		Message message = getMessageSO().addMsg(map);
+		if (message != null) {
+			return message;
+		} else {
+			log.info("The prizeMsg send failed.");
+			return null;
+		}
+	}
+
+	/**
+	 * 收藏发消息
+	 * 
+	 * @param user
+	 * @param collectType
+	 * @param financeType
+	 * @param id
+	 * @return
+	 * @author LiJiacheng
+	 */
+	public static Message collectMsg(User user, ECollectType collectType, EFinance financeType, String id) {
+		Map<String, Object> map = new HashMap<>();
+		map.put(MapperDict.sender, user);
+		map.put(MapperDict.baseuser, WebConf.baseRootPath);
+		String recipient = null;
+		if (collectType.equals(ECollectType.article)) {
+			Finance finance = getFinanceSO().get(id);
+			if (finance.getAuthoruid().equals(user.getUid())) {
+				return null;
+			}
+			map.put(MapperDict.title, finance.getTitle());
+			map.put(MapperDict.href, WebConf.baseRootPath + MapperDict.slash + financeType.name() + MapperDict.slash + finance.getOid());
+			map.put(MapperDict.type, EFinanceMsg.articlecollect);
+			recipient = finance.getAuthoruid();
+		} else if (collectType.equals(ECollectType.topic)) {
+			Topic topic = getTopicSO().get(id);
+			if (topic.getUseruid().equals(user.getUid())) {
+				return null;
+			}
+			map.put(MapperDict.title, topic.getTitle());
+			map.put(MapperDict.href, WebConf.baseRootPath + MapperDict.slash + MapperDict.topic + MapperDict.slash + topic.getOid());
+			map.put(MapperDict.type, EFinanceMsg.topiccollect);
+			recipient = topic.getUseruid();
+		} else {
+			return null;
+		}
+		Message message = getMessageSO().addMsg(map);
+		if (message != null) {
+			message.setRecipient(recipient);
+			return message;
+		} else {
+			log.info("The collectMsg send failed.");
+			return null;
+		}
+	}
+
+}

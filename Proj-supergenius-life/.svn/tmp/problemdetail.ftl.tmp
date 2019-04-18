@@ -1,0 +1,241 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/Public.ftl" as p]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>梦之初心--效果检验详情页</title>
+	<meta name="Keywords" content="天才人生,效果检验详情页" />
+	<meta name="Description" content="天才人生,效果检验详情页" />
+	<link rel="stylesheet" href="${basecss}/css/default/index.css">
+	<link rel="stylesheet" href="${basecss}/css/default/ckeditor.css" type="text/css">
+	<script type="text/javascript" src="${basejs}/js/pages/comment-1.0.0.js"></script>
+	<script type="text/javascript" src="${basejs}/js/pages/scroll.js"></script>
+	<script type="text/javascript" src="${basejs}/js/libs3/jquery.qqface.min.js"></script>
+	<script type="text/javascript" src="${basejs}/js/pages/lifeanswer.js"></script>
+	
+	<script type="text/javascript">
+		var me = {
+			showname: "${me.username!'游客'}",
+			useravatar:"${me.useravatar}",
+			oid:"${(me.oid?c)!'0'}",
+			uid:"${me.uid}",
+			defaultImg: "${baseimg}/imgs/default/user.png",
+			isuser: "${me.isUser}"
+		}
+		var fromuid = '${bean.uid}';
+		var cid = '${(bean.cid)?c}';
+		var base = '${base}';
+		var baseimg = '${baseimg}';
+		var userimg = '${userimg}';
+		var channel = 'problemanswer';
+		var type = 0;
+		var href = window.location.href;
+		var majorreply = '${majorreply??}';
+		$(function(){
+        	$('.face').qqFace({ 
+		        assign:'content', //给输入框赋值 
+		        path:'${baseimg}/imgs/face/qq/' //表情图片存放的路径 
+		    });
+		   	$("#hot").click(function(){
+				$("#new").removeClass("curjudge");
+				$("#hot").addClass("curjudge");
+				num = 1;
+				var url = base + "/ajax/answer/"+cid+"_"+fromuid+"_{0}".format(num);
+				$.ajax({
+					type:"GET",
+					url:url,
+					data: {fromuid:fromuid, cid:cid, pagenum:num},
+					success:function(data){
+						if(data.trim() == ""){
+							if (num == 1) {
+								[#if !majorreply??]$(".nothing").removeClass("hd");[/#if]
+							} 
+							$(window).unbind("scroll", defaultScrollHandler);
+						}else{
+							num += 1;
+							$(".nothing").addClass("hd");
+							$(diplayID).html(data);
+							initPage();
+							prizeBindEvent();
+						}
+					}
+				});   
+			});
+			$("#new").click(function(){
+				$("#hot").removeClass("curjudge");
+				$("#new").addClass("curjudge");
+				num = 1;
+				var url = base + "/ajax/lifeanswer/hotanswer";
+				$.ajax({
+					type:"GET",
+					url:url,
+					data: {fromuid:fromuid, cid:cid, pagenum:num},
+					success:function(data){
+						console.log(data)
+						if(data.trim() == ""){
+							if (num == 1) {
+								[#if !majorreply??]$(".nothing").removeClass("hd");[/#if]
+							} 
+							$(window).unbind("scroll", defaultScrollHandler);
+						}else{
+							num += 1;
+							$(".nothing").addClass("hd");
+							$(diplayID).html(data);
+							initPage();
+							prizeBindEvent();
+						}
+					}
+				});   
+			});
+			var url = window.location.href;
+			$(".report").attr("href","${base}/life/my/report?cid=${cid?c}&fromuid=${bean.uid}&title=${bean.title}&url="+url);
+		});
+	</script>
+	<style type="text/css">
+		.qqFace{margin-top:4px;background:#fff;padding:2px;border:1px #dfe6f6 solid;}
+		.qqFace table td{padding:0px;}
+		.qqFace table td img{cursor:pointer;border:1px #fff solid;}
+		.qqFace table td img:hover{border:1px #0066cc solid;}
+	</style>
+</head>
+<body>
+	<div class="someQuestion">
+			<div class="questionTitle">
+				${bean.title}
+				<a href="" class="report">举报</a>
+			</div>
+			[#if me??]
+				<a href="javascript:;" class="pubQuestion">我要回答</a>
+			[#else]
+				<a href="javascript:;" class="pubQuestion pop-up">我要回答</a>
+			[/#if]
+			<div class="qsintroduce">${bean.content}</div>
+			<div class="relatePiece">
+				<span>${bean.username}&nbsp;&nbsp;&nbsp;[@p.mytime datetime="${bean.createtimeStr}"/]</span>
+				<span class="replyNum">
+					<i><span id="problemcommentcount">${bean.commentscount}</span>个回答</i>
+					<i><a class="zan" id="btnprizeproblem_problempraise_${(me.oid?c)!"0"}_${(bean.cid)?c}_${bean.uid}" data-counter=".prizecounter">
+					<img src="${baseimg}/imgs/default/thumb.png" data-isprize="${bean.isprize!'false'}"><span class="zancountjs">${bean.prizecount!'0'}</span></a></i>
+				</span>
+			</div>
+		</div>
+		<div class="commentBox qsNewquiz">
+			<ul class="judgement">
+				<li class="curjudge" id="new">最新</li>
+				<li id="hot">最热</li>
+			</ul>
+			<ul class="commentList" id="displayComment">
+				[#if majorreply??]
+				<li class="activeComment">
+					<a href="#" class="qsUserimg">
+						<img src="${baseimg}/imgs/default/experts.png" alt="">
+					</a>
+					<div class="commentitemRt replay_comment" data-uid="${majorreply.uid}" data-touseruid="${majorreply.fromuseruid}"  data-tousername="${majorreply.fromusername}"  data-useruid="${majorreply.useruid}">
+						<a href="#" class="qsUsername">[#if majorreply.username??]${majorreply.username}[#else]专家团[/#if]</a>
+						<span class="expert">专业点评</span>
+						<div class="qsword">
+							${majorreply.content}
+						</div>
+						<div class="wordBottom">
+							<span class="qstime">${(majorreply.createtime).toString("M月dd日  HH:mm:ss")}</span>
+							<div class="qsCommentOperate">
+								<a class="zan" id="btnprizeproblem_answerpraise_${(me.oid?c)!"0"}_${cid?c}_${majorreply.uid}" data-counter=".prizecounter"><img src="${baseimg}/imgs/default/heart.png" data-isprize="${majorreply.isprize!'false'}"><span class="zancountjs">${majorreply.prizecount!'0'}</span></a>
+								[#if me.uid == bean.useruid]
+									<a href="javascript:;" data-reply="replyopen" class="reply" onclick="reply(this)" >回复</a>
+								[#else]
+									<a href="javascript:;" class="reply hd">回复</a>
+								[/#if]
+								<a class="leftcommentss hd" onclick="showsecondmajor(this);" data-reply="true">展开<img src="${baseimg}/imgs/default/arrawDown.png" alt="展开" /></a>
+								<a class="leftcomments hd" onclick="showcomment(this);" data-reply="true">展开<img src="${baseimg}/imgs/default/arrawDown.png" alt="展开" /></a>
+							</div>
+						</div>
+					</div>
+					<ul class="secondComment hd" id="secondmajor">
+						[#if secondmajorreply?size>0]
+						[#list secondmajorreply?reverse as item2]
+							[#if item2.fromUser??]
+								[#assign fromMan2=item2.fromUser/]
+							[#elseif item2.fromVisitor??]
+								[#assign fromMan2=item2.fromVisitor/]
+							[/#if]
+							<li class="ment">
+					            <div class="qsUserimg">
+									[#if item2.fromuseroid == 10]
+										<img src="${baseimg}/imgs/default/experts.png">
+									[#elseif item2.fromUser??]
+										<img [#if fromMan2.getIsUser()]class="userborder"[/#if][#if "${fromMan2.useravatar}" == ""]src="${baseimg}/imgs/default/user.png"[#else]src="${fromMan2.useravatar}"[/#if] />
+										[#if fromMan2.getIsUser()]<img src="${baseimg}/imgs/default/prince.png" class="problemprinceimg" alt="" />[/#if]
+									[#else]
+										<img src="${fromMan2.useravatar}" />					
+									[/#if]
+								</div>
+								<div class="commentitemRt" data-topuid="${firstuid}" data-uid="${item2.uid}" data-touseruid="${item2.fromuseruid}"  data-tousername="${item2.fromusername}" data-useruid="${item2.useruid}">
+									<div class="qsUsername">
+						                [#if item2.fromUser??]
+						               		[@p.PrivateString content="${item2.fromusername}" /]
+										[#else]
+											[@p.PrivateString content="${fromMan2.username}" /]
+										[/#if]
+										<a id="deletecomment_${item2.uid}_${useruid}" [#if useruid == item2.useruid || useruid == item2.fromuseruid]class="delete"[#else]class="hd"[/#if]><img src="${baseimg}/imgs/default/crush.png"/></a>
+									</div>
+									<div class="qsword">
+										${item2.content!''}
+									</div>
+									<div class="wordBottom">
+										<span class="qstime">${(item2.createtime).toString("M月dd日  HH:mm:ss")}</span>
+										<div class="qsCommentOperate">
+											<a class="zan" id="btnprizeproblem_answerpraise_${(me.oid?c)!"0"}_${cid?c}_${item2.uid}" data-counter=".prizecounter"><img src="${base}/imgs/default/heart.png" data-isprize="${item2.isprize!'false'}"><span class="zancountjs">${item2.prizecount!'0'}</span></a>
+										</div>
+									</div>
+								</div>
+							</li>
+						[/#list]
+					[/#if]
+					</ul>
+				</li>
+				[/#if]
+				<img class="nothing hd" src="${baseimg}/imgs/default/prompt.png" style="width:481px;heigth:211px">
+			</ul>
+		</div>
+	</div>
+	<!-- 回答问题弹框 -->
+	<div class="problemmask"></div>
+	<div class="problemmaskContent questionBox answerBox say">
+		<a href="javascript:;" class="close">X</a>
+		<div class="answer">
+			回复@[@p.PrivateString content="${bean.username}" /]
+			<i>${bean.title}</i>
+		</div>
+		<textarea placeholder="请写下你的回答" id="content"></textarea>
+		<a class="cancelBtn submitBtn closes" >取消</a>
+		<a class="submitBtn" onclick="submitCommentHandler(this);">发布</a>
+		<div class="hidename1">
+			<input type="checkbox" id="isnick">
+		    <label for="hideName">匿名</label>
+		</div>
+	</div>
+	<script type="text/javascript">
+		$(function () {
+			[#if secondmajorreply?? && secondmajorreply?size>0]
+				$(".leftcommentss").removeClass("hd");
+			[/#if]
+			$(".pubQuestion").click(function () {
+				if($(this).hasClass("pop-up")){
+					return;
+				}
+				$(".problemmask").show();
+				$(".problemmaskContent").show();
+			});
+			$(".close").click(function () {
+				$(".problemmask").hide();
+				$(".problemmaskContent").hide();
+			});
+			$(".closes").click(function () {
+				$(".problemmask").hide();
+				$(".problemmaskContent").hide();
+			});
+		});
+	</script>
+</body>
+</html>

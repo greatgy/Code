@@ -1,0 +1,40 @@
+package com.supergenius.server.finance.helper;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.genius.server.base.helper.BaseHP;
+import com.supergenius.xo.finance.enums.ECollectType;
+import com.supergenius.xo.finance.service.CollectDetailSO;
+
+/**
+ * 收藏明细basehp
+ * @author YuYingJie
+ */
+public class BaseCollectDetailHP extends BaseHP {
+
+	@Autowired
+	private static CollectDetailSO so;
+	
+	private static CollectDetailSO getSO() {
+		if (so == null) {
+			so = (CollectDetailSO) spring.getBean(CollectDetailSO.class);
+		}
+		return so;
+	}
+	
+	/**
+	 * 是否收藏
+	 * @param useruid
+	 * @param type
+	 * @param refuid
+	 * @return
+	 * @author YuYingJie
+	 */
+	public static boolean isCollect(String useruid, ECollectType type, String refuid) {
+		if (getSO().getOne(useruid, type, refuid) != null) {
+			return true;
+		}
+		return false;
+	}
+	
+}

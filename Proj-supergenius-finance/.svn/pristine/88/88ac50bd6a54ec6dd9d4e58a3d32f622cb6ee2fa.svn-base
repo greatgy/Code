@@ -1,0 +1,16 @@
+/*弹出框公共样式开始*/
+.eject{border:1px solid #cdcdcd;box-shadow:3px 3px 5px #f3f3f3;font-family: "微软雅黑";font-weight:bold;color:#7f7f7f;}
+.eject>h3{position:relative;height:45px;line-height:45px;padding-left:70px;text-align:left;font-size:16px;border-bottom:1px solid #f2f2f2;background:url(../../../imgs/default/login.jpg) 30px 9px #f7f7f7 no-repeat;}
+.eject>h3 span{position:absolute;right:16px;top:16px;}
+/*弹出框公共样式结束*/
+/*已投票弹出框样式开始*/
+.vote_box{width: 455px;height: 295px;font-weight:normal;}
+.vote_box>h3{background:none;}
+.vote_success{height:50px;line-height:50px;padding-left:110px;text-align:left;}
+.vote_already{background:url(../../../imgs/default/vote_alert.png) 60px 5px no-repeat;}
+.vote_con{width: 340px;margin-top:10px;font-size:14px;border-top:1px solid #eee;}
+.vote_con p{height:50px;line-height:50px;text-align:left;position:relative;}
+.vote_con p a{color:#dc1d15;}
+.vote_text{width: 320px;height: 50px;padding:10px;font-size:14px;color:#333;border:1px solid #c9c9c9;border-radius:5px;}
+.vote_sub{position:absolute;top:10px;right:10px;width: 70px;height: 25px;line-height:25px;text-align:center;display: block;color:#fff !important;background:#f52d25;border-radius:3px;}
+/*已投票弹出框样式结束*/

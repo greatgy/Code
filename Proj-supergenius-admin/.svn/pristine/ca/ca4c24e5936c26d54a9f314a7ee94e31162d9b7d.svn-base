@@ -1,0 +1,84 @@
+#the first mysql
+AdminDB.jdbc.driverClassName=com.mysql.jdbc.Driver
+AdminDB.jdbc.url=jdbc:mysql://localhost:3306/GAdminDB
+AdminDB.jdbc.username=root
+AdminDB.jdbc.password=123456
+AdminDB.min=30
+AdminDB.max=100
+#the second mysql
+#OfficialDB.jdbc.driverClassName=com.mysql.jdbc.Driver
+#OfficialDB.jdbc.url=jdbc:mysql://localhost:3306/GOfficialDB
+#OfficialDB.jdbc.username=root
+#OfficialDB.jdbc.password=123456
+#OfficialDB.min=30
+#OfficialDB.max=100
+#the third mysql
+FinanceDB.jdbc.driverClassName=com.mysql.jdbc.Driver
+FinanceDB.jdbc.url=jdbc:mysql://localhost:3306/GFinanceDB
+FinanceDB.jdbc.username=root
+FinanceDB.jdbc.password=123456
+FinanceDB.min=30
+FinanceDB.max=100
+#the fourth mysql
+UserDB.jdbc.driverClassName=com.mysql.jdbc.Driver
+UserDB.jdbc.url=jdbc:mysql://localhost:3306/GUserDB2
+UserDB.jdbc.username=root
+UserDB.jdbc.password=123456
+UserDB.min=30
+UserDB.max=100
+#the five mysql
+AccountDB.jdbc.driverClassName=com.mysql.jdbc.Driver
+AccountDB.jdbc.url=jdbc:mysql://localhost:3306/GAccountDB
+AccountDB.jdbc.username=root
+AccountDB.jdbc.password=123456
+AccountDB.min=30
+AccountDB.max=100
+#the six mysql
+ManagerDB.jdbc.driverClassName=com.mysql.jdbc.Driver
+ManagerDB.jdbc.url=jdbc:mysql://localhost:3306/GManagerDB
+ManagerDB.jdbc.username=root
+ManagerDB.jdbc.password=123456
+ManagerDB.min=30
+ManagerDB.max=100
+#the seven mysql
+EnterpriserDB.jdbc.driverClassName=com.mysql.jdbc.Driver
+EnterpriserDB.jdbc.url=jdbc:mysql://localhost:3306/GEnterpriserDB
+EnterpriserDB.jdbc.username=root
+EnterpriserDB.jdbc.password=123456
+EnterpriserDB.min=30
+EnterpriserDB.max=100
+#the eight mysql
+GStartupDB.jdbc.driverClassName=com.mysql.jdbc.Driver
+GStartupDB.jdbc.url=jdbc:mysql://localhost:3306/GStartupDB?zeroDateTimeBehavior=convertToNull
+GStartupDB.jdbc.username=root
+GStartupDB.jdbc.password=123456
+GStartupDB.min=30
+GStartupDB.max=100
+#the nine mysql
+AiDB.jdbc.driverClassName=com.mysql.jdbc.Driver
+AiDB.jdbc.url=jdbc:mysql://localhost:3306/GAiDB?zeroDateTimeBehavior=convertToNull
+AiDB.jdbc.username=root
+AiDB.jdbc.password=123456
+AiDB.min=30
+AiDB.max=100
+#the ten mysql
+SolrDB.jdbc.driverClassName=com.mysql.jdbc.Driver
+SolrDB.jdbc.url=jdbc:mysql://localhost:3306/GSolrDB?zeroDateTimeBehavior=convertToNull
+SolrDB.jdbc.username=root
+SolrDB.jdbc.password=123456
+SolrDB.min=30
+SolrDB.max=100
+#the eleven mysql
+CareerDB.jdbc.driverClassName=com.mysql.jdbc.Driver
+CareerDB.jdbc.url=jdbc:mysql://localhost:3306/GCareerDB?zeroDateTimeBehavior=convertToNull
+CareerDB.jdbc.username=root
+CareerDB.jdbc.password=123456
+CareerDB.min=30
+CareerDB.max=100
+#GGupageDB
+GupageDB.jdbc.driverClassName=com.mysql.jdbc.Driver
+GupageDB.jdbc.url=jdbc:mysql://localhost:3306/GGupageDB?zeroDateTimeBehavior=convertToNull
+GupageDB.jdbc.username=root
+GupageDB.jdbc.password=123456
+GupageDB.min=30
+GupageDB.max=100

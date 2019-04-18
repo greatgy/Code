@@ -1,0 +1,288 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/Public.ftl" as p]
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>${title!'天财评论-首页'}</title>
+	<meta name="Keywords" content="天财评论-首页" />
+	<meta name="Description" content="天财评论-首页" />
+	<link rel="stylesheet" href="${basecss}/css/default/index.css">
+	<script src="${basejs}/js/libs3/swiper.jquery.min.js"></script>
+	<script type="text/javascript" src="${basejs}/js/pages/scroll.js"></script>
+		<script type="text/javascript">
+	<!--
+		$(function(){
+			[#if ADContent??]
+				[#list ADContent?reverse as content]
+					loadImg("${content.originurl}","${content.content}","${content.uid}",addImg);
+				[/#list]
+			[/#if]
+		})
+		
+		function loadImg(originurl,content,uid,callback){
+		    var img = new Image();
+		    img.onload = function(){
+		      img.onload = null;
+		      callback(img,originurl,uid);
+		    }
+		    img.src="${webimg}"+content;
+		    img.width ="326";
+		    img.height = "195";
+	 	 }
+		 	 
+	    function addImg(img, original,uid){
+	    	var dest = "huiyuan" + uid;
+	    	var html='';
+		    html += '<div class="rightItem">';
+		    html += '<a class="huiyuan' + uid + '" href="' + original + '">';
+		    html += '</a>';
+			html += '</div>';
+		    $(html).prependTo($(".contentRight"));
+		    $(img).appendTo($("."+dest));
+	    }
+	//-->
+	</script>
+</head>
+<body>
+	<div class="contentLeft">
+		[#if goldlanguage??]
+			<div class="blockgroup">
+				<div class="mb"></div>
+				<div class="recommendArticle">
+					<a href="${base}/article/${goldlanguage.firstCid}/${(goldlanguage.oid)?replace(',', '')}" target="_blank" title="${goldlanguage.title}">
+						<img src="${webimg}${goldlanguage.imgmedium}" class="articleimg">
+					</a>
+					<div class="articleright">
+						<a href="${base}/article/${goldlanguage.firstCid}/${(goldlanguage.oid)?replace(',', '')}" target="_blank" title="${goldlanguage.title}" class="articlelink">
+							${goldlanguage.title}
+						</a>
+						<p class="newestcontent">
+						    [#if goldlanguage.summary == ""]
+								[@p.TrimSubstring content="${goldlanguage.content}" mylength=200 /]
+							[#else]
+								[@p.TrimSubstring content="${goldlanguage.summary}" mylength=200 /]
+							[/#if]
+						</p>
+					</div>
+				</div>
+			</div>
+		[/#if]	
+			<!-- 轮播 -->
+			<div id="lunbo" class="lunboindex swiper-container">
+				<ul id="banner_list" class="swiper-wrapper">
+					[#if FinanceArticle??]
+						[#assign bannercount = 0]
+						[#list FinanceArticle as article]	
+							<li data-index="${bannercount}" class="swiper-slide">
+								<a href="${base}/article/${article.firstCid}/${(article.oid)?replace(',', '')}" class="banneritem" style="background: #000 url(${webimg}${article.imgbig}) no-repeat center center;background-size: 100% 100%;" title="" target="_blank">
+									<p class="titlebottom">
+										${article.title}
+									</p>
+								</a>
+							</li>
+						[#assign bannercount = bannercount + 1]
+						[/#list]
+					[/#if]
+				</ul>
+				<div class="swiper-pagination"></div>
+			</div>
+			<ul class="showArticle">
+				[#if RecommendArticle??]
+					[#list RecommendArticle as article]	
+						<li class="col-sm-4 col-xs-6">
+							<a href="${base}/article/${article.firstCid}/${(article.oid)?replace(',', '')}">
+								<img src="${webimg}${article.imgmedium}" class="img-responsive" />
+								<div class="description">
+									${article.title}
+								</div>
+							</a>
+						</li>
+					[/#list]
+				[/#if]
+			</ul>
+			<div class="articleList">
+				<h4 class="newArt">最新</h4>
+				<ul class="tabBox">
+					[#if list??]
+						[#list list as article]
+							<li>
+								<a class="tabitemimg" href="${base}/article/${article.firstCid}/${(article.oid)?replace(',', '')}">
+									<img src="${webimg}${article.imgmedium}" />
+								</a>
+								<div class="tabitemRt">
+									<a href="${base}/article/${article.firstCid}/${(article.oid)?replace(',', '')}" class="articleTitle">
+										[#if article.isoriginal == 1]
+											<span class="original">[原创]</span>
+										[/#if]
+										[#if article.kind == 1]
+											<span class="videotype">[视频]</span>
+										[#elseif article.kind == 2]
+											<span class="pictype">[图片]</span>
+										[/#if]
+										${article.title}
+									</a>
+									<p class="descripe">
+										[#if article.summary==""]
+											[@p.TrimSubstring content="${article.content}" mylength=80 /]
+										[#else]
+											[@p.TrimSubstring content="${article.summary}" mylength=80 /]
+										[/#if]
+									</p>
+									<div class="timepiece">
+										<span class="time">
+											[@p.mytime datetime="${article.createtimeStr}"/]
+										</span>
+										<div class="operateBox">
+											<a href="${base}/article/${article.firstCid}/${(article.oid)?replace(',', '')}" class="littleicon">
+												<img src="${baseimg}/imgs/default/clickcount.png" />
+												${article.clickcount}
+											</a>
+											<a href="${base}/article/${article.firstCid}/${(article.oid)?replace(',', '')}" class="littleicon">
+												<img src="${baseimg}/imgs/default/discuss.png" />
+												${article.commentscount}
+											</a>
+											<a href="${base}/article/${article.firstCid}/${(article.oid)?replace(',', '')}" class="littleicon">
+												<img src="${baseimg}/imgs/default/heart.png" />
+												${article.prizecount}
+											</a>
+										</div>
+									</div>
+								</div>
+							</li>
+						[/#list]
+					[/#if]	
+				</ul>
+				<div class="load hd">下拉加载更多~</div>
+				<div class="nomore hd">
+					<i class="line"></i>
+					我是有底线的
+					<i class="line"></i>
+				</div>
+			</div>
+		</div>
+		<div class="contentRight">
+			<div class="rightItem itemBlock">
+				<h4><i></i>热门搜索</h4>
+				<ul class="tags">
+			        [#if HotLabel??]
+						[#list HotLabel as label]
+				        	<li><a href="${base}/search?keyword=${label.content}&uid=${label.uid}">${label.content}</a></li>
+				        [/#list]
+			   		[/#if]
+			    </ul>
+			</div>
+			<div class="rightItem itemBlock">
+				<h4><i></i>热门推荐</h4>
+				<ul class="hotArticle">
+			        [#if HotArticle??]
+						[#assign i = 0]
+						[#list HotArticle as article]
+							[#assign i = i+1 ]
+							[#if i <= 3]
+						        <li class="top1">
+						        	[#if i == 1]
+						        		<span class="hoticon redicon">TOP&nbsp;1</span>
+						        	[#elseif i == 2]
+						        		<span class="hoticon yellowicon">TOP&nbsp;2</span>
+						        	[#elseif i == 3]
+						        		<span class="hoticon greenicon">TOP&nbsp;3</span>
+						        	[/#if]
+						        	<a href="${base}/article/${article.firstCid}/${(article.oid)?replace(',', '')}">
+						        		<img src="${webimg}${article.imgmedium}" />
+						        		<div class="description">
+											[#if article.isoriginal == 1]
+												<span class="original">[原创]</span>
+											[/#if]
+											[#if article.kind == 1]
+												<span class="videotype">[视频]</span>
+											[#elseif article.kind == 2]
+												<span class="pictype">[图片]</span>
+											[/#if]
+											${article.title}
+										</div>
+						        	</a>
+						        </li>
+					        [#elseif i==4 || i== 5]
+						        <li>
+									<a href="${base}/article/${article.firstCid}/${(article.oid)?replace(',', '')}">
+										<span class="numtag">${i}</span>
+										<img class="fourimg" src="${webimg}${article.imgmedium}" alt="" />
+										<div class="title">
+											[#if article.isoriginal == 1]
+												<span class="original">[原创]</span>
+											[/#if]
+											[#if article.kind == 1]
+												<span class="videotype">[视频]</span>
+											[#elseif article.kind == 2]
+												<span class="pictype">[图片]</span>
+											[/#if]
+											${article.title}
+											<span class="flashtime">[@p.mytime datetime="${article.createtimeStr}"/]</span>
+										</div>
+									</a>
+								</li>
+					        [#else]
+								<li>
+									<a href="${base}/article/${article.firstCid}/${(article.oid)?replace(',', '')}">
+										[#if article.isoriginal == 1]
+											<span class="original">[原创]</span>
+										[/#if]
+										[#if article.kind == 1]
+											<span class="videotype">[视频]</span>
+										[#elseif article.kind == 2]
+											<span class="pictype">[图片]</span>
+										[/#if]
+										${article.title}
+									</a>
+									<span class="flashtime">[@p.mytime datetime="${article.createtimeStr}"/]</span>
+								</li>
+							[/#if]
+						[/#list]
+				    [/#if]
+			    </ul>
+			</div>
+		</div>
+	<script>
+		var prePage = 1;
+		var pagenum = 1;
+			
+		// 加载更多事件处理
+		function loadmore() {
+			pagenum = pagenum +　1;
+			var	url = "${base}/ajax/first/article";
+			if(prePage != pagenum) {
+			    prePage = pagenum;
+				$.get(url, {pagenum:pagenum}, function(data){
+				    pagenum += 1;
+					if(data.trim() == ""){// 没有更多内容
+						pagenum -= 1;
+						$(this).hide();
+						$(".nomore").show();
+						$(window).unbind("scroll", defaultScrollHandler);
+						return false;
+					}else{
+						$(".load").show();
+					}
+					$(".tabBox").append(data);
+				});
+			}
+		}
+			
+		$(function(){
+			var swiper = new Swiper('.swiper-container', {
+		        pagination: '.swiper-pagination',
+		        paginationClickable: true,
+		        spaceBetween: 30,
+		        centeredSlides: true,
+		        autoplay: 2500,
+		        autoplayDisableOnInteraction: false
+		    });
+		    $.fn.scrollHandle({
+				obj: window,
+				fun: loadmore
+			})
+		});
+	</script>	
+</body>
+</html>

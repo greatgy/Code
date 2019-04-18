@@ -1,0 +1,231 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+[#if type=="all"][#-- 全部文章 --]
+	[#list list as item]
+		<li>
+			<div class="leftime">
+				<b>${item.createtime.toString("yyyy")}</b>
+				${item.createtime.toString("MM月dd日")}
+				<img src="${baseimg}/imgs/default/dbcircle.jpg" />
+			</div>
+			<div class="t06_w680_con right">
+				[#assign publish=false]
+				[#assign statename=""]
+				[#assign link=""]
+				[#assign bean=""]
+				[#assign imgstatus = 10]
+				[#if item.state == 1]
+					[#list list2 as fitem]
+						[#if fitem.contributeuid == item.uid]
+							[#if fitem.status == 1]
+								[#if "${fitem.firstTypeName}" == "debate"]
+									[#assign link="${base}/debate/article/${fitem.uid}"]
+								[#else]
+									[#assign link="${base}/${fitem.firstTypeName}/${fitem.oid}"]
+								[/#if]
+								[#assign publish=true]
+								[#assign bean=fitem ]
+								[#assign imgstatus=1 ]
+							[/#if]
+							[#if fitem.status == 10]
+								[#assign imgstatus=10 ]
+							[/#if]
+							[#if fitem.status == 0]
+								[#assign imgstatus=0 ]
+							[/#if]
+							[#break]
+						[/#if]
+					[/#list]
+				[/#if]
+				[#if item.state == 0]
+					[#assign imgstatus=10 ]
+				[/#if]
+				[#if item.state == 2]
+					[#assign imgstatus=2 ]
+				[/#if]
+				<div class="rightcontent">
+					<div class="contentleft">
+						[#if publish]
+							<a href="${link}" target="_blank">
+								<img src="${webimg}${bean.imgbig}" class="article01" />
+								<img src="${baseimg}/imgs/default/pass.png" class="status" />
+							</a>
+						[#else]
+							<img src="${webimg}${item.imgbig}" class="article01" />
+							[#if imgstatus?number == 10]
+								<img src="${baseimg}/imgs/default/verify.png" class="status" />
+							[/#if]
+							[#if imgstatus?number == 0]
+								<img src="${baseimg}/imgs/default/notpass.png" class="status" />
+							[/#if]
+						[/#if]
+					</div>
+					<div class="contentright">
+						<h5>
+							[#if publish]
+								<a href="${link}" target="_blank">${bean.title}</a>
+							[#else]
+								${item.title}
+							[/#if]
+						</h5>
+						<p>
+							[#if publish]
+								[@f.TrimSubstring content='${bean.content}' mylength=62 /]
+								<a href="${link}" style="color: #3698dc;font-size: 12px;margin-left: 5px;" target="_blank">[详情]</a>
+							[#else]
+								[@f.TrimSubstring content='${item.content}' mylength=62 /]
+							[/#if]
+						</p>
+						[#if publish]
+							<div class="iconsbox">
+								<span title="查看次数">
+									<img src="${baseimg}/imgs/default/viewicon.png" />
+									${bean.clickcount!0}
+								</span>
+								<span title="点赞次数">
+									<img src="${baseimg}/imgs/default/thumb.png" />
+									${bean.prizecount!0}
+								</span>
+								<span title="评论次数">
+									<img src="${baseimg}/imgs/default/msg01.png" />
+									${bean.commentcount!0}
+								</span>
+								<span title="分享">
+									<a href="${link}" target="_blank"><img src="${baseimg}/imgs/default/shareicon.png" /></a>
+								</span>
+							</div>
+						[/#if]
+					</div>
+				</div>
+			</div>
+		</li>
+	[/#list]
+[/#if]
+
+[#if type=="publish"][#-- 已发布文章 --]
+	[#list list as item]
+		<li>
+			<div class="leftime">
+				<b>${item.createtime.toString("yyyy")}</b>
+				${item.createtime.toString("MM月dd日")}
+				<img src="${baseimg}/imgs/default/dbcircle.jpg" />
+			</div>
+			<div class="rightcontent">
+				<div class="contentleft">
+					<a href="${base}/${item.firstTypeName}/${item.oid}" target="_blank">
+						<img src="${webimg}${item.imgbig}" class="article01" />
+						<img src="${baseimg}/imgs/default/pass.png" class="status" />
+					</a>
+				</div>
+				<div class="contentright">
+					<h5>
+						<a href="${base}/${item.firstTypeName}/${item.oid}" target="_blank" title="${item.title}">${item.title?html}</a>
+					</h5>
+					<p>[@f.TrimSubstring content='${item.content}' mylength=62 /]<a href="${base}/${item.firstTypeName}/${item.oid}" style="color: #3698dc;font-size: 12px;margin-left: 5px;" target="_blank">[详情]</a></p>
+					<div class="iconsbox">
+						<span>
+							<img src="${baseimg}/imgs/default/viewicon.png" />
+							${item.clickcount!0}
+						</span>
+						<span>
+							<img src="${baseimg}/imgs/default/thumb.png" />
+							${item.prizecount!0}
+						</span>
+						<span>
+							 <a href="${base}/${item.firstTypeName}/${item.oid}" target="_blank">
+								<img src="${baseimg}/imgs/default/msg01.png" />
+								${item.commentcount!0}
+							</a>
+						</span>
+						<span>
+							<img src="${baseimg}/imgs/default/shareicon.png" />
+						</span>
+						&nbsp;&nbsp;&nbsp;&nbsp;
+						<span title="获得积分">
+							<font style="color:red">$</font>
+							${item.score!'0'}
+						</span>
+					</div>
+				</div>
+			</div>
+		</li>
+	[/#list]
+[/#if]
+
+[#if type=="refuse"][#-- 拒绝文章 --]
+	[#list list as item]
+		<li>
+			<div class="leftime">
+				<b>${item.createtime.toString("yyyy")}</b>
+				${item.createtime.toString("MM月dd日")}
+				<img src="${baseimg}/imgs/default/dbcircle.jpg" />
+			</div>
+			<div class="rightcontent">
+				<div class="contentleft">
+					<img src="${webimg}${item.imgbig}" class="article01" />
+					<img src="${baseimg}/imgs/default/notpass.png" class="status" />
+				</div>
+				<div class="contentright">
+					<h5>
+						${item.title?html}
+					</h5>
+					<p>[@f.TrimSubstring content='${item.content}' mylength=100 /]</p>
+					<div class="iconsbox">
+					</div>
+				</div>
+			</div>
+		</li>
+	[/#list]
+[/#if]
+
+[#if type=="init"][#-- 等待审核文章 --]
+	[#list list as item]
+		<li>
+			<div class="leftime">
+				<b>${item.createtime.toString("yyyy")}</b>
+				${item.createtime.toString("MM月dd日")}
+				<img src="${baseimg}/imgs/default/dbcircle.jpg" />
+			</div>
+			<div class="rightcontent">
+				<div class="contentleft">
+					<img src="${webimg}${item.imgbig}" class="article01" />
+					<img src="${baseimg}/imgs/default/verify.png" class="status" />
+				</div>
+				<div class="contentright">
+					<h5>
+						${item.title?html}
+					</h5>
+					<p>[@f.TrimSubstring content='${item.content}' mylength=100 /]</p>
+					<div class="iconsbox">
+					</div>
+				</div>
+			</div>
+		</li>
+	[/#list]
+[/#if]
+
+[#if type=="finace_latest"][#-- 分类文章中的最新文章 --]
+	[#list latestlist as item ]
+		<div class="latest_content">
+			<a href="${base}/${typename}/${item.oid}" target="_blank" >
+				<img src="${webimg}/${item.imglittle}" class="title_img"/>
+			</a>
+			<div class="tab_one_r">
+				<h3><a href="${base}/${typename}/${item.oid}" target="_blank" title="${item.title}">[@f.TrimSubstring content="${item.title}" mylength=20 /]</a></h3>
+				<div class="timerank">
+					<span class="ts">发布于 ${item.createtimeStr}</span>
+					<span class="artrank"></span>
+				</div>
+				<p>
+					[@f.TrimSubstring content="${item.summary}" mylength=90 /]
+					<a href="${base}/${typename}/${item.oid}" target="_blank">[详情]</a>
+				</p>
+				<div class="tab_one_bt">
+					<span class="read">阅读&nbsp;(${item.clickcount!0})</span>
+					<span>赞&nbsp;(${item.prizecount!0})</span>
+					<span><a href="${base}/${typename}/${item.oid}#db_discuss" title="评论数" target="_blank" >评论&nbsp;(${item.commentcount!0})</a></span>
+				</div>
+			</div>
+		</div>
+	[/#list]
+[/#if]

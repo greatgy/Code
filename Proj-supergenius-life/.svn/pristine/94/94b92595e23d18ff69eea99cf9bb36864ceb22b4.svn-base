@@ -1,0 +1,49 @@
+package com.supergenius.global.conf;
+
+import java.util.Properties;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import com.genius.core.base.conf.BaseSysConf;
+
+/**
+ * @author Architect.bian
+ * 
+ */
+@Component
+public class SysConf extends BaseSysConf {
+	public static final int[][] AvatarSizes = new int[][] { { 300, 300 }, { 180, 180 }, { 50, 50 } };
+	public static final int[][] ImgShowSizes = new int[][] { { 720, 540 }, { 480, 360 }, { 160, 120 } };
+
+	public static int SummarySize;
+	public static float ClickcountPercent;
+	public static float PrizecountPercent;
+	public static float CommentscountPercent;
+	public static float CollectcountPercent;
+	public static int FirstArticleSize;
+	public static int FirstVideoSize;
+	public static int FirstProblemSize;
+	public static int FirstTopicSize;
+	public static int LoadSize;
+	public static int HotArticleSize;
+	public static int AliveTime;
+	
+	@Value("#{sys}")
+	public void setSysConf(Properties sys) {
+		SysConf.AliveTime = Integer.valueOf(sys.getProperty("AliveTime"));
+		SysConf.SummarySize = Integer.valueOf(sys.getProperty("SummarySize"));
+		SysConf.ClickcountPercent = Float.valueOf(sys.getProperty("ClickcountPercent"));
+		SysConf.PrizecountPercent = Float.valueOf(sys.getProperty("PrizecountPercent"));
+		SysConf.CommentscountPercent = Float.valueOf(sys.getProperty("CommentscountPercent"));
+		SysConf.CollectcountPercent = Float.valueOf(sys.getProperty("CollectcountPercent"));
+		SysConf.FirstArticleSize = Integer.valueOf(sys.getProperty("FirstArticleSize"));
+		SysConf.FirstVideoSize = Integer.valueOf(sys.getProperty("FirstVideoSize"));
+		SysConf.FirstProblemSize = Integer.valueOf(sys.getProperty("FirstProblemSize"));
+		SysConf.FirstTopicSize = Integer.valueOf(sys.getProperty("FirstTopicSize"));
+		SysConf.LoadSize = Integer.valueOf(sys.getProperty("LoadSize"));
+		SysConf.HotArticleSize = Integer.valueOf(sys.getProperty("HotArticleSize"));
+	}
+	public static int DefaultAnonymousOid = 0;
+	
+}

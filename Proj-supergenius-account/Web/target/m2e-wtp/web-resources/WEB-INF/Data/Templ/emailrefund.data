@@ -1,0 +1,19 @@
+[#ftl]
+[#if bean??]
+	[#if type =='title']
+		${(bean.username)!}
+		[#if bean.state == '2']
+			账户退款成功
+		[#else]
+			账户退款失败
+		[/#if]
+	[#else]
+			   退款会员： ${bean.username}
+		 <br /> 退款站点： ${bean.siteName}
+		 <br />账单号： ${bean.out_refund_no} 
+		 <br />退款金额： ${bean.refundmoney}元
+		 <br />银行： ${bean.bankName} 
+		 <br />操作时间： ${bean.updatetime.toString("yyyy-MM-dd HH:mm:ss")}
+	[/#if]
+
+[/#if]

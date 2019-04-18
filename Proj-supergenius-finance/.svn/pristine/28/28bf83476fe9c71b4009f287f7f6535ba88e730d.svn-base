@@ -1,0 +1,265 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>我的文章</title>
+	<link href="${basecss}/css/default/pages/article.css" type="text/css" rel="stylesheet"/>
+	<style type="text/css">
+		.t06_w680_img{width:212px; height:141px;float:left;overflow:hidden;}
+		.t06_w680_word h2, .t06_w680_con{height:auto;}
+	</style>
+	<script type="text/javascript">
+		var FINANCE_PAGE = [
+			{
+				tab:"all",
+				pagenum:1,
+				url:"${base}/ajax/my/article",
+				isfirst:false
+				
+			},
+			{
+				tab:"publish",
+				pagenum:1,
+				url:"${base}/ajax/my/article/publish",
+				isfirst:true
+			},
+			{
+				tab:"refuse",
+				pagenum:1,
+				url:"${base}/ajax/my/article/2",
+				isfirst:true
+			},
+			{
+				tab:"init",
+				pagenum:1,
+				url:"${base}/ajax/my/article/0",
+				isfirst:true
+			}
+		];
+		$(function($) {
+			// 注册事件
+			$(".t06_w680_more").bind("click", loadmore);
+			$(".tab").bind("click",setTab);
+		});
+	</script>
+	<script type="text/javascript">
+		// 切换tab菜单
+		function setTab(){
+			var tab = $(this).data("tab");
+			$(".t06_w680_tabs .current").removeClass("current");
+			$(this).addClass("current");
+			$(".content").addClass("hd");
+			$("#article_" + tab).removeClass("hd");
+			var url = "";
+			var isfirst = false;
+			for(var i=0;i<FINANCE_PAGE.length;i++){
+				if(FINANCE_PAGE[i].tab == tab){
+					url = FINANCE_PAGE[i].url;
+					isfirst = FINANCE_PAGE[i].isfirst;
+					FINANCE_PAGE[i].isfirst = false;
+					break;
+				}
+			}
+			if(isfirst){
+				loadData(1, url, tab, isfirst);
+			}
+		}
+		
+		// 加载更多事件处理
+		function loadmore() {
+			var tab = $(this).data("tab");
+			var pagenum = -1;
+			var url = "";
+			for(var i=0;i<FINANCE_PAGE.length;i++){
+				if(FINANCE_PAGE[i].tab == tab){
+					FINANCE_PAGE[i].pagenum += 1;
+					pagenum = FINANCE_PAGE[i].pagenum;
+					url = FINANCE_PAGE[i].url;
+					break;
+				}
+			}
+			loadData(pagenum, url, tab, false);
+		}
+		
+		// 从后台加载数据
+		function loadData(pagenum, url, tab, isfirst){
+				$.get(url, {pagenum:pagenum}, function(data){
+					if(data.trim() == ""){// 没有更多内容
+						if(isfirst){
+							$("#article_"+tab+" .noarticle").removeClass("hd");
+							$(".more_"+tab).addClass("hd");
+						}else{
+							alert("没有更多文章");
+						}
+						return;
+					}
+				$("#article_"+tab + " .t06_w680_info").append(data);
+			});
+		}
+	</script>
+</head>
+<body>
+<div class="topic06">
+	<div class="t06_banner_box">
+		<div class="t06_banner">
+			<div class="t06_banner_head left">
+				<div class="t06_banner_imgs">
+					<a href="#"><img [#if "${me.avatar}" == ""]src="${baseimg}/imgs/web/noavatar132x130.png"[#else]src="${userimg}${(me.avatar)}"[/#if]/></a>
+				</div>
+			</div>
+			<div class="t06_banner_con left">
+				<h1>${me.showname}</h1>
+				<p>作者简介：${author.summary!"暂无作者简介"} </p>
+			</div>				
+			<div class="t06_banner_home right">
+				<a href="">
+					<p class="t06_banner_num"><span title="我的文章数量">${count}<br/>文章</span>
+				</a>
+				<a href="">
+					<span class="t06_banner_border">&nbsp;</span><span title="我的文章浏览总数">[#if count2??][#if count2<0]0[#else]${count2}[/#if][#else]0[/#if]<br/>浏览</span></p>
+				</a>
+				<p class="t06_banner_but"><a href="#"><img src="${baseimg}/imgs/default/user_but.png"/></a></p>
+			</div>
+		</div>
+	</div>
+	<div class="t06_con">
+		<div class="t06_con_w680 left">
+			<h1 class="t06_w680_title">我的文章列表</h1>
+			<div class="t06_w680_tabs">
+				<a href="" class="tab current" data-tab="all">全部</a>
+				<a href="" class="tab" data-tab="publish">已发布</a>
+				<a href="" class="tab" data-tab="refuse">未通过</a>
+				<a href="" class="tab" data-tab="init">审核中</a>
+			</div>
+			
+			<div id="article_all" class="content">
+				[#if list?size==0]
+					<img class="noarticle" src="${baseimg}/imgs/default/prompt.png" width="481px" heigth="211px"/>
+				[#else]
+				<div class="t06_w680_info ">
+					[#list list as item]
+					<div class="t06_w680_time left">
+						<span class="left_time">${item.createtime.toString("yyyy年MM月dd日")}</span>
+						<img src="${baseimg}/imgs/default/circle.png" class="t06_w680_circle" style="" />
+					</div>
+					<div class="t06_w680_con right">
+						[#assign publish=false]
+						[#assign statename=""]
+						[#assign link=""]
+						[#assign bean=""]
+						[#assign imgstatus = 10]
+						[#if item.state == 1]
+							[#list list2 as fitem]
+								[#if fitem.contributeuid == item.uid]
+									[#if fitem.status == 1]
+										[#if "${fitem.firstTypeName}" == "debate"]
+											[#assign link="${base}/debate/article/${fitem.uid}"]
+										[#else]
+											[#assign link="${base}/${fitem.firstTypeName}/${fitem.oid}"]
+										[/#if]
+										[#assign publish=true]
+										[#assign bean=fitem ]
+										[#assign imgstatus=1 ]
+									[/#if]
+									[#if fitem.status == 10]
+										[#assign imgstatus=10 ]
+									[/#if]
+									[#if fitem.status == 0]
+										[#assign imgstatus=0 ]
+									[/#if]
+									[#break]
+								[/#if]
+							[/#list]
+						[/#if]
+						[#if item.state == 0]
+							[#assign imgstatus=10 ]
+						[/#if]
+						[#if item.state == 2]
+							[#assign imgstatus=2 ]
+						[/#if]
+						<div class="t06_w680_img left">
+							[#if publish]
+								<img src="${webimg}${bean.imgbig}" />
+							[#else]
+								<img src="${webimg}${item.imgbig}" />
+							[/#if]
+							<p class="t06_w680_fix">
+								[#if publish]
+									<img src="${baseimg}/imgs/default/topic04_check03.png">
+								[#else]
+									[#if imgstatus?number == 10]
+										<img src="${baseimg}/imgs/default/topic04_check01.png">
+									[/#if]
+									[#if imgstatus?number == 0]
+										<img src="${baseimg}/imgs/default/topic04_check02.png">
+									[/#if]
+								[/#if]
+							</p>
+						</div>
+						<div class="t06_w680_word right" style="padding-top:0px">
+							[#if publish]
+								<a href="${link}" target="_blank"><h2>${bean.title}</h2></a>
+							[#else]
+								<a href=""><h2>${item.title}</h2></a>
+							[/#if]
+							<p>
+							[#if publish]
+								[@f.TrimSubstring content='${bean.content}' mylength=100 /]
+								<a href="${link}" target="_blank">[详情]</a>
+							[#else]
+								[@f.TrimSubstring content='${item.content}' mylength=100 /]
+							[/#if]
+							</p>
+							[#if publish]
+								<p class="t06_w680_detail">
+									 阅读(${bean.clickcount!0}) &nbsp;
+									<img src="${baseimg}/imgs/default/heart_01.png">(${bean.prizecount!0})&nbsp;&nbsp;
+									 <a href="${base}${typename}/${item.oid}#db_discuss">评论(${bean.commentcount!0})</a>
+							 	</p>
+							[/#if]
+						</div>
+					</div>
+					[/#list]
+				</div>
+				<div class="clear"></div>
+				<div class="t06_w680_more more_all " data-tab="all">加载更多</div>
+				[/#if]
+			</div>
+			
+			<div id="article_publish" class="hd content" >
+				<div class="noarticle hd">
+					<img src="${baseimg}/imgs/default/prompt.png" width="481px" heigth="211px"/>
+				</div>
+				<div class="t06_w680_info">
+				</div>
+				<div class="clear"></div>
+				<div class="t06_w680_more more_publish"  data-tab="publish">加载更多</div>
+			</div>
+			
+			<div id="article_refuse" class="hd content">
+				<div class="noarticle hd">
+					<img src="${baseimg}/imgs/default/prompt.png" width="481px" heigth="211px"/>
+				</div>				<div class="t06_w680_info">
+				</div>
+				<div class="clear"></div>
+				<div class="t06_w680_more more_refuse"  data-tab="refuse">加载更多</div>
+			</div>
+			
+			<div id="article_init" class="hd content">
+				<div class="noarticle hd">
+					<img src="${baseimg}/imgs/default/prompt.png" width="481px" heigth="211px"/>
+				</div>
+				<div class="t06_w680_info">
+				</div>
+				<div class="clear"></div>
+				<div class="t06_w680_more more_init"  data-tab="init">加载更多</div>
+			</div>
+		</div>
+		
+		[@f.ArticleRank ranklist=ranklist listname="我的文章排行榜"/]
+		<div class="clear"></div>
+</div>
+</body>
+</html>

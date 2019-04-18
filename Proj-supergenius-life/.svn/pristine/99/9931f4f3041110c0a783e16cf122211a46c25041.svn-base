@@ -1,0 +1,12 @@
+[#ftl]
+[#if list??]
+	[#list list as item]
+		<li>
+			<a [#if item.examine==1]href="${base}/topic/${item.cid}/${item.oic}"[#else]href="${base}/topic/review/${item.cid}/${item.oic}"[/#if] title="${item.title}">
+				${item.title}
+			</a>
+			<span class="topicnews"><img src="${baseimg}/imgs/default/dthumb.png" alt="">${item.prizecount}</span>
+		</li>
+	[/#list]
+[/#if]
+

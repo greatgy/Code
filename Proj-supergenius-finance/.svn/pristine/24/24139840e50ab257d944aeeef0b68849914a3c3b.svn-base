@@ -1,0 +1,28 @@
+package com.supergenius.global.conf;
+
+import java.util.Properties;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import com.genius.core.base.conf.BaseSysConf;
+
+/**
+ * @author Architect.bian
+ * 
+ */
+@Component
+public class SysConf extends BaseSysConf {
+	public static final int[][] AvatarSizes = new int[][] { { 300, 300 }, { 180, 180 }, { 50, 50 } };
+	public static final int[][] ImgShowSizes = new int[][] { { 720, 540 }, { 480, 360 }, { 160, 120 } };
+	public static int AliveTime;
+	public static int FirstArticleSize;
+	public static int FirstLoadSize;
+
+	@Value("#{sys}")
+	public void setSysConf(Properties sys) {
+		SysConf.AliveTime = Integer.valueOf(sys.getProperty("AliveTime"));
+		SysConf.FirstArticleSize = Integer.valueOf(sys.getProperty("FirstArticleSize"));
+		SysConf.FirstLoadSize = Integer.valueOf(sys.getProperty("FirstLoadSize"));
+	}
+}

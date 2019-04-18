@@ -1,0 +1,304 @@
+[#ftl]
+[#import "/WEB-INF/FtlLib/Macro/FinanceRank.ftl" as f]
+[#import "/WEB-INF/FtlLib/Macro/Public.ftl" as p]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>${title!'TA的个人中心'}</title>
+	<link rel="stylesheet" href="${basecss}/css/default/pages/mycenter.css"/>
+    <script type="text/javascript">
+    <!--
+        var hisdata = [{
+        	tab:"article",
+			pagenum:1,
+			url: "${base}/ajax/${user.oid?c}/article"
+        }, {
+        	tab:"topic",
+			pagenum:1,
+			url: "${base}/ajax/${user.oid?c}/topic"
+        }]
+        var gender = "TA";
+        [#if user.gender == 0]gender="她"[#elseif user.gender == 1]gender="他"[#else]gender="TA"[/#if]
+        $(function(){
+        	setSubscribeStyle();
+        	$(".loadmore").bind("click", loadmore);
+        })
+        
+        //ta的文章话题加载更多
+        function loadmore() {
+        	var tab = $(this).data("tab");
+        	for (var i = 0; i < hisdata.length; i++) {
+      			if (hisdata[i].tab == tab) {
+      				hisdata[i].pagenum += 1;
+      				setData(hisdata[i].pagenum, tab, hisdata[i].url);
+      			}
+      		}
+        }
+      	
+      	//更新页面
+      	function setData(pageunm, tab, url){
+      		url = url + "/" + pageunm;
+      		$.get(url, function(data){
+      			if (data == null || data.trim() == "") {
+      				$(".tab_" + tab).html("无更多内容").unbind("click");
+      			} else {
+      				$("#tab_" + tab).append(data);
+      			}
+      		})
+      	}
+      	
+      	//ta的中心数据初始化
+      	function initHisData(){
+      		for (var i = 0; i < hisdata.length; i++) {
+      			hisdata[i].pagenum = 1;
+      		}
+      	}
+      	
+      	//ta的中心事件初始化
+      	function initEvent(){
+      		$(".loadmore").unbind("click", loadmore);
+      		$(".loadmore").bind("click", loadmore);
+      	}
+      	
+      	//ta的文章话题切换
+        function changetype(obj) {
+            $(".activeblock").removeClass("activeblock");
+            $(obj).addClass("activeblock");
+            var params={
+                oid : "${user.oid?c}",
+                channel : $(obj).data("type")
+            };
+            $.post(g.base + "/ajax/his", params, function(data) {
+                $(".main").empty();
+                $(".main").append(data);
+                setHisOrHer(params.channel);
+                initHisData();
+                initEvent();
+            });
+        }
+        
+        //设置显示 他 或者 她
+        function setHisOrHer(channel) {
+        	if (channel == "article") {
+        		var str = $("#content_article h3").html();
+        		$("#content_article h3").html(str.replace("TA", gender))
+        		var str1 = $("#hisarticle h3").html();
+        		$("#hisarticle h3").html(str1.replace("TA", gender));
+        	} else if (channel == "topic") {
+        		var str3 = $("#content_topic h3").html();
+        		$("#content_topic h3").html(str3.replace("TA", gender));
+        	}
+        }
+        
+        //订阅-取消订阅
+		function subscribeHandle(obj, id) {
+			var url = "${base}/my/subscribe/" + id;
+			$.get(getNoCachePath(url), function(data){
+				if (data) {
+					$(obj).addClass("hd");
+					$(obj).siblings("a").removeClass("hd");
+				} else {
+					$(obj).addClass("hd");
+					$(obj).siblings("a").removeClass("hd");
+				}
+			})
+		}
+		
+		//设置订阅样式
+		function setSubscribeStyle(){
+			var isubscribe = $("#subscribe").data("isubscribe");
+			if (isubscribe) {
+				$(".sub_yes").removeClass("hd");
+				$(".sub_no").addClass("hd");
+			}
+		}
+	-->
+    </script>
+</head>
+<body>
+	<div class="wraper centerbox">
+		<div class="mycenterTop">
+            <div class="opacitybot"></div>
+            <div class="mybaseinfor">
+                <img [#if user.avatar?? && user.avatar != ""]src="${userimg}${(user.avatar)}"[#else]src="${baseimg}/imgs/web/noavatar.png"[/#if] class="myimg">
+                <div class="myinforright">
+                    <h3>
+                        ${user.showname}
+                        <span class="positions">[#if user.company?trim?? && user.company?trim != ""]${user.company}[#if user.department?trim?? && user.department?trim != "" || user.job?trim?? && user.job?trim != "" ]-[/#if][/#if][#if user.department?trim?? && user.department?trim != ""]${user.department}[#if user.job?trim?? && user.job?trim != ""]-[/#if][/#if]${user.job?if_exists}</span>
+                        <div class="editinfor subs" id="subscribe" data-isubscribe="${issubscribe!'false'}">
+                            <a [#if me?? && user?? && me.uid != user.uid] href="javascript:void(0);" onclick="subscribeHandle(this, ${user.oid?c});" class="addSubsbtn sub_no" [#elseif !me??] href="javascript:;" class="addSubsbtn sub_no pop-up" [#else] href="javascript:void(0);" class="addSubsbtn sub_no" [/#if] >
+								<img src="${baseimg}/imgs/default/addsubs.png" />订阅
+							</a>
+							<a [#if me?? && user?? && me.uid != user.uid] href="javascript:void(0);" onclick="subscribeHandle(this, ${user.oid?c});" [#elseif !me??] href="${loginurl}" target="_blank" [#else] href="javascript:void(0);" [/#if] class="cancelSubsbtn sub_yes hd">已订阅<img src="${baseimg}/imgs/default/cancelsubs.png" /></a>
+                        </div>
+                    </h3>
+                    <p>${user.summary}</p>
+                    <ul class="mycenterlist">
+                        <li><a href="javascript:void(0)" data-type="article" onclick="changetype(this)" [#if channel=="article"]class="activeblock"[/#if]>[#if user.gender == 0]她[#elseif user.gender == 1]他[#else]TA[/#if]的文章</a></li>
+                        <li><a href="javascript:void(0)" data-type="topic" onclick="changetype(this)" [#if channel=="topic"]class="activeblock"[/#if]>[#if user.gender == 0]她[#elseif user.gender == 1]他[#else]TA[/#if]的话题</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+		<div class="main">
+            [#if channel=="article"]
+    			<div class="mainleft" id="content_article">
+    				<h3>[#if user.gender == 0]她[#elseif user.gender == 1]他[#else]TA[/#if]的文章</h3>
+    				<div class="allbox">
+    					[#if list?size==0]
+							<img class="noarticle" src="${baseimg}/imgs/default/prompt.png" width="481px" heigth="211px"/>
+						[#else]
+	    					<ul class="allists" id="tab_article">
+	                            [#list list as article]
+	                            	[#assign link=""]
+									[#if "${article.firstTypeName}" == "debate"]
+										[#assign link="${base}/debate/article/${article.uid}"]
+									[#else]
+										[#assign link="${base}/${article.firstTypeName}/${article.oid?c}"]
+									[/#if]
+	                				<li>
+	        							<div class="leftime">
+	        								<b>${article.createtimeStr?substring(0,4)}</b>
+	        								${article.createtimeStr?substring(5,10)}
+	        								<img src="${baseimg}/imgs/default/dbcircle.jpg" />
+	        							</div>
+	        							<div class="rightcontent">
+	        								<div class="contentleft">
+	        									<a href="${link}" target="_blank"><img src="${webimg}${article.imglittle}" class="article01" /></a>
+	        								</div>
+	        								<div class="contentright">
+	        									<h5>
+	        										<a href="${link}" title="${article.title}" target="_blank">${article.title}</a>
+	        									</h5>
+	        									<p>[@f.TrimSubstring content="${article.summary}" mylength=100 /]</p>
+	        									<div class="iconsbox">
+	        										<span title="查看次数">
+	        											<img src="${baseimg}/imgs/default/viewicon.png" />
+	        											${article.clickcount}
+	        										</span>
+	        										<span title="点赞次数">
+	        											<img src="${baseimg}/imgs/default/thumb.png" />
+	        											${article.prizecount}
+	        										</span>
+	        										<span title="评论次数">
+	        											<img src="${baseimg}/imgs/default/msg01.png" />
+	        											${article.commentcount}
+	        										</span>
+	        										<span title="分享">
+	        											<img src="${baseimg}/imgs/default/shareicon.png" />
+	        										</span>
+	        									</div>
+	        								</div>
+	        							</div>
+	        						</li>
+	                            [/#list]
+	    					</ul>
+	    					[#if list?size > 9]
+    							<div class="clear"></div>
+								<div class="tab_bottom tab_article loadmore" data-tab="article"><a href="javascript:void(0);">加载更多</a></div>
+    						[/#if]
+    					[/#if]
+    				</div>
+    			</div>
+    			<div class="mainright">
+    				<div class="countbox">
+    					<div class="totcontainer">
+    						<span class="totarticles">
+    							<b>${count!"0"}</b>文章
+    						</span>
+    						<span class="totvisited">
+    							<b>${count2!"0"}</b>浏览量
+    						</span>
+    					</div>
+    					<a href="${base}/contribute" class="votebtn">投稿</a>
+    				</div>
+    				<div class="myartranks" id="hisarticle">
+    					<h3>[#if user.gender == 0]她[#elseif user.gender == 1]他[#else]TA[/#if]的文章排行榜</h3>
+    					<ul class="myarticlelist">
+                            [#list list2 as art]
+        						<li>
+        							<span [#if (art_index < 3)] class="bluenum num" [#else] class="num"[/#if]>${art_index + 1}</span>
+        							<a href="${base}/${art.firstTypeName}/${art.oid?c}" target="_blank">[@f.TrimSubstring content="${art.title}" mylength=18 /]</a>
+        						</li>
+    						[/#list]
+    					</ul>
+    				</div>
+    			</div>
+            [#elseif channel=="topic"]
+                <div class="mainleft" id="content_topic">
+                    <h3>[#if user.gender == 0]她[#elseif user.gender == 1]他[#else]TA[/#if]的话题</h3>
+                    [#if list?size==0]
+						<img class="noarticle" src="${baseimg}/imgs/default/prompt.png" width="481px" heigth="211px"/>
+					[#else]
+	                    <ul class="allists topiclist histopics" id="tab_topic">
+	                        [#list list as tatopic]
+	                            <li class="tpcitem">
+	                                <div class="newjudger">
+	                                    <a href="javascript:;" class="newjudgerimg">
+	                                        <img [#if user.avatar?? && user.avatar != ""] src="${userimg}${user.avatar}" [#else] src="${baseimg}/imgs/web/noavatar.png" [/#if] />
+	                                    </a>
+	                                    <a href="javascript:;" class="newNamelink"><span class="newname">${tatopic.author}</span></a>
+	                                    <span class="newtime hisnewtime">${tatopic.createtimeStr}</span>
+	                                </div>
+	                                <a href="${base}/topic/${tatopic.oid?c}" class="topicTitlink" target="_blank">
+	                                    <span class="topictit">${tatopic.title}</span>
+	                                </a>
+	                                <a href="${base}/topic/${tatopic.oid?c}" class="imgcontainer" target="_blank">
+	                                    <img src="${webimg}${tatopic.imgoriginal}" class="topicimg" />
+	                                </a>
+	                                <div class="iconsbox">
+	                                    <span title="查看次数">
+	                                        <img src="${baseimg}/imgs/default/viewicon.png" />
+	                                        ${tatopic.clickcount}
+	                                    </span>
+	                                    <span title="点赞次数">
+	                                        <img src="${baseimg}/imgs/default/thumb.png" />
+	                                        ${tatopic.prizecount}
+	                                    </span>
+	                                    <span title="评论次数">
+	                                        <img src="${baseimg}/imgs/default/msg01.png" />
+	                                        ${tatopic.commentcount}
+	                                    </span>
+	                                    <span title="分享">
+	                                        <img src="${baseimg}/imgs/default/shareicon.png" />
+	                                    </span>
+	                                </div>
+	                            </li>
+	                        [/#list]
+	                    </ul>
+	                    [#if list?size > 9]
+                    		<div class="clear"></div>
+							<div class="tab_bottom tab_topic loadmore" data-tab="topic"><a href="javascript:void(0);">加载更多</a></div>
+             	  		[/#if]
+             	  	[/#if]
+                </div>
+                <div class="mainright">
+                    <div class="countbox">
+                        <div class="totcontainer">
+                            <span class="totarticles">
+                                <b>${count}</b>话题
+                            </span>
+                            <span class="totvisited">
+                                <b>${count2}</b>参与数
+                            </span>
+                        </div>
+                        <a href="${base}/topic/apply" class="votebtn">发起话题</a>
+                    </div>
+                    <div class="myartranks">
+                        <h3>热门话题排行榜</h3>
+                        <ul class="myarticlelist">
+                            [#list topicrank as toptopic]
+                                <li>
+                                	<span [#if (toptopic_index < 3)] class="bluenum num" [#else] class="num"[/#if]>${toptopic_index + 1}</span>
+                                    <a href="${base}/topic/${toptopic.oid?c}" target="_blank">[@f.TrimSubstring content="${toptopic.title}" mylength=18 /]</a>
+                                </li>
+                            [/#list]
+                        </ul>
+                    </div>
+                </div>
+			[/#if]
+		</div>
+	</div>
+</body>
+</html>

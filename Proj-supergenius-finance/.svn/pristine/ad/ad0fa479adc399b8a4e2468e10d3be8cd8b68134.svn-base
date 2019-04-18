@@ -1,0 +1,72 @@
+[#ftl]
+<link rel="stylesheet" href="/css/swiper.min.css">
+<div class="topnav">
+    <a href="./../index.html" class="logo">
+        <img src="/imgs/default/logo.png" alt="天才职场" title="天才职场首页" />
+    </a>
+    <div class="navlist">
+        <ul class="swiper-wrapper">
+            <li class="swiper-slide current">
+                <a href="../index.html">首页</a>
+            </li>
+            <li class="swiper-slide">
+                <a href="../economic.html">财经资讯</a>
+            </li>
+            <li class="swiper-slide">
+                <a href="../economic.html">投资资讯</a>
+            </li>
+            <li class="swiper-slide">
+                <a href="../economic.html">并购资讯</a>
+            </li>
+            <li class="swiper-slide">
+                <a href="../economic.html">风险资讯</a>
+            </li>
+            <li class="swiper-slide">
+                <a href="../economic.html">科技资讯</a>
+            </li>
+            <li class="swiper-slide">
+                <a href="../goldlanguage.html">醒世金语</a>
+            </li>
+            <li class="swiper-slide">
+                <a href="/enterprise.html">企业家</a>
+            </li>
+            <li class="swiper-slide">
+                <a href="../enterprise.html">职业经理人</a>
+            </li>
+            <li class="swiper-slide">
+                <a href="../economic.html">职场夜话</a>
+            </li>
+        </ul>
+    </div>
+    <div class="topRight">
+        <div class="search">
+            <input type="text" name="" placeholder="请输入搜索内容" />
+            <a class="searchimg" href="#">
+                <img src="/imgs/default/searchimg.png" alt="搜索" title="搜索" />
+            </a>
+        </div>
+        <div class="loginbox">
+            <!-- 上传文章 -->
+            <a href="/contribute" class="votebtn">投稿</a>
+            
+            <a href="../login.html" class="login">
+                登录
+            </a>
+            <!-- 登录后 -->
+            <a href="../userArticles.html" class="logined"><img src="/imgs/default/defaultimg.png" /></a>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $(window).scroll(function () {
+            var windowScroll = $(window).scrollTop();
+            if(windowScroll > 37) {
+                $(".header_fix").css("top", "0");
+            } else {
+                $(".header_fix").css("top", "37px");
+            }
+        });
+    });
+</script>
